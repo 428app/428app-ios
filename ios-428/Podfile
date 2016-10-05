@@ -1,0 +1,17 @@
+# Uncomment this line to define a global platform for your project
+platform :ios, '10.0'
+use_frameworks!
+
+target 'ios-428' do
+pod 'Alamofire', '~> 4.0'
+pod 'XCGLogger', '~> 4.0.0'
+end
+
+target 'ios-428Tests' do
+
+end
+
+target 'ios-428UITests' do
+
+end
+
