@@ -12,16 +12,18 @@ class MatchesVC: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-
-        // Do any additional setup after loading the view.
+        self.initNavController()
     }
 
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
+    private func initNavController() {
+        self.navigationItem.title = "Matches"
+        self.navigationItem.leftBarButtonItem = UIBarButtonItem(image: #imageLiteral(resourceName: "Settings-U"), style: .plain, target: self, action: #selector(MatchesVC.goToSettings))
     }
     
-
+    func goToSettings() {
+        self.performSegue(withIdentifier: SEGUE_SETTINGS, sender: nil)
+    }
+    
     /*
     // MARK: - Navigation
 

@@ -77,6 +77,9 @@
 		4064A1521DA59A0100071383 /* SettingsVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4064A1511DA59A0100071383 /* SettingsVC.swift */; };
 		4064A1531DA59A0100071383 /* SettingsVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4064A1511DA59A0100071383 /* SettingsVC.swift */; };
 		4064A1541DA59A0100071383 /* SettingsVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4064A1511DA59A0100071383 /* SettingsVC.swift */; };
+		4064A1561DA5C59F00071383 /* NavigationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4064A1551DA5C59F00071383 /* NavigationController.swift */; };
+		4064A1571DA5C59F00071383 /* NavigationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4064A1551DA5C59F00071383 /* NavigationController.swift */; };
+		4064A1581DA5C59F00071383 /* NavigationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4064A1551DA5C59F00071383 /* NavigationController.swift */; };
 		6F32BA1BE366C8162CA89172 /* Pods_ios_428.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 26065C70F26088E3889A3FAA /* Pods_ios_428.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
 /* End PBXBuildFile section */
 
@@ -133,6 +136,7 @@
 		4064A1491DA599EE00071383 /* LoginVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LoginVC.swift; sourceTree = "<group>"; };
 		4064A14D1DA599F800071383 /* MatchesVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MatchesVC.swift; sourceTree = "<group>"; };
 		4064A1511DA59A0100071383 /* SettingsVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingsVC.swift; sourceTree = "<group>"; };
+		4064A1551DA5C59F00071383 /* NavigationController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NavigationController.swift; sourceTree = "<group>"; };
 		9954006627E0EBFEF7CBE2D0 /* Pods-ios-428.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ios-428.debug.xcconfig"; path = "Pods/Target Support Files/Pods-ios-428/Pods-ios-428.debug.xcconfig"; sourceTree = "<group>"; };
 		E5C7403FDE8C66BB14604050 /* Pods-ios-428.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ios-428.release.xcconfig"; path = "Pods/Target Support Files/Pods-ios-428/Pods-ios-428.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -286,6 +290,7 @@
 				4064A1491DA599EE00071383 /* LoginVC.swift */,
 				4064A14D1DA599F800071383 /* MatchesVC.swift */,
 				4064A1511DA59A0100071383 /* SettingsVC.swift */,
+				4064A1551DA5C59F00071383 /* NavigationController.swift */,
 			);
 			name = Controller;
 			sourceTree = "<group>";
@@ -558,6 +563,7 @@
 				4061DE731DA5910200762375 /* AppDelegate.swift in Sources */,
 				4064A13E1DA597DD00071383 /* MaterialView.swift in Sources */,
 				4064A1321DA5979E00071383 /* Constants.swift in Sources */,
+				4064A1561DA5C59F00071383 /* NavigationController.swift in Sources */,
 				4064A1361DA597A400071383 /* Functions.swift in Sources */,
 				4064A1521DA59A0100071383 /* SettingsVC.swift in Sources */,
 			);
@@ -571,6 +577,7 @@
 				4064A1331DA5979E00071383 /* Constants.swift in Sources */,
 				4064A14B1DA599EE00071383 /* LoginVC.swift in Sources */,
 				4064A13F1DA597DD00071383 /* MaterialView.swift in Sources */,
+				4064A1571DA5C59F00071383 /* NavigationController.swift in Sources */,
 				4064A14F1DA599F800071383 /* MatchesVC.swift in Sources */,
 				4064A1531DA59A0100071383 /* SettingsVC.swift in Sources */,
 				4064A1371DA597A400071383 /* Functions.swift in Sources */,
@@ -586,6 +593,7 @@
 				4064A1341DA5979E00071383 /* Constants.swift in Sources */,
 				4064A14C1DA599EE00071383 /* LoginVC.swift in Sources */,
 				4064A1401DA597DD00071383 /* MaterialView.swift in Sources */,
+				4064A1581DA5C59F00071383 /* NavigationController.swift in Sources */,
 				4064A1501DA599F800071383 /* MatchesVC.swift in Sources */,
 				4064A1541DA59A0100071383 /* SettingsVC.swift in Sources */,
 				4064A1381DA597A400071383 /* Functions.swift in Sources */,

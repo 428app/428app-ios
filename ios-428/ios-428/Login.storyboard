@@ -61,38 +61,22 @@
                         </constraints>
                     </view>
                     <connections>
-                        <segue destination="2vu-oM-xSn" kind="show" identifier="loginSegue" id="k8b-t2-p3h"/>
+                        <segue destination="ij4-rv-lkL" kind="show" identifier="loginSegue" id="5zD-hX-3s6"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="jfv-y1-Ivd" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="56.799999999999997" y="123.68815592203899"/>
         </scene>
-        <!--Navigation Controller-->
-        <scene sceneID="kym-ho-OhJ">
-            <objects>
-                <navigationController id="2vu-oM-xSn" sceneMemberID="viewController">
-                    <navigationBar key="navigationBar" contentMode="scaleToFill" misplaced="YES" id="yHZ-7T-QgI">
-                        <rect key="frame" x="0.0" y="0.0" width="375" height="44"/>
-                        <autoresizingMask key="autoresizingMask"/>
-                    </navigationBar>
-                    <connections>
-                        <segue destination="ij4-rv-lkL" kind="relationship" relationship="rootViewController" id="2bN-Jk-V1Z"/>
-                    </connections>
-                </navigationController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="6iK-HL-OpD" userLabel="First Responder" sceneMemberID="firstResponder"/>
-            </objects>
-            <point key="canvasLocation" x="754" y="124"/>
-        </scene>
-        <!--MatchesVC-->
+        <!--MatchesNav-->
         <scene sceneID="Wo8-QI-jUp">
             <objects>
-                <viewControllerPlaceholder storyboardName="Matches" referencedIdentifier="MatchesVC" id="ij4-rv-lkL" sceneMemberID="viewController">
+                <viewControllerPlaceholder storyboardName="Matches" referencedIdentifier="MatchesNav" id="ij4-rv-lkL" sceneMemberID="viewController">
                     <navigationItem key="navigationItem" id="b0c-1T-be9"/>
                 </viewControllerPlaceholder>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="3uf-8O-lxg" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1265" y="123"/>
+            <point key="canvasLocation" x="596" y="123"/>
         </scene>
     </scenes>
     <resources>
