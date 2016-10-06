@@ -28,6 +28,7 @@ class MatchesVC: UIViewController, UITableViewDelegate, UITableViewDataSource {
     private func initNavController() {
         self.navigationItem.title = "Matches"
         self.navigationItem.rightBarButtonItem = UIBarButtonItem(image: #imageLiteral(resourceName: "Settings"), style: .plain, target: self, action: #selector(MatchesVC.goToSettings))
+        self.navigationItem.backBarButtonItem = UIBarButtonItem(title: " ", style: .plain, target: nil, action: nil)
     }
     
     func goToSettings() {
@@ -67,5 +68,17 @@ class MatchesVC: UIViewController, UITableViewDelegate, UITableViewDataSource {
         }
         cell.configureCell(matchObj: match)
         return cell
+    }
+    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        let match = self.matches[indexPath.row]
+        self.performSegue(withIdentifier: SEGUE_CHAT, sender: match)
+    }
+    
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+       if segue.identifier == SEGUE_CHAT, let match = sender as? Match,
+        let vc = segue.destination as? ChatVC {
+        vc.match = match
+        }
     }
 }

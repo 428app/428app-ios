@@ -29,10 +29,8 @@ class MatchCell: UITableViewCell {
         self.disciplineImgView.image = UIImage(named: self.match.discipline)
     }
 
-//    override func setSelected(_ selected: Bool, animated: Bool) {
-//        super.setSelected(selected, animated: animated)
-
-        // Configure the view for the selected state
-//    }
+    override func setSelected(_ selected: Bool, animated: Bool) {
+        super.setSelected(selected, animated: animated)
+    }
 
 }

@@ -92,6 +92,9 @@
 		4064A18A1DA615FB00071383 /* TODO in Resources */ = {isa = PBXBuildFile; fileRef = 4064A1891DA615FB00071383 /* TODO */; };
 		4064A18B1DA615FB00071383 /* TODO in Resources */ = {isa = PBXBuildFile; fileRef = 4064A1891DA615FB00071383 /* TODO */; };
 		4064A18C1DA615FB00071383 /* TODO in Resources */ = {isa = PBXBuildFile; fileRef = 4064A1891DA615FB00071383 /* TODO */; };
+		4064A1901DA6169900071383 /* ChatVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4064A18F1DA6169900071383 /* ChatVC.swift */; };
+		4064A1911DA6169900071383 /* ChatVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4064A18F1DA6169900071383 /* ChatVC.swift */; };
+		4064A1921DA6169900071383 /* ChatVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4064A18F1DA6169900071383 /* ChatVC.swift */; };
 		6F32BA1BE366C8162CA89172 /* Pods_ios_428.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 26065C70F26088E3889A3FAA /* Pods_ios_428.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
 /* End PBXBuildFile section */
 
@@ -153,6 +156,7 @@
 		4064A1811DA6077E00071383 /* Match.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Match.swift; sourceTree = "<group>"; };
 		4064A1851DA60ADC00071383 /* RoundImageView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RoundImageView.swift; sourceTree = "<group>"; };
 		4064A1891DA615FB00071383 /* TODO */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = TODO; sourceTree = "<group>"; };
+		4064A18F1DA6169900071383 /* ChatVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChatVC.swift; sourceTree = "<group>"; };
 		9954006627E0EBFEF7CBE2D0 /* Pods-ios-428.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ios-428.debug.xcconfig"; path = "Pods/Target Support Files/Pods-ios-428/Pods-ios-428.debug.xcconfig"; sourceTree = "<group>"; };
 		E5C7403FDE8C66BB14604050 /* Pods-ios-428.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ios-428.release.xcconfig"; path = "Pods/Target Support Files/Pods-ios-428/Pods-ios-428.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -338,6 +342,7 @@
 			isa = PBXGroup;
 			children = (
 				4064A14D1DA599F800071383 /* MatchesVC.swift */,
+				4064A18F1DA6169900071383 /* ChatVC.swift */,
 			);
 			name = Match;
 			sourceTree = "<group>";
@@ -603,6 +608,7 @@
 				4064A13E1DA597DD00071383 /* MaterialView.swift in Sources */,
 				4064A1321DA5979E00071383 /* Constants.swift in Sources */,
 				4064A1561DA5C59F00071383 /* NavigationController.swift in Sources */,
+				4064A1901DA6169900071383 /* ChatVC.swift in Sources */,
 				4064A17E1DA6071B00071383 /* MatchCell.swift in Sources */,
 				4064A1361DA597A400071383 /* Functions.swift in Sources */,
 				4064A1521DA59A0100071383 /* SettingsVC.swift in Sources */,
@@ -626,6 +632,7 @@
 				4064A1531DA59A0100071383 /* SettingsVC.swift in Sources */,
 				4064A1831DA6077E00071383 /* Match.swift in Sources */,
 				4064A1371DA597A400071383 /* Functions.swift in Sources */,
+				4064A1911DA6169900071383 /* ChatVC.swift in Sources */,
 				4064A13B1DA597AB00071383 /* Extensions.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -645,6 +652,7 @@
 				4064A1541DA59A0100071383 /* SettingsVC.swift in Sources */,
 				4064A1841DA6077E00071383 /* Match.swift in Sources */,
 				4064A1381DA597A400071383 /* Functions.swift in Sources */,
+				4064A1921DA6169900071383 /* ChatVC.swift in Sources */,
 				4064A13C1DA597AB00071383 /* Extensions.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

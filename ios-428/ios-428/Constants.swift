@@ -12,6 +12,7 @@ import UIKit
 // Segues
 let SEGUE_LOGIN = "loginSegue"
 let SEGUE_SETTINGS = "settingsSegue"
+let SEGUE_CHAT = "chatSegue"
 
 // Notifications
 

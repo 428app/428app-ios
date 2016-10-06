@@ -127,6 +127,7 @@
                     <connections>
                         <outlet property="tableView" destination="JoT-gz-TH7" id="LoW-Vp-27v"/>
                         <segue destination="oSu-CX-Zc4" kind="showDetail" identifier="settingsSegue" action="showViewController:sender:" id="puc-bO-5yC"/>
+                        <segue destination="l9m-05-486" kind="show" identifier="chatSegue" id="RDx-Nc-zpz"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="0tV-es-Ue8" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -141,7 +142,25 @@
                 </viewControllerPlaceholder>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="TJV-l3-iMn" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="886" y="-699"/>
+            <point key="canvasLocation" x="822" y="-943"/>
+        </scene>
+        <!--ChatVC-->
+        <scene sceneID="5WJ-KG-NQH">
+            <objects>
+                <viewController storyboardIdentifier="ChatVC" useStoryboardIdentifierAsRestorationIdentifier="YES" id="l9m-05-486" customClass="ChatVC" customModule="ios_428" customModuleProvider="target" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="jQK-Y2-7vS"/>
+                        <viewControllerLayoutGuide type="bottom" id="lbe-KI-OaY"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="hpB-vQ-zHs">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                    </view>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="M2r-NC-3Ix" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1028" y="-491"/>
         </scene>
     </scenes>
 </document>
