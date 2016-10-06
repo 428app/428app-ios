@@ -68,10 +68,10 @@
             </objects>
             <point key="canvasLocation" x="56.799999999999997" y="123.68815592203899"/>
         </scene>
-        <!--MatchesNav-->
+        <!--ConnectionsNav-->
         <scene sceneID="Wo8-QI-jUp">
             <objects>
-                <viewControllerPlaceholder storyboardName="Matches" referencedIdentifier="MatchesNav" id="ij4-rv-lkL" sceneMemberID="viewController">
+                <viewControllerPlaceholder storyboardName="Connections" referencedIdentifier="ConnectionsNav" id="ij4-rv-lkL" sceneMemberID="viewController">
                     <navigationItem key="navigationItem" id="b0c-1T-be9"/>
                 </viewControllerPlaceholder>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="3uf-8O-lxg" userLabel="First Responder" sceneMemberID="firstResponder"/>

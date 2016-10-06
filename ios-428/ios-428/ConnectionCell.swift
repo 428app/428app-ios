@@ -1,5 +1,5 @@
 //
-//  MatchCell.swift
+//  ConnectionCell.swift
 //  ios-428
 //
 //  Created by Leonard Loo on 10/6/16.
@@ -8,9 +8,9 @@
 
 import UIKit
 
-class MatchCell: UITableViewCell {
+class ConnectionCell: UITableViewCell {
     
-    private var match: Match!
+    private var connection: Connection!
 
     @IBOutlet weak var userImgView: UIImageView!
     @IBOutlet weak var userNameLbl: UILabel!
@@ -21,12 +21,12 @@ class MatchCell: UITableViewCell {
         super.awakeFromNib()
     }
     
-    func configureCell(matchObj: Match) {
-        self.match = matchObj
-        self.userImgView.image = UIImage(named: self.match.userPicUrl)
-        self.userNameLbl.text = self.match.username
-        self.msgLbl.text = self.match.recentMsg
-        self.disciplineImgView.image = UIImage(named: self.match.discipline)
+    func configureCell(connectionObj: Connection) {
+        self.connection = connectionObj
+        self.userImgView.image = UIImage(named: self.connection.userPicUrl)
+        self.userNameLbl.text = self.connection.username
+        self.msgLbl.text = self.connection.recentMsg
+        self.disciplineImgView.image = UIImage(named: self.connection.discipline)
     }
 
     override func setSelected(_ selected: Bool, animated: Bool) {

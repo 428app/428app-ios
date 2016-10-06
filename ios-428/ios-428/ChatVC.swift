@@ -10,7 +10,7 @@ import UIKit
 
 class ChatVC: UIViewController {
     
-    var match: Match!
+    var connection: Connection!
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -18,7 +18,7 @@ class ChatVC: UIViewController {
     }
 
     private func initNavController() {
-        self.navigationItem.title = match.username
+        self.navigationItem.title = connection.username
     }
     
 }

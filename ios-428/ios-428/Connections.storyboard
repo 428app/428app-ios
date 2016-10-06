@@ -18,8 +18,8 @@
         <!--Navigation Controller-->
         <scene sceneID="YrT-kh-edw">
             <objects>
-                <navigationController storyboardIdentifier="MatchesNav" useStoryboardIdentifierAsRestorationIdentifier="YES" id="HlW-9g-5j4" customClass="NavigationController" customModule="ios_428" customModuleProvider="target" sceneMemberID="viewController">
-                    <navigationBar key="navigationBar" contentMode="scaleToFill" misplaced="YES" id="jJc-JA-nT0">
+                <navigationController storyboardIdentifier="ConnectionsNav" useStoryboardIdentifierAsRestorationIdentifier="YES" id="HlW-9g-5j4" customClass="NavigationController" customModule="ios_428" customModuleProvider="target" sceneMemberID="viewController">
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="jJc-JA-nT0">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="44"/>
                         <autoresizingMask key="autoresizingMask"/>
                     </navigationBar>
@@ -31,10 +31,10 @@
             </objects>
             <point key="canvasLocation" x="-460" y="-704"/>
         </scene>
-        <!--MatchesVC-->
+        <!--ConnectionsVC-->
         <scene sceneID="FaO-li-0y8">
             <objects>
-                <viewController storyboardIdentifier="MatchesVC" automaticallyAdjustsScrollViewInsets="NO" useStoryboardIdentifierAsRestorationIdentifier="YES" id="9OP-PC-ITx" customClass="MatchesVC" customModule="ios_428" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="ConnectionsVC" automaticallyAdjustsScrollViewInsets="NO" useStoryboardIdentifierAsRestorationIdentifier="YES" id="9OP-PC-ITx" customClass="ConnectionsVC" customModule="ios_428" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="fLD-eA-QHC"/>
                         <viewControllerLayoutGuide type="bottom" id="5jh-fk-mqQ"/>
@@ -46,7 +46,7 @@
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" showsHorizontalScrollIndicator="NO" showsVerticalScrollIndicator="NO" dataMode="prototypes" style="plain" separatorStyle="none" rowHeight="99" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="JoT-gz-TH7">
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <prototypes>
-                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="gray" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="MatchCell" rowHeight="99" id="2E7-hy-NCH" customClass="MatchCell" customModule="ios_428" customModuleProvider="target">
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="gray" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="ConnectionCell" rowHeight="99" id="2E7-hy-NCH" customClass="ConnectionCell" customModule="ios_428" customModuleProvider="target">
                                         <rect key="frame" x="0.0" y="28" width="375" height="99"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="2E7-hy-NCH" id="SVc-Vw-sql">

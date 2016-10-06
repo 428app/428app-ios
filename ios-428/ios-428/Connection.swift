@@ -8,7 +8,7 @@
 
 import Foundation
 
-class Match {
+class Connection {
     
     private var _userPicUrl: String! // TODO: Change this string to our S3 string
     private var _username: String!
