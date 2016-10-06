@@ -18,7 +18,27 @@ class ChatVC: UIViewController {
     }
 
     private func initNavController() {
-        self.navigationItem.title = connection.username
+        self.navigationItem.title = self.connection.username
+        self.navigationItem.rightBarButtonItem = UIBarButtonItem(image: #imageLiteral(resourceName: "More"), style: .plain, target: self, action: #selector(ChatVC.morePressed))
+    }
+    
+    func morePressed() {
+        let alertController = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
+        alertController.view.tintColor = GREEN_UICOLOR
+        
+        let cancelAction = UIAlertAction(title: "Cancel", style: .cancel, handler: nil)
+        alertController.addAction(cancelAction)
+        let muteAction = UIAlertAction(title: "Mute Notifications", style: .default) { (action) in
+            // TODO: Fill in Mute action
+        }
+        alertController.addAction(muteAction)
+        
+        let reportAction = UIAlertAction(title: "Report \(self.connection.username)", style: .default) { (action) in
+            // TODO: Fill in report action
+        }
+        alertController.addAction(reportAction)
+        
+        self.present(alertController, animated: true, completion: nil)
     }
     
 }
