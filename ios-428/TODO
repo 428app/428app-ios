@@ -1,0 +1,12 @@
+ChatVC
+- Pass info from match to chatvc
+- Mute, report buttons on top right
+- Implement chat
+- Click on name to go to ProfileVC
+
+ProfileVC
+
+SettingsVC
+
+
+

@@ -13,17 +13,13 @@ class Match {
     private var _userPicUrl: String! // TODO: Change this string to our S3 string
     private var _username: String!
     private var _recentMsg: String!
-    private var _lastSentTime: Double!
+    private var _discipline: String! // Discipline label exactly matches icon name in Assets
     
-    // Computed variables
-    private var _lastSentTimeString: String!
-    
-    init(userPicUrl: String, username: String, recentMsg: String, lastSentTime: Double) {
+    init(userPicUrl: String, username: String, recentMsg: String, discipline: String) {
         self._userPicUrl = userPicUrl
         self._username = username
         self._recentMsg = recentMsg
-        self._lastSentTime = lastSentTime
-        self._lastSentTimeString = "" // TODO: Compute this last sent time
+        self._discipline = discipline
     }
     
     var userPicUrl: String {
@@ -44,15 +40,9 @@ class Match {
         }
     }
     
-    var lastSentTime: Double {
+    var discipline: String {
         get {
-            return self._lastSentTime
-        }
-    }
-    
-    var lastSentTimeString: String {
-        get {
-            return self._lastSentTimeString
+            return self._discipline
         }
     }
 }

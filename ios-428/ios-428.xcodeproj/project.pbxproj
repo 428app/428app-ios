@@ -89,6 +89,9 @@
 		4064A1861DA60ADC00071383 /* RoundImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4064A1851DA60ADC00071383 /* RoundImageView.swift */; };
 		4064A1871DA60ADC00071383 /* RoundImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4064A1851DA60ADC00071383 /* RoundImageView.swift */; };
 		4064A1881DA60ADC00071383 /* RoundImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4064A1851DA60ADC00071383 /* RoundImageView.swift */; };
+		4064A18A1DA615FB00071383 /* TODO in Resources */ = {isa = PBXBuildFile; fileRef = 4064A1891DA615FB00071383 /* TODO */; };
+		4064A18B1DA615FB00071383 /* TODO in Resources */ = {isa = PBXBuildFile; fileRef = 4064A1891DA615FB00071383 /* TODO */; };
+		4064A18C1DA615FB00071383 /* TODO in Resources */ = {isa = PBXBuildFile; fileRef = 4064A1891DA615FB00071383 /* TODO */; };
 		6F32BA1BE366C8162CA89172 /* Pods_ios_428.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 26065C70F26088E3889A3FAA /* Pods_ios_428.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
 /* End PBXBuildFile section */
 
@@ -149,6 +152,7 @@
 		4064A17D1DA6071B00071383 /* MatchCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MatchCell.swift; sourceTree = "<group>"; };
 		4064A1811DA6077E00071383 /* Match.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Match.swift; sourceTree = "<group>"; };
 		4064A1851DA60ADC00071383 /* RoundImageView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RoundImageView.swift; sourceTree = "<group>"; };
+		4064A1891DA615FB00071383 /* TODO */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = TODO; sourceTree = "<group>"; };
 		9954006627E0EBFEF7CBE2D0 /* Pods-ios-428.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ios-428.debug.xcconfig"; path = "Pods/Target Support Files/Pods-ios-428/Pods-ios-428.debug.xcconfig"; sourceTree = "<group>"; };
 		E5C7403FDE8C66BB14604050 /* Pods-ios-428.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ios-428.release.xcconfig"; path = "Pods/Target Support Files/Pods-ios-428/Pods-ios-428.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -190,6 +194,7 @@
 		4061DE661DA5910200762375 = {
 			isa = PBXGroup;
 			children = (
+				4064A1891DA615FB00071383 /* TODO */,
 				4061DE711DA5910200762375 /* ios-428 */,
 				4061DE891DA5910200762375 /* ios-428Tests */,
 				4061DE941DA5910200762375 /* ios-428UITests */,
@@ -302,9 +307,9 @@
 		4064A0FC1DA596FC00071383 /* Controller */ = {
 			isa = PBXGroup;
 			children = (
+				4064A18E1DA6167400071383 /* Settings */,
+				4064A18D1DA6166A00071383 /* Match */,
 				4064A1491DA599EE00071383 /* LoginVC.swift */,
-				4064A14D1DA599F800071383 /* MatchesVC.swift */,
-				4064A1511DA59A0100071383 /* SettingsVC.swift */,
 				4064A1551DA5C59F00071383 /* NavigationController.swift */,
 			);
 			name = Controller;
@@ -327,6 +332,22 @@
 				4064A10C1DA5976600071383 /* AvenirLTStd-Roman.otf */,
 			);
 			name = Fonts;
+			sourceTree = "<group>";
+		};
+		4064A18D1DA6166A00071383 /* Match */ = {
+			isa = PBXGroup;
+			children = (
+				4064A14D1DA599F800071383 /* MatchesVC.swift */,
+			);
+			name = Match;
+			sourceTree = "<group>";
+		};
+		4064A18E1DA6167400071383 /* Settings */ = {
+			isa = PBXGroup;
+			children = (
+				4064A1511DA59A0100071383 /* SettingsVC.swift */,
+			);
+			name = Settings;
 			sourceTree = "<group>";
 		};
 		BB30544EAACC9B46DAEB0561 /* Pods */ = {
@@ -466,6 +487,7 @@
 				4064A12E1DA5976600071383 /* AvenirLTStd-Roman.otf in Resources */,
 				4064A12B1DA5976600071383 /* AvenirLTStd-Oblique.otf in Resources */,
 				4064A1161DA5976600071383 /* AvenirLTStd-BookOblique.otf in Resources */,
+				4064A18A1DA615FB00071383 /* TODO in Resources */,
 				4064A1101DA5976600071383 /* AvenirLTStd-BlackOblique.otf in Resources */,
 				4064A11F1DA5976600071383 /* AvenirLTStd-Light.otf in Resources */,
 				4064A1191DA5976600071383 /* AvenirLTStd-Heavy.otf in Resources */,
@@ -484,6 +506,7 @@
 				4064A12F1DA5976600071383 /* AvenirLTStd-Roman.otf in Resources */,
 				4064A1201DA5976600071383 /* AvenirLTStd-Light.otf in Resources */,
 				4064A11A1DA5976600071383 /* AvenirLTStd-Heavy.otf in Resources */,
+				4064A18B1DA615FB00071383 /* TODO in Resources */,
 				4064A1141DA5976600071383 /* AvenirLTStd-Book.otf in Resources */,
 				4064A1111DA5976600071383 /* AvenirLTStd-BlackOblique.otf in Resources */,
 				4064A1261DA5976600071383 /* AvenirLTStd-Medium.otf in Resources */,
@@ -505,6 +528,7 @@
 				4064A1301DA5976600071383 /* AvenirLTStd-Roman.otf in Resources */,
 				4064A1211DA5976600071383 /* AvenirLTStd-Light.otf in Resources */,
 				4064A11B1DA5976600071383 /* AvenirLTStd-Heavy.otf in Resources */,
+				4064A18C1DA615FB00071383 /* TODO in Resources */,
 				4064A1151DA5976600071383 /* AvenirLTStd-Book.otf in Resources */,
 				4064A1121DA5976600071383 /* AvenirLTStd-BlackOblique.otf in Resources */,
 				4064A1271DA5976600071383 /* AvenirLTStd-Medium.otf in Resources */,

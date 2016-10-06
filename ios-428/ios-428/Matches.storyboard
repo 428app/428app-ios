@@ -59,30 +59,12 @@
                                                         <constraint firstAttribute="width" constant="70" id="gVi-sP-LQu"/>
                                                     </constraints>
                                                 </imageView>
-                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Leonard" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumScaleFactor="0.5" adjustsLetterSpacingToFitWidth="YES" translatesAutoresizingMaskIntoConstraints="NO" id="0b7-7c-Upv">
-                                                    <constraints>
-                                                        <constraint firstAttribute="height" constant="20" id="K9G-4K-s3q"/>
-                                                    </constraints>
-                                                    <fontDescription key="fontDescription" name="AvenirLTStd-Heavy" family="Avenir LT Std" pointSize="18"/>
-                                                    <nil key="textColor"/>
-                                                    <nil key="highlightedColor"/>
-                                                </label>
-                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" text="So what is the most interesting thing about zoology?" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="p74-BH-SsQ">
-                                                    <frame key="frameInset" minX="86" minY="50" width="281" height="20"/>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="So what is the most interesting thing about zoology?" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="p74-BH-SsQ">
                                                     <constraints>
                                                         <constraint firstAttribute="height" constant="20" id="d4W-Yh-k1A"/>
                                                     </constraints>
                                                     <fontDescription key="fontDescription" name="AvenirLTStd-Light" family="Avenir LT Std" pointSize="14"/>
                                                     <color key="textColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
-                                                    <nil key="highlightedColor"/>
-                                                </label>
-                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="11:42pm" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="krA-0O-b76">
-                                                    <constraints>
-                                                        <constraint firstAttribute="height" constant="20" id="ody-hb-T4D"/>
-                                                        <constraint firstAttribute="width" constant="99" id="x5w-Hr-ZK4"/>
-                                                    </constraints>
-                                                    <fontDescription key="fontDescription" name="AvenirLTStd-Light" family="Avenir LT Std" pointSize="13"/>
-                                                    <color key="textColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
                                                 <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="0Ty-mj-ReX" userLabel="Divider">
@@ -91,27 +73,41 @@
                                                         <constraint firstAttribute="height" constant="1" id="ejb-xg-erv"/>
                                                     </constraints>
                                                 </view>
+                                                <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="J90-uu-gWX">
+                                                    <constraints>
+                                                        <constraint firstAttribute="width" constant="18" id="4Tj-W7-z8K"/>
+                                                        <constraint firstAttribute="height" constant="18" id="Oid-JF-qrn"/>
+                                                    </constraints>
+                                                </imageView>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Leonard" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumScaleFactor="0.5" adjustsLetterSpacingToFitWidth="YES" translatesAutoresizingMaskIntoConstraints="NO" id="0b7-7c-Upv">
+                                                    <constraints>
+                                                        <constraint firstAttribute="height" constant="20" id="K9G-4K-s3q"/>
+                                                    </constraints>
+                                                    <fontDescription key="fontDescription" name="AvenirLTStd-Heavy" family="Avenir LT Std" pointSize="18"/>
+                                                    <nil key="textColor"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
                                             </subviews>
                                             <constraints>
                                                 <constraint firstItem="0Ty-mj-ReX" firstAttribute="top" secondItem="p74-BH-SsQ" secondAttribute="bottom" constant="21" id="0c8-u2-bbD"/>
-                                                <constraint firstItem="krA-0O-b76" firstAttribute="top" secondItem="SVc-Vw-sql" secondAttribute="topMargin" constant="11" id="3PG-15-S1E"/>
                                                 <constraint firstItem="0Ty-mj-ReX" firstAttribute="leading" secondItem="SVc-Vw-sql" secondAttribute="leading" constant="86" id="8K0-LG-XJZ"/>
+                                                <constraint firstItem="0b7-7c-Upv" firstAttribute="trailing" secondItem="SVc-Vw-sql" secondAttribute="trailingMargin" id="HMn-gw-wFu"/>
                                                 <constraint firstItem="p74-BH-SsQ" firstAttribute="trailing" secondItem="SVc-Vw-sql" secondAttribute="trailingMargin" id="II5-vb-Mf6"/>
-                                                <constraint firstItem="krA-0O-b76" firstAttribute="leading" secondItem="0b7-7c-Upv" secondAttribute="trailing" constant="3" id="Iim-2v-UT6"/>
-                                                <constraint firstItem="0b7-7c-Upv" firstAttribute="leading" secondItem="SLF-zA-nbJ" secondAttribute="trailing" constant="8" id="Lxg-uf-kFo"/>
+                                                <constraint firstItem="0b7-7c-Upv" firstAttribute="leading" secondItem="J90-uu-gWX" secondAttribute="trailing" constant="8" id="O0f-Dw-zVI"/>
                                                 <constraint firstItem="p74-BH-SsQ" firstAttribute="leading" secondItem="SLF-zA-nbJ" secondAttribute="trailing" constant="8" id="Pq6-44-TZH"/>
-                                                <constraint firstItem="krA-0O-b76" firstAttribute="trailing" secondItem="SVc-Vw-sql" secondAttribute="trailingMargin" id="Pzs-Yh-NeA"/>
                                                 <constraint firstAttribute="trailing" secondItem="0Ty-mj-ReX" secondAttribute="trailing" id="TzO-75-LIQ"/>
                                                 <constraint firstItem="0b7-7c-Upv" firstAttribute="top" secondItem="SVc-Vw-sql" secondAttribute="topMargin" constant="11" id="UlZ-hB-FQg"/>
                                                 <constraint firstAttribute="bottom" secondItem="0Ty-mj-ReX" secondAttribute="bottom" constant="8" id="eJa-mf-GQQ"/>
+                                                <constraint firstItem="J90-uu-gWX" firstAttribute="leading" secondItem="SLF-zA-nbJ" secondAttribute="trailing" constant="8" id="rYz-IT-bDP"/>
+                                                <constraint firstItem="J90-uu-gWX" firstAttribute="top" secondItem="SVc-Vw-sql" secondAttribute="topMargin" constant="10" id="uiD-dv-GlF"/>
                                                 <constraint firstItem="SLF-zA-nbJ" firstAttribute="leading" secondItem="SVc-Vw-sql" secondAttribute="leadingMargin" id="xiu-zJ-9KU"/>
                                                 <constraint firstItem="SLF-zA-nbJ" firstAttribute="top" secondItem="SVc-Vw-sql" secondAttribute="topMargin" id="zzU-33-d3O"/>
                                             </constraints>
                                         </tableViewCellContentView>
                                         <color key="tintColor" red="0.84637461820000004" green="0.84637461820000004" blue="0.84637461820000004" alpha="1" colorSpace="calibratedRGB"/>
                                         <connections>
+                                            <outlet property="disciplineImgView" destination="J90-uu-gWX" id="ir1-xQ-aP8"/>
                                             <outlet property="msgLbl" destination="p74-BH-SsQ" id="hf0-ha-oeu"/>
-                                            <outlet property="timeLbl" destination="krA-0O-b76" id="7As-2A-Mza"/>
                                             <outlet property="userImgView" destination="SLF-zA-nbJ" id="AEY-ku-E8z"/>
                                             <outlet property="userNameLbl" destination="0b7-7c-Upv" id="5h2-51-czu"/>
                                         </connections>

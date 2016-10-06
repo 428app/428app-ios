@@ -15,7 +15,7 @@ class MatchCell: UITableViewCell {
     @IBOutlet weak var userImgView: UIImageView!
     @IBOutlet weak var userNameLbl: UILabel!
     @IBOutlet weak var msgLbl: UILabel!
-    @IBOutlet weak var timeLbl: UILabel!
+    @IBOutlet weak var disciplineImgView: UIImageView!
     
     override func awakeFromNib() {
         super.awakeFromNib()
@@ -26,7 +26,7 @@ class MatchCell: UITableViewCell {
         self.userImgView.image = UIImage(named: self.match.userPicUrl)
         self.userNameLbl.text = self.match.username
         self.msgLbl.text = self.match.recentMsg
-        self.timeLbl.text = self.match.lastSentTimeString
+        self.disciplineImgView.image = UIImage(named: self.match.discipline)
     }
 
 //    override func setSelected(_ selected: Bool, animated: Bool) {

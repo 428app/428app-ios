@@ -37,12 +37,14 @@ class MatchesVC: UIViewController, UITableViewDelegate, UITableViewDataSource {
     // MARK: Stub data - to be replaced with server data
     
     private func stubData() {
-        let match1 = Match(userPicUrl: "leo-profile", username: "Leonard", recentMsg: "Zoology is fascinating! Could you tell me more the next time we meet?", lastSentTime: 1475707911)
-        let match2 = Match(userPicUrl: "tomas-profile", username: "Tomas", recentMsg: "Want to meet up in the gym next time???", lastSentTime: 1475607911)
-        let match3 = Match(userPicUrl: "jenny-profile", username: "Jenny", recentMsg: "My favorite hobby is eating. How about you? I'm sure you love eating too...?", lastSentTime: 1474707911)
+        let match1 = Match(userPicUrl: "leo-profile", username: "Leonard", recentMsg: "Zoology is fascinating! Could you tell me more the next time we meet?", discipline: "Business")
+        let match2 = Match(userPicUrl: "tomas-profile", username: "Tomas", recentMsg: "Want to meet up in the gym next time???", discipline: "Computer")
+        let match3 = Match(userPicUrl: "jenny-profile", username: "Jenny", recentMsg: "My favorite hobby is eating. How about you? I'm sure you love eating too...?", discipline: "Biology")
+        let match4 = Match(userPicUrl: "spandan-profile", username: "Spandan", recentMsg: "Ever thought of applying computer vision to Tinder? Imagine if we can...", discipline: "Computer")
         self.matches.append(match1)
         self.matches.append(match2)
         self.matches.append(match3)
+        self.matches.append(match4)
     }
     
     // MARK: Table view
