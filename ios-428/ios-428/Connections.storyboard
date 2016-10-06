@@ -19,7 +19,7 @@
         <scene sceneID="YrT-kh-edw">
             <objects>
                 <navigationController storyboardIdentifier="ConnectionsNav" useStoryboardIdentifierAsRestorationIdentifier="YES" id="HlW-9g-5j4" customClass="NavigationController" customModule="ios_428" customModuleProvider="target" sceneMemberID="viewController">
-                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="jJc-JA-nT0">
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" misplaced="YES" id="jJc-JA-nT0">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="44"/>
                         <autoresizingMask key="autoresizingMask"/>
                     </navigationBar>
@@ -114,17 +114,51 @@
                                     </tableViewCell>
                                 </prototypes>
                             </tableView>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="4fn-Ke-nyH">
+                                <subviews>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="left to 4:28pm" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="L96-UQ-4ox">
+                                        <constraints>
+                                            <constraint firstAttribute="height" constant="21" id="buo-4h-LXf"/>
+                                        </constraints>
+                                        <fontDescription key="fontDescription" name="AvenirLTStd-Light" family="Avenir LT Std" pointSize="15"/>
+                                        <color key="textColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="12:50:25" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="PZN-U9-UuW">
+                                        <constraints>
+                                            <constraint firstAttribute="height" constant="61" id="EnB-Wb-t7e"/>
+                                        </constraints>
+                                        <fontDescription key="fontDescription" name="AvenirLTStd-Heavy" family="Avenir LT Std" pointSize="40"/>
+                                        <color key="textColor" red="0.2784313725" green="0.85098039219999999" blue="0.74901960779999999" alpha="1" colorSpace="calibratedRGB"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
+                                </subviews>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="89" id="1pn-ck-0OR"/>
+                                    <constraint firstAttribute="trailing" secondItem="L96-UQ-4ox" secondAttribute="trailing" constant="8" id="NoZ-ee-FQz"/>
+                                    <constraint firstAttribute="trailing" secondItem="PZN-U9-UuW" secondAttribute="trailing" constant="8" id="Vxx-Da-Bcv"/>
+                                    <constraint firstItem="PZN-U9-UuW" firstAttribute="top" secondItem="4fn-Ke-nyH" secondAttribute="top" constant="8" id="YAg-f5-WWr"/>
+                                    <constraint firstItem="L96-UQ-4ox" firstAttribute="leading" secondItem="4fn-Ke-nyH" secondAttribute="leading" constant="8" id="Ztk-1l-0G7"/>
+                                    <constraint firstItem="L96-UQ-4ox" firstAttribute="top" secondItem="4fn-Ke-nyH" secondAttribute="top" constant="57" id="eOk-0y-AL7"/>
+                                    <constraint firstItem="PZN-U9-UuW" firstAttribute="leading" secondItem="4fn-Ke-nyH" secondAttribute="leading" constant="8" id="zXl-PY-G5X"/>
+                                </constraints>
+                            </view>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
                             <constraint firstItem="5jh-fk-mqQ" firstAttribute="top" secondItem="JoT-gz-TH7" secondAttribute="bottom" id="6q0-63-mbu"/>
-                            <constraint firstItem="JoT-gz-TH7" firstAttribute="top" secondItem="fLD-eA-QHC" secondAttribute="bottom" id="9u8-5B-dIV"/>
+                            <constraint firstItem="JoT-gz-TH7" firstAttribute="top" secondItem="4fn-Ke-nyH" secondAttribute="bottom" id="DaZ-Bp-ODd"/>
+                            <constraint firstItem="4fn-Ke-nyH" firstAttribute="top" secondItem="fLD-eA-QHC" secondAttribute="bottom" id="TL7-bt-QLB"/>
+                            <constraint firstAttribute="trailing" secondItem="4fn-Ke-nyH" secondAttribute="trailing" id="VVE-p3-k2y"/>
                             <constraint firstAttribute="trailing" secondItem="JoT-gz-TH7" secondAttribute="trailing" id="XDY-vR-sVT"/>
+                            <constraint firstItem="4fn-Ke-nyH" firstAttribute="leading" secondItem="ynT-lK-12t" secondAttribute="leading" id="a9W-4K-i6Q"/>
                             <constraint firstItem="JoT-gz-TH7" firstAttribute="leading" secondItem="ynT-lK-12t" secondAttribute="leading" id="fE4-mw-iYf"/>
                         </constraints>
                     </view>
                     <navigationItem key="navigationItem" id="RCs-UB-Ttx"/>
                     <connections>
+                        <outlet property="countdownLbl" destination="PZN-U9-UuW" id="00v-vJ-HYD"/>
                         <outlet property="tableView" destination="JoT-gz-TH7" id="LoW-Vp-27v"/>
                         <segue destination="oSu-CX-Zc4" kind="showDetail" identifier="settingsSegue" action="showViewController:sender:" id="puc-bO-5yC"/>
                         <segue destination="l9m-05-486" kind="show" identifier="chatSegue" id="RDx-Nc-zpz"/>

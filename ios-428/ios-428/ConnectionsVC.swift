@@ -11,6 +11,7 @@ import UIKit
 class ConnectionsVC: UIViewController, UITableViewDelegate, UITableViewDataSource {
 
     @IBOutlet weak var tableView: UITableView!
+    @IBOutlet weak var countdownLbl: UILabel!
     
     private var connections: [Connection] = [Connection]()
     
@@ -18,6 +19,7 @@ class ConnectionsVC: UIViewController, UITableViewDelegate, UITableViewDataSourc
         super.viewDidLoad()
         self.initNavController()
         self.stubData()
+        self.initTimer()
         self.tableView.delegate = self
         self.tableView.dataSource = self
     }
@@ -80,4 +82,27 @@ class ConnectionsVC: UIViewController, UITableViewDelegate, UITableViewDataSourc
         vc.connection = connection
         }
     }
+    
+    // MARK: Countdown
+    private func initTimer() {
+        let timer = Timer.scheduledTimer(timeInterval: 1.0, target: self, selector: #selector(ConnectionsVC.updateTime), userInfo: nil, repeats: true)
+        timer.fire()
+    }
+    
+    func updateTime() {
+        let now = Date()
+        let calendar = Calendar.current
+        let components = DateComponents(calendar: calendar, hour: 16, minute: 28)
+        guard let next438 = calendar.nextDate(after: now, matching: components, matchingPolicy: .nextTime) else {
+            return
+        }
+        let diff = calendar.dateComponents([.hour, .minute, .second], from: now, to: next438)
+        if let hours = diff.hour, let minutes = diff.minute, let seconds = diff.second {
+            let hoursString = hours < 10 ? "0\(hours)" : "\(hours)"
+            let minutesString = minutes < 10 ? "0\(minutes)" : "\(minutes)"
+            let secondsString = seconds < 10 ? "0\(seconds)" : "\(seconds)"
+            self.countdownLbl.text = "\(hoursString):\(minutesString):\(secondsString)"
+        }
+    }
+    
 }
