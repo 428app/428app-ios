@@ -7,3 +7,6 @@
 //
 
 import Foundation
+import XCGLogger
+
+let log = XCGLogger.default

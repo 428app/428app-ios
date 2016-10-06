@@ -11,8 +11,8 @@ import UIKit
 class NavigationController: UINavigationController {
     override func viewDidLoad() {
         super.viewDidLoad()
-        self.navigationBar.titleTextAttributes = [NSForegroundColorAttributeName: UIColor.black,
+        self.navigationBar.titleTextAttributes = [NSForegroundColorAttributeName: GREEN_UICOLOR,
                                                   NSFontAttributeName: FONT_HEAVY_LARGE]
-        self.navigationBar.tintColor = UIColor.black
+        self.navigationBar.tintColor = GREEN_UICOLOR
     }
 }

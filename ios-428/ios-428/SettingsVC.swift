@@ -17,11 +17,10 @@ class SettingsVC: UIViewController {
 
     private func initNavController() {
         self.navigationItem.title = "Settings"
-        self.navigationItem.leftBarButtonItem = UIBarButtonItem(image: #imageLiteral(resourceName: "Dismiss"), style: .plain, target: self, action: #selector(SettingsVC.backToMatches))
+        self.navigationItem.leftBarButtonItem = UIBarButtonItem(image: #imageLiteral(resourceName: "Matches"), style: .plain, target: self, action: #selector(SettingsVC.backToMatches))
     }
     
     func backToMatches() {
-        self.dismiss(animated: true, completion: nil)
+        _ = self.navigationController?.popViewController(animated: true)
     }
-
 }

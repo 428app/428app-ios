@@ -19,8 +19,6 @@ let SEGUE_SETTINGS = "settingsSegue"
 let SHADOW_COLOR: CGFloat = 107.0 / 255.0
 let GRAY_UICOLOR: UIColor = UIColor(red: 204/255.0, green: 204/255.0, blue: 204/255.0, alpha: 1.0) // #cccccc
 let GREEN_UICOLOR: UIColor = UIColor(red: 71/255.0, green: 217/255.0, blue: 191/255.0, alpha: 1.0) // #47d9bf
-//let BLUE_UICOLOR: UIColor = UIColor(red: 0/255.0, green: 161/255.0, blue: 217/255.0, alpha: 1.0) // #00a1d9
-//let YELLOW_UICOLOR: UIColor = UIColor(red: 242/255.0, green: 209/255.0, blue: 64/255.0, alpha: 1.0) // #f2d140
 let LIGHT_GRAY_UICOLOR: UIColor = UIColor(red: 248/255.0, green: 248/255.0, blue: 248/255.0, alpha: 1.0) // #f8f8f8
 
 // Fonts
