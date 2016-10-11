@@ -20,3 +20,9 @@ extension UIView {
         addConstraints(NSLayoutConstraint.constraints(withVisualFormat: format, options: NSLayoutFormatOptions(), metrics: nil, views: viewsDictionary))
     }
 }
+
+extension String {
+    func trim() -> String {
+        return self.trimmingCharacters(in: NSCharacterSet.whitespacesAndNewlines)
+    }
+}

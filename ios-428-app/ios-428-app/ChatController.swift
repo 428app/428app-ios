@@ -9,7 +9,7 @@
 import Foundation
 import UIKit
 
-class ChatController: UICollectionViewController, UICollectionViewDelegateFlowLayout {
+class ChatController: UICollectionViewController, UICollectionViewDelegateFlowLayout, UITextViewDelegate {
     
     fileprivate var messages: [Message]?
     fileprivate let cellId = "chatCell"
@@ -42,6 +42,49 @@ class ChatController: UICollectionViewController, UICollectionViewDelegateFlowLa
         self.unregisterObservers()
     }
     
+    // MARK: Input text view
+    
+    // TODO: Shift collection view up too when pressing enter!
+    // TODO: Placeholder
+    // TODO: Handling emoji: Should shift bar up by another fixed height
+    
+    private var textViewHeight: CGFloat = 0.0
+    private var inputContainerHeightConstraint: NSLayoutConstraint!
+    private var bottomConstraintForCollectionView: NSLayoutConstraint!
+    
+    private func resetInputContainer() {
+        self.textViewHeight = 0.0
+        self.inputContainerHeightConstraint.constant = 45.0
+        self.view.layoutIfNeeded()
+        inputTextView.text = nil
+    }
+    
+    func textViewDidChange(_ textView: UITextView) {
+        log.info(textView.text)
+        if let count = textView.text?.characters.count {
+            self.sendButton.isEnabled = count > 0
+        }
+        
+        // Expansion of text view
+        let size = textView.bounds.size
+        let newHeight = textView.sizeThatFits(CGSize(width: size.width, height: CGFloat.greatestFiniteMagnitude)).height
+        if self.textViewHeight == 0 {
+            self.textViewHeight = newHeight
+            return
+        }
+        if self.textViewHeight != newHeight {
+            // Change height of message input container only if container doesn't cover too much of screen
+            let screenHeight = UIScreen.main.bounds.height
+            if newHeight < 0.2 * screenHeight {
+                self.inputContainerHeightConstraint.constant = newHeight + 12.0
+                self.view.layoutIfNeeded()
+            } else {
+                textView.flashScrollIndicators()
+            }
+        }
+        self.textViewHeight = newHeight
+    }
+    
     // MARK: Input
     
     fileprivate var bottomConstraintForInput: NSLayoutConstraint!
@@ -52,39 +95,46 @@ class ChatController: UICollectionViewController, UICollectionViewDelegateFlowLa
         return view
     }()
     
-    fileprivate let inputTextField: UITextField = {
-        let textField = UITextField()
-        textField.placeholder = "Type a message..."
-        textField.textColor = UIColor.black
-        textField.font = FONT_MEDIUM_MID
-        return textField
+    fileprivate let inputTextView: UITextView = {
+       let textView = UITextView()
+        textView.textColor = UIColor.black
+        textView.font = FONT_MEDIUM_MID
+        return textView
     }()
     
     lazy var sendButton: UIButton = {
         let button = UIButton(type: .system)
         button.setTitle("Send", for: .normal)
         button.setTitleColor(GREEN_UICOLOR, for: .normal)
+        button.setTitleColor(GRAY_UICOLOR, for: .disabled)
         button.titleLabel?.font = FONT_HEAVY_MID
         button.addTarget(self, action: #selector(handleSend), for: .touchUpInside)
+        button.isEnabled = false
         return button
     }()
     
     fileprivate func setupInputComponents() {
+        self.inputTextView.delegate = self
+        self.inputTextView.enablesReturnKeyAutomatically = true
         view.addSubview(messageInputContainerView)
         view.addConstraintsWithFormat("H:|[v0]|", views: messageInputContainerView)
-        view.addConstraintsWithFormat("V:[v0(48)]", views: messageInputContainerView)
+        
+        inputContainerHeightConstraint = NSLayoutConstraint(item: messageInputContainerView, attribute: .height, relatedBy: .equal, toItem: nil, attribute: .height, multiplier: 1.0, constant: 45)
+        view.addConstraint(inputContainerHeightConstraint)
+        view.addConstraintsWithFormat("V:[v0]", views: messageInputContainerView)
         
         bottomConstraintForInput = NSLayoutConstraint(item: messageInputContainerView, attribute: .bottom, relatedBy: .equal, toItem: view, attribute: .bottom, multiplier: 1, constant: 0)
         view.addConstraint(bottomConstraintForInput)
         
         let topBorderView = UIView()
         topBorderView.backgroundColor = UIColor(white: 0.5, alpha: 0.5)
-        messageInputContainerView.addSubview(inputTextField)
+        messageInputContainerView.addSubview(inputTextView)
+        
         messageInputContainerView.addSubview(sendButton)
         messageInputContainerView.addSubview(topBorderView)
-        messageInputContainerView.addConstraintsWithFormat("H:|-8-[v0][v1(60)]-8-|", views: inputTextField, sendButton)
-        messageInputContainerView.addConstraintsWithFormat("V:|[v0]|", views: inputTextField)
-        messageInputContainerView.addConstraintsWithFormat("V:|[v0]|", views: sendButton)
+        messageInputContainerView.addConstraintsWithFormat("H:|-8-[v0][v1(60)]-8-|", views: inputTextView, sendButton)
+        messageInputContainerView.addConstraintsWithFormat("V:|-5-[v0]|", views: inputTextView)
+        messageInputContainerView.addConstraintsWithFormat("V:[v0]-8-|", views: sendButton)
         messageInputContainerView.addConstraintsWithFormat("H:|[v0]|", views: topBorderView)
         messageInputContainerView.addConstraintsWithFormat("V:|[v0(0.5)]", views: topBorderView)
     }
@@ -110,15 +160,16 @@ class ChatController: UICollectionViewController, UICollectionViewDelegateFlowLa
             return
         }
         let context = delegate.persistentContainer.viewContext
-        if let friend = friend, let text = inputTextField.text {
-            let message = ConnectionsController.createMessageForFriend(friend, text: text, minutesAgo: 0, context: context, isSender: true)
+        if let friend = friend, let text = inputTextView.text {
+            // Trim text before sending
+            let message = ConnectionsController.createMessageForFriend(friend, text: text.trim(), minutesAgo: 0, context: context, isSender: true)
             do {
                 try context.save()
                 messages?.append(message)
                 let insertionIndexPath = IndexPath(item: messages!.count - 1, section: 0)
                 collectionView?.insertItems(at: [insertionIndexPath])
                 collectionView?.scrollToItem(at: insertionIndexPath, at: .bottom, animated: true)
-                inputTextField.text = nil
+                self.resetInputContainer()
             } catch let err {
                 print(err)
             }
@@ -192,6 +243,6 @@ class ChatController: UICollectionViewController, UICollectionViewDelegateFlowLa
     }
     
     override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        self.inputTextField.endEditing(true)
+        self.inputTextView.endEditing(true)
     }
 }

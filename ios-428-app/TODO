@@ -1,6 +1,11 @@
+- Multi-line text input
+    - Expand the inputContainer when user presses return
+    - Placeholder logic
+
+
+
 - Swipe right on chat screen to show date
 - Disable send if message is empty
-- Multi-line text input
 - Chat bubbles alternating between tails and no tails
 
 Test
