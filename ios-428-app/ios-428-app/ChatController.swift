@@ -8,7 +8,6 @@
 
 import Foundation
 import UIKit
-import IQKeyboardManagerSwift
 
 class ChatController: UICollectionViewController, UICollectionViewDelegateFlowLayout {
     
@@ -23,15 +22,6 @@ class ChatController: UICollectionViewController, UICollectionViewDelegateFlowLa
         }
     }
     
-//    override func loadView() {
-//        super.loadView()
-//        let scrollView = UIScrollView(frame: UIScreen.main.bounds)
-////        scrollView.contentSize = CGSize(width: view.frame.width, height: view.frame.height)
-//        self.view = scrollView
-//        
-//    }
-    
-    
     override func viewDidLoad() {
         super.viewDidLoad()
         tabBarController?.tabBar.isHidden = true
@@ -44,15 +34,12 @@ class ChatController: UICollectionViewController, UICollectionViewDelegateFlowLa
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        IQKeyboardManager.sharedManager().enable = true
-        IQKeyboardManager.sharedManager().enableAutoToolbar = false
-//        self.registerObservers()
+        self.registerObservers()
     }
     
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
-        IQKeyboardManager.sharedManager().enable = false
-//        self.unregisterObservers()
+        self.unregisterObservers()
     }
     
     // MARK: Input
@@ -83,8 +70,6 @@ class ChatController: UICollectionViewController, UICollectionViewDelegateFlowLa
     }()
     
     fileprivate func setupInputComponents() {
-        let scrollView = UIScrollView(frame: UIScreen.main.bounds)
-        self.view = scrollView
         view.addSubview(messageInputContainerView)
         view.addConstraintsWithFormat("H:|[v0]|", views: messageInputContainerView)
         view.addConstraintsWithFormat("V:[v0(48)]", views: messageInputContainerView)
@@ -108,6 +93,7 @@ class ChatController: UICollectionViewController, UICollectionViewDelegateFlowLa
         if let userInfo = notification.userInfo, let keyboardFrame = (userInfo[UIKeyboardFrameBeginUserInfoKey] as? NSValue)?.cgRectValue {
             let isKeyboardShowing = notification.name == Notification.Name.UIKeyboardWillShow
             self.bottomConstraintForInput.constant = isKeyboardShowing ? -keyboardFrame.height : 0
+            
             UIView.animate(withDuration: 0, delay: 0, options: .curveEaseOut, animations: {
                 self.view.layoutIfNeeded()
                 }, completion: { (completed) in

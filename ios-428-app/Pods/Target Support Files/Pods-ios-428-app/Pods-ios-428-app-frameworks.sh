@@ -48,10 +48,8 @@ code_sign() {
 
 
 if [[ "$CONFIGURATION" == "Debug" ]]; then
-  install_framework 'IQKeyboardManagerSwift.framework'
   install_framework 'XCGLogger.framework'
 fi
 if [[ "$CONFIGURATION" == "Release" ]]; then
-  install_framework 'IQKeyboardManagerSwift.framework'
   install_framework 'XCGLogger.framework'
 fi

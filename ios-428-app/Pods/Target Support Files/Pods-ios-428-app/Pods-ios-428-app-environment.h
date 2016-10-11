@@ -6,12 +6,6 @@
 // project.
 
 
-// IQKeyboardManagerSwift
-#define COCOAPODS_POD_AVAILABLE_IQKeyboardManagerSwift
-#define COCOAPODS_VERSION_MAJOR_IQKeyboardManagerSwift 4
-#define COCOAPODS_VERSION_MINOR_IQKeyboardManagerSwift 0
-#define COCOAPODS_VERSION_PATCH_IQKeyboardManagerSwift 6
-
 // XCGLogger
 #define COCOAPODS_POD_AVAILABLE_XCGLogger
 #define COCOAPODS_VERSION_MAJOR_XCGLogger 4

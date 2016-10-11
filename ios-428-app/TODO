@@ -1,5 +1,4 @@
 - Swipe right on chat screen to show date
-- Integrate IQKeyboardManager, and XCGLogger
 - Disable send if message is empty
 - Multi-line text input
 - Chat bubbles alternating between tails and no tails

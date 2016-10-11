@@ -38,6 +38,7 @@
 		4064A2161DACBCDC00071383 /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4064A2151DACBCDC00071383 /* Extensions.swift */; };
 		4064A2181DACC1B700071383 /* ChatCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4064A2171DACC1B700071383 /* ChatCell.swift */; };
 		4064A21A1DACC20E00071383 /* ConnectionCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4064A2191DACC20E00071383 /* ConnectionCell.swift */; };
+		4064A21F1DAD72DF00071383 /* Functions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4064A21E1DAD72DF00071383 /* Functions.swift */; };
 		FED3D2F8E9831031BBFFDBEB /* Pods_ios_428_app.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1B0A78A64649B55915C0C572 /* Pods_ios_428_app.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
 /* End PBXBuildFile section */
 
@@ -78,6 +79,7 @@
 		4064A2151DACBCDC00071383 /* Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
 		4064A2171DACC1B700071383 /* ChatCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChatCell.swift; sourceTree = "<group>"; };
 		4064A2191DACC20E00071383 /* ConnectionCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConnectionCell.swift; sourceTree = "<group>"; };
+		4064A21E1DAD72DF00071383 /* Functions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Functions.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -134,6 +136,7 @@
 			children = (
 				4064A1EA1DAC80F100071383 /* Constants.swift */,
 				4064A2151DACBCDC00071383 /* Extensions.swift */,
+				4064A21E1DAD72DF00071383 /* Functions.swift */,
 			);
 			name = Util;
 			sourceTree = "<group>";
@@ -370,6 +373,7 @@
 				4064A2181DACC1B700071383 /* ChatCell.swift in Sources */,
 				4064A1E61DAC7DA600071383 /* CustomTabBarController.swift in Sources */,
 				4064A1B81DAC381300071383 /* ConnectionsController.swift in Sources */,
+				4064A21F1DAD72DF00071383 /* Functions.swift in Sources */,
 				4064A1B61DAC381300071383 /* AppDelegate.swift in Sources */,
 				4064A20B1DAC916200071383 /* Message+CoreDataProperties.swift in Sources */,
 				4064A1CB1DAC495D00071383 /* CoreDataService.swift in Sources */,
