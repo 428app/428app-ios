@@ -1,0 +1,424 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		4064A1B61DAC381300071383 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4064A1B51DAC381300071383 /* AppDelegate.swift */; };
+		4064A1B81DAC381300071383 /* FriendsController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4064A1B71DAC381300071383 /* FriendsController.swift */; };
+		4064A1BE1DAC381300071383 /* ios_428_app.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 4064A1BC1DAC381300071383 /* ios_428_app.xcdatamodeld */; };
+		4064A1C01DAC381300071383 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 4064A1BF1DAC381300071383 /* Assets.xcassets */; };
+		4064A1C31DAC381300071383 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 4064A1C11DAC381300071383 /* LaunchScreen.storyboard */; };
+		4064A1CB1DAC495D00071383 /* FriendsControllerHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4064A1CA1DAC495D00071383 /* FriendsControllerHelper.swift */; };
+		4064A1E41DAC590900071383 /* ChatLogController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4064A1E31DAC590900071383 /* ChatLogController.swift */; };
+		4064A1E61DAC7DA600071383 /* CustomTabBarController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4064A1E51DAC7DA600071383 /* CustomTabBarController.swift */; };
+		4064A1EB1DAC80F100071383 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4064A1EA1DAC80F100071383 /* Constants.swift */; };
+		4064A1F81DAC811F00071383 /* AvenirLTStd-Black.otf in Resources */ = {isa = PBXBuildFile; fileRef = 4064A1EC1DAC811F00071383 /* AvenirLTStd-Black.otf */; };
+		4064A1F91DAC811F00071383 /* AvenirLTStd-BlackOblique.otf in Resources */ = {isa = PBXBuildFile; fileRef = 4064A1ED1DAC811F00071383 /* AvenirLTStd-BlackOblique.otf */; };
+		4064A1FA1DAC811F00071383 /* AvenirLTStd-Book.otf in Resources */ = {isa = PBXBuildFile; fileRef = 4064A1EE1DAC811F00071383 /* AvenirLTStd-Book.otf */; };
+		4064A1FB1DAC811F00071383 /* AvenirLTStd-BookOblique.otf in Resources */ = {isa = PBXBuildFile; fileRef = 4064A1EF1DAC811F00071383 /* AvenirLTStd-BookOblique.otf */; };
+		4064A1FC1DAC811F00071383 /* AvenirLTStd-Heavy.otf in Resources */ = {isa = PBXBuildFile; fileRef = 4064A1F01DAC811F00071383 /* AvenirLTStd-Heavy.otf */; };
+		4064A1FD1DAC811F00071383 /* AvenirLTStd-HeavyOblique.otf in Resources */ = {isa = PBXBuildFile; fileRef = 4064A1F11DAC811F00071383 /* AvenirLTStd-HeavyOblique.otf */; };
+		4064A1FE1DAC811F00071383 /* AvenirLTStd-Light.otf in Resources */ = {isa = PBXBuildFile; fileRef = 4064A1F21DAC811F00071383 /* AvenirLTStd-Light.otf */; };
+		4064A1FF1DAC811F00071383 /* AvenirLTStd-LightOblique.otf in Resources */ = {isa = PBXBuildFile; fileRef = 4064A1F31DAC811F00071383 /* AvenirLTStd-LightOblique.otf */; };
+		4064A2001DAC811F00071383 /* AvenirLTStd-Medium.otf in Resources */ = {isa = PBXBuildFile; fileRef = 4064A1F41DAC811F00071383 /* AvenirLTStd-Medium.otf */; };
+		4064A2011DAC811F00071383 /* AvenirLTStd-MediumOblique.otf in Resources */ = {isa = PBXBuildFile; fileRef = 4064A1F51DAC811F00071383 /* AvenirLTStd-MediumOblique.otf */; };
+		4064A2021DAC811F00071383 /* AvenirLTStd-Oblique.otf in Resources */ = {isa = PBXBuildFile; fileRef = 4064A1F61DAC811F00071383 /* AvenirLTStd-Oblique.otf */; };
+		4064A2031DAC811F00071383 /* AvenirLTStd-Roman.otf in Resources */ = {isa = PBXBuildFile; fileRef = 4064A1F71DAC811F00071383 /* AvenirLTStd-Roman.otf */; };
+		4064A2051DAC868E00071383 /* CustomNavigationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4064A2041DAC868E00071383 /* CustomNavigationController.swift */; };
+		4064A20A1DAC916200071383 /* Message+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4064A2061DAC916200071383 /* Message+CoreDataClass.swift */; };
+		4064A20B1DAC916200071383 /* Message+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4064A2071DAC916200071383 /* Message+CoreDataProperties.swift */; };
+		4064A20C1DAC916200071383 /* Friend+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4064A2081DAC916200071383 /* Friend+CoreDataClass.swift */; };
+		4064A20D1DAC916200071383 /* Friend+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4064A2091DAC916200071383 /* Friend+CoreDataProperties.swift */; };
+		4064A20F1DACB62500071383 /* TODO in Resources */ = {isa = PBXBuildFile; fileRef = 4064A20E1DACB62500071383 /* TODO */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		4064A1B21DAC381300071383 /* ios-428-app.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "ios-428-app.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		4064A1B51DAC381300071383 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+		4064A1B71DAC381300071383 /* FriendsController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FriendsController.swift; sourceTree = "<group>"; };
+		4064A1BD1DAC381300071383 /* ios_428_app.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = ios_428_app.xcdatamodel; sourceTree = "<group>"; };
+		4064A1BF1DAC381300071383 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		4064A1C21DAC381300071383 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
+		4064A1C41DAC381300071383 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		4064A1CA1DAC495D00071383 /* FriendsControllerHelper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FriendsControllerHelper.swift; sourceTree = "<group>"; };
+		4064A1E31DAC590900071383 /* ChatLogController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChatLogController.swift; sourceTree = "<group>"; };
+		4064A1E51DAC7DA600071383 /* CustomTabBarController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CustomTabBarController.swift; sourceTree = "<group>"; };
+		4064A1EA1DAC80F100071383 /* Constants.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
+		4064A1EC1DAC811F00071383 /* AvenirLTStd-Black.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "AvenirLTStd-Black.otf"; sourceTree = "<group>"; };
+		4064A1ED1DAC811F00071383 /* AvenirLTStd-BlackOblique.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "AvenirLTStd-BlackOblique.otf"; sourceTree = "<group>"; };
+		4064A1EE1DAC811F00071383 /* AvenirLTStd-Book.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "AvenirLTStd-Book.otf"; sourceTree = "<group>"; };
+		4064A1EF1DAC811F00071383 /* AvenirLTStd-BookOblique.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "AvenirLTStd-BookOblique.otf"; sourceTree = "<group>"; };
+		4064A1F01DAC811F00071383 /* AvenirLTStd-Heavy.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "AvenirLTStd-Heavy.otf"; sourceTree = "<group>"; };
+		4064A1F11DAC811F00071383 /* AvenirLTStd-HeavyOblique.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "AvenirLTStd-HeavyOblique.otf"; sourceTree = "<group>"; };
+		4064A1F21DAC811F00071383 /* AvenirLTStd-Light.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "AvenirLTStd-Light.otf"; sourceTree = "<group>"; };
+		4064A1F31DAC811F00071383 /* AvenirLTStd-LightOblique.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "AvenirLTStd-LightOblique.otf"; sourceTree = "<group>"; };
+		4064A1F41DAC811F00071383 /* AvenirLTStd-Medium.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "AvenirLTStd-Medium.otf"; sourceTree = "<group>"; };
+		4064A1F51DAC811F00071383 /* AvenirLTStd-MediumOblique.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "AvenirLTStd-MediumOblique.otf"; sourceTree = "<group>"; };
+		4064A1F61DAC811F00071383 /* AvenirLTStd-Oblique.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "AvenirLTStd-Oblique.otf"; sourceTree = "<group>"; };
+		4064A1F71DAC811F00071383 /* AvenirLTStd-Roman.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "AvenirLTStd-Roman.otf"; sourceTree = "<group>"; };
+		4064A2041DAC868E00071383 /* CustomNavigationController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CustomNavigationController.swift; sourceTree = "<group>"; };
+		4064A2061DAC916200071383 /* Message+CoreDataClass.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "Message+CoreDataClass.swift"; path = "../Message+CoreDataClass.swift"; sourceTree = "<group>"; };
+		4064A2071DAC916200071383 /* Message+CoreDataProperties.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "Message+CoreDataProperties.swift"; path = "../Message+CoreDataProperties.swift"; sourceTree = "<group>"; };
+		4064A2081DAC916200071383 /* Friend+CoreDataClass.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "Friend+CoreDataClass.swift"; path = "../Friend+CoreDataClass.swift"; sourceTree = "<group>"; };
+		4064A2091DAC916200071383 /* Friend+CoreDataProperties.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "Friend+CoreDataProperties.swift"; path = "../Friend+CoreDataProperties.swift"; sourceTree = "<group>"; };
+		4064A20E1DACB62500071383 /* TODO */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = TODO; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		4064A1AF1DAC381300071383 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		4064A1A91DAC381300071383 = {
+			isa = PBXGroup;
+			children = (
+				4064A20E1DACB62500071383 /* TODO */,
+				4064A1B41DAC381300071383 /* ios-428-app */,
+				4064A1B31DAC381300071383 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		4064A1B31DAC381300071383 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				4064A1B21DAC381300071383 /* ios-428-app.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		4064A1B41DAC381300071383 /* ios-428-app */ = {
+			isa = PBXGroup;
+			children = (
+				4064A1E81DAC80E400071383 /* Resources */,
+				4064A1E71DAC80DF00071383 /* Util */,
+				4064A1B51DAC381300071383 /* AppDelegate.swift */,
+				4064A1E51DAC7DA600071383 /* CustomTabBarController.swift */,
+				4064A2041DAC868E00071383 /* CustomNavigationController.swift */,
+				4064A1E31DAC590900071383 /* ChatLogController.swift */,
+				4064A1B71DAC381300071383 /* FriendsController.swift */,
+				4064A1CA1DAC495D00071383 /* FriendsControllerHelper.swift */,
+				4064A1BF1DAC381300071383 /* Assets.xcassets */,
+				4064A1C11DAC381300071383 /* LaunchScreen.storyboard */,
+				4064A1C41DAC381300071383 /* Info.plist */,
+				4064A1BC1DAC381300071383 /* ios_428_app.xcdatamodeld */,
+				4064A2061DAC916200071383 /* Message+CoreDataClass.swift */,
+				4064A2071DAC916200071383 /* Message+CoreDataProperties.swift */,
+				4064A2081DAC916200071383 /* Friend+CoreDataClass.swift */,
+				4064A2091DAC916200071383 /* Friend+CoreDataProperties.swift */,
+			);
+			path = "ios-428-app";
+			sourceTree = "<group>";
+		};
+		4064A1E71DAC80DF00071383 /* Util */ = {
+			isa = PBXGroup;
+			children = (
+				4064A1EA1DAC80F100071383 /* Constants.swift */,
+			);
+			name = Util;
+			sourceTree = "<group>";
+		};
+		4064A1E81DAC80E400071383 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				4064A1E91DAC80EA00071383 /* Fonts */,
+			);
+			name = Resources;
+			sourceTree = "<group>";
+		};
+		4064A1E91DAC80EA00071383 /* Fonts */ = {
+			isa = PBXGroup;
+			children = (
+				4064A1EC1DAC811F00071383 /* AvenirLTStd-Black.otf */,
+				4064A1ED1DAC811F00071383 /* AvenirLTStd-BlackOblique.otf */,
+				4064A1EE1DAC811F00071383 /* AvenirLTStd-Book.otf */,
+				4064A1EF1DAC811F00071383 /* AvenirLTStd-BookOblique.otf */,
+				4064A1F01DAC811F00071383 /* AvenirLTStd-Heavy.otf */,
+				4064A1F11DAC811F00071383 /* AvenirLTStd-HeavyOblique.otf */,
+				4064A1F21DAC811F00071383 /* AvenirLTStd-Light.otf */,
+				4064A1F31DAC811F00071383 /* AvenirLTStd-LightOblique.otf */,
+				4064A1F41DAC811F00071383 /* AvenirLTStd-Medium.otf */,
+				4064A1F51DAC811F00071383 /* AvenirLTStd-MediumOblique.otf */,
+				4064A1F61DAC811F00071383 /* AvenirLTStd-Oblique.otf */,
+				4064A1F71DAC811F00071383 /* AvenirLTStd-Roman.otf */,
+			);
+			name = Fonts;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		4064A1B11DAC381300071383 /* ios-428-app */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 4064A1C71DAC381300071383 /* Build configuration list for PBXNativeTarget "ios-428-app" */;
+			buildPhases = (
+				4064A1AE1DAC381300071383 /* Sources */,
+				4064A1AF1DAC381300071383 /* Frameworks */,
+				4064A1B01DAC381300071383 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "ios-428-app";
+			productName = "ios-428-app";
+			productReference = 4064A1B21DAC381300071383 /* ios-428-app.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		4064A1AA1DAC381300071383 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastSwiftUpdateCheck = 0800;
+				LastUpgradeCheck = 0800;
+				ORGANIZATIONNAME = 428;
+				TargetAttributes = {
+					4064A1B11DAC381300071383 = {
+						CreatedOnToolsVersion = 8.0;
+						DevelopmentTeam = EUUML7WPQP;
+						ProvisioningStyle = Automatic;
+					};
+				};
+			};
+			buildConfigurationList = 4064A1AD1DAC381300071383 /* Build configuration list for PBXProject "ios-428-app" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = 4064A1A91DAC381300071383;
+			productRefGroup = 4064A1B31DAC381300071383 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				4064A1B11DAC381300071383 /* ios-428-app */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		4064A1B01DAC381300071383 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				4064A1C31DAC381300071383 /* LaunchScreen.storyboard in Resources */,
+				4064A1FB1DAC811F00071383 /* AvenirLTStd-BookOblique.otf in Resources */,
+				4064A1FA1DAC811F00071383 /* AvenirLTStd-Book.otf in Resources */,
+				4064A2021DAC811F00071383 /* AvenirLTStd-Oblique.otf in Resources */,
+				4064A2031DAC811F00071383 /* AvenirLTStd-Roman.otf in Resources */,
+				4064A2011DAC811F00071383 /* AvenirLTStd-MediumOblique.otf in Resources */,
+				4064A20F1DACB62500071383 /* TODO in Resources */,
+				4064A1F81DAC811F00071383 /* AvenirLTStd-Black.otf in Resources */,
+				4064A2001DAC811F00071383 /* AvenirLTStd-Medium.otf in Resources */,
+				4064A1F91DAC811F00071383 /* AvenirLTStd-BlackOblique.otf in Resources */,
+				4064A1C01DAC381300071383 /* Assets.xcassets in Resources */,
+				4064A1FD1DAC811F00071383 /* AvenirLTStd-HeavyOblique.otf in Resources */,
+				4064A1FE1DAC811F00071383 /* AvenirLTStd-Light.otf in Resources */,
+				4064A1FC1DAC811F00071383 /* AvenirLTStd-Heavy.otf in Resources */,
+				4064A1FF1DAC811F00071383 /* AvenirLTStd-LightOblique.otf in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		4064A1AE1DAC381300071383 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				4064A20A1DAC916200071383 /* Message+CoreDataClass.swift in Sources */,
+				4064A2051DAC868E00071383 /* CustomNavigationController.swift in Sources */,
+				4064A1E41DAC590900071383 /* ChatLogController.swift in Sources */,
+				4064A20C1DAC916200071383 /* Friend+CoreDataClass.swift in Sources */,
+				4064A1EB1DAC80F100071383 /* Constants.swift in Sources */,
+				4064A20D1DAC916200071383 /* Friend+CoreDataProperties.swift in Sources */,
+				4064A1BE1DAC381300071383 /* ios_428_app.xcdatamodeld in Sources */,
+				4064A1E61DAC7DA600071383 /* CustomTabBarController.swift in Sources */,
+				4064A1B81DAC381300071383 /* FriendsController.swift in Sources */,
+				4064A1B61DAC381300071383 /* AppDelegate.swift in Sources */,
+				4064A20B1DAC916200071383 /* Message+CoreDataProperties.swift in Sources */,
+				4064A1CB1DAC495D00071383 /* FriendsControllerHelper.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXVariantGroup section */
+		4064A1C11DAC381300071383 /* LaunchScreen.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				4064A1C21DAC381300071383 /* Base */,
+			);
+			name = LaunchScreen.storyboard;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		4064A1C51DAC381300071383 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_SUSPICIOUS_MOVES = YES;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
+				MTL_ENABLE_DEBUG_INFO = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		4064A1C61DAC381300071383 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_SUSPICIOUS_MOVES = YES;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				SDKROOT = iphoneos;
+				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		4064A1C81DAC381300071383 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				DEVELOPMENT_TEAM = EUUML7WPQP;
+				INFOPLIST_FILE = "ios-428-app/Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.428app.ios-428-app";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 3.0;
+			};
+			name = Debug;
+		};
+		4064A1C91DAC381300071383 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				DEVELOPMENT_TEAM = EUUML7WPQP;
+				INFOPLIST_FILE = "ios-428-app/Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.428app.ios-428-app";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 3.0;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		4064A1AD1DAC381300071383 /* Build configuration list for PBXProject "ios-428-app" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				4064A1C51DAC381300071383 /* Debug */,
+				4064A1C61DAC381300071383 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		4064A1C71DAC381300071383 /* Build configuration list for PBXNativeTarget "ios-428-app" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				4064A1C81DAC381300071383 /* Debug */,
+				4064A1C91DAC381300071383 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+		};
+/* End XCConfigurationList section */
+
+/* Begin XCVersionGroup section */
+		4064A1BC1DAC381300071383 /* ios_428_app.xcdatamodeld */ = {
+			isa = XCVersionGroup;
+			children = (
+				4064A1BD1DAC381300071383 /* ios_428_app.xcdatamodel */,
+			);
+			currentVersion = 4064A1BD1DAC381300071383 /* ios_428_app.xcdatamodel */;
+			path = ios_428_app.xcdatamodeld;
+			sourceTree = "<group>";
+			versionGroupType = wrapper.xcdatamodel;
+		};
+/* End XCVersionGroup section */
+	};
+	rootObject = 4064A1AA1DAC381300071383 /* Project object */;
+}
