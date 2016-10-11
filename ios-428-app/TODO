@@ -4,6 +4,7 @@
 - Multi-line text input
 - Chat bubbles alternating between tails and no tails
 
+Test
 
 - Add sent icon if last message sent by you in ConnectionsController
 - Add top option to mute/report person
