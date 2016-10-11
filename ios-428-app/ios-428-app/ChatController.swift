@@ -1,5 +1,5 @@
 //
-//  ChatLogController.swift
+//  ChatController.swift
 //  ios-428-app
 //
 //  Created by Leonard Loo on 10/10/16.
@@ -9,10 +9,42 @@
 import Foundation
 import UIKit
 
-class ChatLogController: UICollectionViewController, UICollectionViewDelegateFlowLayout {
+class ChatController: UICollectionViewController, UICollectionViewDelegateFlowLayout {
     
     private var messages: [Message]?
     private let cellId = "chatCell"
+
+    var friend: Friend? {
+        didSet { // Set from didSelect in ConnectionsController
+            self.navigationItem.title = self.friend?.name
+            self.messages = friend?.messages?.allObjects as? [Message]
+            self.messages = self.messages?.sorted{($0.date as! Date).compare($1.date as! Date) == .orderedAscending}
+        }
+    }
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        tabBarController?.tabBar.isHidden = true
+        collectionView?.backgroundColor = UIColor.white
+        collectionView?.register(ChatCell.self, forCellWithReuseIdentifier: cellId)
+        collectionView?.showsHorizontalScrollIndicator = false
+        collectionView?.showsVerticalScrollIndicator = false
+        self.setupInputComponents()
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        self.registerObservers()
+    }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        self.unregisterObservers()
+    }
+    
+    // MARK: Input
+    
+    private var bottomConstraintForInput: NSLayoutConstraint!
     
     private let messageInputContainerView: UIView = {
         let view = UIView()
@@ -37,40 +69,30 @@ class ChatLogController: UICollectionViewController, UICollectionViewDelegateFlo
         return button
     }()
     
-    var bottomConstraint: NSLayoutConstraint?
-    
-    var friend: Friend? {
-        didSet {
-            navigationItem.title = self.friend?.name
-            self.messages = friend?.messages?.allObjects as? [Message]
-            self.messages = self.messages?.sorted{($0.date as! Date).compare($1.date as! Date) == .orderedAscending}
-        }
-    }
-    
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        tabBarController?.tabBar.isHidden = true
-        collectionView?.backgroundColor = UIColor.white
-        collectionView?.register(ChatLogMessageCell.self, forCellWithReuseIdentifier: cellId)
-        collectionView?.showsHorizontalScrollIndicator = false
-        collectionView?.showsVerticalScrollIndicator = false
+    private func setupInputComponents() {
         view.addSubview(messageInputContainerView)
         view.addConstraintsWithFormat(format: "H:|[v0]|", views: messageInputContainerView)
         view.addConstraintsWithFormat(format: "V:[v0(48)]", views: messageInputContainerView)
-
-        bottomConstraint = NSLayoutConstraint(item: messageInputContainerView, attribute: .bottom, relatedBy: .equal, toItem: view, attribute: .bottom, multiplier: 1, constant: 0)
-        view.addConstraint(bottomConstraint!)
         
-        self.setupInputComponents()
+        bottomConstraintForInput = NSLayoutConstraint(item: messageInputContainerView, attribute: .bottom, relatedBy: .equal, toItem: view, attribute: .bottom, multiplier: 1, constant: 0)
+        view.addConstraint(bottomConstraintForInput)
         
-        NotificationCenter.default.addObserver(self, selector: #selector(handleKeyboardNotification), name: NSNotification.Name.UIKeyboardWillShow, object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(handleKeyboardNotification), name: NSNotification.Name.UIKeyboardWillHide, object: nil)
+        let topBorderView = UIView()
+        topBorderView.backgroundColor = UIColor(white: 0.5, alpha: 0.5)
+        messageInputContainerView.addSubview(inputTextField)
+        messageInputContainerView.addSubview(sendButton)
+        messageInputContainerView.addSubview(topBorderView)
+        messageInputContainerView.addConstraintsWithFormat(format: "H:|-8-[v0][v1(60)]-8-|", views: inputTextField, sendButton)
+        messageInputContainerView.addConstraintsWithFormat(format: "V:|[v0]|", views: inputTextField)
+        messageInputContainerView.addConstraintsWithFormat(format: "V:|[v0]|", views: sendButton)
+        messageInputContainerView.addConstraintsWithFormat(format: "H:|[v0]|", views: topBorderView)
+        messageInputContainerView.addConstraintsWithFormat(format: "V:|[v0(0.5)]", views: topBorderView)
     }
     
     func handleKeyboardNotification(notification: Notification) {
         if let userInfo = notification.userInfo, let keyboardFrame = (userInfo[UIKeyboardFrameBeginUserInfoKey] as? NSValue)?.cgRectValue {
             let isKeyboardShowing = notification.name == NSNotification.Name.UIKeyboardWillShow
-            bottomConstraint?.constant = isKeyboardShowing ? -keyboardFrame.height : 0
+            bottomConstraintForInput.constant = isKeyboardShowing ? -keyboardFrame.height : 0
             UIView.animate(withDuration: 0, delay: 0, options: .curveEaseOut, animations: { 
                 self.view.layoutIfNeeded()
                 }, completion: { (completed) in
@@ -88,7 +110,7 @@ class ChatLogController: UICollectionViewController, UICollectionViewDelegateFlo
         }
         let context = delegate.persistentContainer.viewContext
         if let friend = friend, let text = inputTextField.text {
-            let message = FriendsController.createMessageWithText(friend: friend, text: text, minutesAgo: 0, context: context, isSender: true)
+            let message = ConnectionsController.createMessageWithText(friend: friend, text: text, minutesAgo: 0, context: context, isSender: true)
             do {
                 try context.save()
                 messages?.append(message)
@@ -102,18 +124,19 @@ class ChatLogController: UICollectionViewController, UICollectionViewDelegateFlo
         }
     }
     
-    private func setupInputComponents() {
-        let topBorderView = UIView()
-        topBorderView.backgroundColor = UIColor(white: 0.5, alpha: 0.5)
-        messageInputContainerView.addSubview(inputTextField)
-        messageInputContainerView.addSubview(sendButton)
-        messageInputContainerView.addSubview(topBorderView)
-        messageInputContainerView.addConstraintsWithFormat(format: "H:|-8-[v0][v1(60)]-8-|", views: inputTextField, sendButton)
-        messageInputContainerView.addConstraintsWithFormat(format: "V:|[v0]|", views: inputTextField)
-        messageInputContainerView.addConstraintsWithFormat(format: "V:|[v0]|", views: sendButton)
-        messageInputContainerView.addConstraintsWithFormat(format: "H:|[v0]|", views: topBorderView)
-        messageInputContainerView.addConstraintsWithFormat(format: "V:|[v0(0.5)]", views: topBorderView)
+    // MARK: Keyboard
+    
+    private func registerObservers() {
+        NotificationCenter.default.addObserver(self, selector: #selector(handleKeyboardNotification), name: NSNotification.Name.UIKeyboardWillShow, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(handleKeyboardNotification), name: NSNotification.Name.UIKeyboardWillHide, object: nil)
     }
+    
+    private func unregisterObservers() {
+        NotificationCenter.default.removeObserver(self, name: NSNotification.Name.UIKeyboardWillShow, object: nil)
+        NotificationCenter.default.removeObserver(self, name: NSNotification.Name.UIKeyboardWillHide, object: nil)
+    }
+    
+    // MARK: Collection view
     
     override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         if let count = messages?.count {
@@ -123,7 +146,7 @@ class ChatLogController: UICollectionViewController, UICollectionViewDelegateFlo
     }
     
     override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: cellId, for: indexPath) as! ChatLogMessageCell
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: cellId, for: indexPath) as! ChatCell
         cell.messageTextView.isScrollEnabled = true
         cell.messageTextView.text = messages?[indexPath.item].text
         if let message = messages?[indexPath.item], let messageText = message .text, let profileImageName = message.friend?.profileImageName {
@@ -135,14 +158,14 @@ class ChatLogController: UICollectionViewController, UICollectionViewDelegateFlo
                 cell.messageTextView.frame = CGRect(x: 45 + 8, y: 0, width: estimatedFrame.width + 16, height: estimatedFrame.height + 16)
                 cell.textBubbleView.frame = CGRect(x: 45 - 8, y: -4, width: estimatedFrame.width + 16 + 8 + 8, height: estimatedFrame.height + 16 + 6)
                 cell.profileImageView.isHidden = false
-                cell.bubbleImageView.image = ChatLogMessageCell.grayBubbleImage
+                cell.bubbleImageView.image = ChatCell.grayBubbleImage
                 cell.bubbleImageView.tintColor = UIColor(white: 0.95, alpha: 1)
                 cell.messageTextView.textColor = UIColor.black
             } else {
                 cell.messageTextView.frame = CGRect(x: view.frame.width - estimatedFrame.width - 16 - 16 - 8, y: 0, width: estimatedFrame.width + 16, height: estimatedFrame.height + 16)
                 cell.textBubbleView.frame = CGRect(x: view.frame.width - estimatedFrame.width - 16 - 8 - 16 - 8, y: -4, width: estimatedFrame.width + 16 + 8 + 8, height: estimatedFrame.height + 16 + 6)
                 cell.profileImageView.isHidden = true
-                cell.bubbleImageView.image = ChatLogMessageCell.greenBubbleImage
+                cell.bubbleImageView.image = ChatCell.greenBubbleImage
                 cell.bubbleImageView.tintColor = GREEN_UICOLOR
                 cell.messageTextView.textColor = UIColor.white
             }
@@ -154,14 +177,12 @@ class ChatLogController: UICollectionViewController, UICollectionViewDelegateFlo
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        
         if let messageText = messages?[indexPath.item].text {
             let size = CGSize(width: 250, height: 1000)
             let options = NSStringDrawingOptions.usesFontLeading.union(.usesLineFragmentOrigin)
             let estimatedFrame = NSString(string: messageText).boundingRect(with: size, options: options, attributes: [NSFontAttributeName: FONT_MEDIUM_MID], context: nil)
             return CGSize(width: view.frame.width, height: estimatedFrame.height + 16)
         }
-        
         return CGSize(width: view.frame.width, height: 100)
     }
     
@@ -170,57 +191,6 @@ class ChatLogController: UICollectionViewController, UICollectionViewDelegateFlo
     }
     
     override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        inputTextField.endEditing(true)
+        self.inputTextField.endEditing(true)
     }
-}
-
-class ChatLogMessageCell: BaseCell {
-    
-    var messageTextView: UITextView = {
-       var textView = UITextView()
-        textView.font = FONT_MEDIUM_MID
-        textView.backgroundColor = UIColor.clear
-        textView.showsHorizontalScrollIndicator = false
-        textView.showsVerticalScrollIndicator = false
-        textView.isEditable = false
-        return textView
-    }()
-    
-    let textBubbleView: UIView = {
-        let view = UIView()
-        view.layer.cornerRadius = 15
-        view.layer.masksToBounds = true
-        return view
-    }()
-    
-    let profileImageView: UIImageView = {
-       let imageView = UIImageView()
-        imageView.contentMode = .scaleAspectFill
-        imageView.layer.cornerRadius = 15
-        imageView.layer.masksToBounds = true
-        return imageView
-    }()
-    
-    static let grayBubbleImage = UIImage(named: "bubble_gray")?.resizableImage(withCapInsets: UIEdgeInsets(top: 22, left: 26, bottom: 22, right: 26))
-    static let greenBubbleImage = UIImage(named: "bubble_green")?.resizableImage(withCapInsets: UIEdgeInsets(top: 22, left: 26, bottom: 22, right: 26))
-    
-    let bubbleImageView: UIImageView = {
-       let imageView = UIImageView()
-        return imageView
-    }()
-    
-    override func setupViews() {
-        super.setupViews()
-        addSubview(textBubbleView)
-        addSubview(messageTextView)
-        addSubview(profileImageView)
-        
-        addConstraintsWithFormat(format: "H:|-8-[v0(30)]", views: profileImageView)
-        addConstraintsWithFormat(format: "V:[v0(30)]|", views: profileImageView)
-        
-        textBubbleView.addSubview(bubbleImageView)
-        textBubbleView.addConstraintsWithFormat(format: "H:|[v0]|", views: bubbleImageView)
-        textBubbleView.addConstraintsWithFormat(format: "V:|[v0]|", views: bubbleImageView)
-    }
-    
 }

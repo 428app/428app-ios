@@ -1,7 +1,9 @@
-- Refactor all code
-- Add sent icon if last message sent by you in ConnectionsController
 - Swipe right on chat screen to show date
+- Add sent icon if last message sent by you in ConnectionsController
 - Add top option to mute/report person
 - Add top click to view person's profile
 
 - Do topics page
+
+
+

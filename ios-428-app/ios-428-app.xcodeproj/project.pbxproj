@@ -8,12 +8,12 @@
 
 /* Begin PBXBuildFile section */
 		4064A1B61DAC381300071383 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4064A1B51DAC381300071383 /* AppDelegate.swift */; };
-		4064A1B81DAC381300071383 /* FriendsController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4064A1B71DAC381300071383 /* FriendsController.swift */; };
+		4064A1B81DAC381300071383 /* ConnectionsController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4064A1B71DAC381300071383 /* ConnectionsController.swift */; };
 		4064A1BE1DAC381300071383 /* ios_428_app.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 4064A1BC1DAC381300071383 /* ios_428_app.xcdatamodeld */; };
 		4064A1C01DAC381300071383 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 4064A1BF1DAC381300071383 /* Assets.xcassets */; };
 		4064A1C31DAC381300071383 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 4064A1C11DAC381300071383 /* LaunchScreen.storyboard */; };
-		4064A1CB1DAC495D00071383 /* FriendsControllerHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4064A1CA1DAC495D00071383 /* FriendsControllerHelper.swift */; };
-		4064A1E41DAC590900071383 /* ChatLogController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4064A1E31DAC590900071383 /* ChatLogController.swift */; };
+		4064A1CB1DAC495D00071383 /* CoreDataService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4064A1CA1DAC495D00071383 /* CoreDataService.swift */; };
+		4064A1E41DAC590900071383 /* ChatController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4064A1E31DAC590900071383 /* ChatController.swift */; };
 		4064A1E61DAC7DA600071383 /* CustomTabBarController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4064A1E51DAC7DA600071383 /* CustomTabBarController.swift */; };
 		4064A1EB1DAC80F100071383 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4064A1EA1DAC80F100071383 /* Constants.swift */; };
 		4064A1F81DAC811F00071383 /* AvenirLTStd-Black.otf in Resources */ = {isa = PBXBuildFile; fileRef = 4064A1EC1DAC811F00071383 /* AvenirLTStd-Black.otf */; };
@@ -34,18 +34,22 @@
 		4064A20C1DAC916200071383 /* Friend+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4064A2081DAC916200071383 /* Friend+CoreDataClass.swift */; };
 		4064A20D1DAC916200071383 /* Friend+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4064A2091DAC916200071383 /* Friend+CoreDataProperties.swift */; };
 		4064A20F1DACB62500071383 /* TODO in Resources */ = {isa = PBXBuildFile; fileRef = 4064A20E1DACB62500071383 /* TODO */; };
+		4064A2141DACBCAA00071383 /* BaseCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4064A2131DACBCAA00071383 /* BaseCell.swift */; };
+		4064A2161DACBCDC00071383 /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4064A2151DACBCDC00071383 /* Extensions.swift */; };
+		4064A2181DACC1B700071383 /* ChatCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4064A2171DACC1B700071383 /* ChatCell.swift */; };
+		4064A21A1DACC20E00071383 /* ConnectionCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4064A2191DACC20E00071383 /* ConnectionCell.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		4064A1B21DAC381300071383 /* ios-428-app.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "ios-428-app.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		4064A1B51DAC381300071383 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
-		4064A1B71DAC381300071383 /* FriendsController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FriendsController.swift; sourceTree = "<group>"; };
+		4064A1B71DAC381300071383 /* ConnectionsController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectionsController.swift; sourceTree = "<group>"; };
 		4064A1BD1DAC381300071383 /* ios_428_app.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = ios_428_app.xcdatamodel; sourceTree = "<group>"; };
 		4064A1BF1DAC381300071383 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		4064A1C21DAC381300071383 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		4064A1C41DAC381300071383 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		4064A1CA1DAC495D00071383 /* FriendsControllerHelper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FriendsControllerHelper.swift; sourceTree = "<group>"; };
-		4064A1E31DAC590900071383 /* ChatLogController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChatLogController.swift; sourceTree = "<group>"; };
+		4064A1CA1DAC495D00071383 /* CoreDataService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CoreDataService.swift; sourceTree = "<group>"; };
+		4064A1E31DAC590900071383 /* ChatController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChatController.swift; sourceTree = "<group>"; };
 		4064A1E51DAC7DA600071383 /* CustomTabBarController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CustomTabBarController.swift; sourceTree = "<group>"; };
 		4064A1EA1DAC80F100071383 /* Constants.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
 		4064A1EC1DAC811F00071383 /* AvenirLTStd-Black.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "AvenirLTStd-Black.otf"; sourceTree = "<group>"; };
@@ -66,6 +70,10 @@
 		4064A2081DAC916200071383 /* Friend+CoreDataClass.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "Friend+CoreDataClass.swift"; path = "../Friend+CoreDataClass.swift"; sourceTree = "<group>"; };
 		4064A2091DAC916200071383 /* Friend+CoreDataProperties.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "Friend+CoreDataProperties.swift"; path = "../Friend+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		4064A20E1DACB62500071383 /* TODO */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = TODO; sourceTree = "<group>"; };
+		4064A2131DACBCAA00071383 /* BaseCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BaseCell.swift; sourceTree = "<group>"; };
+		4064A2151DACBCDC00071383 /* Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
+		4064A2171DACC1B700071383 /* ChatCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChatCell.swift; sourceTree = "<group>"; };
+		4064A2191DACC20E00071383 /* ConnectionCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConnectionCell.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -99,22 +107,17 @@
 		4064A1B41DAC381300071383 /* ios-428-app */ = {
 			isa = PBXGroup;
 			children = (
+				4064A21B1DACC2C600071383 /* Services */,
 				4064A1E81DAC80E400071383 /* Resources */,
 				4064A1E71DAC80DF00071383 /* Util */,
+				4064A2121DACBB2000071383 /* Controller */,
+				4064A2111DACBB1C00071383 /* View */,
+				4064A2101DACBB1800071383 /* Model */,
 				4064A1B51DAC381300071383 /* AppDelegate.swift */,
-				4064A1E51DAC7DA600071383 /* CustomTabBarController.swift */,
-				4064A2041DAC868E00071383 /* CustomNavigationController.swift */,
-				4064A1E31DAC590900071383 /* ChatLogController.swift */,
-				4064A1B71DAC381300071383 /* FriendsController.swift */,
-				4064A1CA1DAC495D00071383 /* FriendsControllerHelper.swift */,
 				4064A1BF1DAC381300071383 /* Assets.xcassets */,
 				4064A1C11DAC381300071383 /* LaunchScreen.storyboard */,
 				4064A1C41DAC381300071383 /* Info.plist */,
 				4064A1BC1DAC381300071383 /* ios_428_app.xcdatamodeld */,
-				4064A2061DAC916200071383 /* Message+CoreDataClass.swift */,
-				4064A2071DAC916200071383 /* Message+CoreDataProperties.swift */,
-				4064A2081DAC916200071383 /* Friend+CoreDataClass.swift */,
-				4064A2091DAC916200071383 /* Friend+CoreDataProperties.swift */,
 			);
 			path = "ios-428-app";
 			sourceTree = "<group>";
@@ -123,6 +126,7 @@
 			isa = PBXGroup;
 			children = (
 				4064A1EA1DAC80F100071383 /* Constants.swift */,
+				4064A2151DACBCDC00071383 /* Extensions.swift */,
 			);
 			name = Util;
 			sourceTree = "<group>";
@@ -152,6 +156,46 @@
 				4064A1F71DAC811F00071383 /* AvenirLTStd-Roman.otf */,
 			);
 			name = Fonts;
+			sourceTree = "<group>";
+		};
+		4064A2101DACBB1800071383 /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				4064A2061DAC916200071383 /* Message+CoreDataClass.swift */,
+				4064A2071DAC916200071383 /* Message+CoreDataProperties.swift */,
+				4064A2081DAC916200071383 /* Friend+CoreDataClass.swift */,
+				4064A2091DAC916200071383 /* Friend+CoreDataProperties.swift */,
+			);
+			name = Model;
+			sourceTree = "<group>";
+		};
+		4064A2111DACBB1C00071383 /* View */ = {
+			isa = PBXGroup;
+			children = (
+				4064A2131DACBCAA00071383 /* BaseCell.swift */,
+				4064A2171DACC1B700071383 /* ChatCell.swift */,
+				4064A2191DACC20E00071383 /* ConnectionCell.swift */,
+			);
+			name = View;
+			sourceTree = "<group>";
+		};
+		4064A2121DACBB2000071383 /* Controller */ = {
+			isa = PBXGroup;
+			children = (
+				4064A1E51DAC7DA600071383 /* CustomTabBarController.swift */,
+				4064A2041DAC868E00071383 /* CustomNavigationController.swift */,
+				4064A1B71DAC381300071383 /* ConnectionsController.swift */,
+				4064A1E31DAC590900071383 /* ChatController.swift */,
+			);
+			name = Controller;
+			sourceTree = "<group>";
+		};
+		4064A21B1DACC2C600071383 /* Services */ = {
+			isa = PBXGroup;
+			children = (
+				4064A1CA1DAC495D00071383 /* CoreDataService.swift */,
+			);
+			name = Services;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -241,16 +285,20 @@
 			files = (
 				4064A20A1DAC916200071383 /* Message+CoreDataClass.swift in Sources */,
 				4064A2051DAC868E00071383 /* CustomNavigationController.swift in Sources */,
-				4064A1E41DAC590900071383 /* ChatLogController.swift in Sources */,
+				4064A1E41DAC590900071383 /* ChatController.swift in Sources */,
 				4064A20C1DAC916200071383 /* Friend+CoreDataClass.swift in Sources */,
 				4064A1EB1DAC80F100071383 /* Constants.swift in Sources */,
+				4064A2141DACBCAA00071383 /* BaseCell.swift in Sources */,
 				4064A20D1DAC916200071383 /* Friend+CoreDataProperties.swift in Sources */,
 				4064A1BE1DAC381300071383 /* ios_428_app.xcdatamodeld in Sources */,
+				4064A2181DACC1B700071383 /* ChatCell.swift in Sources */,
 				4064A1E61DAC7DA600071383 /* CustomTabBarController.swift in Sources */,
-				4064A1B81DAC381300071383 /* FriendsController.swift in Sources */,
+				4064A1B81DAC381300071383 /* ConnectionsController.swift in Sources */,
 				4064A1B61DAC381300071383 /* AppDelegate.swift in Sources */,
 				4064A20B1DAC916200071383 /* Message+CoreDataProperties.swift in Sources */,
-				4064A1CB1DAC495D00071383 /* FriendsControllerHelper.swift in Sources */,
+				4064A1CB1DAC495D00071383 /* CoreDataService.swift in Sources */,
+				4064A2161DACBCDC00071383 /* Extensions.swift in Sources */,
+				4064A21A1DACC20E00071383 /* ConnectionCell.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

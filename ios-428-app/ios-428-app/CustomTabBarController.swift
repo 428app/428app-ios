@@ -15,8 +15,8 @@ class CustomTabBarController: UITabBarController {
         UITabBarItem.appearance().setTitleTextAttributes([NSForegroundColorAttributeName: GRAY_UICOLOR, NSFontAttributeName: FONT_HEAVY_SMALL], for: .normal)
         UITabBarItem.appearance().setTitleTextAttributes([NSForegroundColorAttributeName: GREEN_UICOLOR, NSFontAttributeName: FONT_HEAVY_SMALL], for: .selected)
         let layout = UICollectionViewFlowLayout()
-        let friendsController = FriendsController(collectionViewLayout: layout)
-        let connectionsNavController = CustomNavigationController(rootViewController: friendsController)
+        let connectionsController = ConnectionsController(collectionViewLayout: layout)
+        let connectionsNavController = CustomNavigationController(rootViewController: connectionsController)
         connectionsNavController.tabBarItem.title = "Connections"
         connectionsNavController.tabBarItem.image = #imageLiteral(resourceName: "chat-U")
         connectionsNavController.tabBarItem.selectedImage = #imageLiteral(resourceName: "chat-F")
