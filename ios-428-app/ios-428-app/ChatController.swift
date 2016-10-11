@@ -8,19 +8,29 @@
 
 import Foundation
 import UIKit
+import IQKeyboardManagerSwift
 
 class ChatController: UICollectionViewController, UICollectionViewDelegateFlowLayout {
     
-    private var messages: [Message]?
-    private let cellId = "chatCell"
+    fileprivate var messages: [Message]?
+    fileprivate let cellId = "chatCell"
 
     var friend: Friend? {
         didSet { // Set from didSelect in ConnectionsController
             self.navigationItem.title = self.friend?.name
             self.messages = friend?.messages?.allObjects as? [Message]
-            self.messages = self.messages?.sorted{($0.date as! Date).compare($1.date as! Date) == .orderedAscending}
+            self.messages = self.messages?.sorted{($0.date!.timeIntervalSince1970) < ($1.date!.timeIntervalSince1970)}
         }
     }
+    
+//    override func loadView() {
+//        super.loadView()
+//        let scrollView = UIScrollView(frame: UIScreen.main.bounds)
+////        scrollView.contentSize = CGSize(width: view.frame.width, height: view.frame.height)
+//        self.view = scrollView
+//        
+//    }
+    
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -34,27 +44,30 @@ class ChatController: UICollectionViewController, UICollectionViewDelegateFlowLa
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        self.registerObservers()
+        IQKeyboardManager.sharedManager().enable = true
+        IQKeyboardManager.sharedManager().enableAutoToolbar = false
+//        self.registerObservers()
     }
     
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
-        self.unregisterObservers()
+        IQKeyboardManager.sharedManager().enable = false
+//        self.unregisterObservers()
     }
     
     // MARK: Input
     
-    private var bottomConstraintForInput: NSLayoutConstraint!
+    fileprivate var bottomConstraintForInput: NSLayoutConstraint!
     
-    private let messageInputContainerView: UIView = {
+    fileprivate let messageInputContainerView: UIView = {
         let view = UIView()
         view.backgroundColor = UIColor.white
         return view
     }()
     
-    private let inputTextField: UITextField = {
+    fileprivate let inputTextField: UITextField = {
         let textField = UITextField()
-        textField.placeholder = "Enter message..."
+        textField.placeholder = "Type a message..."
         textField.textColor = UIColor.black
         textField.font = FONT_MEDIUM_MID
         return textField
@@ -69,10 +82,12 @@ class ChatController: UICollectionViewController, UICollectionViewDelegateFlowLa
         return button
     }()
     
-    private func setupInputComponents() {
+    fileprivate func setupInputComponents() {
+        let scrollView = UIScrollView(frame: UIScreen.main.bounds)
+        self.view = scrollView
         view.addSubview(messageInputContainerView)
-        view.addConstraintsWithFormat(format: "H:|[v0]|", views: messageInputContainerView)
-        view.addConstraintsWithFormat(format: "V:[v0(48)]", views: messageInputContainerView)
+        view.addConstraintsWithFormat("H:|[v0]|", views: messageInputContainerView)
+        view.addConstraintsWithFormat("V:[v0(48)]", views: messageInputContainerView)
         
         bottomConstraintForInput = NSLayoutConstraint(item: messageInputContainerView, attribute: .bottom, relatedBy: .equal, toItem: view, attribute: .bottom, multiplier: 1, constant: 0)
         view.addConstraint(bottomConstraintForInput)
@@ -82,18 +97,18 @@ class ChatController: UICollectionViewController, UICollectionViewDelegateFlowLa
         messageInputContainerView.addSubview(inputTextField)
         messageInputContainerView.addSubview(sendButton)
         messageInputContainerView.addSubview(topBorderView)
-        messageInputContainerView.addConstraintsWithFormat(format: "H:|-8-[v0][v1(60)]-8-|", views: inputTextField, sendButton)
-        messageInputContainerView.addConstraintsWithFormat(format: "V:|[v0]|", views: inputTextField)
-        messageInputContainerView.addConstraintsWithFormat(format: "V:|[v0]|", views: sendButton)
-        messageInputContainerView.addConstraintsWithFormat(format: "H:|[v0]|", views: topBorderView)
-        messageInputContainerView.addConstraintsWithFormat(format: "V:|[v0(0.5)]", views: topBorderView)
+        messageInputContainerView.addConstraintsWithFormat("H:|-8-[v0][v1(60)]-8-|", views: inputTextField, sendButton)
+        messageInputContainerView.addConstraintsWithFormat("V:|[v0]|", views: inputTextField)
+        messageInputContainerView.addConstraintsWithFormat("V:|[v0]|", views: sendButton)
+        messageInputContainerView.addConstraintsWithFormat("H:|[v0]|", views: topBorderView)
+        messageInputContainerView.addConstraintsWithFormat("V:|[v0(0.5)]", views: topBorderView)
     }
     
-    func handleKeyboardNotification(notification: Notification) {
+    func handleKeyboardNotification(_ notification: Notification) {
         if let userInfo = notification.userInfo, let keyboardFrame = (userInfo[UIKeyboardFrameBeginUserInfoKey] as? NSValue)?.cgRectValue {
-            let isKeyboardShowing = notification.name == NSNotification.Name.UIKeyboardWillShow
-            bottomConstraintForInput.constant = isKeyboardShowing ? -keyboardFrame.height : 0
-            UIView.animate(withDuration: 0, delay: 0, options: .curveEaseOut, animations: { 
+            let isKeyboardShowing = notification.name == Notification.Name.UIKeyboardWillShow
+            self.bottomConstraintForInput.constant = isKeyboardShowing ? -keyboardFrame.height : 0
+            UIView.animate(withDuration: 0, delay: 0, options: .curveEaseOut, animations: {
                 self.view.layoutIfNeeded()
                 }, completion: { (completed) in
                     if self.messages != nil {
@@ -110,7 +125,7 @@ class ChatController: UICollectionViewController, UICollectionViewDelegateFlowLa
         }
         let context = delegate.persistentContainer.viewContext
         if let friend = friend, let text = inputTextField.text {
-            let message = ConnectionsController.createMessageWithText(friend: friend, text: text, minutesAgo: 0, context: context, isSender: true)
+            let message = ConnectionsController.createMessageForFriend(friend, text: text, minutesAgo: 0, context: context, isSender: true)
             do {
                 try context.save()
                 messages?.append(message)
@@ -126,7 +141,7 @@ class ChatController: UICollectionViewController, UICollectionViewDelegateFlowLa
     
     // MARK: Keyboard
     
-    private func registerObservers() {
+    fileprivate func registerObservers() {
         NotificationCenter.default.addObserver(self, selector: #selector(handleKeyboardNotification), name: NSNotification.Name.UIKeyboardWillShow, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(handleKeyboardNotification), name: NSNotification.Name.UIKeyboardWillHide, object: nil)
     }

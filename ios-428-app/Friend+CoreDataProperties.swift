@@ -11,8 +11,8 @@ import CoreData
 
 extension Friend {
 
-    @nonobjc public class func fetchRequest() -> NSFetchRequest<Friend> {
-        return NSFetchRequest<Friend>(entityName: "Friend");
+    @nonobjc open override class func fetchRequest() -> NSFetchRequest<NSFetchRequestResult> {
+        return NSFetchRequest<Friend>(entityName: "Friend") as! NSFetchRequest<NSFetchRequestResult>;
     }
 
     @NSManaged public var profileImageName: String?

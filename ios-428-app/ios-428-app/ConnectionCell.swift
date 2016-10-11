@@ -35,7 +35,7 @@ class ConnectionCell: BaseCell {
                 let dateFormatter = DateFormatter()
                 dateFormatter.dateFormat = "h:mm a"
                 
-                let elapsedTimeInSeconds = NSDate().timeIntervalSince(date as Date)
+                let elapsedTimeInSeconds = Date().timeIntervalSince(date as Date)
                 let secondInDays: TimeInterval = 60 * 60 * 24
                 if elapsedTimeInSeconds > 7 * secondInDays {
                     dateFormatter.dateFormat = "MM/dd/yy"
@@ -102,30 +102,30 @@ class ConnectionCell: BaseCell {
         
         setupContainerView()
         
-        addConstraintsWithFormat(format: "H:|-12-[v0(68)]", views: profileImageView)
-        addConstraintsWithFormat(format: "V:[v0(68)]", views: profileImageView)
+        addConstraintsWithFormat("H:|-12-[v0(68)]", views: profileImageView)
+        addConstraintsWithFormat("V:[v0(68)]", views: profileImageView)
         
         addConstraint(NSLayoutConstraint(item: profileImageView, attribute: .centerY, relatedBy: .equal, toItem: self, attribute: .centerY, multiplier: 1, constant: 0))
         
-        addConstraintsWithFormat(format: "H:|-82-[v0]|", views: dividerLineView)
-        addConstraintsWithFormat(format: "V:[v0(1)]|", views: dividerLineView)
+        addConstraintsWithFormat("H:|-82-[v0]|", views: dividerLineView)
+        addConstraintsWithFormat("V:[v0(1)]|", views: dividerLineView)
     }
     
-    private func setupContainerView() {
+    fileprivate func setupContainerView() {
         let containerView = UIView()
         addSubview(containerView)
-        addConstraintsWithFormat(format: "H:|-90-[v0]|", views: containerView)
-        addConstraintsWithFormat(format: "V:[v0(60)]", views: containerView)
+        addConstraintsWithFormat("H:|-90-[v0]|", views: containerView)
+        addConstraintsWithFormat("V:[v0(60)]", views: containerView)
         addConstraint(NSLayoutConstraint(item: containerView, attribute: .centerY, relatedBy: .equal, toItem: self, attribute: .centerY, multiplier: 1, constant: 0))
         
         containerView.addSubview(nameLabel)
         containerView.addSubview(disciplineImageView)
         containerView.addSubview(messageLabel)
         containerView.addSubview(timeLabel)
-        containerView.addConstraintsWithFormat(format: "H:|[v0(16)]-5-[v1][v2(80)]-12-|", views: disciplineImageView, nameLabel, timeLabel)
-        containerView.addConstraintsWithFormat(format: "H:|[v0]-12-|", views: messageLabel)
-        containerView.addConstraintsWithFormat(format: "V:|[v0][v1(24)]|", views: nameLabel, messageLabel)
-        containerView.addConstraintsWithFormat(format: "V:|-7-[v0(24)]", views: timeLabel)
-        containerView.addConstraintsWithFormat(format: "V:|-8-[v0(16)]", views: disciplineImageView)
+        containerView.addConstraintsWithFormat("H:|[v0(16)]-5-[v1][v2(80)]-12-|", views: disciplineImageView, nameLabel, timeLabel)
+        containerView.addConstraintsWithFormat("H:|[v0]-12-|", views: messageLabel)
+        containerView.addConstraintsWithFormat("V:|[v0][v1(24)]|", views: nameLabel, messageLabel)
+        containerView.addConstraintsWithFormat("V:|-7-[v0(24)]", views: timeLabel)
+        containerView.addConstraintsWithFormat("V:|-8-[v0(16)]", views: disciplineImageView)
     }
 }

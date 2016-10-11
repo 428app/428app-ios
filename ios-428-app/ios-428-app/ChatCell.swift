@@ -50,12 +50,12 @@ class ChatCell: BaseCell {
         addSubview(messageTextView)
         addSubview(profileImageView)
         
-        addConstraintsWithFormat(format: "H:|-8-[v0(30)]", views: profileImageView)
-        addConstraintsWithFormat(format: "V:[v0(30)]|", views: profileImageView)
+        addConstraintsWithFormat("H:|-8-[v0(30)]", views: profileImageView)
+        addConstraintsWithFormat("V:[v0(30)]|", views: profileImageView)
         
         textBubbleView.addSubview(bubbleImageView)
-        textBubbleView.addConstraintsWithFormat(format: "H:|[v0]|", views: bubbleImageView)
-        textBubbleView.addConstraintsWithFormat(format: "V:|[v0]|", views: bubbleImageView)
+        textBubbleView.addConstraintsWithFormat("H:|[v0]|", views: bubbleImageView)
+        textBubbleView.addConstraintsWithFormat("V:|[v0]|", views: bubbleImageView)
     }
     
 }

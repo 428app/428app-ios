@@ -1,4 +1,10 @@
 - Swipe right on chat screen to show date
+- Integrate IQKeyboardManager, and XCGLogger
+- Disable send if message is empty
+- Multi-line text input
+- Chat bubbles alternating between tails and no tails
+
+
 - Add sent icon if last message sent by you in ConnectionsController
 - Add top option to mute/report person
 - Add top click to view person's profile

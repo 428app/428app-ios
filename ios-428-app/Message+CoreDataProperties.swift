@@ -11,11 +11,11 @@ import CoreData
 
 extension Message {
 
-    @nonobjc public class func fetchRequest() -> NSFetchRequest<Message> {
-        return NSFetchRequest<Message>(entityName: "Message");
+    @nonobjc open override class func fetchRequest() -> NSFetchRequest<NSFetchRequestResult> {
+        return NSFetchRequest<Message>(entityName: "Message") as! NSFetchRequest<NSFetchRequestResult>;
     }
 
-    @NSManaged public var date: NSDate?
+    @NSManaged public var date: Date?
     @NSManaged public var text: String?
     @NSManaged public var isSender: Bool
     @NSManaged public var friend: Friend?

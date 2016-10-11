@@ -1,0 +1,15 @@
+PODS:
+  - IQKeyboardManagerSwift (4.0.6)
+  - XCGLogger (4.0.0):
+    - XCGLogger/Core (= 4.0.0)
+  - XCGLogger/Core (4.0.0)
+
+DEPENDENCIES:
+  - IQKeyboardManagerSwift
+  - XCGLogger (~> 4.0.0)
+
+SPEC CHECKSUMS:
+  IQKeyboardManagerSwift: b3015e819559ca76381f87a0833f44d178564603
+  XCGLogger: 38063ea89b4c8b23232d18efd2e12eb0005f3ea4
+
+COCOAPODS: 0.37.2

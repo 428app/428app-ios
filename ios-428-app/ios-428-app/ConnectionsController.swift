@@ -10,9 +10,9 @@ import UIKit
 
 class ConnectionsController: UICollectionViewController, UICollectionViewDelegateFlowLayout {
     
-    private let cellId = "connectionCell"
+    fileprivate let cellId = "connectionCell"
     
-    public var messages: [Message]? // Non-private so CoreDataService can access
+    open var messages: [Message]? // Non-private so CoreDataService can access
     
     override func viewDidLoad() {
         super.viewDidLoad()
