@@ -1,9 +1,5 @@
-- Multi-line text input
-    - Handling emoji
-
-
-
-- Swipe right on chat screen to show date
+- Section header being time
+- Swipe right on chat screen to show time
 - Width of chat being a % of screen size
 - Chat bubbles alternating between tails and no tails
 

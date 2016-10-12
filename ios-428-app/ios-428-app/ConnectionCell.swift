@@ -32,32 +32,39 @@ class ConnectionCell: BaseCell {
             }
             messageLabel.text = message?.text
             if let date = message?.date {
-                let dateFormatter = DateFormatter()
-                dateFormatter.dateFormat = "h:mm a"
-                
-                let elapsedTimeInSeconds = Date().timeIntervalSince(date as Date)
-                let secondInDays: TimeInterval = 60 * 60 * 24
-                if elapsedTimeInSeconds > 7 * secondInDays {
-                    dateFormatter.dateFormat = "MM/dd/yy"
-                    timeLabel.text = dateFormatter.string(from: date as Date)
-                } else if elapsedTimeInSeconds > 2 * secondInDays {
-                    dateFormatter.dateFormat = "EEEE"
-                    timeLabel.text = dateFormatter.string(from: date as Date)
-                } else if elapsedTimeInSeconds > secondInDays {
-                    timeLabel.text = "Yesterday"
-                }
+                timeLabel.text = formatDateToText(date: date)
             }
         }
     }
     
-    let nameLabel: UILabel = {
+    fileprivate func formatDateToText(date: Date) -> String {
+        var text = ""
+        let dateFormatter = DateFormatter()
+        let elapsedTimeInSeconds = Date().timeIntervalSince(date as Date)
+        let secondInDays: TimeInterval = 60 * 60 * 24
+        if elapsedTimeInSeconds > 7 * secondInDays { // More than 7 days ago
+            dateFormatter.dateFormat = "d MMM yyyy"
+            text = dateFormatter.string(from: date as Date)
+        } else if elapsedTimeInSeconds >= 2 * secondInDays { // 2 - 7 days ago
+            dateFormatter.dateFormat = "EEE"
+            text = dateFormatter.string(from: date as Date)
+        } else if elapsedTimeInSeconds > secondInDays { // 1 - 2 days ago
+            text = "Yesterday"
+        } else { // Today
+            dateFormatter.dateFormat = "h:mm a"
+            text = dateFormatter.string(from: date as Date).lowercased()
+        }
+        return text
+    }
+    
+    fileprivate let nameLabel: UILabel = {
         let label = UILabel()
         label.text = "Leonard Loo"
         label.font = FONT_HEAVY_LARGE
         return label
     }()
     
-    let profileImageView: UIImageView = {
+    fileprivate let profileImageView: UIImageView = {
         let imageView = UIImageView()
         imageView.contentMode = .scaleAspectFill
         imageView.layer.cornerRadius = 34
@@ -65,14 +72,14 @@ class ConnectionCell: BaseCell {
         return imageView
     }()
     
-    let disciplineImageView: UIImageView = {
+    fileprivate let disciplineImageView: UIImageView = {
         let imageView = UIImageView()
         imageView.contentMode = .scaleAspectFit
         imageView.tintColor = GREEN_UICOLOR
         return imageView
     }()
     
-    let messageLabel: UILabel = {
+    fileprivate let messageLabel: UILabel = {
         let label = UILabel()
         label.text = "Hi how are you today? I'm good. Tell me about your industry!!!"
         label.font = FONT_LIGHT_MID
@@ -80,7 +87,7 @@ class ConnectionCell: BaseCell {
         return label
     }()
     
-    let timeLabel: UILabel = {
+    fileprivate let timeLabel: UILabel = {
         let label = UILabel()
         label.text = "12:05pm"
         label.font = FONT_LIGHT_SMALL
@@ -89,7 +96,7 @@ class ConnectionCell: BaseCell {
         return label
     }()
     
-    let dividerLineView: UIView = {
+    fileprivate let dividerLineView: UIView = {
         let view = UIView()
         view.backgroundColor = UIColor(white: 0.5, alpha: 0.2)
         return view

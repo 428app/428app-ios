@@ -239,6 +239,10 @@ class ChatController: UIViewController, UICollectionViewDelegateFlowLayout, UITe
         self.inputTextView.endEditing(true)
     }
     
+    func numberOfSections(in collectionView: UICollectionView) -> Int {
+        return 1
+    }
+    
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         if let count = messages?.count {
             return count
