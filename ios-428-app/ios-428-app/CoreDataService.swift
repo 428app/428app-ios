@@ -75,14 +75,15 @@ extension ConnectionsController {
         thomas.profileImageName = "thomas-profile"
         thomas.disciplineImageName = "computer"
         _ = ConnectionsController.createMessageForFriend(thomas, text: "Let's engage in cooking and combine it with art! That way it's a lot more engaging. Don't you think we should do it immediately? Hurray!", minutesAgo: 60 * 24 * 1.7, context: context)
-        _ = ConnectionsController.createMessageForFriend(thomas, text: "Good morning. Why are you ignoring me?", minutesAgo: 60 * 24 * 1.6, context: context)
-        _ = ConnectionsController.createMessageForFriend(thomas, text: "If you continue to ignore me I'm going to block you.", minutesAgo: 60 * 24 * 1.5, context: context)
+        _ = ConnectionsController.createMessageForFriend(thomas, text: "Hey, you haven't replied. You there?", minutesAgo: 60 * 24 * 1.6, context: context)
+        _ = ConnectionsController.createMessageForFriend(thomas, text: "Anyway just thought of a new twist. Let's meet for a while.", minutesAgo: 60 * 24 * 1.5, context: context)
         
         // Response message
         _ = ConnectionsController.createMessageForFriend(thomas, text: "Okay, okay I'm finally replying now! Hi!", minutesAgo: 60 * 24 * 1.4, context: context, isSender: true)
         _ = ConnectionsController.createMessageForFriend(thomas, text: "Ok great. Are you free anytime soon to discuss some of my ideas? We can play ping pong too if you want.", minutesAgo: 60 * 24 * 1.3, context: context)
         _ = ConnectionsController.createMessageForFriend(thomas, text: "Sure. How about 6pm tomorrow at Richard's Basement?", minutesAgo: 60 * 24 * 1.25, context: context, isSender: true)
         _ = ConnectionsController.createMessageForFriend(thomas, text: "Also I'm not so sure how free I am from tomorrow onwards. I'm going to be coding 428 non stop until I finally finish implementing it! This is a product that has real value for people - Imagine you having connections from multiple different disciplines! And all those disciplines are already right here at Harvard, but unfortunately with no easy way to connect them... until now!!", minutesAgo: 60 * 24 * 1.2, context: context, isSender: true)
+        _ = ConnectionsController.createMessageForFriend(thomas, text: "OK good luck with your crazy ideas then! I hope you do well in that.", minutesAgo: 60 * 24 * 1.19, context: context)
     }
     
     static func createMessageForFriend(_ friend: Friend, text: String, minutesAgo: Double, context: NSManagedObjectContext, isSender: Bool = false) -> Message {

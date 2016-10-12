@@ -51,8 +51,7 @@ class ConnectionsController: UICollectionViewController, UICollectionViewDelegat
     }
     
     override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        let layout = UICollectionViewFlowLayout()
-        let controller = ChatController(collectionViewLayout: layout)
+        let controller = ChatController()
         controller.friend = messages?[indexPath.item].friend
         navigationController?.pushViewController(controller, animated: true)
     }

@@ -9,10 +9,16 @@
 import Foundation
 import UIKit
 
-class ChatController: UICollectionViewController, UICollectionViewDelegateFlowLayout, UITextViewDelegate {
+class ChatController: UIViewController, UICollectionViewDelegateFlowLayout, UITextViewDelegate, UICollectionViewDelegate, UICollectionViewDataSource {
     
     fileprivate var messages: [Message]?
     fileprivate let cellId = "chatCell"
+    
+    // Adjusted with multiple lines of text
+    fileprivate var textViewHeight: CGFloat = 0.0
+    fileprivate var inputContainerHeightConstraint: NSLayoutConstraint!
+    // Adjusted for keyboard
+    fileprivate var bottomConstraintForInput: NSLayoutConstraint!
 
     var friend: Friend? {
         didSet { // Set from didSelect in ConnectionsController
@@ -24,16 +30,14 @@ class ChatController: UICollectionViewController, UICollectionViewDelegateFlowLa
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        tabBarController?.tabBar.isHidden = true
-        collectionView?.backgroundColor = UIColor.white
-        collectionView?.register(ChatCell.self, forCellWithReuseIdentifier: cellId)
-        collectionView?.showsHorizontalScrollIndicator = false
-        collectionView?.showsVerticalScrollIndicator = false
+        self.view.backgroundColor = UIColor.white
+        self.setupCollectionView()
         self.setupInputComponents()
     }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+        self.tabBarController?.tabBar.isHidden = true
         self.registerObservers()
     }
     
@@ -42,30 +46,36 @@ class ChatController: UICollectionViewController, UICollectionViewDelegateFlowLa
         self.unregisterObservers()
     }
     
+    override func viewWillLayoutSubviews() {
+        // Scroll collection view to the bottom to most recent message
+        UIView.animate(withDuration: 0, delay: 0, options: .curveEaseOut, animations: {
+            self.view.layoutIfNeeded()
+            }, completion: { (completed) in
+                if self.messages != nil {
+                    let indexPath = IndexPath(item: self.messages!.count - 1, section: 0)
+                    self.collectionView.scrollToItem(at: indexPath, at: .bottom, animated: false)
+                }
+        })
+    }
+    
     // MARK: Input text view
     
-    // TODO: Shift collection view up too when pressing enter!
-    // TODO: Placeholder
-    // TODO: Handling emoji: Should shift bar up by another fixed height
-    
-    private var textViewHeight: CGFloat = 0.0
-    private var inputContainerHeightConstraint: NSLayoutConstraint!
-    private var bottomConstraintForCollectionView: NSLayoutConstraint!
-    
+    // Input container is reset after handleSend is successful
     private func resetInputContainer() {
         self.textViewHeight = 0.0
         self.inputContainerHeightConstraint.constant = 45.0
         self.view.layoutIfNeeded()
+        self.sendButton.isEnabled = false
         inputTextView.text = nil
+        self.placeholderLabel.isHidden = false
     }
     
     func textViewDidChange(_ textView: UITextView) {
-        log.info(textView.text)
-        if let count = textView.text?.characters.count {
-            self.sendButton.isEnabled = count > 0
-        }
+        // Disable send and show placeholder when there is no text
+        self.sendButton.isEnabled = !textView.text.isEmpty
+        self.placeholderLabel.isHidden = !textView.text.isEmpty
         
-        // Expansion of text view
+        // Expansion of text view upon newline
         let size = textView.bounds.size
         let newHeight = textView.sizeThatFits(CGSize(width: size.width, height: CGFloat.greatestFiniteMagnitude)).height
         if self.textViewHeight == 0 {
@@ -87,8 +97,6 @@ class ChatController: UICollectionViewController, UICollectionViewDelegateFlowLa
     
     // MARK: Input
     
-    fileprivate var bottomConstraintForInput: NSLayoutConstraint!
-    
     fileprivate let messageInputContainerView: UIView = {
         let view = UIView()
         view.backgroundColor = UIColor.white
@@ -99,6 +107,7 @@ class ChatController: UICollectionViewController, UICollectionViewDelegateFlowLa
        let textView = UITextView()
         textView.textColor = UIColor.black
         textView.font = FONT_MEDIUM_MID
+        textView.tintColor = GREEN_UICOLOR
         return textView
     }()
     
@@ -113,46 +122,51 @@ class ChatController: UICollectionViewController, UICollectionViewDelegateFlowLa
         return button
     }()
     
+    fileprivate let placeholderLabel: UILabel = {
+        let label = UILabel()
+        label.text = "Type a message..."
+        label.font = FONT_MEDIUM_MID
+        label.textColor = UIColor(white: 0, alpha: 0.15)
+        label.sizeToFit()
+        label.isHidden = false
+        return label
+    }()
+    
     fileprivate func setupInputComponents() {
-        self.inputTextView.delegate = self
-        self.inputTextView.enablesReturnKeyAutomatically = true
+        // View
         view.addSubview(messageInputContainerView)
         view.addConstraintsWithFormat("H:|[v0]|", views: messageInputContainerView)
         
         inputContainerHeightConstraint = NSLayoutConstraint(item: messageInputContainerView, attribute: .height, relatedBy: .equal, toItem: nil, attribute: .height, multiplier: 1.0, constant: 45)
         view.addConstraint(inputContainerHeightConstraint)
         view.addConstraintsWithFormat("V:[v0]", views: messageInputContainerView)
-        
         bottomConstraintForInput = NSLayoutConstraint(item: messageInputContainerView, attribute: .bottom, relatedBy: .equal, toItem: view, attribute: .bottom, multiplier: 1, constant: 0)
         view.addConstraint(bottomConstraintForInput)
         
+        // Message input container
+        self.inputTextView.delegate = self
+        self.inputTextView.enablesReturnKeyAutomatically = true
+        messageInputContainerView.addSubview(inputTextView)
+        messageInputContainerView.addSubview(sendButton)
+        
         let topBorderView = UIView()
         topBorderView.backgroundColor = UIColor(white: 0.5, alpha: 0.5)
-        messageInputContainerView.addSubview(inputTextView)
-        
-        messageInputContainerView.addSubview(sendButton)
         messageInputContainerView.addSubview(topBorderView)
+        
         messageInputContainerView.addConstraintsWithFormat("H:|-8-[v0][v1(60)]-8-|", views: inputTextView, sendButton)
         messageInputContainerView.addConstraintsWithFormat("V:|-5-[v0]|", views: inputTextView)
         messageInputContainerView.addConstraintsWithFormat("V:[v0]-8-|", views: sendButton)
         messageInputContainerView.addConstraintsWithFormat("H:|[v0]|", views: topBorderView)
         messageInputContainerView.addConstraintsWithFormat("V:|[v0(0.5)]", views: topBorderView)
-    }
-    
-    func handleKeyboardNotification(_ notification: Notification) {
-        if let userInfo = notification.userInfo, let keyboardFrame = (userInfo[UIKeyboardFrameBeginUserInfoKey] as? NSValue)?.cgRectValue {
-            let isKeyboardShowing = notification.name == Notification.Name.UIKeyboardWillShow
-            self.bottomConstraintForInput.constant = isKeyboardShowing ? -keyboardFrame.height : 0
-            
-            UIView.animate(withDuration: 0, delay: 0, options: .curveEaseOut, animations: {
-                self.view.layoutIfNeeded()
-                }, completion: { (completed) in
-                    if self.messages != nil {
-                        let indexPath = IndexPath(item: self.messages!.count - 1, section: 0)
-                        self.collectionView?.scrollToItem(at: indexPath, at: .bottom, animated: true)
-                    }
-            })
-        }
+        
+        // Placeholder
+        self.inputTextView.addSubview(self.placeholderLabel)
+        self.placeholderLabel.frame.origin = CGPoint(x: 8, y: (self.inputTextView.font?.pointSize)! / 2 + 2)
+        self.placeholderLabel.isHidden = !self.inputTextView.text.isEmpty
+        
+        // Add bottom of collection view contraint to top of input container
+        let bottomConstraintForCollectionView = NSLayoutConstraint(item: collectionView, attribute: .bottom, relatedBy: .equal, toItem: messageInputContainerView, attribute: .top, multiplier: 1.0, constant: 0)
+        view.addConstraint(bottomConstraintForCollectionView)
     }
     
     func handleSend() {
@@ -167,8 +181,8 @@ class ChatController: UICollectionViewController, UICollectionViewDelegateFlowLa
                 try context.save()
                 messages?.append(message)
                 let insertionIndexPath = IndexPath(item: messages!.count - 1, section: 0)
-                collectionView?.insertItems(at: [insertionIndexPath])
-                collectionView?.scrollToItem(at: insertionIndexPath, at: .bottom, animated: true)
+                collectionView.insertItems(at: [insertionIndexPath])
+                collectionView.scrollToItem(at: insertionIndexPath, at: .bottom, animated: true)
                 self.resetInputContainer()
             } catch let err {
                 print(err)
@@ -179,30 +193,66 @@ class ChatController: UICollectionViewController, UICollectionViewDelegateFlowLa
     // MARK: Keyboard
     
     fileprivate func registerObservers() {
-        NotificationCenter.default.addObserver(self, selector: #selector(handleKeyboardNotification), name: NSNotification.Name.UIKeyboardWillShow, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(handleKeyboardNotification), name: NSNotification.Name.UIKeyboardWillHide, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(handleKeyboardNotification), name: NSNotification.Name.UIKeyboardWillChangeFrame, object: nil)
     }
     
     private func unregisterObservers() {
-        NotificationCenter.default.removeObserver(self, name: NSNotification.Name.UIKeyboardWillShow, object: nil)
         NotificationCenter.default.removeObserver(self, name: NSNotification.Name.UIKeyboardWillHide, object: nil)
+        NotificationCenter.default.removeObserver(self, name: NSNotification.Name.UIKeyboardWillChangeFrame, object: nil)
+    }
+    
+    func handleKeyboardNotification(_ notification: Notification) {
+        if let userInfo = notification.userInfo, let keyboardFrame = (userInfo[UIKeyboardFrameEndUserInfoKey] as? NSValue)?.cgRectValue, let animationDuration = userInfo[UIKeyboardAnimationDurationUserInfoKey] as? TimeInterval {
+            let isKeyboardShowing = notification.name != Notification.Name.UIKeyboardWillHide
+            let keyboardViewEndFrame = view.convert(keyboardFrame, from: view.window)
+            UIView.animate(withDuration: animationDuration, animations: {
+                self.bottomConstraintForInput.constant = isKeyboardShowing ? -keyboardViewEndFrame.height : 0
+            })
+        }
     }
     
     // MARK: Collection view
     
-    override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+    fileprivate let collectionView: UICollectionView = {
+        let layout = UICollectionViewFlowLayout()
+        let collectionView = UICollectionView(frame: UIScreen.main.bounds, collectionViewLayout: layout)
+        collectionView.backgroundColor = UIColor.white
+        collectionView.showsHorizontalScrollIndicator = false
+        collectionView.showsVerticalScrollIndicator = false
+        return collectionView
+    }()
+    
+    private func setupCollectionView() {
+        self.collectionView.delegate = self
+        self.collectionView.dataSource = self
+        self.collectionView.register(ChatCell.self, forCellWithReuseIdentifier: cellId)
+        self.view.addSubview(collectionView)
+        self.view.addConstraintsWithFormat("H:|[v0]|", views: collectionView)
+        self.view.addConstraintsWithFormat("V:|[v0]", views: collectionView)
+        // Tapping anywhere on collection view keeps keyboard
+        let tapToKeepKeyboardRecognizer = UITapGestureRecognizer(target: self, action: #selector(keepKeyboard))
+        self.collectionView.addGestureRecognizer(tapToKeepKeyboardRecognizer)
+    }
+    
+    func keepKeyboard(gestureRecognizer: UITapGestureRecognizer) {
+        self.inputTextView.endEditing(true)
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         if let count = messages?.count {
             return count
         }
         return 0
     }
     
-    override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: cellId, for: indexPath) as! ChatCell
         cell.messageTextView.isScrollEnabled = true
         cell.messageTextView.text = messages?[indexPath.item].text
         if let message = messages?[indexPath.item], let messageText = message .text, let profileImageName = message.friend?.profileImageName {
             cell.profileImageView.image = UIImage(named: profileImageName)
+            
             let size = CGSize(width: 250, height: 1000)
             let options = NSStringDrawingOptions.usesFontLeading.union(.usesLineFragmentOrigin)
             let estimatedFrame = NSString(string: messageText).boundingRect(with: size, options: options, attributes: [NSFontAttributeName: FONT_MEDIUM_MID], context: nil)
@@ -239,10 +289,10 @@ class ChatController: UICollectionViewController, UICollectionViewDelegateFlowLa
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
-        return UIEdgeInsets(top: 8, left: 0, bottom: 0, right: 0)
+        return UIEdgeInsets(top: 8, left: 0, bottom: -40, right: 0)
     }
     
-    override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         self.inputTextView.endEditing(true)
     }
 }
