@@ -9,7 +9,7 @@
 import Foundation
 import UIKit
 
-class ChatController: UIViewController, UICollectionViewDelegateFlowLayout, UITextViewDelegate, UICollectionViewDelegate, UICollectionViewDataSource {
+class ChatController: UIViewController, UICollectionViewDelegateFlowLayout, UITextViewDelegate, UICollectionViewDelegate, UICollectionViewDataSource, UIGestureRecognizerDelegate {
     
     fileprivate var messages: [Message]? // All messages
     fileprivate var messagesInTimeBuckets: [[Message]]? // Messages separated into buckets of time (at least 1 hour apart)
@@ -22,6 +22,8 @@ class ChatController: UIViewController, UICollectionViewDelegateFlowLayout, UITe
     fileprivate var inputContainerHeightConstraint: NSLayoutConstraint!
     // Adjusted for keyboard
     fileprivate var bottomConstraintForInput: NSLayoutConstraint!
+    fileprivate var topConstraintForCollectionView: NSLayoutConstraint!
+    fileprivate let SECTION_HEADER_HEIGHT: CGFloat = 30.0
 
     var friend: Friend? {
         didSet { // Set from didSelect in ConnectionsController
@@ -47,12 +49,7 @@ class ChatController: UIViewController, UICollectionViewDelegateFlowLayout, UITe
         UIView.animate(withDuration: 0, delay: 0, options: .curveEaseOut, animations: {
             self.view.layoutIfNeeded()
             }, completion: { (completed) in
-                if self.timeBucketHeaders != nil && self.messagesInTimeBuckets != nil && self.timeBucketHeaders!.count > 0 && self.messagesInTimeBuckets!.count > 0 {
-                    let lastSection = self.timeBucketHeaders!.count - 1
-                    let lastRow = self.messagesInTimeBuckets![lastSection].count - 1
-                    let indexPath = IndexPath(item: lastRow, section: lastSection)
-                    self.collectionView.scrollToItem(at: indexPath, at: .bottom, animated: false)
-                }
+                self.scrollToLastItemInCollectionView(animated: false)
         })
     }
     
@@ -140,9 +137,7 @@ class ChatController: UIViewController, UICollectionViewDelegateFlowLayout, UITe
             let screenHeight = UIScreen.main.bounds.height
             if newHeight < 0.2 * screenHeight {
                 self.inputContainerHeightConstraint.constant = newHeight + 12.0
-                // TODO: Instead change top constraint of collectionView?
-//                self.collectionView.frame.origin.y -= 14.0
-//                self.collectionView.layoutIfNeeded()
+                topConstraintForCollectionView.constant -= abs(newHeight - self.textViewHeight)
                 self.view.layoutIfNeeded()
             } else {
                 textView.flashScrollIndicators()
@@ -236,11 +231,10 @@ class ChatController: UIViewController, UICollectionViewDelegateFlowLayout, UITe
             let message = ConnectionsController.createMessageForFriend(friend, text: text.trim(), minutesAgo: 0, context: context, isSender: true)
             do {
                 try context.save()
-                messages?.append(message)
+                self.messages?.append(message)
                 self.bucketMessagesIntoTime()
-                let insertionIndexPath = IndexPath(item: messages!.count - 1, section: 0)
-                collectionView.insertItems(at: [insertionIndexPath])
-                collectionView.scrollToItem(at: insertionIndexPath, at: .bottom, animated: true)
+                self.collectionView.reloadData()
+                self.scrollToLastItemInCollectionView()
                 self.resetInputContainer()
             } catch let err {
                 print(err)
@@ -262,41 +256,38 @@ class ChatController: UIViewController, UICollectionViewDelegateFlowLayout, UITe
     
     func handleKeyboardNotification(_ notification: Notification) {
         if let userInfo = notification.userInfo, let keyboardFrame = (userInfo[UIKeyboardFrameEndUserInfoKey] as? NSValue)?.cgRectValue, let animationDuration = userInfo[UIKeyboardAnimationDurationUserInfoKey] as? TimeInterval {
+            
             let isKeyboardShowing = notification.name != Notification.Name.UIKeyboardWillHide
             let keyboardViewEndFrame = view.convert(keyboardFrame, from: view.window)
             
+            // Find bottom of collection view
             let lastSection = self.timeBucketHeaders!.count - 1
             let lastRow = self.messagesInTimeBuckets![lastSection].count - 1
             let indexPath = IndexPath(item: lastRow, section: lastSection)
             let attributes = self.collectionView.layoutAttributesForItem(at: indexPath)!
             let frame: CGRect = self.collectionView.convert(attributes.frame, to: collectionView.superview)
-            
             let bottomOfCollectionView = frame.maxY
             
+            // Compare it with top of input container
             let topOfInput = self.view.bounds.maxY - keyboardViewEndFrame.height - self.messageInputContainerView.bounds.height
             
-            log.info("Bottom of collection view: \(bottomOfCollectionView), Top of input: \(topOfInput)")
-            
             let isKeyboardBlockingCollection = bottomOfCollectionView >= topOfInput
+            let distanceShifted = min(keyboardViewEndFrame.height, abs(bottomOfCollectionView - topOfInput + SECTION_HEADER_HEIGHT))
             
-            if isKeyboardBlockingCollection && isKeyboardShowing {
-                UIView.animate(withDuration: animationDuration, animations: {
-                    self.view.frame.origin.y = -keyboardViewEndFrame.height
-                })
-            } else if !isKeyboardBlockingCollection && isKeyboardShowing {
+            // Also shift the input container's frame so that the input moves smoothly with keyboard
+            // Bottom constraint for input has to also be shifted if not the input container will be expanded upon just shifting frame
+            if isKeyboardShowing {
+                self.scrollToLastItemInCollectionView()
                 UIView.animate(withDuration: animationDuration, animations: {
                     self.messageInputContainerView.frame.origin.y -= keyboardViewEndFrame.height
                     self.bottomConstraintForInput.constant = -keyboardViewEndFrame.height
-                })
-            } else if isKeyboardBlockingCollection && !isKeyboardShowing {
-                UIView.animate(withDuration: animationDuration, animations: {
-                    self.view.frame.origin.y = 0
+                    self.topConstraintForCollectionView.constant = isKeyboardBlockingCollection ? -distanceShifted : 0
                 })
             } else {
                 UIView.animate(withDuration: animationDuration, animations: {
-                    log.info("hi")
                     self.messageInputContainerView.frame.origin.y += keyboardViewEndFrame.height
                     self.bottomConstraintForInput.constant = 0
+                    self.topConstraintForCollectionView.constant = 0
                 })
             }
         }
@@ -306,7 +297,6 @@ class ChatController: UIViewController, UICollectionViewDelegateFlowLayout, UITe
     
     fileprivate let collectionView: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
-        layout.headerReferenceSize = CGSize(width: UIScreen.main.bounds.width, height: 30)
         let collectionView = UICollectionView(frame: UIScreen.main.bounds, collectionViewLayout: layout)
         collectionView.backgroundColor = UIColor.white
         collectionView.showsHorizontalScrollIndicator = false
@@ -319,18 +309,38 @@ class ChatController: UIViewController, UICollectionViewDelegateFlowLayout, UITe
         self.collectionView.dataSource = self
         self.collectionView.bounces = true
         self.collectionView.alwaysBounceVertical = true
+        let layout = UICollectionViewFlowLayout()
+        layout.headerReferenceSize = CGSize(width: UIScreen.main.bounds.width, height: SECTION_HEADER_HEIGHT)
+        self.collectionView.setCollectionViewLayout(layout, animated: false)
+        self.collectionView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: -SECTION_HEADER_HEIGHT, right: 0) // Fix adjustScrollInsets bottom padding
         self.collectionView.register(ChatCell.self, forCellWithReuseIdentifier: cellId)
         self.collectionView.register(ChatHeaderView.self, forSupplementaryViewOfKind: UICollectionElementKindSectionHeader, withReuseIdentifier: cellHeaderId)
         self.view.addSubview(collectionView)
         self.view.addConstraintsWithFormat("H:|[v0]|", views: collectionView)
-        self.view.addConstraintsWithFormat("V:|[v0]", views: collectionView)
-        // Tapping anywhere on collection view keeps keyboard
-        let tapToKeepKeyboardRecognizer = UITapGestureRecognizer(target: self, action: #selector(keepKeyboard))
-        self.collectionView.addGestureRecognizer(tapToKeepKeyboardRecognizer)
+        self.view.addConstraintsWithFormat("V:[v0]", views: collectionView)
+        self.topConstraintForCollectionView = NSLayoutConstraint(item: self.collectionView, attribute: .top, relatedBy: .equal, toItem: self.view, attribute: .top, multiplier: 1.0, constant: 0)
+        self.view.addConstraint(self.topConstraintForCollectionView)
+        // Panning on collection view keeps keyboard
+        let panToKeepKeyboardRecognizer = UIPanGestureRecognizer(target: self, action: #selector(keepKeyboard))
+        panToKeepKeyboardRecognizer.delegate = self
+        self.collectionView.addGestureRecognizer(panToKeepKeyboardRecognizer)
     }
     
-    func keepKeyboard(gestureRecognizer: UITapGestureRecognizer) {
+    func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWith otherGestureRecognizer: UIGestureRecognizer) -> Bool {
+        return true
+    }
+    
+    func keepKeyboard(gestureRecognizer: UIPanGestureRecognizer) {
         self.inputTextView.endEditing(true)
+    }
+    
+    fileprivate func scrollToLastItemInCollectionView(animated: Bool = true) {
+        if self.timeBucketHeaders != nil && self.messagesInTimeBuckets != nil && self.timeBucketHeaders!.count > 0 && self.messagesInTimeBuckets!.count > 0 {
+            let lastSection = self.timeBucketHeaders!.count - 1
+            let lastRow = self.messagesInTimeBuckets![lastSection].count - 1
+            let indexPath = IndexPath(item: lastRow, section: lastSection)
+            self.collectionView.scrollToItem(at: indexPath, at: .bottom, animated: animated)
+        }
     }
     
     func numberOfSections(in collectionView: UICollectionView) -> Int {
@@ -399,11 +409,8 @@ class ChatController: UIViewController, UICollectionViewDelegateFlowLayout, UITe
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
-        // TODO: Think of how to fix big footer gap
-        return UIEdgeInsets(top: 8, left: 0, bottom: 0, right: 0)
+        // Padding around section headers
+        return UIEdgeInsets(top: 4, left: 0, bottom: 4, right: 0)
     }
 
-    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        self.inputTextView.endEditing(true)
-    }
 }

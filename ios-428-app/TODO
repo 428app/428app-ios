@@ -1,23 +1,25 @@
-- Shift collection view up when expanding multiline
-- Remove huge footer gap
+!CHAT!
+Bugs
+- Fix uneven expansion of input container
 - Change measurement to be based on system font
 
-
-
+New features
 - Swipe right on chat screen to show time
+- Click on chat bubble to Copy (Similar to tinder)
+- Highlight links to open up UIWebView
 - Chat bubbles alternating between tails and no tails
 
 
+!CHAT RELATED OPTIONS!
 - Add sent icon if last message sent by you in ConnectionsController
 - Add top option to mute/report person
 - Add top click to view person's profile
-
-- Do topics page
 
 
 
 Nice to have:
 1) Width of chat bubbles being a % of screen size (test on iphone 4s?)
 2) Chat keyboard comes up more naturally
+3) Match date when loading for pagination upwards
 
 

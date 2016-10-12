@@ -15,6 +15,7 @@ class CustomNavigationController: UINavigationController {
         self.navigationBar.titleTextAttributes = [NSForegroundColorAttributeName: GREEN_UICOLOR,
                                                   NSFontAttributeName: FONT_HEAVY_LARGE]
         self.navigationBar.tintColor = GREEN_UICOLOR
+        self.navigationBar.backgroundColor = UIColor.white
         
     }
 
