@@ -2,6 +2,9 @@
 //  ChatController.swift
 //  ios-428-app
 //
+//  Controller for the 1-1 user chat screen. Note that this class is a bit long because of the necessary interplay 
+//  between the different views, i.e. input container and collection views.
+//
 //  Created by Leonard Loo on 10/10/16.
 //  Copyright © 2016 428. All rights reserved.
 //
@@ -11,20 +14,24 @@ import UIKit
 
 class ChatController: UIViewController, UICollectionViewDelegateFlowLayout, UITextViewDelegate, UICollectionViewDelegate, UICollectionViewDataSource, UIGestureRecognizerDelegate {
     
+    /** CONSTANTS **/
+    fileprivate let CELL_ID = "chatCell"
+    fileprivate let CELL_HEADER_ID = "chatHeaderView"
+    fileprivate let SECTION_HEADER_HEIGHT: CGFloat = 30.0
+    
+    /** DATA **/
     fileprivate var messages: [Message]? // All messages
     fileprivate var messagesInTimeBuckets: [[Message]]? // Messages separated into buckets of time (at least 1 hour apart)
     fileprivate var timeBucketHeaders: [Date]? // Headers of time buckets, must have same length as messagesInTimeBuckets
-    fileprivate let cellId = "chatCell"
-    fileprivate let cellHeaderId = "chatHeaderView"
-    
+
+    /** HEIGHTS AND CONSTRAINTS **/
     // Adjusted with multiple lines of text
     fileprivate var textViewHeight: CGFloat = 0.0
     fileprivate var inputContainerHeightConstraint: NSLayoutConstraint!
     // Adjusted for keyboard
     fileprivate var bottomConstraintForInput: NSLayoutConstraint!
     fileprivate var topConstraintForCollectionView: NSLayoutConstraint!
-    fileprivate let SECTION_HEADER_HEIGHT: CGFloat = 30.0
-
+    
     var friend: Friend? {
         didSet { // Set from didSelect in ConnectionsController
             self.navigationItem.title = self.friend?.name
@@ -39,13 +46,14 @@ class ChatController: UIViewController, UICollectionViewDelegateFlowLayout, UITe
         printMessagesArr()
         self.setupCollectionView()
         self.setupInputComponents()
+
     }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         self.tabBarController?.tabBar.isHidden = true
         self.registerObservers()
-        // Scroll collection view to the bottom to most recent message
+        // Scroll collection view to the bottom to most recent message upon first entering screen
         UIView.animate(withDuration: 0, delay: 0, options: .curveEaseOut, animations: {
             self.view.layoutIfNeeded()
             }, completion: { (completed) in
@@ -60,7 +68,8 @@ class ChatController: UIViewController, UICollectionViewDelegateFlowLayout, UITe
     
     // MARK: Process messages into buckets based on hourly time intervals
     
-    func printMessagesArr() {
+    // Function used for testing of buckets
+    fileprivate func printMessagesArr() {
         for messages in messagesInTimeBuckets! {
             log.info("-Bucket-")
             for message in messages {
@@ -162,7 +171,7 @@ class ChatController: UIViewController, UICollectionViewDelegateFlowLayout, UITe
         return textView
     }()
     
-    lazy var sendButton: UIButton = {
+    fileprivate lazy var sendButton: UIButton = {
         let button = UIButton(type: .system)
         button.setTitle("Send", for: .normal)
         button.setTitleColor(GREEN_UICOLOR, for: .normal)
@@ -312,8 +321,8 @@ class ChatController: UIViewController, UICollectionViewDelegateFlowLayout, UITe
         layout.headerReferenceSize = CGSize(width: UIScreen.main.bounds.width, height: SECTION_HEADER_HEIGHT)
         self.collectionView.setCollectionViewLayout(layout, animated: false)
         self.collectionView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: -SECTION_HEADER_HEIGHT, right: 0) // Fix adjustScrollInsets bottom padding
-        self.collectionView.register(ChatCell.self, forCellWithReuseIdentifier: cellId)
-        self.collectionView.register(ChatHeaderView.self, forSupplementaryViewOfKind: UICollectionElementKindSectionHeader, withReuseIdentifier: cellHeaderId)
+        self.collectionView.register(ChatCell.self, forCellWithReuseIdentifier: CELL_ID)
+        self.collectionView.register(ChatHeaderView.self, forSupplementaryViewOfKind: UICollectionElementKindSectionHeader, withReuseIdentifier: CELL_HEADER_ID)
         self.view.addSubview(collectionView)
         self.view.addConstraintsWithFormat("H:|[v0]|", views: collectionView)
         self.view.addConstraintsWithFormat("V:[v0]", views: collectionView)
@@ -351,7 +360,7 @@ class ChatController: UIViewController, UICollectionViewDelegateFlowLayout, UITe
     
     func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
         if kind == UICollectionElementKindSectionHeader {
-            let chatHeaderView = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: cellHeaderId, for: indexPath) as! ChatHeaderView
+            let chatHeaderView = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: CELL_HEADER_ID, for: indexPath) as! ChatHeaderView
             chatHeaderView.date = self.timeBucketHeaders?[indexPath.section]
             return chatHeaderView
         }
@@ -366,34 +375,9 @@ class ChatController: UIViewController, UICollectionViewDelegateFlowLayout, UITe
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: cellId, for: indexPath) as! ChatCell
-        cell.messageTextView.isScrollEnabled = true
-        cell.messageTextView.text = self.messagesInTimeBuckets?[indexPath.section][indexPath.row].text
-        if let message = self.messagesInTimeBuckets?[indexPath.section][indexPath.row], let messageText = message.text, let profileImageName = message.friend?.profileImageName {
-            cell.profileImageView.image = UIImage(named: profileImageName)
-            
-            let size = CGSize(width: 250, height: 1000)
-            let options = NSStringDrawingOptions.usesFontLeading.union(.usesLineFragmentOrigin)
-            let estimatedFrame = NSString(string: messageText).boundingRect(with: size, options: options, attributes: [NSFontAttributeName: FONT_MEDIUM_MID], context: nil)
-            if !message.isSender {
-                cell.messageTextView.frame = CGRect(x: 45 + 8, y: -4, width: estimatedFrame.width + 16, height: estimatedFrame.height + 16)
-                cell.textBubbleView.frame = CGRect(x: 45 - 8, y: -4, width: estimatedFrame.width + 16 + 8 + 8, height: estimatedFrame.height + 16 + 6)
-                cell.profileImageView.isHidden = false
-                cell.bubbleImageView.image = ChatCell.grayBubbleImage
-                cell.bubbleImageView.tintColor = UIColor(white: 0.95, alpha: 1)
-                cell.messageTextView.textColor = UIColor.black
-            } else {
-                cell.messageTextView.frame = CGRect(x: view.frame.width - estimatedFrame.width - 16 - 16 - 8, y: -4, width: estimatedFrame.width + 16, height: estimatedFrame.height + 16)
-                cell.textBubbleView.frame = CGRect(x: view.frame.width - estimatedFrame.width - 16 - 8 - 16 - 8, y: -4, width: estimatedFrame.width + 16 + 8 + 8, height: estimatedFrame.height + 16 + 6)
-                cell.profileImageView.isHidden = true
-                cell.bubbleImageView.image = ChatCell.greenBubbleImage
-                cell.bubbleImageView.tintColor = GREEN_UICOLOR
-                cell.messageTextView.textColor = UIColor.white
-            }
-            
-        }
-        cell.messageTextView.sizeToFit()
-        cell.messageTextView.isScrollEnabled = false
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: CELL_ID, for: indexPath) as! ChatCell
+        let message = self.messagesInTimeBuckets?[indexPath.section][indexPath.row]
+        cell.configureCell(messageObj: message, viewWidth: view.frame.width)
         return cell
     }
     
@@ -401,7 +385,7 @@ class ChatController: UIViewController, UICollectionViewDelegateFlowLayout, UITe
         if let messageText = messagesInTimeBuckets?[indexPath.section][indexPath.row].text {
             let size = CGSize(width: 250, height: 1000)
             let options = NSStringDrawingOptions.usesFontLeading.union(.usesLineFragmentOrigin)
-            let estimatedFrame = NSString(string: messageText).boundingRect(with: size, options: options, attributes: [NSFontAttributeName: UIFont.systemFont(ofSize: 16.0)], context: nil) // TODO: Change this to System font
+            let estimatedFrame = NSString(string: messageText).boundingRect(with: size, options: options, attributes: [NSFontAttributeName: UIFont.systemFont(ofSize: 16.0)], context: nil)
             return CGSize(width: view.frame.width, height: estimatedFrame.height + 16)
         }
         return CGSize(width: view.frame.width, height: 100)

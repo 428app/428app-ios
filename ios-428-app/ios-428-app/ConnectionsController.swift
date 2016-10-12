@@ -10,7 +10,7 @@ import UIKit
 
 class ConnectionsController: UICollectionViewController, UICollectionViewDelegateFlowLayout {
     
-    fileprivate let cellId = "connectionCell"
+    fileprivate let CELL_ID = "connectionCell"
     
     open var messages: [Message]? // Non-private so CoreDataService can access
     
@@ -20,7 +20,7 @@ class ConnectionsController: UICollectionViewController, UICollectionViewDelegat
         navigationItem.title = "Connections"
         collectionView?.backgroundColor = UIColor.white
         collectionView?.alwaysBounceVertical = true
-        collectionView?.register(ConnectionCell.self, forCellWithReuseIdentifier: cellId)
+        collectionView?.register(ConnectionCell.self, forCellWithReuseIdentifier: CELL_ID)
         self.navigationItem.backBarButtonItem = UIBarButtonItem(title: " ", style: .plain, target: nil, action: nil)
     }
     
@@ -39,10 +39,9 @@ class ConnectionsController: UICollectionViewController, UICollectionViewDelegat
     }
     
     override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: cellId, for: indexPath) as! ConnectionCell
-        if let message = messages?[indexPath.item] {
-            cell.message = message
-        }
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: CELL_ID, for: indexPath) as! ConnectionCell
+        let message = self.messages?[indexPath.item]
+        cell.configureCell(messageObj: message)
         return cell
     }
     
@@ -52,7 +51,7 @@ class ConnectionsController: UICollectionViewController, UICollectionViewDelegat
     
     override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         let controller = ChatController()
-        controller.friend = messages?[indexPath.item].friend
+        controller.friend = self.messages?[indexPath.item].friend
         navigationController?.pushViewController(controller, animated: true)
     }
 }

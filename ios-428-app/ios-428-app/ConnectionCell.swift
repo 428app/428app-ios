@@ -11,6 +11,8 @@ import UIKit
 
 class ConnectionCell: BaseCell {
     
+    fileprivate var message: Message!
+    
     override var isHighlighted: Bool {
         didSet {
             backgroundColor = isHighlighted ? GREEN_UICOLOR : UIColor.white
@@ -18,22 +20,6 @@ class ConnectionCell: BaseCell {
             timeLabel.textColor = isHighlighted ? UIColor.white : UIColor.gray
             messageLabel.textColor = isHighlighted ? UIColor.white : UIColor.gray
             disciplineImageView.tintColor = isHighlighted ? UIColor.white : GREEN_UICOLOR
-        }
-    }
-    
-    var message: Message? {
-        didSet {
-            nameLabel.text = message?.friend?.name
-            if let profileImageName = message?.friend?.profileImageName {
-                profileImageView.image = UIImage(named: profileImageName)
-            }
-            if let disciplineImageName = message?.friend?.disciplineImageName {
-                disciplineImageView.image = UIImage(named: disciplineImageName)
-            }
-            messageLabel.text = message?.text
-            if let date = message?.date {
-                timeLabel.text = formatDateToText(date: date)
-            }
         }
     }
     
@@ -131,5 +117,24 @@ class ConnectionCell: BaseCell {
         containerView.addConstraintsWithFormat("V:|[v0][v1(24)]|", views: nameLabel, messageLabel)
         containerView.addConstraintsWithFormat("V:|-7-[v0(24)]", views: timeLabel)
         containerView.addConstraintsWithFormat("V:|-8-[v0(16)]", views: disciplineImageView)
+    }
+    
+    func configureCell(messageObj: Message?) {
+        if messageObj == nil {
+            self.isHidden = true
+            return
+        }
+        self.message = messageObj!
+        self.nameLabel.text = self.message.friend?.name
+        if let profileImageName = self.message.friend?.profileImageName {
+            self.profileImageView.image = UIImage(named: profileImageName)
+        }
+        if let disciplineImageName = self.message.friend?.disciplineImageName {
+            self.disciplineImageView.image = UIImage(named: disciplineImageName)
+        }
+        self.messageLabel.text = self.message.text
+        if let date = self.message.date {
+            self.timeLabel.text = formatDateToText(date: date)
+        }
     }
 }

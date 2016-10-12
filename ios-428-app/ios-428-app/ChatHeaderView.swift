@@ -19,7 +19,6 @@ class ChatHeaderView: UICollectionReusableView {
     
     var timeLabel: UILabel = {
        let label = UILabel()
-//        label.font = UIFont.systemFont(ofSize: 12.0)
         label.font = UIFont.boldSystemFont(ofSize: 12.0)
         label.textColor = UIColor.lightGray
         label.textAlignment = .center
