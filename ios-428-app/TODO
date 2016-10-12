@@ -1,6 +1,10 @@
-- Section header being time
+- Shift collection view up when expanding multiline
+- Remove huge footer gap
+- Change measurement to be based on system font
+
+
+
 - Swipe right on chat screen to show time
-- Width of chat being a % of screen size
 - Chat bubbles alternating between tails and no tails
 
 
@@ -10,5 +14,10 @@
 
 - Do topics page
 
+
+
+Nice to have:
+1) Width of chat bubbles being a % of screen size (test on iphone 4s?)
+2) Chat keyboard comes up more naturally
 
 

@@ -59,7 +59,6 @@ class ConnectionCell: BaseCell {
     
     fileprivate let nameLabel: UILabel = {
         let label = UILabel()
-        label.text = "Leonard Loo"
         label.font = FONT_HEAVY_LARGE
         return label
     }()
@@ -81,15 +80,13 @@ class ConnectionCell: BaseCell {
     
     fileprivate let messageLabel: UILabel = {
         let label = UILabel()
-        label.text = "Hi how are you today? I'm good. Tell me about your industry!!!"
-        label.font = FONT_LIGHT_MID
+        label.font = UIFont.systemFont(ofSize: 15.0)
         label.textColor = UIColor.gray
         return label
     }()
     
     fileprivate let timeLabel: UILabel = {
         let label = UILabel()
-        label.text = "12:05pm"
         label.font = FONT_LIGHT_SMALL
         label.textColor = UIColor.gray
         label.textAlignment = .right

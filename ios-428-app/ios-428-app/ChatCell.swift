@@ -13,7 +13,7 @@ class ChatCell: BaseCell {
     
     var messageTextView: UITextView = {
         var textView = UITextView()
-        textView.font = FONT_MEDIUM_MID
+        textView.font = UIFont.systemFont(ofSize: 16.0)
         textView.backgroundColor = UIColor.clear
         textView.showsHorizontalScrollIndicator = false
         textView.showsVerticalScrollIndicator = false

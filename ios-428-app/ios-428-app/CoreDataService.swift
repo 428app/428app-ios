@@ -42,10 +42,6 @@ extension ConnectionsController {
             return
         }
         let context = delegate.persistentContainer.viewContext
-        let leo = Friend(context: context)
-        leo.name = "Leonard"
-        leo.profileImageName = "leo-profile"
-        leo.disciplineImageName = "business"
 
         let jenny = Friend(context: context)
         jenny.name = "Jenny"
@@ -56,7 +52,7 @@ extension ConnectionsController {
         spandan.profileImageName = "spandan-profile"
         spandan.disciplineImageName = "computer"
 
-        _ = ConnectionsController.createMessageForFriend(leo, text: "Hello, my name is Leonard. Nice to meet you!", minutesAgo: 5, context: context)
+        createLeoMessagesWithContext(context)
         createThomasMessagesWithContext(context)
         _ = ConnectionsController.createMessageForFriend(jenny, text: "I want to eat food now! Give me food or else!!", minutesAgo: 60 * 24 * 2, context: context)
         _ = ConnectionsController.createMessageForFriend(spandan, text: "I love computer vision! Let's hack something cool together.", minutesAgo: 60 * 24 * 10, context: context)
@@ -67,6 +63,18 @@ extension ConnectionsController {
             print(err)
         }
         loadData()
+    }
+    
+    fileprivate func createLeoMessagesWithContext(_ context: NSManagedObjectContext) {
+        let leo = Friend(context: context)
+        leo.name = "Leonard"
+        leo.profileImageName = "leo-profile"
+        leo.disciplineImageName = "business"
+        _ = ConnectionsController.createMessageForFriend(leo, text: "Hello, my name is Leonard. Nice to meet you!", minutesAgo: 200, context: context)
+        _ = ConnectionsController.createMessageForFriend(leo, text: "What do you do?", minutesAgo: 198, context: context)
+        _ = ConnectionsController.createMessageForFriend(leo, text: "Hi! My name is Yihang.", minutesAgo: 90, context: context, isSender: true)
+        _ = ConnectionsController.createMessageForFriend(leo, text: "I'm currently pursuing a Masters in Computational Science & Engineering.", minutesAgo: 89, context: context, isSender: true)
+        _ = ConnectionsController.createMessageForFriend(leo, text: "That's cool! Okay I'll brb and talk to you later all right?", minutesAgo: 20, context: context)
     }
     
     fileprivate func createThomasMessagesWithContext(_ context: NSManagedObjectContext) {
