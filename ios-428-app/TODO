@@ -1,7 +1,6 @@
 !CHAT!
 Bugs
-- Fix uneven expansion of input container
-- Change measurement to be based on system font
+- Refactor ChatController and View classes
 
 New features
 - Swipe right on chat screen to show time

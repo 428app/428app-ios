@@ -110,7 +110,7 @@ class ChatController: UIViewController, UICollectionViewDelegateFlowLayout, UITe
     
     // MARK: Input text view
     
-    // Input container is reset after handleSend is successful
+    // This function is called to reset the input container after handleSend is successful
     fileprivate func resetInputContainer() {
         self.textViewHeight = 0.0
         self.inputContainerHeightConstraint.constant = 45.0
@@ -122,7 +122,7 @@ class ChatController: UIViewController, UICollectionViewDelegateFlowLayout, UITe
     
     func textViewDidChange(_ textView: UITextView) {
         // Disable send and show placeholder when there is no text
-        self.sendButton.isEnabled = !textView.text.trim().isEmpty
+        self.sendButton.isEnabled = !textView.text.trim().isEmpty // Disallow send when only newlines and spaces
         self.placeholderLabel.isHidden = !textView.text.isEmpty
         
         // Expansion of text view upon newline
@@ -136,15 +136,14 @@ class ChatController: UIViewController, UICollectionViewDelegateFlowLayout, UITe
             // Change height of message input container only if container doesn't cover too much of screen
             let screenHeight = UIScreen.main.bounds.height
             if newHeight < 0.2 * screenHeight {
-                self.inputContainerHeightConstraint.constant = newHeight + 12.0
-                topConstraintForCollectionView.constant -= abs(newHeight - self.textViewHeight)
+                self.inputContainerHeightConstraint.constant = newHeight + 12.0 // Expand input container
+                self.topConstraintForCollectionView.constant -= abs(newHeight - self.textViewHeight) // Shift collection view up
                 self.view.layoutIfNeeded()
             } else {
                 textView.flashScrollIndicators()
             }
         }
         self.textViewHeight = newHeight
-        
     }
     
     // MARK: Input
@@ -207,7 +206,7 @@ class ChatController: UIViewController, UICollectionViewDelegateFlowLayout, UITe
         
         messageInputContainerView.addConstraintsWithFormat("H:|-5-[v0][v1(60)]-5-|", views: inputTextView, sendButton)
         messageInputContainerView.addConstraintsWithFormat("V:|-5-[v0]|", views: inputTextView)
-        messageInputContainerView.addConstraintsWithFormat("V:[v0]-8-|", views: sendButton)
+        messageInputContainerView.addConstraintsWithFormat("V:[v0]-7-|", views: sendButton)
         messageInputContainerView.addConstraintsWithFormat("H:|[v0]|", views: topBorderView)
         messageInputContainerView.addConstraintsWithFormat("V:|[v0(0.5)]", views: topBorderView)
         
@@ -402,7 +401,7 @@ class ChatController: UIViewController, UICollectionViewDelegateFlowLayout, UITe
         if let messageText = messagesInTimeBuckets?[indexPath.section][indexPath.row].text {
             let size = CGSize(width: 250, height: 1000)
             let options = NSStringDrawingOptions.usesFontLeading.union(.usesLineFragmentOrigin)
-            let estimatedFrame = NSString(string: messageText).boundingRect(with: size, options: options, attributes: [NSFontAttributeName: FONT_MEDIUM_MID], context: nil) // TODO: Change this to System font
+            let estimatedFrame = NSString(string: messageText).boundingRect(with: size, options: options, attributes: [NSFontAttributeName: UIFont.systemFont(ofSize: 16.0)], context: nil) // TODO: Change this to System font
             return CGSize(width: view.frame.width, height: estimatedFrame.height + 16)
         }
         return CGSize(width: view.frame.width, height: 100)
