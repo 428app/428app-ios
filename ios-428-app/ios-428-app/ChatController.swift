@@ -46,7 +46,6 @@ class ChatController: UIViewController, UICollectionViewDelegateFlowLayout, UITe
     override func viewDidLoad() {
         super.viewDidLoad()
         self.view.backgroundColor = UIColor.white
-        printChainArr()
         self.setupCollectionView()
         self.setupInputComponents()
     }
@@ -55,12 +54,6 @@ class ChatController: UIViewController, UICollectionViewDelegateFlowLayout, UITe
         super.viewWillAppear(animated)
         self.tabBarController?.tabBar.isHidden = true
         self.registerObservers()
-        // Scroll collection view to the bottom to most recent message upon first entering screen
-        UIView.animate(withDuration: 0, delay: 0, options: .curveEaseOut, animations: {
-            self.view.layoutIfNeeded()
-            }, completion: { (completed) in
-                self.scrollToLastItemInCollectionView(animated: false)
-        })
     }
     
     override func viewWillDisappear(_ animated: Bool) {
@@ -376,17 +369,28 @@ class ChatController: UIViewController, UICollectionViewDelegateFlowLayout, UITe
         layout.headerReferenceSize = CGSize(width: UIScreen.main.bounds.width, height: SECTION_HEADER_HEIGHT)
         self.collectionView.setCollectionViewLayout(layout, animated: false)
         self.collectionView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: -SECTION_HEADER_HEIGHT, right: 0) // Fix adjustScrollInsets bottom padding
+        
         self.collectionView.register(ChatCell.self, forCellWithReuseIdentifier: CELL_ID)
         self.collectionView.register(ChatHeaderView.self, forSupplementaryViewOfKind: UICollectionElementKindSectionHeader, withReuseIdentifier: CELL_HEADER_ID)
+        
         self.view.addSubview(collectionView)
+        
         self.view.addConstraintsWithFormat("H:|[v0]|", views: collectionView)
         self.view.addConstraintsWithFormat("V:[v0]", views: collectionView)
         self.topConstraintForCollectionView = NSLayoutConstraint(item: self.collectionView, attribute: .top, relatedBy: .equal, toItem: self.view, attribute: .top, multiplier: 1.0, constant: 0)
         self.view.addConstraint(self.topConstraintForCollectionView)
+        
         // Panning on collection view keeps keyboard
         let panToKeepKeyboardRecognizer = UIPanGestureRecognizer(target: self, action: #selector(keepKeyboard))
         panToKeepKeyboardRecognizer.delegate = self
         self.collectionView.addGestureRecognizer(panToKeepKeyboardRecognizer)
+        
+        // Scroll collection view to the bottom to most recent message upon first entering screen
+        UIView.animate(withDuration: 0, delay: 0, options: .curveEaseOut, animations: {
+            self.view.layoutIfNeeded()
+            }, completion: { (completed) in
+                self.scrollToLastItemInCollectionView(animated: false)
+        })
     }
     
     func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWith otherGestureRecognizer: UIGestureRecognizer) -> Bool {
@@ -439,9 +443,7 @@ class ChatController: UIViewController, UICollectionViewDelegateFlowLayout, UITe
     
     
     private var cellTimeLabel = UILabel()
-    // TODO: Compare indexpaths
     private var tappedIndexPath: IndexPath?
-    
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         if let message = messagesInTimeBuckets?[indexPath.section][indexPath.row], let messageText = message.text, let messageDate = message.date {
             let size = CGSize(width: 250, height: 1000)

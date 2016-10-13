@@ -104,7 +104,7 @@ class ChatCell: BaseCell {
                 self.bubbleImageView.tintColor = UIColor(white: 0.95, alpha: 1)
             } else {
                 self.bubbleImageView.image = nil
-                self.textBubbleView.frame = CGRect(x: 45, y: 2, width: estimatedFrame.width + 20 + 8, height: estimatedFrame.height + 16 + 2)
+                self.textBubbleView.frame = CGRect(x: 45, y: 2, width: estimatedFrame.width + 20 + 8, height: estimatedFrame.height + 16)
                 self.bubbleImageView.backgroundColor = UIColor(white: 0.95, alpha: 1)
             }
         } else {
@@ -119,7 +119,7 @@ class ChatCell: BaseCell {
                 self.bubbleImageView.tintColor = GREEN_UICOLOR
             } else {
                 self.bubbleImageView.image = nil
-                self.textBubbleView.frame = CGRect(x: viewWidth - estimatedFrame.width - 16 - 8 - 16 - 8, y: 2, width: estimatedFrame.width + 20 + 8, height: estimatedFrame.height + 16 + 2)
+                self.textBubbleView.frame = CGRect(x: viewWidth - estimatedFrame.width - 16 - 8 - 16 - 8, y: 2, width: estimatedFrame.width + 20 + 8, height: estimatedFrame.height + 16)
                 self.bubbleImageView.backgroundColor = GREEN_UICOLOR
             }
         }
