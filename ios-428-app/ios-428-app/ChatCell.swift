@@ -72,7 +72,8 @@ class ChatCell: BaseCell {
         
     }
     
-    func configureCell(messageObj: Message?, viewWidth: CGFloat) {
+    func configureCell(messageObj: Message?, viewWidth: CGFloat, isLastInChainObj: Bool?) {
+        let isLastInChain = isLastInChainObj == nil ? true : isLastInChainObj!
         if messageObj == nil {
             self.isHidden = true
             return
@@ -92,19 +93,35 @@ class ChatCell: BaseCell {
         let options = NSStringDrawingOptions.usesFontLeading.union(.usesLineFragmentOrigin)
         let estimatedFrame = NSString(string: messageText).boundingRect(with: size, options: options, attributes: [NSFontAttributeName: TEXT_VIEW_FONT], context: nil)
         if !self.message.isSender {
-            self.messageTextView.frame = CGRect(x: 45 + 8, y: 4, width: estimatedFrame.width + 20, height: estimatedFrame.height + 16)
-            self.textBubbleView.frame = CGRect(x: 45 - 8, y: 0, width: estimatedFrame.width + 20 + 8 + 8, height: estimatedFrame.height + 16 + 8)
+            self.messageTextView.frame = CGRect(x: 45 + 8, y: 2, width: estimatedFrame.width + 20, height: estimatedFrame.height + 16)
             self.profileImageView.isHidden = false
-            self.bubbleImageView.image = BUBBLE_RECIPIENT_IMAGE
-            self.bubbleImageView.tintColor = UIColor(white: 0.95, alpha: 1)
             self.messageTextView.textColor = UIColor.black
+            
+            if isLastInChain {
+                self.textBubbleView.frame = CGRect(x: 45 - 8, y: 0, width: estimatedFrame.width + 20 + 8 + 8, height: estimatedFrame.height + 16 + 6)
+                self.bubbleImageView.backgroundColor = UIColor.clear
+                self.bubbleImageView.image = BUBBLE_RECIPIENT_IMAGE
+                self.bubbleImageView.tintColor = UIColor(white: 0.95, alpha: 1)
+            } else {
+                self.bubbleImageView.image = nil
+                self.textBubbleView.frame = CGRect(x: 45, y: 2, width: estimatedFrame.width + 20 + 8, height: estimatedFrame.height + 16 + 2)
+                self.bubbleImageView.backgroundColor = UIColor(white: 0.95, alpha: 1)
+            }
         } else {
-            self.messageTextView.frame = CGRect(x: viewWidth - estimatedFrame.width - 16 - 16 - 8, y: 4, width: estimatedFrame.width + 20, height: estimatedFrame.height + 16)
-            self.textBubbleView.frame = CGRect(x: viewWidth - estimatedFrame.width - 16 - 8 - 16 - 8, y: 0, width: estimatedFrame.width + 20 + 8 + 8, height: estimatedFrame.height + 16 + 8)
+            self.messageTextView.frame = CGRect(x: viewWidth - estimatedFrame.width - 16 - 16 - 8, y: 2, width: estimatedFrame.width + 20, height: estimatedFrame.height + 16)
             self.profileImageView.isHidden = true
-            self.bubbleImageView.image = BUBBLE_ME_IMAGE
-            self.bubbleImageView.tintColor = GREEN_UICOLOR
             self.messageTextView.textColor = UIColor.white
+            
+            if isLastInChain {
+                self.bubbleImageView.backgroundColor = UIColor.clear
+                self.textBubbleView.frame = CGRect(x: viewWidth - estimatedFrame.width - 16 - 8 - 16 - 8, y: 0, width: estimatedFrame.width + 20 + 8 + 8, height: estimatedFrame.height + 16 + 6)
+                self.bubbleImageView.image = BUBBLE_ME_IMAGE
+                self.bubbleImageView.tintColor = GREEN_UICOLOR
+            } else {
+                self.bubbleImageView.image = nil
+                self.textBubbleView.frame = CGRect(x: viewWidth - estimatedFrame.width - 16 - 8 - 16 - 8, y: 2, width: estimatedFrame.width + 20 + 8, height: estimatedFrame.height + 16 + 2)
+                self.bubbleImageView.backgroundColor = GREEN_UICOLOR
+            }
         }
         self.messageTextView.isScrollEnabled = false
     }

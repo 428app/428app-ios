@@ -22,6 +22,7 @@ class ChatController: UIViewController, UICollectionViewDelegateFlowLayout, UITe
     /** DATA **/
     fileprivate var messages: [Message]? // All messages
     fileprivate var messagesInTimeBuckets: [[Message]]? // Messages separated into buckets of time (at least 1 hour apart)
+    fileprivate var messageIsLastInChain: [[Bool]]? // If true, that means message is the last message sent in chain of messages by one user, so bubble will be attached
     fileprivate var timeBucketHeaders: [Date]? // Headers of time buckets, must have same length as messagesInTimeBuckets
 
     /** HEIGHTS AND CONSTRAINTS **/
@@ -36,15 +37,16 @@ class ChatController: UIViewController, UICollectionViewDelegateFlowLayout, UITe
     var friend: Friend? {
         didSet { // Set from didSelect in ConnectionsController
             self.navigationItem.title = self.friend?.name
-            
             self.messages = friend?.messages?.allObjects as? [Message]
             self.bucketMessagesIntoTime()
+            self.assembleMessageIsLastInChain()
         }
     }
     
     override func viewDidLoad() {
         super.viewDidLoad()
         self.view.backgroundColor = UIColor.white
+        printChainArr()
         self.setupCollectionView()
         self.setupInputComponents()
     }
@@ -74,6 +76,16 @@ class ChatController: UIViewController, UICollectionViewDelegateFlowLayout, UITe
             log.info("-Bucket-")
             for message in messages {
                 log.info(message.text)
+            }
+        }
+    }
+    
+    // Function used for testing of chains
+    fileprivate func printChainArr() {
+        for section in messageIsLastInChain! {
+            log.info("-Section")
+            for chain in section {
+                log.info(chain)
             }
         }
     }
@@ -114,6 +126,34 @@ class ChatController: UIViewController, UICollectionViewDelegateFlowLayout, UITe
                 self.messagesInTimeBuckets?.append(currentBucketMessages)
                 self.timeBucketHeaders?.append(currentBucketTime!)
             }
+        }
+    }
+    
+    fileprivate func assembleMessageIsLastInChain() {
+        if self.messagesInTimeBuckets == nil {
+            log.error("[Error] Messages in time buckets is not init in assembleMessageIsLastInChain")
+            return
+        }
+        self.messageIsLastInChain = [[Bool]]()
+        for i in 0...self.messagesInTimeBuckets!.count - 1 {
+            let section: [Message] = self.messagesInTimeBuckets![i]
+            var chains = [Bool]()
+            if section.count == 0 {
+                log.error("[Error] No messages in bucket")
+                self.messageIsLastInChain!.append(chains)
+                continue
+            }
+            if section.count >= 2 {
+                for j in 0...section.count - 2 {
+                    let m0: Message = section[j]
+                    let m1: Message = section[j+1]
+                    // Last in chain if next one is different from current
+                    chains.append(!((m0.isSender && m1.isSender) || (!m0.isSender && !m1.isSender)))
+                }
+            }
+            // End of row will be last in chain automatically
+            chains.append(true)
+            self.messageIsLastInChain!.append(chains)
         }
     }
     
@@ -249,6 +289,7 @@ class ChatController: UIViewController, UICollectionViewDelegateFlowLayout, UITe
                 try context.save()
                 self.messages?.append(message)
                 self.bucketMessagesIntoTime()
+                self.assembleMessageIsLastInChain()
                 self.collectionView.reloadData()
                 self.scrollToLastItemInCollectionView()
                 self.resetInputContainer()
@@ -391,7 +432,8 @@ class ChatController: UIViewController, UICollectionViewDelegateFlowLayout, UITe
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: CELL_ID, for: indexPath) as! ChatCell
         let message = self.messagesInTimeBuckets?[indexPath.section][indexPath.row]
-        cell.configureCell(messageObj: message, viewWidth: view.frame.width)
+        let isLastInChain = self.messageIsLastInChain?[indexPath.section][indexPath.row]
+        cell.configureCell(messageObj: message, viewWidth: view.frame.width, isLastInChainObj: isLastInChain)
         return cell
     }
     
@@ -414,6 +456,7 @@ class ChatController: UIViewController, UICollectionViewDelegateFlowLayout, UITe
                     // Insert timeLabel here
                     log.info("=====")
                     log.info("\(self.tappedIndexPath)")
+                    yi += 10
                     if tappedIndexPath == nil {
                         log.info("Indexpath nil")
                         tappedIndexPath = indexPath
