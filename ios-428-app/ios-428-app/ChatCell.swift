@@ -12,6 +12,7 @@ import UIKit
 class ChatCell: BaseCell {
     
     fileprivate var message: Message!
+    open var shouldExpand = false
     
     fileprivate let messageTextView: UITextView = {
         var textView = UITextView()
@@ -20,6 +21,8 @@ class ChatCell: BaseCell {
         textView.showsHorizontalScrollIndicator = false
         textView.showsVerticalScrollIndicator = false
         textView.isEditable = false
+        textView.isSelectable = false
+        textView.isUserInteractionEnabled = true
         return textView
     }()
     
@@ -27,6 +30,7 @@ class ChatCell: BaseCell {
         let view = UIView()
         view.layer.cornerRadius = 15
         view.layer.masksToBounds = true
+        view.isUserInteractionEnabled = true
         return view
     }()
     
@@ -36,6 +40,15 @@ class ChatCell: BaseCell {
         imageView.layer.cornerRadius = 15
         imageView.layer.masksToBounds = true
         return imageView
+    }()
+    
+    open lazy var timeLabel: UILabel = {
+       let label = UILabel()
+        label.font = UIFont.systemFont(ofSize: 12.0)
+        label.textColor = UIColor.lightGray
+        label.isHidden = true
+        label.textAlignment = .center
+        return label
     }()
     
     fileprivate let BUBBLE_RECIPIENT_IMAGE = UIImage(named: "bubble_recipient")?.resizableImage(withCapInsets: UIEdgeInsets(top: 22, left: 26, bottom: 22, right: 26))
@@ -51,16 +64,24 @@ class ChatCell: BaseCell {
         addSubview(textBubbleView)
         addSubview(messageTextView)
         addSubview(profileImageView)
+        addSubview(timeLabel)
         
         addConstraintsWithFormat("H:|-8-[v0(30)]", views: profileImageView)
-        addConstraintsWithFormat("V:[v0(30)]|", views: profileImageView)
+        addConstraintsWithFormat("V:[v0(30)]-8-[v1]|", views: profileImageView, timeLabel)
+        
+        addConstraintsWithFormat("H:|[v0]|", views: timeLabel)
         
         textBubbleView.addSubview(bubbleImageView)
         textBubbleView.addConstraintsWithFormat("H:|[v0]|", views: bubbleImageView)
         textBubbleView.addConstraintsWithFormat("V:|[v0]|", views: bubbleImageView)
+        
+        let tapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(notifyControllerToExpand))
+        messageTextView.addGestureRecognizer(tapGestureRecognizer)
+        
     }
     
     func configureCell(messageObj: Message?, viewWidth: CGFloat) {
+//        self.timeLabel.isHidden = !self.shouldExpand
         if messageObj == nil {
             self.isHidden = true
             return
@@ -74,6 +95,7 @@ class ChatCell: BaseCell {
         self.messageTextView.text = self.message?.text
 
         self.profileImageView.image = UIImage(named: profileImageName)
+        self.timeLabel.text = "Hi"
         
         let size = CGSize(width: 250, height: 1000)
         let options = NSStringDrawingOptions.usesFontLeading.union(.usesLineFragmentOrigin)
@@ -95,6 +117,12 @@ class ChatCell: BaseCell {
         }
         self.messageTextView.sizeToFit()
         self.messageTextView.isScrollEnabled = false
+    }
+    
+    func notifyControllerToExpand(tap: UITapGestureRecognizer) {
+//        self.shouldExpand = !self.shouldExpand // toggling has some bugs
+        self.shouldExpand = true
+        NotificationCenter.default.post(name: NOTIF_EXPANDCELL, object: nil)
     }
     
 }

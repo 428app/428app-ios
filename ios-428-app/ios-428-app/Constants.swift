@@ -9,6 +9,9 @@
 import Foundation
 import UIKit
 
+// Notifications
+let NOTIF_EXPANDCELL = NSNotification.Name.init(rawValue: "expandCell")
+
 // Colors
 let GRAY_UICOLOR: UIColor = UIColor(red: 204/255.0, green: 204/255.0, blue: 204/255.0, alpha: 1.0) // #cccccc
 let GREEN_UICOLOR: UIColor = UIColor(red: 71/255.0, green: 217/255.0, blue: 191/255.0, alpha: 1.0) // #47d9bf

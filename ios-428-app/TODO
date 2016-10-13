@@ -1,9 +1,10 @@
 !CHAT!
-Bugs
-- Refactor ChatController and View classes
+X Click on chat bubble to bring down time
+- Assign time text
+- Fix profile pic alignment
+- Toggle time on and off
 
 New features
-- Swipe right on chat screen to show time
 - Click on chat bubble to Copy (Similar to tinder)
 - Highlight links to open up UIWebView
 - Chat bubbles alternating between tails and no tails
@@ -16,9 +17,8 @@ New features
 
 
 
-Nice to have:
-1) Width of chat bubbles being a % of screen size (test on iphone 4s?)
-2) Chat keyboard comes up more naturally
-3) Match date when loading for pagination upwards
+Known issues in descending urgency:
+1) For chat that is not fully blocked by keyboard, should only scroll by diff and not whole height of keyboard: ChatController: handleKeyboardNotification()
+2) Width of chat bubbles being a % of screen size (test on iphone 4s?): ChatCell: configureCell()
 
 

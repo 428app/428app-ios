@@ -31,6 +31,7 @@ class ChatController: UIViewController, UICollectionViewDelegateFlowLayout, UITe
     // Adjusted for keyboard
     fileprivate var bottomConstraintForInput: NSLayoutConstraint!
     fileprivate var topConstraintForCollectionView: NSLayoutConstraint!
+    fileprivate var keyboardHeight: CGFloat = 216.0 // Default of 216.0, but reset the first time keyboard pops up
     
     var friend: Friend? {
         didSet { // Set from didSelect in ConnectionsController
@@ -43,10 +44,8 @@ class ChatController: UIViewController, UICollectionViewDelegateFlowLayout, UITe
     override func viewDidLoad() {
         super.viewDidLoad()
         self.view.backgroundColor = UIColor.white
-        printMessagesArr()
         self.setupCollectionView()
         self.setupInputComponents()
-
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -146,7 +145,15 @@ class ChatController: UIViewController, UICollectionViewDelegateFlowLayout, UITe
             let screenHeight = UIScreen.main.bounds.height
             if newHeight < 0.2 * screenHeight {
                 self.inputContainerHeightConstraint.constant = newHeight + 12.0 // Expand input container
-                self.topConstraintForCollectionView.constant -= abs(newHeight - self.textViewHeight) // Shift collection view up
+                // Shift screen accordingly
+                let diff = newHeight - self.textViewHeight
+                if self.isCollectionViewBlockingInput() && diff > 0 {
+                    // Need to shift upwards if content is blocked
+                    self.topConstraintForCollectionView.constant -= diff
+                } else if diff < 0 && self.topConstraintForCollectionView.constant < 0 {
+                    // Only shift downwards if previously shifted upwards
+                    self.topConstraintForCollectionView.constant -= diff
+                }
                 self.view.layoutIfNeeded()
             } else {
                 textView.flashScrollIndicators()
@@ -255,11 +262,28 @@ class ChatController: UIViewController, UICollectionViewDelegateFlowLayout, UITe
     fileprivate func registerObservers() {
         NotificationCenter.default.addObserver(self, selector: #selector(handleKeyboardNotification), name: NSNotification.Name.UIKeyboardWillHide, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(handleKeyboardNotification), name: NSNotification.Name.UIKeyboardWillChangeFrame, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(expandCell), name: NOTIF_EXPANDCELL, object: nil)
     }
     
     private func unregisterObservers() {
         NotificationCenter.default.removeObserver(self, name: NSNotification.Name.UIKeyboardWillHide, object: nil)
         NotificationCenter.default.removeObserver(self, name: NSNotification.Name.UIKeyboardWillChangeFrame, object: nil)
+        NotificationCenter.default.removeObserver(self, name: NOTIF_EXPANDCELL, object: nil)
+    }
+    
+    fileprivate func isCollectionViewBlockingInput() -> Bool {
+        // Find bottom of collection view
+        let lastSection = self.timeBucketHeaders!.count - 1
+        let lastRow = self.messagesInTimeBuckets![lastSection].count - 1
+        let indexPath = IndexPath(item: lastRow, section: lastSection)
+        let attributes = self.collectionView.layoutAttributesForItem(at: indexPath)!
+        let frame: CGRect = self.collectionView.convert(attributes.frame, to: self.view)
+        let bottomOfCollectionView = frame.maxY
+        
+        // Compare it with top of input container
+        let topOfInput = self.view.bounds.maxY - keyboardHeight - self.messageInputContainerView.bounds.height
+        
+        return bottomOfCollectionView >= topOfInput
     }
     
     func handleKeyboardNotification(_ notification: Notification) {
@@ -267,35 +291,24 @@ class ChatController: UIViewController, UICollectionViewDelegateFlowLayout, UITe
             
             let isKeyboardShowing = notification.name != Notification.Name.UIKeyboardWillHide
             let keyboardViewEndFrame = view.convert(keyboardFrame, from: view.window)
+            self.keyboardHeight = keyboardViewEndFrame.height
             
-            // Find bottom of collection view
-            let lastSection = self.timeBucketHeaders!.count - 1
-            let lastRow = self.messagesInTimeBuckets![lastSection].count - 1
-            let indexPath = IndexPath(item: lastRow, section: lastSection)
-            let attributes = self.collectionView.layoutAttributesForItem(at: indexPath)!
-            let frame: CGRect = self.collectionView.convert(attributes.frame, to: collectionView.superview)
-            let bottomOfCollectionView = frame.maxY
+            // TODO: Shift screen up by a bit, while keyboard all the way when keyboard only covers part of cells
+//            let distanceShifted = min(keyboardViewEndFrame.height, abs(bottomOfCollectionView - topOfInput + SECTION_HEADER_HEIGHT))
             
-            // Compare it with top of input container
-            let topOfInput = self.view.bounds.maxY - keyboardViewEndFrame.height - self.messageInputContainerView.bounds.height
-            
-            let isKeyboardBlockingCollection = bottomOfCollectionView >= topOfInput
-            let distanceShifted = min(keyboardViewEndFrame.height, abs(bottomOfCollectionView - topOfInput + SECTION_HEADER_HEIGHT))
-            
-            // Also shift the input container's frame so that the input moves smoothly with keyboard
-            // Bottom constraint for input has to also be shifted if not the input container will be expanded upon just shifting frame
             if isKeyboardShowing {
                 self.scrollToLastItemInCollectionView()
                 UIView.animate(withDuration: animationDuration, animations: {
-                    self.messageInputContainerView.frame.origin.y -= keyboardViewEndFrame.height
-                    self.bottomConstraintForInput.constant = -keyboardViewEndFrame.height
-                    self.topConstraintForCollectionView.constant = isKeyboardBlockingCollection ? -distanceShifted : 0
+                    if self.isCollectionViewBlockingInput() {
+                        self.view.frame.origin.y = -keyboardViewEndFrame.height
+                    } else {
+                        self.bottomConstraintForInput.constant = -keyboardViewEndFrame.height
+                    }
                 })
             } else {
                 UIView.animate(withDuration: animationDuration, animations: {
-                    self.messageInputContainerView.frame.origin.y += keyboardViewEndFrame.height
+                    self.view.frame.origin.y = 0
                     self.bottomConstraintForInput.constant = 0
-                    self.topConstraintForCollectionView.constant = 0
                 })
             }
         }
@@ -381,11 +394,57 @@ class ChatController: UIViewController, UICollectionViewDelegateFlowLayout, UITe
         return cell
     }
     
+    
+    private var cellTimeLabel = UILabel()
+    // TODO: Compare indexpaths
+    private var tappedIndexPath: IndexPath?
+    
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        if let messageText = messagesInTimeBuckets?[indexPath.section][indexPath.row].text {
+        if let message = messagesInTimeBuckets?[indexPath.section][indexPath.row], let messageText = message.text, let messageDate = message.date {
             let size = CGSize(width: 250, height: 1000)
             let options = NSStringDrawingOptions.usesFontLeading.union(.usesLineFragmentOrigin)
             let estimatedFrame = NSString(string: messageText).boundingRect(with: size, options: options, attributes: [NSFontAttributeName: UIFont.systemFont(ofSize: 16.0)], context: nil)
+            if let cell = self.collectionView.cellForItem(at: indexPath) as? ChatCell {
+                if cell.shouldExpand {
+                    self.cellTimeLabel.removeFromSuperview()
+                    let cellFrame = self.collectionView.convert(cell.frame, to: self.view)
+                    var yi = cellFrame.origin.y + cellFrame.height
+                    // Insert timeLabel here
+                    if tappedIndexPath == nil {
+                        tappedIndexPath = indexPath
+                    } else {
+                        if indexPath.section > tappedIndexPath!.section || (indexPath.section == tappedIndexPath!.section && indexPath.row > tappedIndexPath!.row) {
+                            log.info("Tapped below")
+                            yi -= 22.5
+                        }
+                        tappedIndexPath = indexPath
+                    }
+                    
+                    
+                    let labelFrameInView = CGRect(x: 0, y: yi, width: self.view.frame.width, height: 15)
+                    let labelFrame = self.view.convert(labelFrameInView, to: self.collectionView)
+                    log.info("\(cellFrame)")
+                    cellTimeLabel = UILabel(frame: labelFrame)
+                    
+                    // Extract hh:mm a from time
+                    let dateFormatter = DateFormatter()
+                    dateFormatter.dateFormat = "h:mm a"
+                    cellTimeLabel.text = dateFormatter.string(from: messageDate)
+                    
+                    // Alignment based on who texted
+                    cellTimeLabel.textAlignment = .center
+                    
+                    cellTimeLabel.font = UIFont.systemFont(ofSize: 12.0)
+                    cellTimeLabel.textColor = UIColor.lightGray
+                    self.collectionView.addSubview(cellTimeLabel)
+                    
+                    cell.shouldExpand = false
+//                    cell.timeLabel.isHidden = false
+                    return CGSize(width: view.frame.width, height: estimatedFrame.height + 40)
+                }
+                
+//                cell.timeLabel.isHidden = true
+            }
             return CGSize(width: view.frame.width, height: estimatedFrame.height + 16)
         }
         return CGSize(width: view.frame.width, height: 100)
@@ -394,6 +453,19 @@ class ChatController: UIViewController, UICollectionViewDelegateFlowLayout, UITe
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
         // Padding around section headers
         return UIEdgeInsets(top: 4, left: 0, bottom: 4, right: 0)
+    }
+//    
+//    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+//        // Expand collection view cell upon selecting item
+//        UIView.animate(withDuration: 0.3) {
+//            self.collectionView.collectionViewLayout.invalidateLayout()
+//        }
+//    }
+    
+    func expandCell(notif: Notification) {
+        UIView.animate(withDuration: 0.3) {
+            self.collectionView.collectionViewLayout.invalidateLayout()
+        }
     }
 
 }
