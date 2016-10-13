@@ -92,6 +92,7 @@ extension ConnectionsController {
         _ = ConnectionsController.createMessageForFriend(thomas, text: "Sure. How about 6pm tomorrow at Richard's Basement?", minutesAgo: 60 * 24 * 1.25, context: context, isSender: true)
         _ = ConnectionsController.createMessageForFriend(thomas, text: "Also I'm not so sure how free I am from tomorrow onwards. I'm going to be coding 428 non stop until I finally finish implementing it! This is a product that has real value for people - Imagine you having connections from multiple different disciplines! And all those disciplines are already right here at Harvard, but unfortunately with no easy way to connect them... until now!!", minutesAgo: 60 * 24 * 1.2, context: context, isSender: true)
         _ = ConnectionsController.createMessageForFriend(thomas, text: "OK good luck with your crazy ideas then! I hope you do well in that.", minutesAgo: 60 * 24 * 1.19, context: context)
+        _ = ConnectionsController.createMessageForFriend(thomas, text: "www.google.com", minutesAgo: 60 * 24 * 1.1, context: context)
     }
     
     static func createMessageForFriend(_ friend: Friend, text: String, minutesAgo: Double, context: NSManagedObjectContext, isSender: Bool = false) -> Message {

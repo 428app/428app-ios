@@ -12,7 +12,7 @@ import UIKit
 class CustomNavigationController: UINavigationController {
     override func viewDidLoad() {
         super.viewDidLoad()
-        self.navigationBar.titleTextAttributes = [NSForegroundColorAttributeName: GREEN_UICOLOR,
+        self.navigationBar.titleTextAttributes = [NSForegroundColorAttributeName: UIColor.black,
                                                   NSFontAttributeName: FONT_HEAVY_LARGE]
         self.navigationBar.tintColor = GREEN_UICOLOR
         self.navigationBar.backgroundColor = UIColor.white

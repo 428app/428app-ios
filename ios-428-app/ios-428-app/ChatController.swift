@@ -36,6 +36,7 @@ class ChatController: UIViewController, UICollectionViewDelegateFlowLayout, UITe
     var friend: Friend? {
         didSet { // Set from didSelect in ConnectionsController
             self.navigationItem.title = self.friend?.name
+            
             self.messages = friend?.messages?.allObjects as? [Message]
             self.bucketMessagesIntoTime()
         }
@@ -405,48 +406,59 @@ class ChatController: UIViewController, UICollectionViewDelegateFlowLayout, UITe
             let options = NSStringDrawingOptions.usesFontLeading.union(.usesLineFragmentOrigin)
             let estimatedFrame = NSString(string: messageText).boundingRect(with: size, options: options, attributes: [NSFontAttributeName: UIFont.systemFont(ofSize: 16.0)], context: nil)
             if let cell = self.collectionView.cellForItem(at: indexPath) as? ChatCell {
+                
                 if cell.shouldExpand {
                     self.cellTimeLabel.removeFromSuperview()
                     let cellFrame = self.collectionView.convert(cell.frame, to: self.view)
                     var yi = cellFrame.origin.y + cellFrame.height
                     // Insert timeLabel here
+                    log.info("=====")
+                    log.info("\(self.tappedIndexPath)")
                     if tappedIndexPath == nil {
+                        log.info("Indexpath nil")
                         tappedIndexPath = indexPath
-                    } else {
+                    }
+                    else {
                         if indexPath.section > tappedIndexPath!.section || (indexPath.section == tappedIndexPath!.section && indexPath.row > tappedIndexPath!.row) {
                             log.info("Tapped below")
-                            yi -= 22.5
+                            yi -= 24
+                        } else if indexPath.section == tappedIndexPath!.section && indexPath.row == tappedIndexPath!.row {
+                            // Clicked to hide
+                            log.info("Hiding")
+                            self.tappedIndexPath = nil
+                            cell.shouldExpand = false
+                            // Return with no expansion
+                            return CGSize(width: view.frame.width, height: estimatedFrame.height + 16)
                         }
                         tappedIndexPath = indexPath
                     }
                     
-                    
-                    let labelFrameInView = CGRect(x: 0, y: yi, width: self.view.frame.width, height: 15)
+                    let labelFrameInView = CGRect(x: 50, y: yi, width: self.view.frame.width - 80, height: 15)
                     let labelFrame = self.view.convert(labelFrameInView, to: self.collectionView)
-                    log.info("\(cellFrame)")
                     cellTimeLabel = UILabel(frame: labelFrame)
                     
                     // Extract hh:mm a from time
                     let dateFormatter = DateFormatter()
                     dateFormatter.dateFormat = "h:mm a"
-                    cellTimeLabel.text = dateFormatter.string(from: messageDate)
+                    let dateString = dateFormatter.string(from: messageDate)
                     
                     // Alignment based on who texted
-                    cellTimeLabel.textAlignment = .center
+                    cellTimeLabel.textAlignment = message.isSender ? .right : .left
+                    cellTimeLabel.text = (message.isSender ? "Sent at " : "Received at ") + dateString
                     
                     cellTimeLabel.font = UIFont.systemFont(ofSize: 12.0)
                     cellTimeLabel.textColor = UIColor.lightGray
-                    self.collectionView.addSubview(cellTimeLabel)
                     
+                    self.collectionView.addSubview(cellTimeLabel)
                     cell.shouldExpand = false
-//                    cell.timeLabel.isHidden = false
+                    // Return with expansion
                     return CGSize(width: view.frame.width, height: estimatedFrame.height + 40)
                 }
-                
-//                cell.timeLabel.isHidden = true
             }
+            // Return with no expansion
             return CGSize(width: view.frame.width, height: estimatedFrame.height + 16)
         }
+        // Return whatever
         return CGSize(width: view.frame.width, height: 100)
     }
     
@@ -454,15 +466,9 @@ class ChatController: UIViewController, UICollectionViewDelegateFlowLayout, UITe
         // Padding around section headers
         return UIEdgeInsets(top: 4, left: 0, bottom: 4, right: 0)
     }
-//    
-//    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-//        // Expand collection view cell upon selecting item
-//        UIView.animate(withDuration: 0.3) {
-//            self.collectionView.collectionViewLayout.invalidateLayout()
-//        }
-//    }
     
     func expandCell(notif: Notification) {
+        // Called by ChatCell's messageTextView to invalidate layout
         UIView.animate(withDuration: 0.3) {
             self.collectionView.collectionViewLayout.invalidateLayout()
         }
