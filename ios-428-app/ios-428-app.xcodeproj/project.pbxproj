@@ -40,6 +40,7 @@
 		4064A21A1DACC20E00071383 /* ConnectionCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4064A2191DACC20E00071383 /* ConnectionCell.swift */; };
 		4064A21F1DAD72DF00071383 /* Functions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4064A21E1DAD72DF00071383 /* Functions.swift */; };
 		4064A2211DADE67E00071383 /* ChatHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4064A2201DADE67E00071383 /* ChatHeaderView.swift */; };
+		4064A2271DB13FBD00071383 /* Debug.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4064A2261DB13FBD00071383 /* Debug.swift */; };
 		FED3D2F8E9831031BBFFDBEB /* Pods_ios_428_app.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1B0A78A64649B55915C0C572 /* Pods_ios_428_app.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
 /* End PBXBuildFile section */
 
@@ -82,6 +83,7 @@
 		4064A2191DACC20E00071383 /* ConnectionCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConnectionCell.swift; sourceTree = "<group>"; };
 		4064A21E1DAD72DF00071383 /* Functions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Functions.swift; sourceTree = "<group>"; };
 		4064A2201DADE67E00071383 /* ChatHeaderView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChatHeaderView.swift; sourceTree = "<group>"; };
+		4064A2261DB13FBD00071383 /* Debug.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Debug.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -206,6 +208,7 @@
 		4064A21B1DACC2C600071383 /* Services */ = {
 			isa = PBXGroup;
 			children = (
+				4064A2261DB13FBD00071383 /* Debug.swift */,
 				4064A1CA1DAC495D00071383 /* CoreDataService.swift */,
 			);
 			name = Services;
@@ -375,6 +378,7 @@
 				4064A1BE1DAC381300071383 /* ios_428_app.xcdatamodeld in Sources */,
 				4064A2181DACC1B700071383 /* ChatCell.swift in Sources */,
 				4064A1E61DAC7DA600071383 /* CustomTabBarController.swift in Sources */,
+				4064A2271DB13FBD00071383 /* Debug.swift in Sources */,
 				4064A2211DADE67E00071383 /* ChatHeaderView.swift in Sources */,
 				4064A1B81DAC381300071383 /* ConnectionsController.swift in Sources */,
 				4064A21F1DAD72DF00071383 /* Functions.swift in Sources */,

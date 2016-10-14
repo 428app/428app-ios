@@ -46,6 +46,7 @@ class ChatController: UIViewController, UICollectionViewDelegateFlowLayout, UITe
     override func viewDidLoad() {
         super.viewDidLoad()
         self.view.backgroundColor = UIColor.white
+        self.setupNavigationBar()
         self.setupCollectionView()
         self.setupInputComponents()
     }
@@ -62,26 +63,6 @@ class ChatController: UIViewController, UICollectionViewDelegateFlowLayout, UITe
     }
     
     // MARK: Process messages into buckets based on hourly time intervals
-    
-    // Function used for testing of buckets
-    fileprivate func printMessagesArr() {
-        for messages in messagesInTimeBuckets! {
-            log.info("-Bucket-")
-            for message in messages {
-                log.info(message.text)
-            }
-        }
-    }
-    
-    // Function used for testing of chains
-    fileprivate func printChainArr() {
-        for section in messageIsLastInChain! {
-            log.info("-Section")
-            for chain in section {
-                log.info(chain)
-            }
-        }
-    }
     
     fileprivate func bucketMessagesIntoTime() {
         if self.messages == nil || self.messages!.count == 0 {
@@ -148,6 +129,33 @@ class ChatController: UIViewController, UICollectionViewDelegateFlowLayout, UITe
             chains.append(true)
             self.messageIsLastInChain!.append(chains)
         }
+    }
+    
+    // MARK: Navigation bar
+    
+    fileprivate func setupNavigationBar() {
+        self.navigationItem.rightBarButtonItem = UIBarButtonItem(image: #imageLiteral(resourceName: "more"), style: .plain, target: self, action: #selector(handleNavMore))
+    }
+    
+    func handleNavMore() {
+        // Bring up alert controller to Mute or Report person
+        let alertController = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
+        alertController.view.tintColor = GREEN_UICOLOR
+        let cancelAction = UIAlertAction(title: "Cancel", style: .cancel, handler: nil)
+        let muteAction = UIAlertAction(title: "Mute Notifications", style: .default) { (action) in
+            // Mute user's notifications
+        }
+        var friendName = ""
+        if let name = self.friend?.name {
+            friendName = " " + name
+        }
+        let reportAction = UIAlertAction(title: "Report\(friendName)", style: .default) { (action) in
+            // Report user
+        }
+        alertController.addAction(muteAction)
+        alertController.addAction(reportAction)
+        alertController.addAction(cancelAction)
+        self.present(alertController, animated: true, completion: nil)
     }
     
     // MARK: Input text view
@@ -518,5 +526,7 @@ class ChatController: UIViewController, UICollectionViewDelegateFlowLayout, UITe
             self.collectionView.collectionViewLayout.invalidateLayout()
         }
     }
+    
+    
 
 }
