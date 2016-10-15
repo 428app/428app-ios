@@ -20,6 +20,7 @@ class ConnectionCell: BaseCell {
             timeLabel.textColor = isHighlighted ? UIColor.white : UIColor.gray
             messageLabel.textColor = isHighlighted ? UIColor.white : UIColor.gray
             disciplineImageView.tintColor = isHighlighted ? UIColor.white : GREEN_UICOLOR
+            repliedImageView.tintColor = isHighlighted ? UIColor.white : UIColor.gray
         }
     }
     
@@ -43,11 +44,6 @@ class ConnectionCell: BaseCell {
         return text
     }
     
-    fileprivate let nameLabel: UILabel = {
-        let label = UILabel()
-        label.font = FONT_HEAVY_LARGE
-        return label
-    }()
     
     fileprivate let profileImageView: UIImageView = {
         let imageView = UIImageView()
@@ -55,6 +51,19 @@ class ConnectionCell: BaseCell {
         imageView.layer.cornerRadius = 34
         imageView.layer.masksToBounds = true
         return imageView
+    }()
+    
+    // Container views
+    
+    fileprivate let containerView: UIView = {
+        let view = UIView()
+        return view
+    }()
+    
+    fileprivate let nameLabel: UILabel = {
+        let label = UILabel()
+        label.font = FONT_HEAVY_LARGE
+        return label
     }()
     
     fileprivate let disciplineImageView: UIImageView = {
@@ -69,6 +78,14 @@ class ConnectionCell: BaseCell {
         label.font = UIFont.systemFont(ofSize: 15.0)
         label.textColor = UIColor.gray
         return label
+    }()
+    
+    fileprivate let repliedImageView: UIImageView = {
+        let imageView = UIImageView()
+        imageView.image = #imageLiteral(resourceName: "replied")
+        imageView.contentMode = .scaleAspectFit
+        imageView.tintColor = UIColor.gray
+        return imageView
     }()
     
     fileprivate let timeLabel: UILabel = {
@@ -89,52 +106,57 @@ class ConnectionCell: BaseCell {
         backgroundColor = UIColor.white
         addSubview(profileImageView)
         addSubview(dividerLineView)
-        
-        setupContainerView()
-        
-        addConstraintsWithFormat("H:|-12-[v0(68)]", views: profileImageView)
-        addConstraintsWithFormat("V:[v0(68)]", views: profileImageView)
-        
-        addConstraint(NSLayoutConstraint(item: profileImageView, attribute: .centerY, relatedBy: .equal, toItem: self, attribute: .centerY, multiplier: 1, constant: 0))
-        
-        addConstraintsWithFormat("H:|-82-[v0]|", views: dividerLineView)
-        addConstraintsWithFormat("V:[v0(1)]|", views: dividerLineView)
-    }
-    
-    fileprivate func setupContainerView() {
-        let containerView = UIView()
         addSubview(containerView)
+        
         addConstraintsWithFormat("H:|-90-[v0]|", views: containerView)
         addConstraintsWithFormat("V:[v0(60)]", views: containerView)
         addConstraint(NSLayoutConstraint(item: containerView, attribute: .centerY, relatedBy: .equal, toItem: self, attribute: .centerY, multiplier: 1, constant: 0))
         
+        addConstraintsWithFormat("H:|-12-[v0(68)]", views: profileImageView)
+        addConstraintsWithFormat("V:[v0(68)]", views: profileImageView)
+        addConstraint(NSLayoutConstraint(item: profileImageView, attribute: .centerY, relatedBy: .equal, toItem: self, attribute: .centerY, multiplier: 1, constant: 0))
+        
+        addConstraintsWithFormat("H:|-82-[v0]|", views: dividerLineView)
+        addConstraintsWithFormat("V:[v0(1)]|", views: dividerLineView)
+        
+        setupContainerView()
+    }
+    
+    fileprivate func setupContainerView() {
+        // Container is the message container
         containerView.addSubview(nameLabel)
         containerView.addSubview(disciplineImageView)
         containerView.addSubview(messageLabel)
         containerView.addSubview(timeLabel)
         containerView.addConstraintsWithFormat("H:|[v0(16)]-5-[v1][v2(80)]-12-|", views: disciplineImageView, nameLabel, timeLabel)
-        containerView.addConstraintsWithFormat("H:|[v0]-12-|", views: messageLabel)
         containerView.addConstraintsWithFormat("V:|[v0][v1(24)]|", views: nameLabel, messageLabel)
         containerView.addConstraintsWithFormat("V:|-7-[v0(24)]", views: timeLabel)
         containerView.addConstraintsWithFormat("V:|-8-[v0(16)]", views: disciplineImageView)
     }
     
-    func configureCell(messageObj: Message?) {
-        if messageObj == nil {
-            self.isHidden = true
-            return
-        }
-        self.message = messageObj!
-        self.nameLabel.text = self.message.friend?.name
-        if let profileImageName = self.message.friend?.profileImageName {
-            self.profileImageView.image = UIImage(named: profileImageName)
-        }
-        if let disciplineImageName = self.message.friend?.disciplineImageName {
-            self.disciplineImageView.image = UIImage(named: disciplineImageName)
-        }
+    fileprivate var constraintsToDelete = [NSLayoutConstraint]()
+    
+    func configureCell(messageObj: Message) {
+        self.message = messageObj
+        self.nameLabel.text = self.message.friend.name
+        self.profileImageView.image = UIImage(named: self.message.friend.profileImageName)
+        self.disciplineImageView.image = UIImage(named: self.message.friend.disciplineImageName)
         self.messageLabel.text = self.message.text
-        if let date = self.message.date {
-            self.timeLabel.text = formatDateToText(date: date)
+        self.timeLabel.text = formatDateToText(date: self.message.date)
+        
+        containerView.removeConstraints(constraintsToDelete)
+        repliedImageView.removeFromSuperview()
+        constraintsToDelete = [NSLayoutConstraint]()
+        
+        if message.isSender {
+            containerView.addSubview(repliedImageView)
+            constraintsToDelete.append(contentsOf: containerView.addAndGetConstraintsWithFormat("H:|[v0(16)]-3-[v1]-12-|", views: repliedImageView, messageLabel))
+            let topOfRepliedConstraint = NSLayoutConstraint(item: repliedImageView, attribute: .top, relatedBy: .equal, toItem: disciplineImageView, attribute: .bottom, multiplier: 1.0, constant: 16.0)
+            containerView.addConstraint(topOfRepliedConstraint)
+            constraintsToDelete.append(topOfRepliedConstraint)
+            constraintsToDelete.append(contentsOf: containerView.addAndGetConstraintsWithFormat("V:[v0(16)]", views: repliedImageView))
+        } else {
+            constraintsToDelete.append(contentsOf: containerView.addAndGetConstraintsWithFormat("H:|[v0]-12-|", views: messageLabel))
         }
     }
 }

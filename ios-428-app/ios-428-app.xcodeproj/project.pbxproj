@@ -12,7 +12,7 @@
 		4064A1BE1DAC381300071383 /* ios_428_app.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 4064A1BC1DAC381300071383 /* ios_428_app.xcdatamodeld */; };
 		4064A1C01DAC381300071383 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 4064A1BF1DAC381300071383 /* Assets.xcassets */; };
 		4064A1C31DAC381300071383 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 4064A1C11DAC381300071383 /* LaunchScreen.storyboard */; };
-		4064A1CB1DAC495D00071383 /* CoreDataService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4064A1CA1DAC495D00071383 /* CoreDataService.swift */; };
+		4064A1CB1DAC495D00071383 /* DataService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4064A1CA1DAC495D00071383 /* DataService.swift */; };
 		4064A1E41DAC590900071383 /* ChatController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4064A1E31DAC590900071383 /* ChatController.swift */; };
 		4064A1E61DAC7DA600071383 /* CustomTabBarController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4064A1E51DAC7DA600071383 /* CustomTabBarController.swift */; };
 		4064A1EB1DAC80F100071383 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4064A1EA1DAC80F100071383 /* Constants.swift */; };
@@ -29,10 +29,6 @@
 		4064A2021DAC811F00071383 /* AvenirLTStd-Oblique.otf in Resources */ = {isa = PBXBuildFile; fileRef = 4064A1F61DAC811F00071383 /* AvenirLTStd-Oblique.otf */; };
 		4064A2031DAC811F00071383 /* AvenirLTStd-Roman.otf in Resources */ = {isa = PBXBuildFile; fileRef = 4064A1F71DAC811F00071383 /* AvenirLTStd-Roman.otf */; };
 		4064A2051DAC868E00071383 /* CustomNavigationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4064A2041DAC868E00071383 /* CustomNavigationController.swift */; };
-		4064A20A1DAC916200071383 /* Message+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4064A2061DAC916200071383 /* Message+CoreDataClass.swift */; };
-		4064A20B1DAC916200071383 /* Message+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4064A2071DAC916200071383 /* Message+CoreDataProperties.swift */; };
-		4064A20C1DAC916200071383 /* Friend+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4064A2081DAC916200071383 /* Friend+CoreDataClass.swift */; };
-		4064A20D1DAC916200071383 /* Friend+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4064A2091DAC916200071383 /* Friend+CoreDataProperties.swift */; };
 		4064A20F1DACB62500071383 /* TODO in Resources */ = {isa = PBXBuildFile; fileRef = 4064A20E1DACB62500071383 /* TODO */; };
 		4064A2141DACBCAA00071383 /* BaseCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4064A2131DACBCAA00071383 /* BaseCell.swift */; };
 		4064A2161DACBCDC00071383 /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4064A2151DACBCDC00071383 /* Extensions.swift */; };
@@ -41,6 +37,8 @@
 		4064A21F1DAD72DF00071383 /* Functions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4064A21E1DAD72DF00071383 /* Functions.swift */; };
 		4064A2211DADE67E00071383 /* ChatHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4064A2201DADE67E00071383 /* ChatHeaderView.swift */; };
 		4064A2271DB13FBD00071383 /* Debug.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4064A2261DB13FBD00071383 /* Debug.swift */; };
+		4064A2291DB2B0B500071383 /* Message.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4064A2281DB2B0B500071383 /* Message.swift */; };
+		4064A22B1DB2B27F00071383 /* Friend.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4064A22A1DB2B27F00071383 /* Friend.swift */; };
 		FED3D2F8E9831031BBFFDBEB /* Pods_ios_428_app.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1B0A78A64649B55915C0C572 /* Pods_ios_428_app.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
 /* End PBXBuildFile section */
 
@@ -55,7 +53,7 @@
 		4064A1BF1DAC381300071383 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		4064A1C21DAC381300071383 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		4064A1C41DAC381300071383 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		4064A1CA1DAC495D00071383 /* CoreDataService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CoreDataService.swift; sourceTree = "<group>"; };
+		4064A1CA1DAC495D00071383 /* DataService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DataService.swift; sourceTree = "<group>"; };
 		4064A1E31DAC590900071383 /* ChatController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChatController.swift; sourceTree = "<group>"; };
 		4064A1E51DAC7DA600071383 /* CustomTabBarController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CustomTabBarController.swift; sourceTree = "<group>"; };
 		4064A1EA1DAC80F100071383 /* Constants.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
@@ -72,10 +70,6 @@
 		4064A1F61DAC811F00071383 /* AvenirLTStd-Oblique.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "AvenirLTStd-Oblique.otf"; sourceTree = "<group>"; };
 		4064A1F71DAC811F00071383 /* AvenirLTStd-Roman.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "AvenirLTStd-Roman.otf"; sourceTree = "<group>"; };
 		4064A2041DAC868E00071383 /* CustomNavigationController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CustomNavigationController.swift; sourceTree = "<group>"; };
-		4064A2061DAC916200071383 /* Message+CoreDataClass.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "Message+CoreDataClass.swift"; path = "../Message+CoreDataClass.swift"; sourceTree = "<group>"; };
-		4064A2071DAC916200071383 /* Message+CoreDataProperties.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "Message+CoreDataProperties.swift"; path = "../Message+CoreDataProperties.swift"; sourceTree = "<group>"; };
-		4064A2081DAC916200071383 /* Friend+CoreDataClass.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "Friend+CoreDataClass.swift"; path = "../Friend+CoreDataClass.swift"; sourceTree = "<group>"; };
-		4064A2091DAC916200071383 /* Friend+CoreDataProperties.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "Friend+CoreDataProperties.swift"; path = "../Friend+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		4064A20E1DACB62500071383 /* TODO */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = TODO; sourceTree = "<group>"; };
 		4064A2131DACBCAA00071383 /* BaseCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BaseCell.swift; sourceTree = "<group>"; };
 		4064A2151DACBCDC00071383 /* Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
@@ -84,6 +78,8 @@
 		4064A21E1DAD72DF00071383 /* Functions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Functions.swift; sourceTree = "<group>"; };
 		4064A2201DADE67E00071383 /* ChatHeaderView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChatHeaderView.swift; sourceTree = "<group>"; };
 		4064A2261DB13FBD00071383 /* Debug.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Debug.swift; sourceTree = "<group>"; };
+		4064A2281DB2B0B500071383 /* Message.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Message.swift; sourceTree = "<group>"; };
+		4064A22A1DB2B27F00071383 /* Friend.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Friend.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -175,10 +171,8 @@
 		4064A2101DACBB1800071383 /* Model */ = {
 			isa = PBXGroup;
 			children = (
-				4064A2061DAC916200071383 /* Message+CoreDataClass.swift */,
-				4064A2071DAC916200071383 /* Message+CoreDataProperties.swift */,
-				4064A2081DAC916200071383 /* Friend+CoreDataClass.swift */,
-				4064A2091DAC916200071383 /* Friend+CoreDataProperties.swift */,
+				4064A2281DB2B0B500071383 /* Message.swift */,
+				4064A22A1DB2B27F00071383 /* Friend.swift */,
 			);
 			name = Model;
 			sourceTree = "<group>";
@@ -209,7 +203,7 @@
 			isa = PBXGroup;
 			children = (
 				4064A2261DB13FBD00071383 /* Debug.swift */,
-				4064A1CA1DAC495D00071383 /* CoreDataService.swift */,
+				4064A1CA1DAC495D00071383 /* DataService.swift */,
 			);
 			name = Services;
 			sourceTree = "<group>";
@@ -368,13 +362,10 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				4064A20A1DAC916200071383 /* Message+CoreDataClass.swift in Sources */,
 				4064A2051DAC868E00071383 /* CustomNavigationController.swift in Sources */,
 				4064A1E41DAC590900071383 /* ChatController.swift in Sources */,
-				4064A20C1DAC916200071383 /* Friend+CoreDataClass.swift in Sources */,
 				4064A1EB1DAC80F100071383 /* Constants.swift in Sources */,
 				4064A2141DACBCAA00071383 /* BaseCell.swift in Sources */,
-				4064A20D1DAC916200071383 /* Friend+CoreDataProperties.swift in Sources */,
 				4064A1BE1DAC381300071383 /* ios_428_app.xcdatamodeld in Sources */,
 				4064A2181DACC1B700071383 /* ChatCell.swift in Sources */,
 				4064A1E61DAC7DA600071383 /* CustomTabBarController.swift in Sources */,
@@ -382,9 +373,10 @@
 				4064A2211DADE67E00071383 /* ChatHeaderView.swift in Sources */,
 				4064A1B81DAC381300071383 /* ConnectionsController.swift in Sources */,
 				4064A21F1DAD72DF00071383 /* Functions.swift in Sources */,
+				4064A22B1DB2B27F00071383 /* Friend.swift in Sources */,
 				4064A1B61DAC381300071383 /* AppDelegate.swift in Sources */,
-				4064A20B1DAC916200071383 /* Message+CoreDataProperties.swift in Sources */,
-				4064A1CB1DAC495D00071383 /* CoreDataService.swift in Sources */,
+				4064A1CB1DAC495D00071383 /* DataService.swift in Sources */,
+				4064A2291DB2B0B500071383 /* Message.swift in Sources */,
 				4064A2161DACBCDC00071383 /* Extensions.swift in Sources */,
 				4064A21A1DACC20E00071383 /* ConnectionCell.swift in Sources */,
 			);

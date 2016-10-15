@@ -1,5 +1,5 @@
 !CHAT!
-- Add sent icon if last message sent by you in ConnectionsController
+- Vertical scroll indicator not going all the way to the bottom of the chat screen
 - Add top click to view person's profile
 
 
@@ -10,6 +10,8 @@
 !SLIDERS!
 
 !LOGIN!
+
+!CONNECTIONS!
 
 
 

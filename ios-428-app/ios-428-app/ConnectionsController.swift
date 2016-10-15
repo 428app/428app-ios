@@ -12,11 +12,11 @@ class ConnectionsController: UICollectionViewController, UICollectionViewDelegat
     
     fileprivate let CELL_ID = "connectionCell"
     
-    open var messages: [Message]? // Non-private so CoreDataService can access
+    open var latestMessages: [Message] = [Message]() // Non-private so DataService can access
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        self.setupData() // Setting up dummy data from CoreDataService
+        self.setupData() // Setting up dummy data from DataService
         navigationItem.title = "Connections"
         collectionView?.backgroundColor = UIColor.white
         collectionView?.alwaysBounceVertical = true
@@ -32,15 +32,12 @@ class ConnectionsController: UICollectionViewController, UICollectionViewDelegat
     // MARK: Collection view 
     
     override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        if let count = messages?.count {
-            return count
-        }
-        return 0
+        return self.latestMessages.count
     }
     
     override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: CELL_ID, for: indexPath) as! ConnectionCell
-        let message = self.messages?[indexPath.item]
+        let message = self.latestMessages[indexPath.item]
         cell.configureCell(messageObj: message)
         return cell
     }
@@ -51,7 +48,15 @@ class ConnectionsController: UICollectionViewController, UICollectionViewDelegat
     
     override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         let controller = ChatController()
-        controller.friend = self.messages?[indexPath.item].friend
+        controller.friend = self.latestMessages[indexPath.item].friend
         navigationController?.pushViewController(controller, animated: true)
     }
+    
+    // MARK: Used by extension to generate data
+    open var friendToMinutesAgo = [String: Double]()
+    open var friendToLatestMessage = [String: Message]()
+    open var midAutoId = 1
+    
+    
+    
 }

@@ -72,17 +72,10 @@ class ChatCell: BaseCell {
         
     }
     
-    func configureCell(messageObj: Message?, viewWidth: CGFloat, isLastInChainObj: Bool?) {
-        let isLastInChain = isLastInChainObj == nil ? true : isLastInChainObj!
-        if messageObj == nil {
-            self.isHidden = true
-            return
-        }
-        self.message = messageObj!
-        guard let messageText = self.message.text, let profileImageName = self.message.friend?.profileImageName else {
-            self.isHidden = true
-            return
-        }
+    func configureCell(messageObj: Message, viewWidth: CGFloat, isLastInChain: Bool) {
+        self.message = messageObj
+        let messageText = self.message.text
+        let profileImageName = self.message.friend.profileImageName
 
         self.messageTextView.isScrollEnabled = true
         self.messageTextView.text = self.message?.text

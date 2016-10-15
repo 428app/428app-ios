@@ -20,10 +20,10 @@ class ChatController: UIViewController, UICollectionViewDelegateFlowLayout, UITe
     fileprivate let SECTION_HEADER_HEIGHT: CGFloat = 30.0
     
     /** DATA **/
-    fileprivate var messages: [Message]? // All messages
-    fileprivate var messagesInTimeBuckets: [[Message]]? // Messages separated into buckets of time (at least 1 hour apart)
-    fileprivate var messageIsLastInChain: [[Bool]]? // If true, that means message is the last message sent in chain of messages by one user, so bubble will be attached
-    fileprivate var timeBucketHeaders: [Date]? // Headers of time buckets, must have same length as messagesInTimeBuckets
+    fileprivate var messages: [Message] = [Message]() // All messages
+    fileprivate var messagesInTimeBuckets: [[Message]] = [[Message]]() // Messages separated into buckets of time (at least 1 hour apart)
+    fileprivate var messageIsLastInChain: [[Bool]] = [[Bool]]() // If true, that means message is the last message sent in chain of messages by one user, so bubble will be attached
+    fileprivate var timeBucketHeaders: [Date] = [Date]() // Headers of time buckets, must have same length as messagesInTimeBuckets
 
     /** HEIGHTS AND CONSTRAINTS **/
     // Adjusted with multiple lines of text
@@ -34,10 +34,10 @@ class ChatController: UIViewController, UICollectionViewDelegateFlowLayout, UITe
     fileprivate var topConstraintForCollectionView: NSLayoutConstraint!
     fileprivate var keyboardHeight: CGFloat = 216.0 // Default of 216.0, but reset the first time keyboard pops up
     
-    var friend: Friend? {
+    var friend: Friend! {
         didSet { // Set from didSelect in ConnectionsController
-            self.navigationItem.title = self.friend?.name
-            self.messages = friend?.messages?.allObjects as? [Message]
+            self.navigationItem.title = self.friend.name
+            self.messages = friend.messages
             self.bucketMessagesIntoTime()
             self.assembleMessageIsLastInChain()
         }
@@ -65,56 +65,48 @@ class ChatController: UIViewController, UICollectionViewDelegateFlowLayout, UITe
     // MARK: Process messages into buckets based on hourly time intervals
     
     fileprivate func bucketMessagesIntoTime() {
-        if self.messages == nil || self.messages!.count == 0 {
+        if self.messages.count == 0 {
             return
         }
         // Sort messages such that earliest messages come first
-        self.messages = self.messages?.sorted{($0.date!.timeIntervalSince1970) < ($1.date!.timeIntervalSince1970)}
+        self.messages = self.messages.sorted{($0.date.timeIntervalSince1970) < ($1.date.timeIntervalSince1970)}
         self.messagesInTimeBuckets = [[Message]]()
         self.timeBucketHeaders = [Date]()
         var currentBucketTime: Date? = nil
         var currentBucketMessages: [Message] = [Message]()
         
-        for i in 0...self.messages!.count - 1 {
-            let message = self.messages![i]
-            if message.date == nil {
-                log.error("Nil time for message: \(message)")
-                continue
-            }
+        for i in 0...self.messages.count - 1 {
+            let message = self.messages[i]
             if currentBucketTime == nil {
-                currentBucketTime = message.date!
+                currentBucketTime = message.date
                 currentBucketMessages = [message]
             } else {
-                let timeInterval = message.date!.timeIntervalSince(currentBucketTime!)
+                let timeInterval = message.date.timeIntervalSince(currentBucketTime!)
                 let hoursApart = timeInterval / (60.0 * 60.0)
                 if hoursApart > 1.0 { // Start new bucket
-                    self.messagesInTimeBuckets?.append(currentBucketMessages)
-                    self.timeBucketHeaders?.append(currentBucketTime!)
-                    currentBucketTime = message.date!
+                    self.messagesInTimeBuckets.append(currentBucketMessages)
+                    self.timeBucketHeaders.append(currentBucketTime!)
+                    currentBucketTime = message.date
                     currentBucketMessages = [message]
                 } else { // Add to current bucket
                     currentBucketMessages.append(message)
                 }
             }
-            if i == self.messages!.count - 1 { // Last message
-                self.messagesInTimeBuckets?.append(currentBucketMessages)
-                self.timeBucketHeaders?.append(currentBucketTime!)
+            if i == self.messages.count - 1 { // Last message
+                self.messagesInTimeBuckets.append(currentBucketMessages)
+                self.timeBucketHeaders.append(currentBucketTime!)
             }
         }
     }
     
     fileprivate func assembleMessageIsLastInChain() {
-        if self.messagesInTimeBuckets == nil {
-            log.error("[Error] Messages in time buckets is not init in assembleMessageIsLastInChain")
-            return
-        }
         self.messageIsLastInChain = [[Bool]]()
-        for i in 0...self.messagesInTimeBuckets!.count - 1 {
-            let section: [Message] = self.messagesInTimeBuckets![i]
+        for i in 0...self.messagesInTimeBuckets.count - 1 {
+            let section: [Message] = self.messagesInTimeBuckets[i]
             var chains = [Bool]()
             if section.count == 0 {
                 log.error("[Error] No messages in bucket")
-                self.messageIsLastInChain!.append(chains)
+                self.messageIsLastInChain.append(chains)
                 continue
             }
             if section.count >= 2 {
@@ -127,7 +119,7 @@ class ChatController: UIViewController, UICollectionViewDelegateFlowLayout, UITe
             }
             // End of row will be last in chain automatically
             chains.append(true)
-            self.messageIsLastInChain!.append(chains)
+            self.messageIsLastInChain.append(chains)
         }
     }
     
@@ -145,11 +137,7 @@ class ChatController: UIViewController, UICollectionViewDelegateFlowLayout, UITe
         let muteAction = UIAlertAction(title: "Mute Notifications", style: .default) { (action) in
             // Mute user's notifications
         }
-        var friendName = ""
-        if let name = self.friend?.name {
-            friendName = " " + name
-        }
-        let reportAction = UIAlertAction(title: "Report\(friendName)", style: .default) { (action) in
+        let reportAction = UIAlertAction(title: "Report\(self.friend.name)", style: .default) { (action) in
             // Report user
         }
         alertController.addAction(muteAction)
@@ -279,24 +267,15 @@ class ChatController: UIViewController, UICollectionViewDelegateFlowLayout, UITe
     }
     
     func handleSend() {
-        guard let delegate = UIApplication.shared.delegate as? AppDelegate else {
-            return
-        }
-        let context = delegate.persistentContainer.viewContext
-        if let friend = friend, let text = inputTextView.text {
+        if let text = inputTextView.text {
             // Trim text before sending
-            let message = ConnectionsController.createMessageForFriend(friend, text: text.trim(), minutesAgo: 0, context: context, isSender: true)
-            do {
-                try context.save()
-                self.messages?.append(message)
-                self.bucketMessagesIntoTime()
-                self.assembleMessageIsLastInChain()
-                self.collectionView.reloadData()
-                self.scrollToLastItemInCollectionView()
-                self.resetInputContainer()
-            } catch let err {
-                print(err)
-            }
+            let message = Message(mid: "9999", text: text.trim(), friend: friend, date: Date(), isSender: true)
+            self.messages.append(message)
+            self.bucketMessagesIntoTime()
+            self.assembleMessageIsLastInChain()
+            self.collectionView.reloadData()
+            self.scrollToLastItemInCollectionView()
+            self.resetInputContainer()
         }
     }
     
@@ -316,8 +295,8 @@ class ChatController: UIViewController, UICollectionViewDelegateFlowLayout, UITe
     
     fileprivate func isCollectionViewBlockingInput() -> Bool {
         // Find bottom of collection view
-        let lastSection = self.timeBucketHeaders!.count - 1
-        let lastRow = self.messagesInTimeBuckets![lastSection].count - 1
+        let lastSection = self.timeBucketHeaders.count - 1
+        let lastRow = self.messagesInTimeBuckets[lastSection].count - 1
         let indexPath = IndexPath(item: lastRow, section: lastSection)
         let attributes = self.collectionView.layoutAttributesForItem(at: indexPath)!
         let frame: CGRect = self.collectionView.convert(attributes.frame, to: self.view)
@@ -364,7 +343,7 @@ class ChatController: UIViewController, UICollectionViewDelegateFlowLayout, UITe
         let collectionView = UICollectionView(frame: UIScreen.main.bounds, collectionViewLayout: layout)
         collectionView.backgroundColor = UIColor.white
         collectionView.showsHorizontalScrollIndicator = false
-        collectionView.showsVerticalScrollIndicator = false
+        collectionView.showsVerticalScrollIndicator = true
         return collectionView
     }()
     
@@ -410,42 +389,36 @@ class ChatController: UIViewController, UICollectionViewDelegateFlowLayout, UITe
     }
     
     fileprivate func scrollToLastItemInCollectionView(animated: Bool = true) {
-        if self.timeBucketHeaders != nil && self.messagesInTimeBuckets != nil && self.timeBucketHeaders!.count > 0 && self.messagesInTimeBuckets!.count > 0 {
-            let lastSection = self.timeBucketHeaders!.count - 1
-            let lastRow = self.messagesInTimeBuckets![lastSection].count - 1
+        if self.timeBucketHeaders.count > 0 && self.messagesInTimeBuckets.count > 0 {
+            let lastSection = self.timeBucketHeaders.count - 1
+            let lastRow = self.messagesInTimeBuckets[lastSection].count - 1
             let indexPath = IndexPath(item: lastRow, section: lastSection)
             self.collectionView.scrollToItem(at: indexPath, at: .bottom, animated: animated)
         }
     }
     
     func numberOfSections(in collectionView: UICollectionView) -> Int {
-        if let count = self.timeBucketHeaders?.count {
-            return count
-        }
-        return 1
+        return self.timeBucketHeaders.count
     }
     
     func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
         if kind == UICollectionElementKindSectionHeader {
             let chatHeaderView = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: CELL_HEADER_ID, for: indexPath) as! ChatHeaderView
-            chatHeaderView.date = self.timeBucketHeaders?[indexPath.section]
+            chatHeaderView.date = self.timeBucketHeaders[indexPath.section]
             return chatHeaderView
         }
         return UICollectionReusableView()
     }
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        if let count = self.messagesInTimeBuckets?[section].count {
-            return count
-        }
-        return 0
+        return self.messagesInTimeBuckets[section].count
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: CELL_ID, for: indexPath) as! ChatCell
-        let message = self.messagesInTimeBuckets?[indexPath.section][indexPath.row]
-        let isLastInChain = self.messageIsLastInChain?[indexPath.section][indexPath.row]
-        cell.configureCell(messageObj: message, viewWidth: view.frame.width, isLastInChainObj: isLastInChain)
+        let message = self.messagesInTimeBuckets[indexPath.section][indexPath.row]
+        let isLastInChain = self.messageIsLastInChain[indexPath.section][indexPath.row]
+        cell.configureCell(messageObj: message, viewWidth: view.frame.width, isLastInChain: isLastInChain)
         return cell
     }
     
@@ -453,66 +426,69 @@ class ChatController: UIViewController, UICollectionViewDelegateFlowLayout, UITe
     private var cellTimeLabel = UILabel()
     private var tappedIndexPath: IndexPath?
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        if let message = messagesInTimeBuckets?[indexPath.section][indexPath.row], let messageText = message.text, let messageDate = message.date {
-            let size = CGSize(width: 250, height: 1000)
-            let options = NSStringDrawingOptions.usesFontLeading.union(.usesLineFragmentOrigin)
-            let estimatedFrame = NSString(string: messageText).boundingRect(with: size, options: options, attributes: [NSFontAttributeName: UIFont.systemFont(ofSize: 16.0)], context: nil)
-            if let cell = self.collectionView.cellForItem(at: indexPath) as? ChatCell {
-                
-                if cell.shouldExpand {
-                    self.cellTimeLabel.removeFromSuperview()
-                    let cellFrame = self.collectionView.convert(cell.frame, to: self.view)
-                    var yi = cellFrame.origin.y + cellFrame.height
-                    // Insert timeLabel here
-                    log.info("=====")
-                    log.info("\(self.tappedIndexPath)")
-                    yi += 10
-                    if tappedIndexPath == nil {
-                        log.info("Indexpath nil")
-                        tappedIndexPath = indexPath
-                    }
-                    else {
-                        if indexPath.section > tappedIndexPath!.section || (indexPath.section == tappedIndexPath!.section && indexPath.row > tappedIndexPath!.row) {
-                            log.info("Tapped below")
-                            yi -= 24
-                        } else if indexPath.section == tappedIndexPath!.section && indexPath.row == tappedIndexPath!.row {
-                            // Clicked to hide
-                            log.info("Hiding")
-                            self.tappedIndexPath = nil
-                            cell.shouldExpand = false
-                            // Return with no expansion
-                            return CGSize(width: view.frame.width, height: estimatedFrame.height + 16)
-                        }
-                        tappedIndexPath = indexPath
-                    }
-                    
-                    let labelFrameInView = CGRect(x: 50, y: yi, width: self.view.frame.width - 80, height: 15)
-                    let labelFrame = self.view.convert(labelFrameInView, to: self.collectionView)
-                    cellTimeLabel = UILabel(frame: labelFrame)
-                    
-                    // Extract hh:mm a from time
-                    let dateFormatter = DateFormatter()
-                    dateFormatter.dateFormat = "h:mm a"
-                    let dateString = dateFormatter.string(from: messageDate)
-                    
-                    // Alignment based on who texted
-                    cellTimeLabel.textAlignment = message.isSender ? .right : .left
-                    cellTimeLabel.text = (message.isSender ? "Sent at " : "Received at ") + dateString
-                    
-                    cellTimeLabel.font = UIFont.systemFont(ofSize: 12.0)
-                    cellTimeLabel.textColor = UIColor.lightGray
-                    
-                    self.collectionView.addSubview(cellTimeLabel)
-                    cell.shouldExpand = false
-                    // Return with expansion
-                    return CGSize(width: view.frame.width, height: estimatedFrame.height + 40)
+        let message = messagesInTimeBuckets[indexPath.section][indexPath.row]
+        let messageText = message.text
+        let messageDate = message.date
+        
+        let size = CGSize(width: 250, height: 1000)
+        let options = NSStringDrawingOptions.usesFontLeading.union(.usesLineFragmentOrigin)
+        let estimatedFrame = NSString(string: messageText).boundingRect(with: size, options: options, attributes: [NSFontAttributeName: UIFont.systemFont(ofSize: 16.0)], context: nil)
+        if let cell = self.collectionView.cellForItem(at: indexPath) as? ChatCell {
+            
+            if cell.shouldExpand {
+                self.cellTimeLabel.removeFromSuperview()
+                let cellFrame = self.collectionView.convert(cell.frame, to: self.view)
+                var yi = cellFrame.origin.y + cellFrame.height
+                // Insert timeLabel here
+                log.info("=====")
+                log.info("\(self.tappedIndexPath)")
+                yi += 10
+                if tappedIndexPath == nil {
+                    log.info("Indexpath nil")
+                    tappedIndexPath = indexPath
                 }
+                else {
+                    if indexPath.section > tappedIndexPath!.section || (indexPath.section == tappedIndexPath!.section && indexPath.row > tappedIndexPath!.row) {
+                        log.info("Tapped below")
+                        yi -= 24
+                    } else if indexPath.section == tappedIndexPath!.section && indexPath.row == tappedIndexPath!.row {
+                        // Clicked to hide
+                        log.info("Hiding")
+                        self.tappedIndexPath = nil
+                        cell.shouldExpand = false
+                        // Return with no expansion
+                        return CGSize(width: view.frame.width, height: estimatedFrame.height + 16)
+                    }
+                    tappedIndexPath = indexPath
+                }
+                
+                let labelFrameInView = CGRect(x: 50, y: yi, width: self.view.frame.width - 80, height: 15)
+                let labelFrame = self.view.convert(labelFrameInView, to: self.collectionView)
+                cellTimeLabel = UILabel(frame: labelFrame)
+                
+                // Extract hh:mm a from time
+                let dateFormatter = DateFormatter()
+                dateFormatter.dateFormat = "h:mm a"
+                let dateString = dateFormatter.string(from: messageDate)
+                
+                // Alignment based on who texted
+                cellTimeLabel.textAlignment = message.isSender ? .right : .left
+                cellTimeLabel.text = (message.isSender ? "Sent at " : "Received at ") + dateString
+                
+                cellTimeLabel.font = UIFont.systemFont(ofSize: 12.0)
+                cellTimeLabel.textColor = UIColor.lightGray
+                
+                self.collectionView.addSubview(cellTimeLabel)
+                cell.shouldExpand = false
+                // Return with expansion
+                return CGSize(width: view.frame.width, height: estimatedFrame.height + 40)
             }
-            // Return with no expansion
-            return CGSize(width: view.frame.width, height: estimatedFrame.height + 16)
         }
+        // Return with no expansion
+        return CGSize(width: view.frame.width, height: estimatedFrame.height + 16)
+    
         // Return whatever
-        return CGSize(width: view.frame.width, height: 100)
+//        return CGSize(width: view.frame.width, height: 100)
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
@@ -526,7 +502,4 @@ class ChatController: UIViewController, UICollectionViewDelegateFlowLayout, UITe
             self.collectionView.collectionViewLayout.invalidateLayout()
         }
     }
-    
-    
-
 }
