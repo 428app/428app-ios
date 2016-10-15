@@ -177,12 +177,13 @@ class ChatController: UIViewController, UICollectionViewDelegateFlowLayout, UITe
                 self.inputContainerHeightConstraint.constant = newHeight + 12.0 // Expand input container
                 // Shift screen accordingly
                 let diff = newHeight - self.textViewHeight
-                if self.isCollectionViewBlockingInput() && diff > 0 {
-                    // Need to shift upwards if content is blocked
+                if (self.isCollectionViewBlockingInput() && diff > 0) || (diff < 0 && self.topConstraintForCollectionView.constant < 0) {
+                    // Need to shift upwards if content is blocked (First conditional) OR
+                    // Only shift downwards if previously shifted upwards (Second conditional)
+                    let frame = self.collectionView.contentInset
+                    self.collectionView.contentInset = UIEdgeInsets(top: frame.top + diff, left: frame.left, bottom: frame.bottom, right: frame.right)
                     self.topConstraintForCollectionView.constant -= diff
-                } else if diff < 0 && self.topConstraintForCollectionView.constant < 0 {
-                    // Only shift downwards if previously shifted upwards
-                    self.topConstraintForCollectionView.constant -= diff
+                    
                 }
                 self.view.layoutIfNeeded()
             } else {
@@ -355,7 +356,8 @@ class ChatController: UIViewController, UICollectionViewDelegateFlowLayout, UITe
         let layout = UICollectionViewFlowLayout()
         layout.headerReferenceSize = CGSize(width: UIScreen.main.bounds.width, height: SECTION_HEADER_HEIGHT)
         self.collectionView.setCollectionViewLayout(layout, animated: false)
-        self.collectionView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: -SECTION_HEADER_HEIGHT, right: 0) // Fix adjustScrollInsets bottom padding
+        self.automaticallyAdjustsScrollViewInsets = false
+        self.collectionView.contentInset = UIEdgeInsets(top: (self.navigationController?.navigationBar.frame.height)! + 0.8*SECTION_HEADER_HEIGHT, left: 0, bottom: 0.8*SECTION_HEADER_HEIGHT, right: 0) // Fix top and bottom padding since automaticallyAdjustScrollViewInsets set to false
         
         self.collectionView.register(ChatCell.self, forCellWithReuseIdentifier: CELL_ID)
         self.collectionView.register(ChatHeaderView.self, forSupplementaryViewOfKind: UICollectionElementKindSectionHeader, withReuseIdentifier: CELL_HEADER_ID)
