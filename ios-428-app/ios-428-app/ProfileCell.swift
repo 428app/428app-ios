@@ -11,17 +11,33 @@ import UIKit
 
 class ProfileCell: BaseCell {
     
-    let infoLbl: UILabel = {
+    fileprivate let titleLbl: UILabel = {
+        let label = UILabel()
+        label.font = FONT_HEAVY_MID
+        label.textColor = UIColor.lightGray
+        label.textAlignment = .left
+        return label
+    }()
+    
+    fileprivate let contentLbl: UILabel = {
        let label = UILabel()
-        label.font = UIFont.systemFont(ofSize: 14.0)
-        label.textColor = UIColor.black
+        label.font = FONT_MEDIUM_MID
+        label.textColor = UIColor.darkGray
+        label.textAlignment = .left
         return label
     }()
 
     override func setupViews() {
-        infoLbl.text = "Harvard University"
-        addSubview(infoLbl)
-        addConstraintsWithFormat("H:|[v0]|", views: infoLbl)
-        addConstraintsWithFormat("V:|[v0]|", views: infoLbl)
+        addSubview(titleLbl)
+        addSubview(contentLbl)
+        
+        addConstraintsWithFormat("H:|-15-[v0]-15-|", views: titleLbl)
+        addConstraintsWithFormat("H:|-15-[v0]-15-|", views: contentLbl)
+        addConstraintsWithFormat("V:|[v0]-3-[v1]|", views: titleLbl, contentLbl)
+    }
+    
+    func configureCell(title: String, content: String) {
+        self.titleLbl.text = title
+        self.contentLbl.text = content
     }
 }

@@ -11,8 +11,16 @@ import UIKit
 
 class ProfileController: UIViewController, UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
     
-    let CELL_ID = "profileCell"
-    var profile: Profile! // Set from ChatController's openProfile
+    var profile: Profile! {
+        didSet { // Set from ChatController's openProfile
+            self.assembleCellData()
+        }
+    }
+    
+    fileprivate let CELL_ID = "profileCell"
+    fileprivate let HEIGHT_OF_CELL: CGFloat = 40.0
+    fileprivate var profileCellTitles = [String]()
+    fileprivate var profileCellContent = [String]()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -23,6 +31,8 @@ class ProfileController: UIViewController, UICollectionViewDelegate, UICollectio
     override var prefersStatusBarHidden: Bool {
         return true
     }
+    
+    // MARK: Set up views
     
     fileprivate let profileBgImageView: UIImageView = {
         let imageView = UIImageView()
@@ -53,12 +63,33 @@ class ProfileController: UIViewController, UICollectionViewDelegate, UICollectio
         return imageView
     }()
     
-    fileprivate let nameAgeLbl: UILabel = {
+    fileprivate let nameLbl: UILabel = {
        let label = UILabel()
         label.textAlignment = .center
         label.font = FONT_MEDIUM_XLARGE
         label.textColor = UIColor.black
         return label
+    }()
+    
+    fileprivate let disciplineImageView: UIImageView = {
+        let imageView = UIImageView()
+        imageView.contentMode = .scaleAspectFill
+        imageView.tintColor = GREEN_UICOLOR
+        return imageView
+    }()
+    
+    fileprivate let ageLocationLbl: UILabel = {
+       let label = UILabel()
+        label.textAlignment = .center
+        label.font = FONT_MEDIUM_MID
+        label.textColor = UIColor.darkGray
+        return label
+    }()
+    
+    fileprivate let topDividerLineView: UIView = {
+        let view = UIView()
+        view.backgroundColor = UIColor(white: 0.5, alpha: 0.2)
+        return view
     }()
     
     fileprivate let collectionView: UICollectionView = {
@@ -72,40 +103,77 @@ class ProfileController: UIViewController, UICollectionViewDelegate, UICollectio
         return collectionView
     }()
     
-    // MARK: View set up 
+    fileprivate let bottomDividerLineView: UIView = {
+        let view = UIView()
+        view.backgroundColor = UIColor(white: 0.5, alpha: 0.2)
+        return view
+    }()
+    
+    fileprivate let taglineLbl: UILabel = {
+       let label = UILabel()
+        label.numberOfLines = 0
+        label.font = FONT_LIGHT_MID
+        label.textColor = UIColor.darkGray
+        label.textAlignment = .left
+        return label
+    }()
     
     fileprivate func setupViews() {
+        // Set values
         profileBgImageView.image = UIImage(named: profile.disciplineBgName)
         profileImageView.image = UIImage(named: profile.profileImageName)
-        nameAgeLbl.text = "\(profile.name), \(profile.age)"
+        nameLbl.text = profile.name
+        disciplineImageView.image = UIImage(named: profile.disciplineImageName)
+        ageLocationLbl.text = "\(profile.age), \(profile.location)"
+        taglineLbl.text = profile.tagline
         
         closeButton.addTarget(self, action: #selector(closeProfile), for: .touchUpInside)
         
         collectionView.delegate = self
         collectionView.dataSource = self
         collectionView.register(ProfileCell.self, forCellWithReuseIdentifier: CELL_ID)
-//        self.automaticallyAdjustsScrollViewInsets = false
         
+        // Add to subviews
         self.view.addSubview(profileBgImageView)
         self.view.addSubview(closeButton)
         self.view.addSubview(profileImageView)
-        self.view.addSubview(nameAgeLbl)
+        
+        // Centered discipline icon and name label
+        let nameDisciplineContainer = UIView()
+        nameDisciplineContainer.addSubview(disciplineImageView)
+        nameDisciplineContainer.addSubview(nameLbl)
+        nameDisciplineContainer.translatesAutoresizingMaskIntoConstraints = false
+        self.view.addSubview(nameDisciplineContainer)
+        self.view.addConstraint(NSLayoutConstraint(item: nameDisciplineContainer, attribute: .centerX, relatedBy: .equal, toItem: self.view, attribute: .centerX, multiplier: 1.0, constant: 0))
+        nameDisciplineContainer.addConstraintsWithFormat("H:|[v0(20)]-5-[v1]|", views: disciplineImageView, nameLbl)
+        nameDisciplineContainer.addConstraintsWithFormat("V:|[v0(20)]", views: disciplineImageView)
+        nameDisciplineContainer.addConstraintsWithFormat("V:|[v0(25)]|", views: nameLbl)
+        
+        self.view.addSubview(ageLocationLbl)
+        self.view.addSubview(topDividerLineView)
         self.view.addSubview(collectionView)
+        self.view.addSubview(bottomDividerLineView)
+        self.view.addSubview(taglineLbl)
+        
+        // Define constraints
         
         self.view.addConstraintsWithFormat("H:|[v0]|", views: profileBgImageView)
         self.view.addConstraintsWithFormat("V:|[v0(250)]", views: profileBgImageView)
         
-        self.view.addConstraintsWithFormat("H:|-8-[v0(27)]", views: closeButton)
-        self.view.addConstraintsWithFormat("V:|-8-[v0(27)]", views: closeButton)
+        self.view.addConstraintsWithFormat("H:|-15-[v0(27)]", views: closeButton)
+        self.view.addConstraintsWithFormat("V:|-15-[v0(27)]", views: closeButton)
         
         self.view.addConstraintsWithFormat("H:[v0(150)]", views: profileImageView)
-        self.view.addConstraintsWithFormat("V:|-175-[v0(150)]", views: profileImageView)
         self.view.addConstraint(NSLayoutConstraint(item: profileImageView, attribute: .centerX, relatedBy: .equal, toItem: self.view, attribute: .centerX, multiplier: 1.0, constant: 0))
         
-        self.view.addConstraintsWithFormat("H:|-[v0]-|", views: nameAgeLbl)
-        self.view.addConstraintsWithFormat("V:[v0]-8-[v1(30)]-8-[v2(200)]", views: profileImageView, nameAgeLbl, collectionView)
-        self.view.addConstraintsWithFormat("H:|[v0]|", views: collectionView)
+        self.view.addConstraintsWithFormat("H:|-15-[v0]-15-|", views: ageLocationLbl)
+        self.view.addConstraintsWithFormat("H:|-15-[v0]-15-|", views: topDividerLineView)
+        self.view.addConstraintsWithFormat("H:|-15-[v0]-15-|", views: bottomDividerLineView)
+        self.view.addConstraintsWithFormat("H:|-15-[v0]-15-|", views: taglineLbl)
         
+        let heightOfCollectionView = CGFloat(self.profileCellTitles.count) * (HEIGHT_OF_CELL*1.2)
+        self.view.addConstraintsWithFormat("V:|-175-[v0(150)]-10-[v1]-6-[v2(20)]-10-[v3(0.5)]-10-[v4(\(heightOfCollectionView))]-10-[v5(0.5)]-10-[v6]", views: profileImageView, nameDisciplineContainer, ageLocationLbl, topDividerLineView, collectionView, bottomDividerLineView, taglineLbl)
+        self.view.addConstraintsWithFormat("H:|[v0]|", views: collectionView)
         
     }
     
@@ -115,22 +183,28 @@ class ProfileController: UIViewController, UICollectionViewDelegate, UICollectio
     
     // MARK: Table view
     
+    fileprivate func assembleCellData() {
+        self.profileCellTitles = ["Organization", "School", "Discipline"]
+        self.profileCellContent = [self.profile.org, self.profile.school, self.profile.discipline]
+    }
+    
     func numberOfSections(in collectionView: UICollectionView) -> Int {
         return 1
     }
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return 3
+        return profileCellTitles.count
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        return CGSize(width: self.view.frame.width, height: 40.0)
+        return CGSize(width: self.view.frame.width, height: HEIGHT_OF_CELL)
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: CELL_ID, for: indexPath) as! ProfileCell
+        let cellTitle = self.profileCellTitles[indexPath.row]
+        let cellContent = self.profileCellContent[indexPath.row]
+        cell.configureCell(title: cellTitle, content: cellContent)
         return cell
     }
-    
-    
 }

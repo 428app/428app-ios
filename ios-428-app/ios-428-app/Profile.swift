@@ -12,22 +12,28 @@ class Profile {
     
     fileprivate var _uid: String
     fileprivate var _name: String
+    fileprivate var _disciplineImageName: String
     fileprivate var _profileImageName: String
     fileprivate var _disciplineBgName: String
     fileprivate var _age: Int
-    fileprivate var _distanceAway: Int
+    fileprivate var _location: String // Country, City
     fileprivate var _org: String
+    fileprivate var _school: String
     fileprivate var _discipline: String
+    fileprivate var _tagline: String
     
-    init(uid: String, name: String, profileImageName: String, disciplineBgName: String, age: Int, distanceAway: Int, org: String, discipline: String) {
+    init(uid: String, name: String, disciplineImageName: String, profileImageName: String, disciplineBgName: String, age: Int, location: String, org: String, school: String, discipline: String, tagline: String) {
         _uid = uid
         _name = name
+        _disciplineImageName = disciplineImageName
         _profileImageName = profileImageName
         _disciplineBgName = disciplineBgName
         _age = age
-        _distanceAway = distanceAway
+        _location = location
         _org = org
+        _school = school
         _discipline = discipline
+        _tagline = tagline
     }
     
     var uid: String {
@@ -39,6 +45,12 @@ class Profile {
     var name: String {
         get {
             return _name
+        }
+    }
+    
+    var disciplineImageName: String {
+        get {
+            return _disciplineImageName
         }
     }
     
@@ -60,9 +72,9 @@ class Profile {
         }
     }
     
-    var distanceAway: Int {
+    var location: String {
         get {
-            return _distanceAway
+            return _location
         }
     }
     
@@ -72,9 +84,21 @@ class Profile {
         }
     }
     
+    var school: String {
+        get {
+            return _school
+        }
+    }
+    
     var discipline: String {
         get {
             return _discipline
+        }
+    }
+    
+    var tagline: String {
+        get {
+            return _tagline
         }
     }
 }
