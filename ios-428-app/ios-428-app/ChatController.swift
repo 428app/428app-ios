@@ -36,7 +36,6 @@ class ChatController: UIViewController, UICollectionViewDelegateFlowLayout, UITe
     
     var friend: Friend! {
         didSet { // Set from didSelect in ConnectionsController
-            self.navigationItem.title = self.friend.name
             self.messages = friend.messages
             self.bucketMessagesIntoTime()
             self.assembleMessageIsLastInChain()
@@ -125,8 +124,42 @@ class ChatController: UIViewController, UICollectionViewDelegateFlowLayout, UITe
     
     // MARK: Navigation bar
     
+    fileprivate let navTitleView: UIView = {
+        let width = UIScreen.main.bounds.width
+        let view = UIView(frame: CGRect(x: width*0.25, y: 0, width: width*0.5, height: 30))
+        return view
+    }()
+    
+    fileprivate let navLabel: UILabel = {
+       let label = UILabel()
+        label.font = FONT_HEAVY_MID
+        label.textColor = UIColor.black
+        return label
+    }()
+    
+    fileprivate let navDisciplineImageView: UIImageView = {
+        let imageView = UIImageView()
+        imageView.contentMode = .scaleAspectFill
+        return imageView
+    }()
+    
+    fileprivate func setupNavTitleView() {
+        navLabel.text = self.friend.name
+        navDisciplineImageView.image = UIImage(named: self.friend.disciplineImageName)
+        navTitleView.addSubview(navDisciplineImageView)
+        navTitleView.addSubview(navLabel)
+        navTitleView.addConstraint(NSLayoutConstraint(item: navLabel, attribute: .centerX, relatedBy: .equal, toItem: navTitleView, attribute: .centerX, multiplier: 1.0, constant: 0))
+        navTitleView.addConstraint(NSLayoutConstraint(item: navLabel, attribute: .centerY, relatedBy: .equal, toItem: navTitleView, attribute: .centerY, multiplier: 1.0, constant: 0))
+        navTitleView.addConstraint(NSLayoutConstraint(item: navDisciplineImageView, attribute: .centerY, relatedBy: .equal, toItem: navTitleView, attribute: .centerY, multiplier: 1.0, constant: 0))
+        navTitleView.addConstraintsWithFormat("H:[v0(18)]-6-[v1]", views: navDisciplineImageView, navLabel)
+        navTitleView.addConstraintsWithFormat("V:[v0(18)]", views: navDisciplineImageView)
+        navTitleView.addConstraintsWithFormat("V:|-5-[v0(25)]", views: navLabel)
+        self.navigationItem.titleView = navTitleView
+    }
+    
     fileprivate func setupNavigationBar() {
         self.navigationItem.rightBarButtonItem = UIBarButtonItem(image: #imageLiteral(resourceName: "more"), style: .plain, target: self, action: #selector(handleNavMore))
+        self.setupNavTitleView()
     }
     
     func handleNavMore() {
@@ -137,7 +170,7 @@ class ChatController: UIViewController, UICollectionViewDelegateFlowLayout, UITe
         let muteAction = UIAlertAction(title: "Mute Notifications", style: .default) { (action) in
             // Mute user's notifications
         }
-        let reportAction = UIAlertAction(title: "Report\(self.friend.name)", style: .default) { (action) in
+        let reportAction = UIAlertAction(title: "Report \(self.friend.name)", style: .default) { (action) in
             // Report user
         }
         alertController.addAction(muteAction)
@@ -183,7 +216,6 @@ class ChatController: UIViewController, UICollectionViewDelegateFlowLayout, UITe
                     let frame = self.collectionView.contentInset
                     self.collectionView.contentInset = UIEdgeInsets(top: frame.top + diff, left: frame.left, bottom: frame.bottom, right: frame.right)
                     self.topConstraintForCollectionView.constant -= diff
-                    
                 }
                 self.view.layoutIfNeeded()
             } else {
@@ -274,9 +306,10 @@ class ChatController: UIViewController, UICollectionViewDelegateFlowLayout, UITe
             self.messages.append(message)
             self.bucketMessagesIntoTime()
             self.assembleMessageIsLastInChain()
-            self.collectionView.reloadData()
-            self.scrollToLastItemInCollectionView()
             self.resetInputContainer()
+            self.collectionView.reloadData()
+            self.collectionView.layoutIfNeeded()
+            self.scrollToLastItemInCollectionView()
         }
     }
     
@@ -395,7 +428,11 @@ class ChatController: UIViewController, UICollectionViewDelegateFlowLayout, UITe
             let lastSection = self.timeBucketHeaders.count - 1
             let lastRow = self.messagesInTimeBuckets[lastSection].count - 1
             let indexPath = IndexPath(item: lastRow, section: lastSection)
+            let frame = self.collectionView.contentInset
+            self.collectionView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: 15, right: 0)
             self.collectionView.scrollToItem(at: indexPath, at: .bottom, animated: animated)
+            self.collectionView.layoutIfNeeded()
+            self.collectionView.contentInset = frame
         }
     }
     
@@ -488,9 +525,6 @@ class ChatController: UIViewController, UICollectionViewDelegateFlowLayout, UITe
         }
         // Return with no expansion
         return CGSize(width: view.frame.width, height: estimatedFrame.height + 16)
-    
-        // Return whatever
-//        return CGSize(width: view.frame.width, height: 100)
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
