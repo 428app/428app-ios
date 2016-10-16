@@ -15,8 +15,7 @@
 
 
 Known issues in descending urgency:
-1) Chat navigation title image is not centered together with label: ChatController: setupNavTitleView()
-2) For chat that is not fully blocked by keyboard, should only scroll by diff and not whole height of keyboard: ChatController: handleKeyboardNotification()
-3) Width of chat bubbles being a % of screen size (test on iphone 4s?): ChatCell: configureCell()
+1) For chat that is not fully blocked by keyboard, should only scroll by diff and not whole height of keyboard: ChatController: handleKeyboardNotification()
+2) Width of chat bubbles being a % of screen size (test on iphone 4s?): ChatCell: configureCell()
 
 

@@ -134,6 +134,7 @@ class ChatController: UIViewController, UICollectionViewDelegateFlowLayout, UITe
        let label = UILabel()
         label.font = FONT_HEAVY_MID
         label.textColor = UIColor.black
+        label.textAlignment = .center
         return label
     }()
     
@@ -146,14 +147,16 @@ class ChatController: UIViewController, UICollectionViewDelegateFlowLayout, UITe
     fileprivate func setupNavTitleView() {
         navLabel.text = self.friend.name
         navDisciplineImageView.image = UIImage(named: self.friend.disciplineImageName)
-        navTitleView.addSubview(navDisciplineImageView)
-        navTitleView.addSubview(navLabel)
-        navTitleView.addConstraint(NSLayoutConstraint(item: navLabel, attribute: .centerX, relatedBy: .equal, toItem: navTitleView, attribute: .centerX, multiplier: 1.0, constant: 0))
-        navTitleView.addConstraint(NSLayoutConstraint(item: navLabel, attribute: .centerY, relatedBy: .equal, toItem: navTitleView, attribute: .centerY, multiplier: 1.0, constant: 0))
-        navTitleView.addConstraint(NSLayoutConstraint(item: navDisciplineImageView, attribute: .centerY, relatedBy: .equal, toItem: navTitleView, attribute: .centerY, multiplier: 1.0, constant: 0))
-        navTitleView.addConstraintsWithFormat("H:[v0(18)]-6-[v1]", views: navDisciplineImageView, navLabel)
-        navTitleView.addConstraintsWithFormat("V:[v0(18)]", views: navDisciplineImageView)
-        navTitleView.addConstraintsWithFormat("V:|-5-[v0(25)]", views: navLabel)
+        let navContainerView = UIView()
+        navContainerView.translatesAutoresizingMaskIntoConstraints = false
+        navTitleView.addSubview(navContainerView)
+        navTitleView.addConstraint(NSLayoutConstraint(item: navContainerView, attribute: .centerX, relatedBy: .equal, toItem: navTitleView, attribute: .centerX, multiplier: 1.0, constant: 0))
+        navTitleView.addConstraint(NSLayoutConstraint(item: navContainerView, attribute: .centerY, relatedBy: .equal, toItem: navTitleView, attribute: .centerY, multiplier: 1.0, constant: 0))
+        navContainerView.addSubview(navDisciplineImageView)
+        navContainerView.addSubview(navLabel)
+        navContainerView.addConstraintsWithFormat("H:|[v0(18)]-8-[v1]|", views: navDisciplineImageView, navLabel)
+        navContainerView.addConstraintsWithFormat("V:|[v0(18)]", views: navDisciplineImageView)
+        navContainerView.addConstraintsWithFormat("V:|[v0(22)]|", views: navLabel)
         self.navigationItem.titleView = navTitleView
     }
     
