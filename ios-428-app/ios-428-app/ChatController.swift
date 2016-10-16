@@ -130,12 +130,26 @@ class ChatController: UIViewController, UICollectionViewDelegateFlowLayout, UITe
         return view
     }()
     
+    func openProfile() {
+        log.info("Open profile")
+        // Dim Leonard
+    }
+    
     fileprivate let navLabel: UILabel = {
        let label = UILabel()
         label.font = FONT_HEAVY_MID
         label.textColor = UIColor.black
         label.textAlignment = .center
         return label
+    }()
+    
+    fileprivate let navButton: UIButton = {
+       let button = UIButton()
+        button.titleLabel?.font = FONT_HEAVY_LARGE
+        button.setTitleColor(UIColor.black, for: .normal)
+        button.setTitleColor(GREEN_UICOLOR, for: .highlighted)
+        button.titleLabel?.textAlignment = .center
+        return button
     }()
     
     fileprivate let navDisciplineImageView: UIImageView = {
@@ -145,18 +159,23 @@ class ChatController: UIViewController, UICollectionViewDelegateFlowLayout, UITe
     }()
     
     fileprivate func setupNavTitleView() {
-        navLabel.text = self.friend.name
+        navButton.setTitle(self.friend.name, for: .normal)
+        navButton.setTitleColor(UIColor.black, for: .normal)
         navDisciplineImageView.image = UIImage(named: self.friend.disciplineImageName)
+        
+        navButton.addTarget(self, action: #selector(openProfile), for: .touchUpInside)
+        
         let navContainerView = UIView()
         navContainerView.translatesAutoresizingMaskIntoConstraints = false
         navTitleView.addSubview(navContainerView)
         navTitleView.addConstraint(NSLayoutConstraint(item: navContainerView, attribute: .centerX, relatedBy: .equal, toItem: navTitleView, attribute: .centerX, multiplier: 1.0, constant: 0))
         navTitleView.addConstraint(NSLayoutConstraint(item: navContainerView, attribute: .centerY, relatedBy: .equal, toItem: navTitleView, attribute: .centerY, multiplier: 1.0, constant: 0))
+        
         navContainerView.addSubview(navDisciplineImageView)
-        navContainerView.addSubview(navLabel)
-        navContainerView.addConstraintsWithFormat("H:|[v0(18)]-8-[v1]|", views: navDisciplineImageView, navLabel)
-        navContainerView.addConstraintsWithFormat("V:|[v0(18)]", views: navDisciplineImageView)
-        navContainerView.addConstraintsWithFormat("V:|[v0(22)]|", views: navLabel)
+        navContainerView.addSubview(navButton)
+        navContainerView.addConstraintsWithFormat("H:|[v0(20)]-8-[v1]|", views: navDisciplineImageView, navButton)
+        navContainerView.addConstraintsWithFormat("V:|[v0(20)]", views: navDisciplineImageView)
+        navContainerView.addConstraintsWithFormat("V:|[v0(22)]|", views: navButton)
         self.navigationItem.titleView = navTitleView
     }
     
