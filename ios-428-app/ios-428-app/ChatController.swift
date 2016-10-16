@@ -53,6 +53,7 @@ class ChatController: UIViewController, UICollectionViewDelegateFlowLayout, UITe
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         self.tabBarController?.tabBar.isHidden = true
+        self.navigationController?.navigationBar.isHidden = false
         self.registerObservers()
     }
     
@@ -124,15 +125,19 @@ class ChatController: UIViewController, UICollectionViewDelegateFlowLayout, UITe
     
     // MARK: Navigation bar
     
-    fileprivate let navTitleView: UIView = {
+    fileprivate let navTitleView: UIButton = {
         let width = UIScreen.main.bounds.width
-        let view = UIView(frame: CGRect(x: width*0.25, y: 0, width: width*0.5, height: 30))
-        return view
+        let button = UIButton(frame: CGRect(x: width*0.25, y: 0, width: width*0.5, height: 30))
+        return button
     }()
     
-    func openProfile() {
-        log.info("Open profile")
-        // Dim Leonard
+    func openProfile(button: UIButton) {
+        // TODOL Fetch profile from server based on this friend id
+        let controller = ProfileController()
+        controller.profile = jennyprof
+        controller.modalTransitionStyle = .coverVertical
+        self.navigationController?.navigationBar.isHidden = true
+        self.present(controller, animated: true, completion: nil)
     }
     
     fileprivate let navLabel: UILabel = {
@@ -163,6 +168,7 @@ class ChatController: UIViewController, UICollectionViewDelegateFlowLayout, UITe
         navButton.setTitleColor(UIColor.black, for: .normal)
         navDisciplineImageView.image = UIImage(named: self.friend.disciplineImageName)
         
+        navTitleView.addTarget(self, action: #selector(openProfile), for: .touchUpInside)
         navButton.addTarget(self, action: #selector(openProfile), for: .touchUpInside)
         
         let navContainerView = UIView()

@@ -39,6 +39,10 @@
 		4064A2271DB13FBD00071383 /* Debug.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4064A2261DB13FBD00071383 /* Debug.swift */; };
 		4064A2291DB2B0B500071383 /* Message.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4064A2281DB2B0B500071383 /* Message.swift */; };
 		4064A22B1DB2B27F00071383 /* Friend.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4064A22A1DB2B27F00071383 /* Friend.swift */; };
+		4064A2521DB346A800071383 /* Profile.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4064A2511DB346A800071383 /* Profile.swift */; };
+		4064A2541DB34E4D00071383 /* ProfileController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4064A2531DB34E4D00071383 /* ProfileController.swift */; };
+		4064A2561DB3E5E800071383 /* ProfileCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4064A2551DB3E5E800071383 /* ProfileCell.swift */; };
+		4064A25A1DB3FC6500071383 /* SegueFromChatToProfile.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4064A2591DB3FC6500071383 /* SegueFromChatToProfile.swift */; };
 		FED3D2F8E9831031BBFFDBEB /* Pods_ios_428_app.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1B0A78A64649B55915C0C572 /* Pods_ios_428_app.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
 /* End PBXBuildFile section */
 
@@ -80,6 +84,10 @@
 		4064A2261DB13FBD00071383 /* Debug.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Debug.swift; sourceTree = "<group>"; };
 		4064A2281DB2B0B500071383 /* Message.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Message.swift; sourceTree = "<group>"; };
 		4064A22A1DB2B27F00071383 /* Friend.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Friend.swift; sourceTree = "<group>"; };
+		4064A2511DB346A800071383 /* Profile.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Profile.swift; sourceTree = "<group>"; };
+		4064A2531DB34E4D00071383 /* ProfileController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProfileController.swift; sourceTree = "<group>"; };
+		4064A2551DB3E5E800071383 /* ProfileCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProfileCell.swift; sourceTree = "<group>"; };
+		4064A2591DB3FC6500071383 /* SegueFromChatToProfile.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SegueFromChatToProfile.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -173,6 +181,7 @@
 			children = (
 				4064A2281DB2B0B500071383 /* Message.swift */,
 				4064A22A1DB2B27F00071383 /* Friend.swift */,
+				4064A2511DB346A800071383 /* Profile.swift */,
 			);
 			name = Model;
 			sourceTree = "<group>";
@@ -184,6 +193,8 @@
 				4064A2171DACC1B700071383 /* ChatCell.swift */,
 				4064A2201DADE67E00071383 /* ChatHeaderView.swift */,
 				4064A2191DACC20E00071383 /* ConnectionCell.swift */,
+				4064A2551DB3E5E800071383 /* ProfileCell.swift */,
+				4064A2591DB3FC6500071383 /* SegueFromChatToProfile.swift */,
 			);
 			name = View;
 			sourceTree = "<group>";
@@ -195,6 +206,7 @@
 				4064A2041DAC868E00071383 /* CustomNavigationController.swift */,
 				4064A1B71DAC381300071383 /* ConnectionsController.swift */,
 				4064A1E31DAC590900071383 /* ChatController.swift */,
+				4064A2531DB34E4D00071383 /* ProfileController.swift */,
 			);
 			name = Controller;
 			sourceTree = "<group>";
@@ -364,11 +376,15 @@
 			files = (
 				4064A2051DAC868E00071383 /* CustomNavigationController.swift in Sources */,
 				4064A1E41DAC590900071383 /* ChatController.swift in Sources */,
+				4064A2541DB34E4D00071383 /* ProfileController.swift in Sources */,
 				4064A1EB1DAC80F100071383 /* Constants.swift in Sources */,
 				4064A2141DACBCAA00071383 /* BaseCell.swift in Sources */,
 				4064A1BE1DAC381300071383 /* ios_428_app.xcdatamodeld in Sources */,
+				4064A25A1DB3FC6500071383 /* SegueFromChatToProfile.swift in Sources */,
 				4064A2181DACC1B700071383 /* ChatCell.swift in Sources */,
 				4064A1E61DAC7DA600071383 /* CustomTabBarController.swift in Sources */,
+				4064A2521DB346A800071383 /* Profile.swift in Sources */,
+				4064A2561DB3E5E800071383 /* ProfileCell.swift in Sources */,
 				4064A2271DB13FBD00071383 /* Debug.swift in Sources */,
 				4064A2211DADE67E00071383 /* ChatHeaderView.swift in Sources */,
 				4064A1B81DAC381300071383 /* ConnectionsController.swift in Sources */,

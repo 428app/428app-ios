@@ -10,23 +10,23 @@ import Foundation
 
 class Friend {
     
-    fileprivate var _fid: String
+    fileprivate var _uid: String
     fileprivate var _name: String
     fileprivate var _profileImageName: String
     fileprivate var _disciplineImageName: String // Packaged in the app's assets
     fileprivate var _messages = [Message]()
     
-    init(fid: String, name: String, profileImageName: String, disciplineImageName: String, messages: [Message] = [Message]()) {
-        _fid = fid
+    init(uid: String, name: String, profileImageName: String, disciplineImageName: String, messages: [Message] = [Message]()) {
+        _uid = uid
         _name = name
         _profileImageName = profileImageName
         _disciplineImageName = disciplineImageName
         _messages = messages
     }
     
-    var fid: String {
+    var uid: String {
         get {
-            return _fid
+            return _uid
         }
     }
     

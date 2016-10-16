@@ -10,18 +10,24 @@ import Foundation
 
 import UIKit
 import CoreData
-
 // TODO: To tear down this extension and replace it with Firebase DataService
+
+// Set up profiles
+let jennyprof = Profile(uid: "1", name: "Jenny", profileImageName: "jenny-profile", disciplineBgName: "biology-bg", age: 22, distanceAway: 2, org: "Harvard University", discipline: "Biology")
+
+
+
+// Set up messages
 extension ConnectionsController {
 
     func setupData() {
         // Create messages
-        let jenny = Friend(fid: "1", name: "Jenny", profileImageName: "jenny-profile", disciplineImageName: "biology")
-        let spandan = Friend(fid: "2", name: "Spandan", profileImageName: "spandan-profile", disciplineImageName: "computer")
-        let tomas = Friend(fid: "3", name: "Tomas", profileImageName: "tomas-profile", disciplineImageName: "computer")
-        let kyooeun = Friend(fid: "4", name: "Kyooeun", profileImageName: "kyooeun-profile", disciplineImageName: "eastasian")
-        let emil = Friend(fid: "5", name: "Emil", profileImageName: "emil-profile", disciplineImageName: "physics")
-        let kezi = Friend(fid: "6", name: "Kezi", profileImageName: "kezi-profile", disciplineImageName: "physics")
+        let jenny = Friend(uid: "1", name: "Jenny", profileImageName: "jenny-profile", disciplineImageName: "biology")
+        let spandan = Friend(uid: "2", name: "Spandan", profileImageName: "spandan-profile", disciplineImageName: "computer")
+        let tomas = Friend(uid: "3", name: "Tomas", profileImageName: "tomas-profile", disciplineImageName: "computer")
+        let kyooeun = Friend(uid: "4", name: "Kyooeun", profileImageName: "kyooeun-profile", disciplineImageName: "eastasian")
+        let emil = Friend(uid: "5", name: "Emil", profileImageName: "emil-profile", disciplineImageName: "physics")
+        let kezi = Friend(uid: "6", name: "Kezi", profileImageName: "kezi-profile", disciplineImageName: "physics")
         
         _ = self.createMessageForFriend(tomas, text: "Let's go to the gym! When do you want to do it?", minutesAgo: 58, isSender: true)
         _ = self.createMessageForFriend(kyooeun, text: "ni hao ma??", minutesAgo: 60 * 24)
@@ -41,7 +47,7 @@ extension ConnectionsController {
     }
     
     fileprivate func createLeoMessages() {
-        let leo = Friend(fid: "7", name: "Leonard", profileImageName: "leo-profile", disciplineImageName: "business")
+        let leo = Friend(uid: "7", name: "Leonard", profileImageName: "leo-profile", disciplineImageName: "business")
         _ = self.createMessageForFriend(leo, text: "Hello, my name is Leonard. Nice to meet you!", minutesAgo: 200)
         _ = self.createMessageForFriend(leo, text: "What do you do?", minutesAgo: 198)
         _ = self.createMessageForFriend(leo, text: "Hi! My name is Yihang.", minutesAgo: 90, isSender: true)
@@ -51,7 +57,7 @@ extension ConnectionsController {
     }
     
     fileprivate func createThomasMessages() {
-        let thomas = Friend(fid: "8", name: "Thomas", profileImageName: "thomas-profile", disciplineImageName: "electricengineering")
+        let thomas = Friend(uid: "8", name: "Thomas", profileImageName: "thomas-profile", disciplineImageName: "electricengineering")
         _ = self.createMessageForFriend(thomas, text: "Let's engage in cooking and combine it with art! That way it's a lot more engaging. Don't you think we should do it immediately? Hurray!", minutesAgo: 60 * 24 * 1.7)
         _ = self.createMessageForFriend(thomas, text: "Hey, you haven't replied. You there?", minutesAgo: 60 * 24 * 1.6)
         _ = self.createMessageForFriend(thomas, text: "Anyway just thought of a new twist. Let's meet for a while.", minutesAgo: 60 * 24 * 1.5)
@@ -70,10 +76,10 @@ extension ConnectionsController {
         let message = Message(mid: "\(midAutoId)", text: text, friend: friend, date: Date().addingTimeInterval(-minutesAgo * 60), isSender: isSender)
         midAutoId += 1
         friend.addMessage(message: message) // Friend has all their own messages
-        let fid = friend.fid
-        if friendToMinutesAgo[fid] == nil || friendToMinutesAgo[fid]! > minutesAgo {
-            friendToMinutesAgo[fid] = minutesAgo
-            friendToLatestMessage[fid] = message
+        let uid = friend.uid
+        if friendToMinutesAgo[uid] == nil || friendToMinutesAgo[uid]! > minutesAgo {
+            friendToMinutesAgo[uid] = minutesAgo
+            friendToLatestMessage[uid] = message
         }
         return message
     }
