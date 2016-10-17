@@ -18,7 +18,7 @@ class ConnectionCell: BaseCell {
             backgroundColor = isHighlighted ? GREEN_UICOLOR : UIColor.white
             nameLabel.textColor = isHighlighted ? UIColor.white : UIColor.black
             timeLabel.textColor = isHighlighted ? UIColor.white : UIColor.lightGray
-            messageLabel.textColor = isHighlighted ? UIColor.white : UIColor.gray
+            messageLabel.textColor = isHighlighted ? UIColor.white : UIColor.lightGray
             disciplineImageView.tintColor = isHighlighted ? UIColor.white : GREEN_UICOLOR
             repliedImageView.tintColor = isHighlighted ? UIColor.white : UIColor.lightGray
         }
