@@ -19,7 +19,7 @@ class ProfileController: UIViewController, UITableViewDelegate, UITableViewDataS
     }
     
     fileprivate let CELL_ID = "profileCell"
-//    fileprivate let HEIGHT_OF_CELL: CGFloat = 40.0
+    fileprivate var heightOfTableViewConstraint: NSLayoutConstraint! // Used to find dynamic height of UITableView
     fileprivate var profileCellTitles = [String]()
     fileprivate var profileCellContent = [String]()
     
@@ -232,16 +232,23 @@ class ProfileController: UIViewController, UITableViewDelegate, UITableViewDataS
         containerView.addConstraintsWithFormat("H:|-15-[v0]-15-|", views: tagline1Lbl)
         containerView.addConstraintsWithFormat("H:|-15-[v0]-15-|", views: tagline2Lbl)
         
-        UIView.animate(withDuration: 0, animations: { 
-            self.tableView.reloadData()
+        
+        let bottomMargin = CGFloat(self.view.frame.height / 2.5) // Set large bottom margin so user can scroll up and read bottom tagline
+        
+        heightOfTableViewConstraint = NSLayoutConstraint(item: self.tableView, attribute: .height, relatedBy: .equal, toItem: containerView, attribute: .height, multiplier: 0.0, constant: 1000)
+        containerView.addConstraint(heightOfTableViewConstraint)
+        containerView.addConstraintsWithFormat("V:|-175-[v0(150)]-10-[v1]-6-[v2(20)]-10-[v3(0.5)]-10-[v4]-10-[v5(0.5)]-10-[v6]-20-[v7]-\(bottomMargin)-|", views: self.profileImageView, nameDisciplineContainer, self.ageLocationLbl, self.topDividerLineView, self.tableView, self.bottomDividerLineView, self.tagline1Lbl, self.tagline2Lbl)
+        containerView.addConstraintsWithFormat("H:|[v0]|", views: self.tableView)
+        
+        UIView.animate(withDuration: 0, animations: {
             self.tableView.layoutIfNeeded()
-            self.tableView.invalidateIntrinsicContentSize()
-            }) { (completed) in
-                let heightOfTableView = self.tableView.contentSize.height
-                
-                let bottomMargin = CGFloat(self.view.frame.height / 2.5) // Set large bottom margin so user can scroll up and read bottom tagline
-                containerView.addConstraintsWithFormat("V:|-175-[v0(150)]-10-[v1]-6-[v2(20)]-10-[v3(0.5)]-10-[v4(\(heightOfTableView))]-10-[v5(0.5)]-10-[v6]-20-[v7]-\(bottomMargin)-|", views: self.profileImageView, nameDisciplineContainer, self.ageLocationLbl, self.topDividerLineView, self.tableView, self.bottomDividerLineView, self.tagline1Lbl, self.tagline2Lbl)
-                containerView.addConstraintsWithFormat("H:|[v0]|", views: self.tableView)
+            }) { (complete) in
+                var heightOfTableView: CGFloat = 0.0
+                let cells = self.tableView.visibleCells
+                for cell in cells {
+                    heightOfTableView += cell.frame.height
+                }
+                self.heightOfTableViewConstraint.constant = heightOfTableView
         }
         
     }
@@ -251,6 +258,15 @@ class ProfileController: UIViewController, UITableViewDelegate, UITableViewDataS
     }
     
     // MARK: Table view
+    
+    
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        return UITableViewAutomaticDimension
+    }
+    
+    func tableView(_ tableView: UITableView, estimatedHeightForRowAt indexPath: IndexPath) -> CGFloat {
+        return UITableViewAutomaticDimension
+    }
     
     fileprivate func assembleCellData() {
         self.profileCellTitles = ["Organization", "School", "Discipline"]
