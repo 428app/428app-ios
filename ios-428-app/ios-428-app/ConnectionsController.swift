@@ -18,6 +18,11 @@ class ConnectionsController: UICollectionViewController, UICollectionViewDelegat
         super.viewDidLoad()
         self.setupData() // Setting up dummy data from DataService
         navigationItem.title = "Connections"
+        let layout = UICollectionViewFlowLayout()
+        layout.minimumInteritemSpacing = 0
+        layout.minimumLineSpacing = 0
+        collectionView?.collectionViewLayout = layout
+        collectionView?.delegate = self
         collectionView?.backgroundColor = UIColor.white
         collectionView?.alwaysBounceVertical = true
         collectionView?.register(ConnectionCell.self, forCellWithReuseIdentifier: CELL_ID)
@@ -57,6 +62,6 @@ class ConnectionsController: UICollectionViewController, UICollectionViewDelegat
     open var friendToLatestMessage = [String: Message]()
     open var midAutoId = 1
     
-    
+//    func collec
     
 }

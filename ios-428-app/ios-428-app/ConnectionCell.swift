@@ -75,8 +75,8 @@ class ConnectionCell: BaseCell {
     
     fileprivate let messageLabel: UILabel = {
         let label = UILabel()
-        label.font = UIFont.systemFont(ofSize: 15.0)
-        label.textColor = UIColor.gray
+        label.font = FONT_MEDIUM_SMALLMID//UIFont.systemFont(ofSize: 15.0)
+        label.textColor = UIColor.lightGray
         return label
     }()
     
@@ -84,14 +84,14 @@ class ConnectionCell: BaseCell {
         let imageView = UIImageView()
         imageView.image = #imageLiteral(resourceName: "replied")
         imageView.contentMode = .scaleAspectFit
-        imageView.tintColor = UIColor.gray
+        imageView.tintColor = UIColor.lightGray
         return imageView
     }()
     
     fileprivate let timeLabel: UILabel = {
         let label = UILabel()
-        label.font = FONT_LIGHT_SMALL
-        label.textColor = UIColor.gray
+        label.font = FONT_MEDIUM_SMALLMID
+        label.textColor = UIColor.lightGray
         label.textAlignment = .right
         return label
     }()
@@ -116,7 +116,7 @@ class ConnectionCell: BaseCell {
         addConstraintsWithFormat("V:[v0(68)]", views: profileImageView)
         addConstraint(NSLayoutConstraint(item: profileImageView, attribute: .centerY, relatedBy: .equal, toItem: self, attribute: .centerY, multiplier: 1, constant: 0))
         
-        addConstraintsWithFormat("H:|-82-[v0]|", views: dividerLineView)
+        addConstraintsWithFormat("H:|-90-[v0]|", views: dividerLineView)
         addConstraintsWithFormat("V:[v0(1)]|", views: dividerLineView)
         
         setupContainerView()
@@ -151,12 +151,20 @@ class ConnectionCell: BaseCell {
         if message.isSender {
             containerView.addSubview(repliedImageView)
             constraintsToDelete.append(contentsOf: containerView.addAndGetConstraintsWithFormat("H:|[v0(16)]-3-[v1]-12-|", views: repliedImageView, messageLabel))
-            let topOfRepliedConstraint = NSLayoutConstraint(item: repliedImageView, attribute: .top, relatedBy: .equal, toItem: disciplineImageView, attribute: .bottom, multiplier: 1.0, constant: 16.0)
+            let topOfRepliedConstraint = NSLayoutConstraint(item: repliedImageView, attribute: .top, relatedBy: .equal, toItem: disciplineImageView, attribute: .bottom, multiplier: 1.0, constant: 15.0)
             containerView.addConstraint(topOfRepliedConstraint)
             constraintsToDelete.append(topOfRepliedConstraint)
             constraintsToDelete.append(contentsOf: containerView.addAndGetConstraintsWithFormat("V:[v0(16)]", views: repliedImageView))
         } else {
             constraintsToDelete.append(contentsOf: containerView.addAndGetConstraintsWithFormat("H:|[v0]-12-|", views: messageLabel))
+        }
+        
+        if message.isSeen {
+            timeLabel.textColor = UIColor.lightGray
+            messageLabel.textColor = UIColor.lightGray
+        } else {
+            timeLabel.textColor = UIColor.black
+            messageLabel.textColor = UIColor.black
         }
     }
 }

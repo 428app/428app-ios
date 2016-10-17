@@ -30,8 +30,8 @@ extension ConnectionsController {
         let kezi = Friend(uid: "6", name: "Kezi", profileImageName: "kezi-profile", disciplineImageName: "physics")
         
         _ = self.createMessageForFriend(tomas, text: "Let's go to the gym! When do you want to do it?", minutesAgo: 58, isSender: true)
-        _ = self.createMessageForFriend(kyooeun, text: "ni hao ma??", minutesAgo: 60 * 24)
-        _ = self.createMessageForFriend(emil, text: "Dude! Quantum mechanics is my true love. You should go check it out.", minutesAgo: 25)
+        _ = self.createMessageForFriend(kyooeun, text: "ni hao ma??", minutesAgo: 60 * 24, isSeen: false)
+        _ = self.createMessageForFriend(emil, text: "Dude! Quantum mechanics is my true love. You should go check it out.", minutesAgo: 25, isSeen: false)
         _ = self.createMessageForFriend(kezi, text: "How have you been Kezi?", minutesAgo: 29, isSender: true)
 
         createLeoMessages()
@@ -68,12 +68,12 @@ extension ConnectionsController {
         _ = self.createMessageForFriend(thomas, text: "Sure. How about 6pm tomorrow at Richard's Basement?", minutesAgo: 60 * 24 * 1.25, isSender: true)
         _ = self.createMessageForFriend(thomas, text: "Also I'm not so sure how free I am from tomorrow onwards. I'm going to be coding 428 non stop until I finally finish implementing it! This is a product that has real value for people - Imagine you having connections from multiple different disciplines! And all those disciplines are already right here at Harvard, but unfortunately with no easy way to connect them... until now!!", minutesAgo: 60 * 24 * 1.2, isSender: true)
         _ = self.createMessageForFriend(thomas, text: "OK good luck with your crazy ideas then! I hope you do well in that.", minutesAgo: 60 * 24 * 1.19)
-        _ = self.createMessageForFriend(thomas, text: "www.google.com", minutesAgo: 60 * 24 * 1.1)
+        _ = self.createMessageForFriend(thomas, text: "www.google.com", minutesAgo: 60 * 24 * 1.1, isSeen: false)
     }
     
 
-    fileprivate func createMessageForFriend(_ friend: Friend, text: String, minutesAgo: Double, isSender: Bool = false) -> Message {
-        let message = Message(mid: "\(midAutoId)", text: text, friend: friend, date: Date().addingTimeInterval(-minutesAgo * 60), isSender: isSender)
+    fileprivate func createMessageForFriend(_ friend: Friend, text: String, minutesAgo: Double, isSender: Bool = false, isSeen: Bool = true) -> Message {
+        let message = Message(mid: "\(midAutoId)", text: text, friend: friend, date: Date().addingTimeInterval(-minutesAgo * 60), isSender: isSender, isSeen: isSeen)
         midAutoId += 1
         friend.addMessage(message: message) // Friend has all their own messages
         let uid = friend.uid

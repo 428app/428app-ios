@@ -27,7 +27,6 @@ class ProfileController: UIViewController, UITableViewDelegate, UITableViewDataS
         super.viewDidLoad()
         self.view.backgroundColor = UIColor.white
         self.setupTableView()
-//        self.setupCollectionView()
         self.setupViews()
     }
     

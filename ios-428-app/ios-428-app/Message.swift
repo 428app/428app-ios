@@ -14,14 +14,16 @@ class Message {
     fileprivate var _text: String
     fileprivate var _friend: Friend
     fileprivate var _date: Date
-    fileprivate var _isSender: Bool
+    fileprivate var _isSender: Bool // Is sent by you
+    fileprivate var _isSeen: Bool
     
-    init(mid: String, text: String, friend: Friend, date: Date, isSender: Bool = false) {
+    init(mid: String, text: String, friend: Friend, date: Date, isSender: Bool = false, isSeen: Bool = true) {
         _mid = mid
         _date = date
         _text = text
         _friend = friend
         _isSender = isSender
+        _isSeen = isSeen
     }
     
     var mid: String {
@@ -51,6 +53,12 @@ class Message {
     var isSender: Bool {
         get {
             return _isSender
+        }
+    }
+    
+    var isSeen: Bool {
+        get {
+            return _isSeen
         }
     }
 }

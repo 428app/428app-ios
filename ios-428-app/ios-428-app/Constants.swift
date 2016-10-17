@@ -22,6 +22,7 @@ let FONT_LIGHT_SMALL = UIFont(name: "AvenirLTStd-Light", size: 14)!
 let FONT_LIGHT_MID = UIFont(name: "AvenirLTStd-Light", size: 16)!
 let FONT_LIGHT_LARGE = UIFont(name: "AvenirLTStd-Light", size: 18)!
 let FONT_MEDIUM_SMALL = UIFont(name: "AvenirLTStd-Medium", size: 14)!
+let FONT_MEDIUM_SMALLMID = UIFont(name: "AvenirLTStd-Medium", size: 15)!
 let FONT_MEDIUM_MID = UIFont(name: "AvenirLTStd-Medium", size: 16)!
 let FONT_MEDIUM_LARGE = UIFont(name: "AvenirLTStd-Medium", size: 18)!
 let FONT_MEDIUM_XLARGE = UIFont(name: "AvenirLTStd-Medium", size: 23)!

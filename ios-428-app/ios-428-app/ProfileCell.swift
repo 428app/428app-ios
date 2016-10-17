@@ -11,11 +11,6 @@ import UIKit
 
 class ProfileCell: UITableViewCell {
     
-    override func awakeFromNib() {
-        super.awakeFromNib()
-        self.setupViews()
-    }
-    
     override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         self.setupViews()
@@ -25,16 +20,16 @@ class ProfileCell: UITableViewCell {
         fatalError("init(coder:) has not been implemented")
     }
     
-    fileprivate let titleLbl: UILabel = {
+    fileprivate let titleLabel: UILabel = {
         let label = UILabel()
         label.font = FONT_HEAVY_MID
-        label.textColor = UIColor.lightGray
+        label.textColor = GREEN_UICOLOR
         label.textAlignment = .left
         label.numberOfLines = 1
         return label
     }()
     
-    fileprivate let contentLbl: UILabel = {
+    fileprivate let contentLabel: UILabel = {
        let label = UILabel()
         label.font = FONT_MEDIUM_MID
         label.textColor = UIColor.darkGray
@@ -44,15 +39,15 @@ class ProfileCell: UITableViewCell {
     }()
 
     func setupViews() {
-        addSubview(titleLbl)
-        addSubview(contentLbl)
-        addConstraintsWithFormat("H:|-15-[v0]-15-|", views: titleLbl)
-        addConstraintsWithFormat("H:|-15-[v0]-15-|", views: contentLbl)
-        addConstraintsWithFormat("V:|-8-[v0]-3-[v1]-8-|", views: titleLbl, contentLbl)
+        addSubview(titleLabel)
+        addSubview(contentLabel)
+        addConstraintsWithFormat("H:|-15-[v0]-15-|", views: titleLabel)
+        addConstraintsWithFormat("H:|-15-[v0]-15-|", views: contentLabel)
+        addConstraintsWithFormat("V:|-8-[v0]-3-[v1]-8-|", views: titleLabel, contentLabel)
     }
     
     func configureCell(title: String, content: String) {
-        self.titleLbl.text = title
-        self.contentLbl.text = content
+        self.titleLabel.text = title
+        self.contentLabel.text = content
     }
 }

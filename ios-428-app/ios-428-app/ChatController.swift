@@ -54,6 +54,7 @@ class ChatController: UIViewController, UICollectionViewDelegateFlowLayout, UITe
         super.viewWillAppear(animated)
         self.tabBarController?.tabBar.isHidden = true
         self.navigationController?.navigationBar.isHidden = false
+        self.collectionView.isHidden = false
         self.registerObservers()
     }
     
@@ -137,6 +138,7 @@ class ChatController: UIViewController, UICollectionViewDelegateFlowLayout, UITe
         controller.profile = jennyprof
         controller.modalTransitionStyle = .coverVertical
         self.navigationController?.navigationBar.isHidden = true
+        self.collectionView.isHidden = true
         self.present(controller, animated: true, completion: nil)
     }
     
@@ -181,7 +183,7 @@ class ChatController: UIViewController, UICollectionViewDelegateFlowLayout, UITe
         navContainerView.addSubview(navButton)
         navContainerView.addConstraintsWithFormat("H:|[v0(20)]-8-[v1]|", views: navDisciplineImageView, navButton)
         navContainerView.addConstraintsWithFormat("V:|[v0(20)]", views: navDisciplineImageView)
-        navContainerView.addConstraintsWithFormat("V:|[v0(22)]|", views: navButton)
+        navContainerView.addConstraintsWithFormat("V:|-1-[v0(22)]|", views: navButton)
         self.navigationItem.titleView = navTitleView
     }
     
@@ -379,6 +381,7 @@ class ChatController: UIViewController, UICollectionViewDelegateFlowLayout, UITe
             
             // TODO: Shift screen up by a bit, while keyboard all the way when keyboard only covers part of cells
 //            let distanceShifted = min(keyboardViewEndFrame.height, abs(bottomOfCollectionView - topOfInput + SECTION_HEADER_HEIGHT))
+            
             
             if isKeyboardShowing {
                 self.scrollToLastItemInCollectionView()
