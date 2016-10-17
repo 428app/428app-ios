@@ -9,6 +9,7 @@
 import Foundation
 import UIKit
 
+
 class ProfileController: UIViewController, UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout, UIScrollViewDelegate {
     
     var profile: Profile! {
@@ -45,9 +46,15 @@ class ProfileController: UIViewController, UICollectionViewDelegate, UICollectio
         let button = UIButton()
         button.tintColor = UIColor.white
         button.setImage(#imageLiteral(resourceName: "down"), for: .normal)
-        var bgImage = #imageLiteral(resourceName: "downbg").alpha(value: 0.45)
-        button.setBackgroundImage(bgImage, for: .normal)
+        button.contentEdgeInsets = UIEdgeInsets(top: 10, left: 10, bottom: 10, right: 10)
         return button
+    }()
+    
+    fileprivate let closeButtonBg: UIImageView = {
+        let imageView = UIImageView()
+        imageView.image = #imageLiteral(resourceName: "downbg").alpha(value: 0.45)
+        imageView.contentMode = .scaleAspectFill
+        return imageView
     }()
     
     fileprivate let profileImageView: UIImageView = {
@@ -140,9 +147,9 @@ class ProfileController: UIViewController, UICollectionViewDelegate, UICollectio
             scrollView.setContentOffset(CGPoint(x: scrollView.contentOffset.x, y: 0), animated: false)
         }
     }
-    
+
     fileprivate func setupViews() {
-        // Set up scroll view
+        // Set up scroll view, and close button on top of scroll view
         let scrollView = UIScrollView(frame: self.view.bounds)
         scrollView.delegate = self // Delegate so as to disable top bounce only
         scrollView.showsVerticalScrollIndicator = false
@@ -150,13 +157,20 @@ class ProfileController: UIViewController, UICollectionViewDelegate, UICollectio
         let containerView = UIView()
         scrollView.addSubview(containerView)
         view.addSubview(scrollView)
-        self.view.addConstraintsWithFormat("H:|[v0]|", views: scrollView)
-        self.view.addConstraintsWithFormat("V:|[v0]|", views: scrollView)
-        self.view.addConstraint(NSLayoutConstraint(item: containerView, attribute: .width, relatedBy: .equal, toItem: self.view, attribute: .width, multiplier: 1.0, constant: 0))
+        view.addConstraintsWithFormat("H:|[v0]|", views: scrollView)
+        view.addConstraintsWithFormat("V:|[v0]|", views: scrollView)
+        view.addConstraint(NSLayoutConstraint(item: containerView, attribute: .width, relatedBy: .equal, toItem: self.view, attribute: .width, multiplier: 1.0, constant: 0))
         scrollView.addConstraintsWithFormat("H:|[v0]|", views: containerView)
         scrollView.addConstraintsWithFormat("V:|[v0]|", views: containerView)
+        view.addSubview(closeButtonBg)
+        view.addSubview(closeButton)
+        view.addConstraintsWithFormat("H:|-15-[v0(30)]", views: closeButtonBg)
+        view.addConstraintsWithFormat("V:|-15-[v0(30)]", views: closeButtonBg)
+        view.addConstraintsWithFormat("H:|-10-[v0(40)]", views: closeButton)
+        view.addConstraintsWithFormat("V:|-9-[v0(40)]", views: closeButton)
+        closeButton.addTarget(self, action: #selector(closeProfile), for: .touchUpInside)
         
-        // Set values
+        // Set values for elements in scroll view
         profileBgImageView.image = UIImage(named: profile.disciplineBgName)
         profileImageView.image = UIImage(named: profile.profileImageName)
         nameLbl.text = profile.name
@@ -176,11 +190,8 @@ class ProfileController: UIViewController, UICollectionViewDelegate, UICollectio
         tagstr2.append(tagline2)
         tagline2Lbl.attributedText = tagstr2
         
-        closeButton.addTarget(self, action: #selector(closeProfile), for: .touchUpInside)
-        
         // Add to subviews
         containerView.addSubview(profileBgImageView)
-        containerView.addSubview(closeButton)
         containerView.addSubview(profileImageView)
         
         // Centered discipline icon and name label
@@ -206,8 +217,6 @@ class ProfileController: UIViewController, UICollectionViewDelegate, UICollectio
         containerView.addConstraintsWithFormat("H:|[v0]|", views: profileBgImageView)
         containerView.addConstraintsWithFormat("V:|[v0(250)]", views: profileBgImageView)
         
-        containerView.addConstraintsWithFormat("H:|-15-[v0(27)]", views: closeButton)
-        containerView.addConstraintsWithFormat("V:|-15-[v0(27)]", views: closeButton)
         
         containerView.addConstraintsWithFormat("H:[v0(150)]", views: profileImageView)
         containerView.addConstraint(NSLayoutConstraint(item: profileImageView, attribute: .centerX, relatedBy: .equal, toItem: containerView, attribute: .centerX, multiplier: 1.0, constant: 0))
@@ -219,7 +228,7 @@ class ProfileController: UIViewController, UICollectionViewDelegate, UICollectio
         containerView.addConstraintsWithFormat("H:|-15-[v0]-15-|", views: tagline1Lbl)
         containerView.addConstraintsWithFormat("H:|-15-[v0]-15-|", views: tagline2Lbl)
         
-        let heightOfCollectionView = CGFloat(self.profileCellTitles.count) * (HEIGHT_OF_CELL*1.2)
+        let heightOfCollectionView = collectionView.collectionViewLayout.collectionViewContentSize.height
         let bottomMargin = CGFloat(self.view.frame.height / 2.5) // Set large bottom margin so user can scroll up and read bottom tagline
         containerView.addConstraintsWithFormat("V:|-175-[v0(150)]-10-[v1]-6-[v2(20)]-10-[v3(0.5)]-10-[v4(\(heightOfCollectionView))]-10-[v5(0.5)]-10-[v6]-20-[v7]-\(bottomMargin)-|", views: profileImageView, nameDisciplineContainer, ageLocationLbl, topDividerLineView, collectionView, bottomDividerLineView, tagline1Lbl, tagline2Lbl)
         containerView.addConstraintsWithFormat("H:|[v0]|", views: collectionView)

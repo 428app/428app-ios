@@ -16,6 +16,7 @@ class ProfileCell: BaseCell {
         label.font = FONT_HEAVY_MID
         label.textColor = UIColor.lightGray
         label.textAlignment = .left
+        label.numberOfLines = 1
         return label
     }()
     
@@ -24,6 +25,9 @@ class ProfileCell: BaseCell {
         label.font = FONT_MEDIUM_MID
         label.textColor = UIColor.darkGray
         label.textAlignment = .left
+        label.numberOfLines = 0
+//        label.adjustsFontSizeToFitWidth = true
+//        label.minimumScaleFactor = 0.7
         return label
     }()
 
