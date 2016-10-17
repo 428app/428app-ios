@@ -42,7 +42,6 @@
 		4064A2521DB346A800071383 /* Profile.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4064A2511DB346A800071383 /* Profile.swift */; };
 		4064A2541DB34E4D00071383 /* ProfileController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4064A2531DB34E4D00071383 /* ProfileController.swift */; };
 		4064A2561DB3E5E800071383 /* ProfileCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4064A2551DB3E5E800071383 /* ProfileCell.swift */; };
-		4064A25A1DB3FC6500071383 /* SegueFromChatToProfile.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4064A2591DB3FC6500071383 /* SegueFromChatToProfile.swift */; };
 		FED3D2F8E9831031BBFFDBEB /* Pods_ios_428_app.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1B0A78A64649B55915C0C572 /* Pods_ios_428_app.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
 /* End PBXBuildFile section */
 
@@ -87,7 +86,6 @@
 		4064A2511DB346A800071383 /* Profile.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Profile.swift; sourceTree = "<group>"; };
 		4064A2531DB34E4D00071383 /* ProfileController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProfileController.swift; sourceTree = "<group>"; };
 		4064A2551DB3E5E800071383 /* ProfileCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProfileCell.swift; sourceTree = "<group>"; };
-		4064A2591DB3FC6500071383 /* SegueFromChatToProfile.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SegueFromChatToProfile.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -194,7 +192,6 @@
 				4064A2201DADE67E00071383 /* ChatHeaderView.swift */,
 				4064A2191DACC20E00071383 /* ConnectionCell.swift */,
 				4064A2551DB3E5E800071383 /* ProfileCell.swift */,
-				4064A2591DB3FC6500071383 /* SegueFromChatToProfile.swift */,
 			);
 			name = View;
 			sourceTree = "<group>";
@@ -380,7 +377,6 @@
 				4064A1EB1DAC80F100071383 /* Constants.swift in Sources */,
 				4064A2141DACBCAA00071383 /* BaseCell.swift in Sources */,
 				4064A1BE1DAC381300071383 /* ios_428_app.xcdatamodeld in Sources */,
-				4064A25A1DB3FC6500071383 /* SegueFromChatToProfile.swift in Sources */,
 				4064A2181DACC1B700071383 /* ChatCell.swift in Sources */,
 				4064A1E61DAC7DA600071383 /* CustomTabBarController.swift in Sources */,
 				4064A2521DB346A800071383 /* Profile.swift in Sources */,

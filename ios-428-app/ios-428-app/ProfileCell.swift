@@ -40,15 +40,12 @@ class ProfileCell: UITableViewCell {
         label.textColor = UIColor.darkGray
         label.textAlignment = .left
         label.numberOfLines = 0
-//        label.adjustsFontSizeToFitWidth = true
-//        label.minimumScaleFactor = 0.7
         return label
     }()
 
     func setupViews() {
         addSubview(titleLbl)
         addSubview(contentLbl)
-        log.info("Test")
         addConstraintsWithFormat("H:|-15-[v0]-15-|", views: titleLbl)
         addConstraintsWithFormat("H:|-15-[v0]-15-|", views: contentLbl)
         addConstraintsWithFormat("V:|-8-[v0]-3-[v1]-8-|", views: titleLbl, contentLbl)
