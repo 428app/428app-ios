@@ -16,6 +16,7 @@ class ConnectionsController: UICollectionViewController, UICollectionViewDelegat
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        self.extendedLayoutIncludesOpaqueBars = true
         self.setupData() // Setting up dummy data from DataService
         navigationItem.title = "Connections"
         let layout = UICollectionViewFlowLayout()

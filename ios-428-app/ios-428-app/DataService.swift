@@ -29,14 +29,14 @@ extension ConnectionsController {
         let emil = Friend(uid: "5", name: "Emil", profileImageName: "emil-profile", disciplineImageName: "physics")
         let kezi = Friend(uid: "6", name: "Kezi", profileImageName: "kezi-profile", disciplineImageName: "physics")
         
-        _ = self.createMessageForFriend(tomas, text: "Let's go to the gym! When do you want to do it?", minutesAgo: 58, isSender: true)
+        _ = self.createMessageForFriend(tomas, text: "Let's go to the gym! When do you want to do it?", minutesAgo: 60 * 24 * 3, isSender: true)
         _ = self.createMessageForFriend(kyooeun, text: "ni hao ma??", minutesAgo: 60 * 24, isSeen: false)
         _ = self.createMessageForFriend(emil, text: "Dude! Quantum mechanics is my true love. You should go check it out.", minutesAgo: 25, isSeen: false)
         _ = self.createMessageForFriend(kezi, text: "How have you been Kezi?", minutesAgo: 29, isSender: true)
 
         createLeoMessages()
         createThomasMessages()
-        _ = self.createMessageForFriend(jenny, text: "I want to eat food now! Give me food or else!!", minutesAgo: 60 * 24 * 2 )
+        _ = self.createMessageForFriend(jenny, text: "I want to eat food now! Give me food or else!!", minutesAgo: 60 * 24 * 400)
         _ = self.createMessageForFriend(spandan, text: "I love computer vision! Let's hack something cool together.", minutesAgo: 60 * 24 * 10)
         
         // Set messages

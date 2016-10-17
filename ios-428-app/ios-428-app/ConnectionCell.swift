@@ -29,8 +29,11 @@ class ConnectionCell: BaseCell {
         let dateFormatter = DateFormatter()
         let elapsedTimeInSeconds = Date().timeIntervalSince(date as Date)
         let secondInDays: TimeInterval = 60 * 60 * 24
-        if elapsedTimeInSeconds > 7 * secondInDays { // More than 7 days ago
-            dateFormatter.dateFormat = "d MMM yyyy"
+        if elapsedTimeInSeconds > 365 * secondInDays { // More than 1 year
+            dateFormatter.dateFormat = "d MMM yy"
+            text = dateFormatter.string(from: date as Date)
+        } else if elapsedTimeInSeconds > 7 * secondInDays { // More than 7 days ago
+            dateFormatter.dateFormat = "d MMM"
             text = dateFormatter.string(from: date as Date)
         } else if elapsedTimeInSeconds >= 2 * secondInDays { // 2 - 7 days ago
             dateFormatter.dateFormat = "EEE"
@@ -43,7 +46,6 @@ class ConnectionCell: BaseCell {
         }
         return text
     }
-    
     
     fileprivate let profileImageView: UIImageView = {
         let imageView = UIImageView()
@@ -62,7 +64,7 @@ class ConnectionCell: BaseCell {
     
     fileprivate let nameLabel: UILabel = {
         let label = UILabel()
-        label.font = FONT_HEAVY_LARGE
+        label.font = FONT_HEAVY_XLARGE
         return label
     }()
     
@@ -75,7 +77,7 @@ class ConnectionCell: BaseCell {
     
     fileprivate let messageLabel: UILabel = {
         let label = UILabel()
-        label.font = FONT_MEDIUM_SMALLMID
+        label.font = FONT_MEDIUM_MID
         label.textColor = UIColor.lightGray
         return label
     }()
@@ -90,7 +92,7 @@ class ConnectionCell: BaseCell {
     
     fileprivate let timeLabel: UILabel = {
         let label = UILabel()
-        label.font = FONT_MEDIUM_SMALLMID
+        label.font = FONT_MEDIUM_MID
         label.textColor = UIColor.lightGray
         label.textAlignment = .right
         return label
@@ -117,7 +119,7 @@ class ConnectionCell: BaseCell {
         addConstraint(NSLayoutConstraint(item: profileImageView, attribute: .centerY, relatedBy: .equal, toItem: self, attribute: .centerY, multiplier: 1, constant: 0))
         
         addConstraintsWithFormat("H:|-90-[v0]|", views: dividerLineView)
-        addConstraintsWithFormat("V:[v0(1)]|", views: dividerLineView)
+        addConstraintsWithFormat("V:[v0(0.5)]|", views: dividerLineView)
         
         setupContainerView()
     }
@@ -128,10 +130,10 @@ class ConnectionCell: BaseCell {
         containerView.addSubview(disciplineImageView)
         containerView.addSubview(messageLabel)
         containerView.addSubview(timeLabel)
-        containerView.addConstraintsWithFormat("H:|[v0(16)]-5-[v1][v2(80)]-12-|", views: disciplineImageView, nameLabel, timeLabel)
-        containerView.addConstraintsWithFormat("V:|[v0][v1(24)]|", views: nameLabel, messageLabel)
-        containerView.addConstraintsWithFormat("V:|-7-[v0(24)]", views: timeLabel)
-        containerView.addConstraintsWithFormat("V:|-8-[v0(16)]", views: disciplineImageView)
+        containerView.addConstraintsWithFormat("H:|[v0(16)]-5-[v1][v2(100)]-12-|", views: disciplineImageView, nameLabel, timeLabel)
+        containerView.addConstraintsWithFormat("V:|[v0]-(-14)-[v1(24)]-3-|", views: nameLabel, messageLabel)
+        containerView.addConstraintsWithFormat("V:|-13-[v0(24)]", views: timeLabel)
+        containerView.addConstraintsWithFormat("V:|-14-[v0(16)]", views: disciplineImageView)
     }
     
     fileprivate var constraintsToDelete = [NSLayoutConstraint]()
@@ -151,7 +153,7 @@ class ConnectionCell: BaseCell {
         if message.isSender {
             containerView.addSubview(repliedImageView)
             constraintsToDelete.append(contentsOf: containerView.addAndGetConstraintsWithFormat("H:|[v0(16)]-3-[v1]-12-|", views: repliedImageView, messageLabel))
-            let topOfRepliedConstraint = NSLayoutConstraint(item: repliedImageView, attribute: .top, relatedBy: .equal, toItem: disciplineImageView, attribute: .bottom, multiplier: 1.0, constant: 15.0)
+            let topOfRepliedConstraint = NSLayoutConstraint(item: repliedImageView, attribute: .top, relatedBy: .equal, toItem: disciplineImageView, attribute: .bottom, multiplier: 1.0, constant: 5.0)
             containerView.addConstraint(topOfRepliedConstraint)
             constraintsToDelete.append(topOfRepliedConstraint)
             constraintsToDelete.append(contentsOf: containerView.addAndGetConstraintsWithFormat("V:[v0(16)]", views: repliedImageView))

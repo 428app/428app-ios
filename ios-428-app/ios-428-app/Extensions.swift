@@ -32,6 +32,7 @@ extension UIView {
 }
 
 public extension UIImage {
+    // Create a UIImage from color
     public convenience init?(color: UIColor, size: CGSize = CGSize(width: 1, height: 1)) {
         let rect = CGRect(origin: .zero, size: size)
         UIGraphicsBeginImageContextWithOptions(rect.size, false, 0.0)
@@ -44,6 +45,7 @@ public extension UIImage {
         self.init(cgImage: cgImage)
     }
     
+    // Create a circular image
     var circle: UIImage? {
         let square = CGSize(width: min(size.width, size.height), height: min(size.width, size.height))
         let imageView = UIImageView(frame: CGRect(origin: .zero, size: square))
@@ -59,6 +61,7 @@ public extension UIImage {
         return result
     }
     
+    // Tweak the alpha of this image
     func alpha(value: CGFloat) -> UIImage {
         UIGraphicsBeginImageContextWithOptions(size, false, scale)
         draw(at: CGPoint.zero, blendMode: .normal, alpha: value)
