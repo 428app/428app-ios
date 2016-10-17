@@ -9,7 +9,21 @@
 import Foundation
 import UIKit
 
-class ProfileCell: BaseCell {
+class ProfileCell: UITableViewCell {
+    
+    override func awakeFromNib() {
+        super.awakeFromNib()
+        self.setupViews()
+    }
+    
+    override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
+        super.init(style: style, reuseIdentifier: reuseIdentifier)
+        self.setupViews()
+    }
+    
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
     
     fileprivate let titleLbl: UILabel = {
         let label = UILabel()
@@ -31,13 +45,13 @@ class ProfileCell: BaseCell {
         return label
     }()
 
-    override func setupViews() {
+    func setupViews() {
         addSubview(titleLbl)
         addSubview(contentLbl)
-        
+        log.info("Test")
         addConstraintsWithFormat("H:|-15-[v0]-15-|", views: titleLbl)
         addConstraintsWithFormat("H:|-15-[v0]-15-|", views: contentLbl)
-        addConstraintsWithFormat("V:|[v0]-3-[v1]|", views: titleLbl, contentLbl)
+        addConstraintsWithFormat("V:|-8-[v0]-3-[v1]-8-|", views: titleLbl, contentLbl)
     }
     
     func configureCell(title: String, content: String) {

@@ -10,7 +10,7 @@ import Foundation
 import UIKit
 
 
-class ProfileController: UIViewController, UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout, UIScrollViewDelegate {
+class ProfileController: UIViewController, UITableViewDelegate, UITableViewDataSource, UIScrollViewDelegate {
     
     var profile: Profile! {
         didSet { // Set from ChatController's openProfile
@@ -19,14 +19,15 @@ class ProfileController: UIViewController, UICollectionViewDelegate, UICollectio
     }
     
     fileprivate let CELL_ID = "profileCell"
-    fileprivate let HEIGHT_OF_CELL: CGFloat = 40.0
+//    fileprivate let HEIGHT_OF_CELL: CGFloat = 40.0
     fileprivate var profileCellTitles = [String]()
     fileprivate var profileCellContent = [String]()
     
     override func viewDidLoad() {
         super.viewDidLoad()
         self.view.backgroundColor = UIColor.white
-        self.setupCollectionView()
+        self.setupTableView()
+//        self.setupCollectionView()
         self.setupViews()
     }
     
@@ -100,15 +101,14 @@ class ProfileController: UIViewController, UICollectionViewDelegate, UICollectio
         return view
     }()
     
-    fileprivate let collectionView: UICollectionView = {
-        let layout = UICollectionViewFlowLayout()
-        let collectionView = UICollectionView(frame: UIScreen.main.bounds, collectionViewLayout: layout)
-        collectionView.backgroundColor = UIColor.white
-        collectionView.showsHorizontalScrollIndicator = false
-        collectionView.showsVerticalScrollIndicator = false
-        collectionView.bounces = false
-        collectionView.isScrollEnabled = false
-        return collectionView
+    fileprivate let tableView: UITableView = {
+        let tableView = UITableView()
+        tableView.backgroundColor = UIColor.white
+        tableView.showsHorizontalScrollIndicator = false
+        tableView.showsVerticalScrollIndicator = false
+        tableView.bounces = false
+        tableView.isScrollEnabled = false
+        return tableView
     }()
     
     fileprivate let bottomDividerLineView: UIView = {
@@ -135,10 +135,14 @@ class ProfileController: UIViewController, UICollectionViewDelegate, UICollectio
         return label
     }()
     
-    fileprivate func setupCollectionView() {
-        collectionView.delegate = self
-        collectionView.dataSource = self
-        collectionView.register(ProfileCell.self, forCellWithReuseIdentifier: CELL_ID)
+    fileprivate func setupTableView() {
+        tableView.delegate = self
+        tableView.dataSource = self
+        tableView.register(ProfileCell.self, forCellReuseIdentifier: CELL_ID)
+        tableView.separatorStyle = .none
+        tableView.allowsSelection = false
+        tableView.estimatedRowHeight = 50.0
+        tableView.rowHeight = UITableViewAutomaticDimension
     }
     
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
@@ -207,7 +211,7 @@ class ProfileController: UIViewController, UICollectionViewDelegate, UICollectio
         
         containerView.addSubview(ageLocationLbl)
         containerView.addSubview(topDividerLineView)
-        containerView.addSubview(collectionView)
+        containerView.addSubview(tableView)
         containerView.addSubview(bottomDividerLineView)
         containerView.addSubview(tagline1Lbl)
         containerView.addSubview(tagline2Lbl)
@@ -228,10 +232,17 @@ class ProfileController: UIViewController, UICollectionViewDelegate, UICollectio
         containerView.addConstraintsWithFormat("H:|-15-[v0]-15-|", views: tagline1Lbl)
         containerView.addConstraintsWithFormat("H:|-15-[v0]-15-|", views: tagline2Lbl)
         
-        let heightOfCollectionView = collectionView.collectionViewLayout.collectionViewContentSize.height
-        let bottomMargin = CGFloat(self.view.frame.height / 2.5) // Set large bottom margin so user can scroll up and read bottom tagline
-        containerView.addConstraintsWithFormat("V:|-175-[v0(150)]-10-[v1]-6-[v2(20)]-10-[v3(0.5)]-10-[v4(\(heightOfCollectionView))]-10-[v5(0.5)]-10-[v6]-20-[v7]-\(bottomMargin)-|", views: profileImageView, nameDisciplineContainer, ageLocationLbl, topDividerLineView, collectionView, bottomDividerLineView, tagline1Lbl, tagline2Lbl)
-        containerView.addConstraintsWithFormat("H:|[v0]|", views: collectionView)
+        UIView.animate(withDuration: 0, animations: { 
+            self.tableView.reloadData()
+            self.tableView.layoutIfNeeded()
+            self.tableView.invalidateIntrinsicContentSize()
+            }) { (completed) in
+                let heightOfTableView = self.tableView.contentSize.height
+                
+                let bottomMargin = CGFloat(self.view.frame.height / 2.5) // Set large bottom margin so user can scroll up and read bottom tagline
+                containerView.addConstraintsWithFormat("V:|-175-[v0(150)]-10-[v1]-6-[v2(20)]-10-[v3(0.5)]-10-[v4(\(heightOfTableView))]-10-[v5(0.5)]-10-[v6]-20-[v7]-\(bottomMargin)-|", views: self.profileImageView, nameDisciplineContainer, self.ageLocationLbl, self.topDividerLineView, self.tableView, self.bottomDividerLineView, self.tagline1Lbl, self.tagline2Lbl)
+                containerView.addConstraintsWithFormat("H:|[v0]|", views: self.tableView)
+        }
         
     }
     
@@ -246,23 +257,39 @@ class ProfileController: UIViewController, UICollectionViewDelegate, UICollectio
         self.profileCellContent = [self.profile.org, self.profile.school, self.profile.discipline]
     }
     
-    func numberOfSections(in collectionView: UICollectionView) -> Int {
+    func numberOfSections(in tableView: UITableView) -> Int {
         return 1
     }
     
-    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return profileCellTitles.count
     }
     
-    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        return CGSize(width: self.view.frame.width, height: HEIGHT_OF_CELL)
-    }
-    
-    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: CELL_ID, for: indexPath) as! ProfileCell
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = tableView.dequeueReusableCell(withIdentifier: CELL_ID, for: indexPath) as! ProfileCell
         let cellTitle = self.profileCellTitles[indexPath.row]
         let cellContent = self.profileCellContent[indexPath.row]
         cell.configureCell(title: cellTitle, content: cellContent)
         return cell
     }
+    
+//    func numberOfSections(in collectionView: UICollectionView) -> Int {
+//        return 1
+//    }
+//    
+//    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+//        return profileCellTitles.count
+//    }
+//    
+//    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+//        return CGSize(width: self.view.frame.width, height: HEIGHT_OF_CELL)
+//    }
+//    
+//    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+//        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: CELL_ID, for: indexPath) as! ProfileCell
+//        let cellTitle = self.profileCellTitles[indexPath.row]
+//        let cellContent = self.profileCellContent[indexPath.row]
+//        cell.configureCell(title: cellTitle, content: cellContent)
+//        return cell
+//    }
 }
