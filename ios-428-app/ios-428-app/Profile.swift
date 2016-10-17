@@ -20,9 +20,10 @@ class Profile {
     fileprivate var _org: String
     fileprivate var _school: String
     fileprivate var _discipline: String
-    fileprivate var _tagline: String
+    fileprivate var _tagline1: String // I am working on ...
+    fileprivate var _tagline2: String // I want to eventually ...
     
-    init(uid: String, name: String, disciplineImageName: String, profileImageName: String, disciplineBgName: String, age: Int, location: String, org: String, school: String, discipline: String, tagline: String) {
+    init(uid: String, name: String, disciplineImageName: String, profileImageName: String, disciplineBgName: String, age: Int, location: String, org: String, school: String, discipline: String, tagline1: String, tagline2: String) {
         _uid = uid
         _name = name
         _disciplineImageName = disciplineImageName
@@ -33,7 +34,8 @@ class Profile {
         _org = org
         _school = school
         _discipline = discipline
-        _tagline = tagline
+        _tagline1 = tagline1
+        _tagline2 = tagline2
     }
     
     var uid: String {
@@ -96,9 +98,15 @@ class Profile {
         }
     }
     
-    var tagline: String {
+    var tagline1: String {
         get {
-            return _tagline
+            return _tagline1
+        }
+    }
+    
+    var tagline2: String {
+        get {
+            return _tagline2
         }
     }
 }

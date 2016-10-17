@@ -110,10 +110,19 @@ class ProfileController: UIViewController, UICollectionViewDelegate, UICollectio
         return view
     }()
     
-    fileprivate let taglineLbl: UILabel = {
+    fileprivate let tagline1Lbl: UILabel = {
        let label = UILabel()
         label.numberOfLines = 0
-        label.font = UIFont.systemFont(ofSize: 14.0)
+        label.font = FONT_MEDIUM_MID
+        label.textColor = UIColor.darkGray
+        label.textAlignment = .left
+        return label
+    }()
+    
+    fileprivate let tagline2Lbl: UILabel = {
+        let label = UILabel()
+        label.numberOfLines = 0
+        label.font = FONT_MEDIUM_MID
         label.textColor = UIColor.darkGray
         label.textAlignment = .left
         return label
@@ -153,7 +162,19 @@ class ProfileController: UIViewController, UICollectionViewDelegate, UICollectio
         nameLbl.text = profile.name
         disciplineImageView.image = UIImage(named: profile.disciplineImageName)
         ageLocationLbl.text = "\(profile.age), \(profile.location)"
-        taglineLbl.text = profile.tagline
+        
+        // Taglines
+        let paragraphStyle = NSMutableParagraphStyle()
+        paragraphStyle.lineSpacing = 6
+        let tagstr1 = NSMutableAttributedString(string: "I am working on", attributes: [NSForegroundColorAttributeName: GREEN_UICOLOR, NSFontAttributeName: FONT_HEAVY_MID, NSParagraphStyleAttributeName: paragraphStyle])
+        let tagline1 = NSMutableAttributedString(string: " " + profile.tagline1, attributes: [NSParagraphStyleAttributeName: paragraphStyle])
+        tagstr1.append(tagline1)
+        tagline1Lbl.attributedText = tagstr1
+        
+        let tagstr2 = NSMutableAttributedString(string: "I want to eventually", attributes: [NSForegroundColorAttributeName: GREEN_UICOLOR, NSFontAttributeName: FONT_HEAVY_MID, NSParagraphStyleAttributeName: paragraphStyle])
+        let tagline2 = NSMutableAttributedString(string: " " + profile.tagline2, attributes: [NSParagraphStyleAttributeName: paragraphStyle])
+        tagstr2.append(tagline2)
+        tagline2Lbl.attributedText = tagstr2
         
         closeButton.addTarget(self, action: #selector(closeProfile), for: .touchUpInside)
         
@@ -177,7 +198,8 @@ class ProfileController: UIViewController, UICollectionViewDelegate, UICollectio
         containerView.addSubview(topDividerLineView)
         containerView.addSubview(collectionView)
         containerView.addSubview(bottomDividerLineView)
-        containerView.addSubview(taglineLbl)
+        containerView.addSubview(tagline1Lbl)
+        containerView.addSubview(tagline2Lbl)
         
         // Define constraints
         
@@ -194,10 +216,12 @@ class ProfileController: UIViewController, UICollectionViewDelegate, UICollectio
         containerView.addConstraintsWithFormat("H:|-15-[v0]-15-|", views: ageLocationLbl)
         containerView.addConstraintsWithFormat("H:|-15-[v0]-15-|", views: topDividerLineView)
         containerView.addConstraintsWithFormat("H:|-15-[v0]-15-|", views: bottomDividerLineView)
-        containerView.addConstraintsWithFormat("H:|-15-[v0]-15-|", views: taglineLbl)
+        containerView.addConstraintsWithFormat("H:|-15-[v0]-15-|", views: tagline1Lbl)
+        containerView.addConstraintsWithFormat("H:|-15-[v0]-15-|", views: tagline2Lbl)
         
         let heightOfCollectionView = CGFloat(self.profileCellTitles.count) * (HEIGHT_OF_CELL*1.2)
-        containerView.addConstraintsWithFormat("V:|-175-[v0(150)]-10-[v1]-6-[v2(20)]-10-[v3(0.5)]-10-[v4(\(heightOfCollectionView))]-10-[v5(0.5)]-10-[v6]-10-|", views: profileImageView, nameDisciplineContainer, ageLocationLbl, topDividerLineView, collectionView, bottomDividerLineView, taglineLbl)
+        let bottomMargin = CGFloat(self.view.frame.height / 2.5) // Set large bottom margin so user can scroll up and read bottom tagline
+        containerView.addConstraintsWithFormat("V:|-175-[v0(150)]-10-[v1]-6-[v2(20)]-10-[v3(0.5)]-10-[v4(\(heightOfCollectionView))]-10-[v5(0.5)]-10-[v6]-20-[v7]-\(bottomMargin)-|", views: profileImageView, nameDisciplineContainer, ageLocationLbl, topDividerLineView, collectionView, bottomDividerLineView, tagline1Lbl, tagline2Lbl)
         containerView.addConstraintsWithFormat("H:|[v0]|", views: collectionView)
         
     }
