@@ -13,7 +13,7 @@ import CoreData
 // TODO: To tear down this extension and replace it with Firebase DataService
 
 // Set up profiles
-let jennyprof = Profile(uid: "1", name: "Jenny", disciplineImageName: "biology", profileImageName: "jenny-profile", disciplineBgName: "biology-bg", age: 22, location: "USA, MA, Cambridge", org: "Harvard University", school: "Harvard University", discipline: "Biology", tagline: "I am working on understanding mutations in DNA and how they lead to cancer. I'm doing it because eventually I want to make a breakthrough in cancer research and win a Nobel prize.")
+let jennyprof = Profile(uid: "1", name: "Jenny", disciplineImageName: "biology", profileImageName: "jenny-profile", disciplineBgName: "biology-bg", age: 22, location: "USA, MA, Cambridge", org: "Harvard University", school: "Harvard University", discipline: "Biology", tagline: "I am working on understanding mutations in DNA and how they lead to cancer. I'm doing it because eventually I want to make a breakthrough in cancer research and win a Nobel prize. I am working on understanding mutations in DNA and how they lead to cancer. I'm doing it because eventually I want to make a breakthrough in cancer research and win a Nobel prize.")
 
 
 

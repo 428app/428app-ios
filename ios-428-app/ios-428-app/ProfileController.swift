@@ -9,7 +9,7 @@
 import Foundation
 import UIKit
 
-class ProfileController: UIViewController, UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
+class ProfileController: UIViewController, UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout, UIScrollViewDelegate {
     
     var profile: Profile! {
         didSet { // Set from ChatController's openProfile
@@ -25,6 +25,7 @@ class ProfileController: UIViewController, UICollectionViewDelegate, UICollectio
     override func viewDidLoad() {
         super.viewDidLoad()
         self.view.backgroundColor = UIColor.white
+        self.setupCollectionView()
         self.setupViews()
     }
     
@@ -112,13 +113,40 @@ class ProfileController: UIViewController, UICollectionViewDelegate, UICollectio
     fileprivate let taglineLbl: UILabel = {
        let label = UILabel()
         label.numberOfLines = 0
-        label.font = FONT_LIGHT_MID
+        label.font = UIFont.systemFont(ofSize: 14.0)
         label.textColor = UIColor.darkGray
         label.textAlignment = .left
         return label
     }()
     
+    fileprivate func setupCollectionView() {
+        collectionView.delegate = self
+        collectionView.dataSource = self
+        collectionView.register(ProfileCell.self, forCellWithReuseIdentifier: CELL_ID)
+    }
+    
+    func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        // Disable top bounce only, and not bottom bounce
+        if (scrollView.contentOffset.y <= 0) {
+            scrollView.setContentOffset(CGPoint(x: scrollView.contentOffset.x, y: 0), animated: false)
+        }
+    }
+    
     fileprivate func setupViews() {
+        // Set up scroll view
+        let scrollView = UIScrollView(frame: self.view.bounds)
+        scrollView.delegate = self // Delegate so as to disable top bounce only
+        scrollView.showsVerticalScrollIndicator = false
+        scrollView.showsHorizontalScrollIndicator = false
+        let containerView = UIView()
+        scrollView.addSubview(containerView)
+        view.addSubview(scrollView)
+        self.view.addConstraintsWithFormat("H:|[v0]|", views: scrollView)
+        self.view.addConstraintsWithFormat("V:|[v0]|", views: scrollView)
+        self.view.addConstraint(NSLayoutConstraint(item: containerView, attribute: .width, relatedBy: .equal, toItem: self.view, attribute: .width, multiplier: 1.0, constant: 0))
+        scrollView.addConstraintsWithFormat("H:|[v0]|", views: containerView)
+        scrollView.addConstraintsWithFormat("V:|[v0]|", views: containerView)
+        
         // Set values
         profileBgImageView.image = UIImage(named: profile.disciplineBgName)
         profileImageView.image = UIImage(named: profile.profileImageName)
@@ -129,51 +157,48 @@ class ProfileController: UIViewController, UICollectionViewDelegate, UICollectio
         
         closeButton.addTarget(self, action: #selector(closeProfile), for: .touchUpInside)
         
-        collectionView.delegate = self
-        collectionView.dataSource = self
-        collectionView.register(ProfileCell.self, forCellWithReuseIdentifier: CELL_ID)
-        
         // Add to subviews
-        self.view.addSubview(profileBgImageView)
-        self.view.addSubview(closeButton)
-        self.view.addSubview(profileImageView)
+        containerView.addSubview(profileBgImageView)
+        containerView.addSubview(closeButton)
+        containerView.addSubview(profileImageView)
         
         // Centered discipline icon and name label
         let nameDisciplineContainer = UIView()
         nameDisciplineContainer.addSubview(disciplineImageView)
         nameDisciplineContainer.addSubview(nameLbl)
         nameDisciplineContainer.translatesAutoresizingMaskIntoConstraints = false
-        self.view.addSubview(nameDisciplineContainer)
-        self.view.addConstraint(NSLayoutConstraint(item: nameDisciplineContainer, attribute: .centerX, relatedBy: .equal, toItem: self.view, attribute: .centerX, multiplier: 1.0, constant: 0))
+        containerView.addSubview(nameDisciplineContainer)
+        containerView.addConstraint(NSLayoutConstraint(item: nameDisciplineContainer, attribute: .centerX, relatedBy: .equal, toItem: containerView, attribute: .centerX, multiplier: 1.0, constant: 0))
         nameDisciplineContainer.addConstraintsWithFormat("H:|[v0(20)]-5-[v1]|", views: disciplineImageView, nameLbl)
         nameDisciplineContainer.addConstraintsWithFormat("V:|[v0(20)]", views: disciplineImageView)
         nameDisciplineContainer.addConstraintsWithFormat("V:|[v0(25)]|", views: nameLbl)
         
-        self.view.addSubview(ageLocationLbl)
-        self.view.addSubview(topDividerLineView)
-        self.view.addSubview(collectionView)
-        self.view.addSubview(bottomDividerLineView)
-        self.view.addSubview(taglineLbl)
+        containerView.addSubview(ageLocationLbl)
+        containerView.addSubview(topDividerLineView)
+        containerView.addSubview(collectionView)
+        containerView.addSubview(bottomDividerLineView)
+        containerView.addSubview(taglineLbl)
         
         // Define constraints
         
-        self.view.addConstraintsWithFormat("H:|[v0]|", views: profileBgImageView)
-        self.view.addConstraintsWithFormat("V:|[v0(250)]", views: profileBgImageView)
+        containerView.addConstraintsWithFormat("H:|[v0]|", views: profileBgImageView)
+        containerView.addConstraintsWithFormat("V:|[v0(250)]", views: profileBgImageView)
         
-        self.view.addConstraintsWithFormat("H:|-15-[v0(27)]", views: closeButton)
-        self.view.addConstraintsWithFormat("V:|-15-[v0(27)]", views: closeButton)
+        containerView.addConstraintsWithFormat("H:|-15-[v0(27)]", views: closeButton)
+        containerView.addConstraintsWithFormat("V:|-15-[v0(27)]", views: closeButton)
         
-        self.view.addConstraintsWithFormat("H:[v0(150)]", views: profileImageView)
-        self.view.addConstraint(NSLayoutConstraint(item: profileImageView, attribute: .centerX, relatedBy: .equal, toItem: self.view, attribute: .centerX, multiplier: 1.0, constant: 0))
+        containerView.addConstraintsWithFormat("H:[v0(150)]", views: profileImageView)
+        containerView.addConstraint(NSLayoutConstraint(item: profileImageView, attribute: .centerX, relatedBy: .equal, toItem: containerView, attribute: .centerX, multiplier: 1.0, constant: 0))
         
-        self.view.addConstraintsWithFormat("H:|-15-[v0]-15-|", views: ageLocationLbl)
-        self.view.addConstraintsWithFormat("H:|-15-[v0]-15-|", views: topDividerLineView)
-        self.view.addConstraintsWithFormat("H:|-15-[v0]-15-|", views: bottomDividerLineView)
-        self.view.addConstraintsWithFormat("H:|-15-[v0]-15-|", views: taglineLbl)
+        
+        containerView.addConstraintsWithFormat("H:|-15-[v0]-15-|", views: ageLocationLbl)
+        containerView.addConstraintsWithFormat("H:|-15-[v0]-15-|", views: topDividerLineView)
+        containerView.addConstraintsWithFormat("H:|-15-[v0]-15-|", views: bottomDividerLineView)
+        containerView.addConstraintsWithFormat("H:|-15-[v0]-15-|", views: taglineLbl)
         
         let heightOfCollectionView = CGFloat(self.profileCellTitles.count) * (HEIGHT_OF_CELL*1.2)
-        self.view.addConstraintsWithFormat("V:|-175-[v0(150)]-10-[v1]-6-[v2(20)]-10-[v3(0.5)]-10-[v4(\(heightOfCollectionView))]-10-[v5(0.5)]-10-[v6]", views: profileImageView, nameDisciplineContainer, ageLocationLbl, topDividerLineView, collectionView, bottomDividerLineView, taglineLbl)
-        self.view.addConstraintsWithFormat("H:|[v0]|", views: collectionView)
+        containerView.addConstraintsWithFormat("V:|-175-[v0(150)]-10-[v1]-6-[v2(20)]-10-[v3(0.5)]-10-[v4(\(heightOfCollectionView))]-10-[v5(0.5)]-10-[v6]-10-|", views: profileImageView, nameDisciplineContainer, ageLocationLbl, topDividerLineView, collectionView, bottomDividerLineView, taglineLbl)
+        containerView.addConstraintsWithFormat("H:|[v0]|", views: collectionView)
         
     }
     
