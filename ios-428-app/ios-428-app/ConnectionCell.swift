@@ -17,10 +17,10 @@ class ConnectionCell: BaseCell {
         didSet {
             backgroundColor = isHighlighted ? GREEN_UICOLOR : UIColor.white
             nameLabel.textColor = isHighlighted ? UIColor.white : UIColor.black
-            timeLabel.textColor = isHighlighted ? UIColor.white : UIColor.gray
+            timeLabel.textColor = isHighlighted ? UIColor.white : UIColor.lightGray
             messageLabel.textColor = isHighlighted ? UIColor.white : UIColor.gray
             disciplineImageView.tintColor = isHighlighted ? UIColor.white : GREEN_UICOLOR
-            repliedImageView.tintColor = isHighlighted ? UIColor.white : UIColor.gray
+            repliedImageView.tintColor = isHighlighted ? UIColor.white : UIColor.lightGray
         }
     }
     
@@ -75,7 +75,7 @@ class ConnectionCell: BaseCell {
     
     fileprivate let messageLabel: UILabel = {
         let label = UILabel()
-        label.font = FONT_MEDIUM_SMALLMID//UIFont.systemFont(ofSize: 15.0)
+        label.font = FONT_MEDIUM_SMALLMID
         label.textColor = UIColor.lightGray
         return label
     }()
