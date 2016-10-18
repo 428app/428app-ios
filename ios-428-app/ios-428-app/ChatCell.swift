@@ -9,7 +9,7 @@
 import Foundation
 import UIKit
 
-class ChatCell: BaseCell {
+class ChatCell: BaseCollectionCell {
     
     fileprivate var message: Message!
     open var shouldExpand = false

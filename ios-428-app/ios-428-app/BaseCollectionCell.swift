@@ -1,5 +1,5 @@
 //
-//  BaseCell.swift
+//  BaseCollectionCell.swift
 //  ios-428-app
 //
 //  Created by Leonard Loo on 10/11/16.
@@ -9,7 +9,7 @@
 import Foundation
 import UIKit
 
-class BaseCell: UICollectionViewCell {
+class BaseCollectionCell: UICollectionViewCell {
     override init(frame: CGRect) {
         super.init(frame: frame)
         self.setupViews()

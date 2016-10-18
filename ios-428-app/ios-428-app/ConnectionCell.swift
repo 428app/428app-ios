@@ -9,7 +9,7 @@
 import Foundation
 import UIKit
 
-class ConnectionCell: BaseCell {
+class ConnectionCell: BaseCollectionCell {
     
     fileprivate var message: Message!
     

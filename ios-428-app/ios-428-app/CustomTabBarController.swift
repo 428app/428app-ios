@@ -15,7 +15,7 @@ class CustomTabBarController: UITabBarController {
         
         self.tabBar.isTranslucent = false
         
-        UITabBarItem.appearance().setTitleTextAttributes([NSForegroundColorAttributeName: UIColor.lightGray, NSFontAttributeName: FONT_MEDIUM_SMALL], for: .normal)
+        UITabBarItem.appearance().setTitleTextAttributes([NSForegroundColorAttributeName: UIColor.lightGray.withAlphaComponent(0.8), NSFontAttributeName: FONT_MEDIUM_SMALL], for: .normal)
         UITabBarItem.appearance().setTitleTextAttributes([NSForegroundColorAttributeName: GREEN_UICOLOR, NSFontAttributeName: FONT_MEDIUM_SMALL], for: .selected)
         let layout = UICollectionViewFlowLayout()
         let connectionsController = ConnectionsController(collectionViewLayout: layout)
@@ -31,7 +31,7 @@ class CustomTabBarController: UITabBarController {
         topicsNavController.tabBarItem.image = #imageLiteral(resourceName: "topics-U")
         topicsNavController.tabBarItem.selectedImage = #imageLiteral(resourceName: "topics-F")
         
-        let settingsController = UIViewController()
+        let settingsController = SettingsController()
         let settingsNavController = CustomNavigationController(rootViewController: settingsController)
         settingsNavController.tabBarItem.title = "Settings"
         settingsNavController.tabBarItem.image = #imageLiteral(resourceName: "settings-U")

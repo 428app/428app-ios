@@ -31,6 +31,24 @@ extension UIView {
     }
 }
 
+extension UIViewController {
+    // Returns the scroll view and container view
+    func setupScrollView() -> [UIView] {
+        let scrollView = UIScrollView(frame: self.view.bounds)
+        scrollView.showsVerticalScrollIndicator = false
+        scrollView.showsHorizontalScrollIndicator = false
+        let containerView = UIView()
+        scrollView.addSubview(containerView)
+        view.addSubview(scrollView)
+        view.addConstraintsWithFormat("H:|[v0]|", views: scrollView)
+        view.addConstraintsWithFormat("V:|[v0]|", views: scrollView)
+        view.addConstraint(NSLayoutConstraint(item: containerView, attribute: .width, relatedBy: .equal, toItem: self.view, attribute: .width, multiplier: 1.0, constant: 0))
+        scrollView.addConstraintsWithFormat("H:|[v0]|", views: containerView)
+        scrollView.addConstraintsWithFormat("V:|[v0]|", views: containerView)
+        return [scrollView, containerView]
+    }
+}
+
 public extension UIImage {
     // Create a UIImage from color
     public convenience init?(color: UIColor, size: CGSize = CGSize(width: 1, height: 1)) {

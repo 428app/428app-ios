@@ -9,16 +9,7 @@
 import Foundation
 import UIKit
 
-class ProfileCell: UITableViewCell {
-    
-    override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
-        super.init(style: style, reuseIdentifier: reuseIdentifier)
-        self.setupViews()
-    }
-    
-    required init?(coder aDecoder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
+class ProfileCell: BaseTableViewCell {
     
     fileprivate let titleLabel: UILabel = {
         let label = UILabel()
@@ -38,7 +29,8 @@ class ProfileCell: UITableViewCell {
         return label
     }()
 
-    func setupViews() {
+    override func setupViews() {
+        super.setupViews()
         addSubview(titleLabel)
         addSubview(contentLabel)
         addConstraintsWithFormat("H:|-15-[v0]-15-|", views: titleLabel)

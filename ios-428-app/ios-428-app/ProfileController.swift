@@ -153,18 +153,12 @@ class ProfileController: UIViewController, UITableViewDelegate, UITableViewDataS
 
     fileprivate func setupViews() {
         // Set up scroll view, and close button on top of scroll view
-        let scrollView = UIScrollView(frame: self.view.bounds)
+        let views = setupScrollView()
+        let scrollView = views[0] as! UIScrollView
+        let containerView = views[1]
         scrollView.delegate = self // Delegate so as to disable top bounce only
-        scrollView.showsVerticalScrollIndicator = false
-        scrollView.showsHorizontalScrollIndicator = false
-        let containerView = UIView()
-        scrollView.addSubview(containerView)
-        view.addSubview(scrollView)
-        view.addConstraintsWithFormat("H:|[v0]|", views: scrollView)
-        view.addConstraintsWithFormat("V:|[v0]|", views: scrollView)
-        view.addConstraint(NSLayoutConstraint(item: containerView, attribute: .width, relatedBy: .equal, toItem: self.view, attribute: .width, multiplier: 1.0, constant: 0))
-        scrollView.addConstraintsWithFormat("H:|[v0]|", views: containerView)
-        scrollView.addConstraintsWithFormat("V:|[v0]|", views: containerView)
+        
+        // Add close button on top of scroll view
         view.addSubview(closeButtonBg)
         view.addSubview(closeButton)
         view.addConstraintsWithFormat("H:|-15-[v0(30)]", views: closeButtonBg)
