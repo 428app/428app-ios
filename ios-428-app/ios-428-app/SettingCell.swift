@@ -27,6 +27,8 @@ class SettingCell: BaseTableViewCell {
         return view
     }()
     
+    // MARK: Switch
+    
     fileprivate lazy var optionSwitch: UISwitch = {
         var switch_ = UISwitch()
         switch_.isOn = true // Read this from server
@@ -40,6 +42,46 @@ class SettingCell: BaseTableViewCell {
         NotificationCenter.default.post(name: NOTIF_CHANGESETTING, object: nil, userInfo: ["option": setting.text, "isOn": switch_.isOn])
     }
     
+    // MARK: Profile pic
+    
+    fileprivate lazy var myPicImageView: UIImageView = {
+        let imageView = UIImageView()
+        imageView.layer.cornerRadius = 75.0
+        imageView.clipsToBounds = true
+        imageView.contentMode = .scaleAspectFill
+        imageView.isUserInteractionEnabled = true
+        let tapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(self.editProfile))
+        imageView.addGestureRecognizer(tapGestureRecognizer)
+        return imageView
+    }()
+    
+    fileprivate lazy var editButton: UIButton = {
+        let button = UIButton()
+        button.layer.shadowColor = UIColor.black.cgColor
+        button.layer.shadowOpacity = 0.3
+        button.layer.shadowRadius = 3.0
+        button.layer.shadowOffset = CGSize(width: 2.0, height: 2.0)
+        button.setImage(#imageLiteral(resourceName: "edit"), for: .normal)
+        button.imageView?.contentMode = .scaleAspectFill
+        button.addTarget(self, action: #selector(self.editProfile), for: .touchUpInside)
+        button.translatesAutoresizingMaskIntoConstraints = false
+        return button
+    }()
+    
+    func editProfile() {
+        NotificationCenter.default.post(name: NOTIF_EDITPROFILE, object: nil)
+    }
+
+    fileprivate func animateEdit() {
+        UIView.animate(withDuration: 0.18, animations: {
+            self.editButton.transform = CGAffineTransform(scaleX: 1.6, y: 1.6)
+            }) { (completion) in
+                UIView.animate(withDuration: 0.06, animations: {
+                    self.editButton.transform = CGAffineTransform(scaleX: 1.2, y: 1.2)
+                })
+        }
+    }
+    
     override func setupViews() {
         super.setupViews()
         addSubview(settingLabel)
@@ -50,17 +92,21 @@ class SettingCell: BaseTableViewCell {
     }
     
     fileprivate var constraintsToDelete: [NSLayoutConstraint] = [NSLayoutConstraint]()
+    fileprivate var viewsToRemove: [UIView] = [UIView]()
     
     fileprivate func resetAll() {
-        optionSwitch.removeFromSuperview()
+        for v in viewsToRemove {
+            v.removeFromSuperview()
+        }
         for const in constraintsToDelete {
-        removeConstraint(const)
+            removeConstraint(const)
         }
         self.accessoryType = .none
         self.selectionStyle = .none
         backgroundColor = UIColor.white
         dividerView.isHidden = false
         settingLabel.font = FONT_MEDIUM_LARGE
+        settingLabel.isHidden = false
     }
     
     func configureCell(settingObj: Setting) {
@@ -70,33 +116,71 @@ class SettingCell: BaseTableViewCell {
         resetAll()
         
         if setting.type == .link {
+            
             // Link to website / function
+            
             constraintsToDelete.append(contentsOf: addAndGetConstraintsWithFormat("H:|-16-[v0]", views: settingLabel))
             self.selectionStyle = .gray
             self.accessoryType = .disclosureIndicator
             
         } else if setting.type == .toggle {
+            
             // Handle toggle by appending switch
+            
             addSubview(optionSwitch)
+            viewsToRemove.append(optionSwitch)
             constraintsToDelete.append(contentsOf: addAndGetConstraintsWithFormat("H:|-16-[v0]", views: settingLabel))
             constraintsToDelete.append(contentsOf: addAndGetConstraintsWithFormat("H:[v0]-16-|", views: optionSwitch))
             let centerYswitchConstraint = NSLayoutConstraint(item: optionSwitch, attribute: .centerY, relatedBy: .equal, toItem: self, attribute: .centerY, multiplier: 1.0, constant: 0.0)
             self.addConstraint(centerYswitchConstraint)
             constraintsToDelete.append(centerYswitchConstraint)
         } else if setting.type == .center {
+            
             // Used by Log out
+            
             self.selectionStyle = .gray
             let centerXSettingConstraint = NSLayoutConstraint(item: settingLabel, attribute: .centerX, relatedBy: .equal, toItem: self, attribute: .centerX, multiplier: 1.0, constant: 0.0)
             self.addConstraint(centerXSettingConstraint)
             constraintsToDelete.append(centerXSettingConstraint)
         } else if setting.type == .nobg {
-            // Used to display Version number
+            
+            // Used to display Version number at bottom
+            
             backgroundColor = GRAY_UICOLOR
             let centerXSettingConstraint = NSLayoutConstraint(item: settingLabel, attribute: .centerX, relatedBy: .equal, toItem: self, attribute: .centerX, multiplier: 1.0, constant: 0.0)
             self.addConstraint(centerXSettingConstraint)
             constraintsToDelete.append(centerXSettingConstraint)
             dividerView.isHidden = true
             settingLabel.font = FONT_HEAVY_MID
+        } else if setting.type == .profilepic {
+            
+            // Used to display profile pic on top
+            
+            backgroundColor = GRAY_UICOLOR
+            myPicImageView.image = UIImage(named: setting.text)
+            addSubview(myPicImageView)
+            addSubview(editButton)
+            viewsToRemove.append(myPicImageView)
+            viewsToRemove.append(editButton)
+            settingLabel.isHidden = true
+            dividerView.isHidden = true
+            
+            constraintsToDelete.append(contentsOf: addAndGetConstraintsWithFormat("H:[v0(150)]", views: myPicImageView))
+            let centerXPicConstraint = NSLayoutConstraint(item: myPicImageView, attribute: .centerX, relatedBy: .equal, toItem: self, attribute: .centerX, multiplier: 1.0, constant: 0.0)
+            addConstraint(centerXPicConstraint)
+            constraintsToDelete.append(centerXPicConstraint)
+            constraintsToDelete.append(contentsOf: addAndGetConstraintsWithFormat("V:[v0(150)]|", views: myPicImageView))
+            
+            constraintsToDelete.append(contentsOf: addAndGetConstraintsWithFormat("V:[v0(25.0)]", views: editButton))
+            constraintsToDelete.append(contentsOf: addAndGetConstraintsWithFormat("H:[v0(25.0)]", views: editButton))
+            let editButtonRightConstraint = NSLayoutConstraint(item: editButton, attribute: .right, relatedBy: .equal, toItem: myPicImageView, attribute: .right, multiplier: 1.0, constant: -10.0)
+            addConstraint(editButtonRightConstraint)
+            constraintsToDelete.append(editButtonRightConstraint)
+            let editButtonBottomConstraint = NSLayoutConstraint(item: editButton, attribute: .bottom, relatedBy: .equal, toItem: myPicImageView, attribute: .bottom, multiplier: 1.0, constant: 0)
+            addConstraint(editButtonBottomConstraint)
+            constraintsToDelete.append(editButtonBottomConstraint)
+            
+            animateEdit()
         }
         
         if setting.isLastCell {

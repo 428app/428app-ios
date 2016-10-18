@@ -13,10 +13,10 @@ import Foundation
 class Setting {
     
     enum TYPE: Int {
-        case toggle = 0, link, center, nobg
+        case toggle = 0, link, center, nobg, profilepic
     }
     
-    fileprivate var _text: String
+    fileprivate var _text: String // Can be text or url for profilepic
     fileprivate var _type: Setting.TYPE
     fileprivate var _isLastCell: Bool
     
