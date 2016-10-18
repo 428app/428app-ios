@@ -39,6 +39,8 @@ class ProfileController: UIViewController, UITableViewDelegate, UITableViewDataS
     fileprivate let profileBgImageView: UIImageView = {
         let imageView = UIImageView()
         imageView.contentMode = .scaleAspectFill
+        imageView.autoresizesSubviews = true
+        imageView.clipsToBounds = true
         return imageView
     }()
     

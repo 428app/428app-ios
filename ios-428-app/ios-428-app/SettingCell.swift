@@ -73,14 +73,51 @@ class SettingCell: BaseTableViewCell {
     }
 
     fileprivate func animateEdit() {
-        UIView.animate(withDuration: 0.18, animations: {
+        UIView.animate(withDuration: 0.3, animations: {
             self.editButton.transform = CGAffineTransform(scaleX: 2.0, y: 2.0)
             }) { (completion) in
-                UIView.animate(withDuration: 0.06, animations: {
+                UIView.animate(withDuration: 0.12, animations: {
                     self.editButton.transform = CGAffineTransform(scaleX: 1.6, y: 1.6)
                 })
         }
     }
+    
+    // MARK: Timer
+    
+    func updateTime() {
+        let now = Date()
+        let calendar = Calendar.current
+        let components = DateComponents(calendar: calendar, hour: 16, minute: 28)
+        guard let next438 = calendar.nextDate(after: now, matching: components, matchingPolicy: .nextTime) else {
+            return
+        }
+        let diff = calendar.dateComponents([.hour, .minute, .second], from: now, to: next438)
+        if let hours = diff.hour, let minutes = diff.minute, let seconds = diff.second {
+            let hoursString = hours < 10 ? "0\(hours)" : "\(hours)"
+            let minutesString = minutes < 10 ? "0\(minutes)" : "\(minutes)"
+            let secondsString = seconds < 10 ? "0\(seconds)" : "\(seconds)"
+            self.timerLabel.text = "\(hoursString):\(minutesString):\(secondsString)"
+        }
+    }
+    
+    fileprivate let timerLabel: UILabel = {
+        let label = UILabel()
+        label.font = FONT_MEDIUM_XLARGE
+        label.textColor = UIColor.black
+        label.textAlignment = .center
+        return label
+    }()
+    
+    fileprivate let timerDetailLabel: UILabel = {
+        let label = UILabel()
+        label.font = FONT_HEAVY_MID
+        label.textColor = GREEN_UICOLOR
+        label.textAlignment = .center
+        label.text = "until 4:28pm"
+        return label
+    }()
+    
+    // MARK: Set up views
     
     override func setupViews() {
         super.setupViews()
@@ -112,7 +149,7 @@ class SettingCell: BaseTableViewCell {
     func configureCell(settingObj: Setting) {
         self.setting = settingObj
         settingLabel.text = setting.text
-    
+        
         resetAll()
         
         if setting.type == .link {
@@ -155,7 +192,7 @@ class SettingCell: BaseTableViewCell {
         } else if setting.type == .profilepic {
             
             // Used to display profile pic on top
-            
+
             backgroundColor = GRAY_UICOLOR
             myPicImageView.image = UIImage(named: setting.text)
             addSubview(myPicImageView)
@@ -181,6 +218,25 @@ class SettingCell: BaseTableViewCell {
             constraintsToDelete.append(editButtonBottomConstraint)
             
             animateEdit()
+        
+        } else if setting.type == .timer {
+            
+            // Used to display timer at the top
+            
+            addSubview(timerLabel)
+            addSubview(timerDetailLabel)
+            viewsToRemove.append(timerLabel)
+            viewsToRemove.append(timerDetailLabel)
+            timerForCountdown.invalidate()
+            timerForCountdown = Timer.scheduledTimer(timeInterval: 1.0, target: self, selector: #selector(self.updateTime), userInfo: nil, repeats: true)
+            timerForCountdown.fire()
+            settingLabel.isHidden = true
+            dividerView.isHidden = true
+            backgroundColor = GRAY_UICOLOR
+            
+            constraintsToDelete.append(contentsOf: addAndGetConstraintsWithFormat("H:|[v0]|", views: timerLabel))
+            constraintsToDelete.append(contentsOf: addAndGetConstraintsWithFormat("H:|[v0]|", views: timerDetailLabel))
+            constraintsToDelete.append(contentsOf: addAndGetConstraintsWithFormat("V:[v0(25)]-2-[v1(20)]", views: timerLabel, timerDetailLabel))
         }
         
         if setting.isLastCell {

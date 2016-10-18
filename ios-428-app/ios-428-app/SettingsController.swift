@@ -54,6 +54,7 @@ class SettingsController: UIViewController, UITableViewDelegate, UITableViewData
     
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
+        timerForCountdown.invalidate()
         NotificationCenter.default.removeObserver(self, name: NOTIF_CHANGESETTING, object: nil)
         NotificationCenter.default.removeObserver(self, name: NOTIF_EDITPROFILE, object: nil)
         self.saveSettings()
@@ -75,8 +76,8 @@ class SettingsController: UIViewController, UITableViewDelegate, UITableViewData
     
     // Grabs profile pic, and server settings for this user
     fileprivate func populateData() {
-        self.settings.insert([Setting(text: "yihang-profile", type: .profilepic)], at: 0)
-        self.settingsChosen = ["Daily connection": true, "Daily topic": true, "New connections": true, "Messages": true, "In-app vibrations": true]
+        self.settings.insert([Setting(text: "yihang-profile", type: .profilepic)], at: 1)
+        self.settingsChosen = ["Daily connection": true, "Daily topic": true, "New connections": true, "New topics": true, "Connection messages": true, "Topic messages": true, "In-app vibrations": true]
     }
     
     fileprivate func setupViews() {
@@ -88,18 +89,19 @@ class SettingsController: UIViewController, UITableViewDelegate, UITableViewData
     
     // MARK: Table view
     
-    fileprivate let settingHeaders: [String] = ["", "Discovery Settings", "Notifications", "Contact and Share", "Legal", "", ""]
+    fileprivate let settingHeaders: [String] = ["", "", "Discovery Settings", "Notifications", "Contact and Share", "Legal", "", ""]
     
     fileprivate var settings: [[Setting]] = [
+        [Setting(text: "", type: .timer)],
         [Setting(text: "Daily connection", type: .toggle), Setting(text: "Daily topic", type: .toggle, isLastCell: true)],
-        [Setting(text: "New connections", type: .toggle), Setting(text: "Messages", type: .toggle), Setting(text: "In-app vibrations", type: .toggle, isLastCell: true)],
+        [Setting(text: "New connections", type: .toggle), Setting(text: "New topics", type: .toggle), Setting(text: "Connection messages", type: .toggle), Setting(text: "Topic messages", type: .toggle), Setting(text: "In-app vibrations", type: .toggle, isLastCell: true)],
         [Setting(text: "Help and Support", type: .link), Setting(text: "Rate us", type: .link), Setting(text: "Share 428", type: .link, isLastCell: true)],
         [Setting(text: "Privacy Policy", type: .link), Setting(text: "Terms", type: .link, isLastCell: true)],
         [Setting(text: "Log out", type: .center, isLastCell: true)],
         [Setting(text: "Version 1.0.0", type: .nobg, isLastCell: true)]]
     
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
-        if section == 0 { // No section header for profile pic
+        if section <= 1 { // No section header for timer and profile pic
             return nil
         }
         
@@ -124,7 +126,10 @@ class SettingsController: UIViewController, UITableViewDelegate, UITableViewData
     
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
         if section == 0 {
-            return 0
+            return 18.0
+        }
+        if section == 1 {
+            return 0.001
         }
         return (section != settingHeaders.count - 1) ? 45.5 : 45
     }
@@ -139,7 +144,7 @@ class SettingsController: UIViewController, UITableViewDelegate, UITableViewData
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        if indexPath.section == 0 {
+        if indexPath.section == 1 { // Extra height for profilepic
             return 170.0
         }
         return 50.0

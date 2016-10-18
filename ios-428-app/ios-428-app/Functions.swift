@@ -22,3 +22,6 @@ func presentTopToDown(src: UIViewController, dst: UIViewController) {
         src.present(dst, animated: false, completion: nil)
     }
 }
+
+// Used in SettingsController and SettingCell to countdown time till 4:28pm
+var timerForCountdown = Timer()

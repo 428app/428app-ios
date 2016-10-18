@@ -40,13 +40,9 @@ class ProfileCell: BaseTableViewCell {
     
     func configureCell(title: String, content: String) {
         self.titleLabel.text = title
-//        self.contentLabel.text = content
-        
         let paragraphStyle = NSMutableParagraphStyle()
         paragraphStyle.lineSpacing = 6
         let contentStr = NSMutableAttributedString(string: content, attributes: [NSParagraphStyleAttributeName: paragraphStyle])
         self.contentLabel.attributedText = contentStr
-        
-        
     }
 }
