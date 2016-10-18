@@ -46,7 +46,7 @@ class SettingCell: BaseTableViewCell {
     
     fileprivate lazy var myPicImageView: UIImageView = {
         let imageView = UIImageView()
-        imageView.layer.cornerRadius = 75.0
+        imageView.layer.cornerRadius = 85.0
         imageView.clipsToBounds = true
         imageView.contentMode = .scaleAspectFill
         imageView.isUserInteractionEnabled = true
@@ -74,10 +74,10 @@ class SettingCell: BaseTableViewCell {
 
     fileprivate func animateEdit() {
         UIView.animate(withDuration: 0.18, animations: {
-            self.editButton.transform = CGAffineTransform(scaleX: 1.6, y: 1.6)
+            self.editButton.transform = CGAffineTransform(scaleX: 2.0, y: 2.0)
             }) { (completion) in
                 UIView.animate(withDuration: 0.06, animations: {
-                    self.editButton.transform = CGAffineTransform(scaleX: 1.2, y: 1.2)
+                    self.editButton.transform = CGAffineTransform(scaleX: 1.6, y: 1.6)
                 })
         }
     }
@@ -165,11 +165,11 @@ class SettingCell: BaseTableViewCell {
             settingLabel.isHidden = true
             dividerView.isHidden = true
             
-            constraintsToDelete.append(contentsOf: addAndGetConstraintsWithFormat("H:[v0(150)]", views: myPicImageView))
+            constraintsToDelete.append(contentsOf: addAndGetConstraintsWithFormat("H:[v0(170)]", views: myPicImageView))
             let centerXPicConstraint = NSLayoutConstraint(item: myPicImageView, attribute: .centerX, relatedBy: .equal, toItem: self, attribute: .centerX, multiplier: 1.0, constant: 0.0)
             addConstraint(centerXPicConstraint)
             constraintsToDelete.append(centerXPicConstraint)
-            constraintsToDelete.append(contentsOf: addAndGetConstraintsWithFormat("V:[v0(150)]|", views: myPicImageView))
+            constraintsToDelete.append(contentsOf: addAndGetConstraintsWithFormat("V:[v0(170)]|", views: myPicImageView))
             
             constraintsToDelete.append(contentsOf: addAndGetConstraintsWithFormat("V:[v0(25.0)]", views: editButton))
             constraintsToDelete.append(contentsOf: addAndGetConstraintsWithFormat("H:[v0(25.0)]", views: editButton))

@@ -46,6 +46,7 @@
 		40AB7FFA1DB5B06A00492788 /* SettingCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 40AB7FF91DB5B06A00492788 /* SettingCell.swift */; };
 		40AB7FFC1DB5B09700492788 /* BaseTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 40AB7FFB1DB5B09700492788 /* BaseTableViewCell.swift */; };
 		40AB7FFE1DB5B89C00492788 /* Setting.swift in Sources */ = {isa = PBXBuildFile; fileRef = 40AB7FFD1DB5B89C00492788 /* Setting.swift */; };
+		40AB80001DB5FDB100492788 /* EditProfileController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 40AB7FFF1DB5FDB100492788 /* EditProfileController.swift */; };
 		FED3D2F8E9831031BBFFDBEB /* Pods_ios_428_app.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1B0A78A64649B55915C0C572 /* Pods_ios_428_app.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
 /* End PBXBuildFile section */
 
@@ -94,6 +95,7 @@
 		40AB7FF91DB5B06A00492788 /* SettingCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingCell.swift; sourceTree = "<group>"; };
 		40AB7FFB1DB5B09700492788 /* BaseTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BaseTableViewCell.swift; sourceTree = "<group>"; };
 		40AB7FFD1DB5B89C00492788 /* Setting.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Setting.swift; sourceTree = "<group>"; };
+		40AB7FFF1DB5FDB100492788 /* EditProfileController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EditProfileController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -216,6 +218,7 @@
 				4064A1E31DAC590900071383 /* ChatController.swift */,
 				4064A2531DB34E4D00071383 /* ProfileController.swift */,
 				40AB7FF71DB59C9600492788 /* SettingsController.swift */,
+				40AB7FFF1DB5FDB100492788 /* EditProfileController.swift */,
 			);
 			name = Controller;
 			sourceTree = "<group>";
@@ -399,6 +402,7 @@
 				4064A2211DADE67E00071383 /* ChatHeaderView.swift in Sources */,
 				40AB7FFE1DB5B89C00492788 /* Setting.swift in Sources */,
 				4064A1B81DAC381300071383 /* ConnectionsController.swift in Sources */,
+				40AB80001DB5FDB100492788 /* EditProfileController.swift in Sources */,
 				4064A21F1DAD72DF00071383 /* Functions.swift in Sources */,
 				4064A22B1DB2B27F00071383 /* Friend.swift in Sources */,
 				4064A1B61DAC381300071383 /* AppDelegate.swift in Sources */,

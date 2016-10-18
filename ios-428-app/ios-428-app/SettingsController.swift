@@ -32,6 +32,7 @@ class SettingsController: UIViewController, UITableViewDelegate, UITableViewData
         self.view.backgroundColor = GRAY_UICOLOR
         populateData()
         self.navigationItem.title = "Settings"
+        self.navigationItem.backBarButtonItem = UIBarButtonItem(title: " ", style: .plain, target: nil, action: nil)
         setupViews()
     }
     
@@ -66,6 +67,8 @@ class SettingsController: UIViewController, UITableViewDelegate, UITableViewData
     
     func openEditProfile(notif: Notification) {
         log.info("Open edit profile")
+        let controller = EditProfileController()
+        self.navigationController?.pushViewController(controller, animated: true)
     }
     
     // MARK: Set up views
@@ -85,7 +88,7 @@ class SettingsController: UIViewController, UITableViewDelegate, UITableViewData
     
     // MARK: Table view
     
-    fileprivate let settingHeaders: [String] = ["", "Discovery Settings", "Notifications", "Contact us", "Legal", "", ""]
+    fileprivate let settingHeaders: [String] = ["", "Discovery Settings", "Notifications", "Contact and Share", "Legal", "", ""]
     
     fileprivate var settings: [[Setting]] = [
         [Setting(text: "Daily connection", type: .toggle), Setting(text: "Daily topic", type: .toggle, isLastCell: true)],
@@ -101,7 +104,7 @@ class SettingsController: UIViewController, UITableViewDelegate, UITableViewData
         }
         
         let view = UIView()
-        let label = UILabel(frame: CGRect(x: 8, y: 20, width: self.view.frame.width, height: 20))
+        let label = UILabel(frame: CGRect(x: 16, y: 20, width: self.view.frame.width, height: 20))
         label.text = settingHeaders[section]
         label.font = FONT_HEAVY_MID
         label.textColor = UIColor.black
@@ -137,7 +140,7 @@ class SettingsController: UIViewController, UITableViewDelegate, UITableViewData
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         if indexPath.section == 0 {
-            return 150.0
+            return 170.0
         }
         return 50.0
     }

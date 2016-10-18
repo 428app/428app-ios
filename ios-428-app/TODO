@@ -1,5 +1,3 @@
-!Make whole view scrollable!
-
 !EDITPROFILE!
 
 
@@ -7,9 +5,11 @@
 
 
 
+!LOGIN!
+
 !SLIDERS!
 
-!LOGIN!
+
 
 !CONNECTIONS!
 - Connections titleView to countdown till 4:28
