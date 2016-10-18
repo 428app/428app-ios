@@ -61,7 +61,7 @@ class SettingCell: BaseTableViewCell {
         button.layer.shadowOpacity = 0.3
         button.layer.shadowRadius = 3.0
         button.layer.shadowOffset = CGSize(width: 2.0, height: 2.0)
-        button.setImage(#imageLiteral(resourceName: "edit"), for: .normal)
+        button.setImage(#imageLiteral(resourceName: "edit-with-bg"), for: .normal)
         button.imageView?.contentMode = .scaleAspectFill
         button.addTarget(self, action: #selector(self.editProfile), for: .touchUpInside)
         button.translatesAutoresizingMaskIntoConstraints = false
@@ -73,10 +73,10 @@ class SettingCell: BaseTableViewCell {
     }
 
     fileprivate func animateEdit() {
-        UIView.animate(withDuration: 0.3, animations: {
+        UIView.animate(withDuration: 0.2, animations: {
             self.editButton.transform = CGAffineTransform(scaleX: 2.0, y: 2.0)
             }) { (completion) in
-                UIView.animate(withDuration: 0.12, animations: {
+                UIView.animate(withDuration: 0.1, animations: {
                     self.editButton.transform = CGAffineTransform(scaleX: 1.6, y: 1.6)
                 })
         }

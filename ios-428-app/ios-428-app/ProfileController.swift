@@ -232,7 +232,7 @@ class ProfileController: UIViewController, UITableViewDelegate, UITableViewDataS
         
         heightOfTableViewConstraint = NSLayoutConstraint(item: self.tableView, attribute: .height, relatedBy: .equal, toItem: containerView, attribute: .height, multiplier: 0.0, constant: 1000)
         containerView.addConstraint(heightOfTableViewConstraint)
-        containerView.addConstraintsWithFormat("V:|-175-[v0(150)]-10-[v1]-6-[v2(20)]-10-[v3(0.5)]-10-[v4]-10-[v5(0.5)]-10-[v6]-20-[v7]-\(bottomMargin)-|", views: self.profileImageView, nameDisciplineContainer, self.ageLocationLbl, self.topDividerLineView, self.tableView, self.bottomDividerLineView, self.tagline1Lbl, self.tagline2Lbl)
+        containerView.addConstraintsWithFormat("V:|-175-[v0(150)]-10-[v1]-6-[v2(20)]-15-[v3(0.5)]-10-[v4]-10-[v5(0.5)]-20-[v6]-20-[v7]-\(bottomMargin)-|", views: self.profileImageView, nameDisciplineContainer, self.ageLocationLbl, self.topDividerLineView, self.tableView, self.bottomDividerLineView, self.tagline1Lbl, self.tagline2Lbl)
         containerView.addConstraintsWithFormat("H:|[v0]|", views: self.tableView)
         
         UIView.animate(withDuration: 0, animations: {

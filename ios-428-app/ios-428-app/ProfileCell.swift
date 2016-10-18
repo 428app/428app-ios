@@ -38,7 +38,14 @@ class ProfileCell: BaseTableViewCell {
         addConstraintsWithFormat("V:|-8-[v0]-3-[v1]-8-|", views: titleLabel, contentLabel)
     }
     
-    func configureCell(title: String, content: String) {
+    func configureCell(title: String, content: String, isEdit: Bool = false) {
+        if isEdit {
+            titleLabel.textColor = UIColor.black
+            contentLabel.textColor = UIColor.lightGray
+        } else {
+            titleLabel.textColor = GREEN_UICOLOR
+            contentLabel.textColor = UIColor.darkGray
+        }
         self.titleLabel.text = title
         let paragraphStyle = NSMutableParagraphStyle()
         paragraphStyle.lineSpacing = 6
