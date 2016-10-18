@@ -11,9 +11,10 @@ import UIKit
 
 // Notifications
 let NOTIF_EXPANDCELL = NSNotification.Name.init(rawValue: "expandCell")
+let NOTIF_CHANGESETTING = NSNotification.Name.init(rawValue: "changeSetting")
 
 // Colors
-let GRAY_UICOLOR: UIColor = UIColor(red: 204/255.0, green: 204/255.0, blue: 204/255.0, alpha: 1.0) // #cccccc
+let GRAY_UICOLOR: UIColor = UIColor(red: 0.95, green: 0.95, blue: 0.95, alpha: 1)
 //let GREEN_UICOLOR: UIColor = UIColor(red: 71/255.0, green: 217/255.0, blue: 191/255.0, alpha: 1.0) // #47d9bf
 let GREEN_UICOLOR: UIColor = UIColor(red: 54/255.0, green: 208/255.0, blue: 112/255.0, alpha: 1.0) // #36d070
 

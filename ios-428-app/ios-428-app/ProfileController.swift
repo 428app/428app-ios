@@ -252,7 +252,6 @@ class ProfileController: UIViewController, UITableViewDelegate, UITableViewDataS
     
     // MARK: Table view
     
-    
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return UITableViewAutomaticDimension
     }
@@ -281,24 +280,4 @@ class ProfileController: UIViewController, UITableViewDelegate, UITableViewDataS
         cell.configureCell(title: cellTitle, content: cellContent)
         return cell
     }
-    
-//    func numberOfSections(in collectionView: UICollectionView) -> Int {
-//        return 1
-//    }
-//    
-//    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-//        return profileCellTitles.count
-//    }
-//    
-//    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-//        return CGSize(width: self.view.frame.width, height: HEIGHT_OF_CELL)
-//    }
-//    
-//    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-//        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: CELL_ID, for: indexPath) as! ProfileCell
-//        let cellTitle = self.profileCellTitles[indexPath.row]
-//        let cellContent = self.profileCellContent[indexPath.row]
-//        cell.configureCell(title: cellTitle, content: cellContent)
-//        return cell
-//    }
 }

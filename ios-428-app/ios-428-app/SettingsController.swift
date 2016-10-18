@@ -11,15 +11,10 @@ import UIKit
 
 class SettingsController: UIViewController, UITableViewDelegate, UITableViewDataSource {
     
-    // Used for animation of editButton
-    fileprivate var editButtonHeightConstraint: NSLayoutConstraint!
-    fileprivate var editButtonWidthConstraint: NSLayoutConstraint!
-    
-    fileprivate let BG_COLOR = UIColor(red: 0.95, green: 0.95, blue: 0.95, alpha: 1)
     fileprivate let CELL_ID = "SETTING_CELL"
     fileprivate lazy var tableView: UITableView = {
         let tableView = UITableView(frame: self.view.frame, style: .grouped)
-        tableView.backgroundColor = self.BG_COLOR
+        tableView.backgroundColor = GRAY_UICOLOR
         tableView.showsHorizontalScrollIndicator = false
         tableView.showsVerticalScrollIndicator = false
         tableView.bounces = false
@@ -30,19 +25,44 @@ class SettingsController: UIViewController, UITableViewDelegate, UITableViewData
         tableView.register(SettingCell.self, forCellReuseIdentifier: self.CELL_ID)
         return tableView
     }()
+    fileprivate var settingsChosen = [String: Bool]()
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        self.navigationItem.title = "Settings"
-        self.view.backgroundColor = UIColor.white
+        self.view.backgroundColor = GRAY_UICOLOR
         populateData()
+        self.navigationItem.title = "Settings"
         setupViews()
+    }
+    
+    // MARK: Getting setting change and sending them to server
+    
+    func saveSettings() {
+        // TODO: Send settings to server upon view disappearing
+        for (k, v) in settingsChosen {
+            log.info("\(k): \(v)")
+        }
     }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         animateEdit()
+        NotificationCenter.default.addObserver(self, selector: #selector(updateSettingsArr), name: NOTIF_CHANGESETTING, object: nil)
     }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        NotificationCenter.default.removeObserver(self, name: NOTIF_CHANGESETTING, object: nil)
+        self.saveSettings()
+    }
+    
+    func updateSettingsArr(notif: Notification) {
+        if let userInfo = notif.userInfo as? [String: AnyObject], let option = userInfo["option"] as? String, let isOn = userInfo["isOn"] as? Bool {
+            settingsChosen[option] = isOn
+        }
+    }
+    
+    // MARK: Set up views
     
     fileprivate lazy var myPicImageView: UIImageView = {
        let imageView = UIImageView()
@@ -54,6 +74,10 @@ class SettingsController: UIViewController, UITableViewDelegate, UITableViewData
         imageView.addGestureRecognizer(tapGestureRecognizer)
         return imageView
     }()
+    
+    // Used for animation of editButton
+    fileprivate var editButtonHeightConstraint: NSLayoutConstraint!
+    fileprivate var editButtonWidthConstraint: NSLayoutConstraint!
     
     fileprivate lazy var editButton: UIButton = {
         let button = UIButton()
@@ -67,14 +91,33 @@ class SettingsController: UIViewController, UITableViewDelegate, UITableViewData
         return button
     }()
     
+    fileprivate func animateEdit() {
+        editButtonHeightConstraint.constant = 0.0
+        editButtonWidthConstraint.constant = 0.0
+        self.view.layoutIfNeeded()
+        UIView.animate(withDuration: 0.18, animations: {
+            self.editButtonHeightConstraint.constant = 40.0
+            self.editButtonWidthConstraint.constant = 40.0
+            self.view.layoutIfNeeded()
+        }) { (completed) in
+            UIView.animate(withDuration: 0.06, animations: {
+                self.editButtonHeightConstraint.constant = 35.0
+                self.editButtonWidthConstraint.constant = 35.0
+                self.view.layoutIfNeeded()
+            })
+        }
+    }
+    
+    // Grabs profile pic, and server settings for this user
     fileprivate func populateData() {
         self.myPicImageView.image = UIImage(named: "yihang-profile")
+        self.settingsChosen = ["Daily connection": true, "Daily topic": true, "New connections": true, "Messages": true, "In-app vibrations": true]
     }
     
     fileprivate func setupViews() {
         let containerView = self.view!
         containerView.isUserInteractionEnabled = true
-        containerView.backgroundColor = BG_COLOR
+        containerView.backgroundColor = GRAY_UICOLOR
         // Add subviews
         containerView.addSubview(myPicImageView)
         containerView.addSubview(editButton)
@@ -109,23 +152,27 @@ class SettingsController: UIViewController, UITableViewDelegate, UITableViewData
     fileprivate let settingHeaders: [String] = ["Discovery Settings", "Notifications", "Contact us", "Legal", "", ""]
     
     fileprivate let settings: [[Setting]] = [
-        [Setting(text: "Discover Now", type: .toggle, isLastCell: true)],
+        [Setting(text: "Daily connection", type: .toggle), Setting(text: "Daily topic", type: .toggle, isLastCell: true)],
         [Setting(text: "New connections", type: .toggle), Setting(text: "Messages", type: .toggle), Setting(text: "In-app vibrations", type: .toggle, isLastCell: true)],
         [Setting(text: "Help and Support", type: .link), Setting(text: "Rate us", type: .link), Setting(text: "Share 428", type: .link, isLastCell: true)],
         [Setting(text: "Privacy Policy", type: .link), Setting(text: "Terms", type: .link, isLastCell: true)],
-        [Setting(text: "Logout", type: .link, isLastCell: true)],
-        [Setting(text: "Version 1.0.0", type: .link, isLastCell: true)]]
+        [Setting(text: "Log out", type: .center, isLastCell: true)],
+        [Setting(text: "Version 1.0.0", type: .nobg, isLastCell: true)]]
     
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
         let view = UIView()
-        let label = UILabel(frame: CGRect(x: 8, y: 8, width: self.view.frame.width, height: 20))
+        let label = UILabel(frame: CGRect(x: 8, y: 20, width: self.view.frame.width, height: 20))
         label.text = settingHeaders[section]
-        label.font = FONT_HEAVY_SMALL
+        label.font = FONT_HEAVY_MID
         label.textColor = UIColor.black
-        let divider = UIView(frame: CGRect(x: 0, y: 33, width: self.view.frame.width, height: 0.5))
-        divider.backgroundColor = UIColor(white: 0.5, alpha: 0.3)
         view.addSubview(label)
-        view.addSubview(divider)
+        
+        if section != settingHeaders.count - 1 { // Last section need not have divider
+            let divider = UIView(frame: CGRect(x: 0, y: 45, width: self.view.frame.width, height: 0.5))
+            divider.backgroundColor = UIColor(white: 0.5, alpha: 0.3)
+            view.addSubview(divider)
+        }
+        
         return view
     }
     
@@ -134,14 +181,20 @@ class SettingsController: UIViewController, UITableViewDelegate, UITableViewData
     }
     
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
-        return 33.5
+        return (section != settingHeaders.count - 1) ? 45.5 : 45
     }
-//    func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-//        return settingHeaders[section]
-//    }
+    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        let setting = settings[indexPath.section][indexPath.row]
+        log.info("Selected row: \(setting.text)") // TODO: Perform right logic based on the selected row
+    }
 
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return settings[section].count
+    }
+    
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        return 50.0
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -149,24 +202,5 @@ class SettingsController: UIViewController, UITableViewDelegate, UITableViewData
         let setting = settings[indexPath.section][indexPath.row]
         cell.configureCell(settingObj: setting)
         return cell
-    }
-    
-    // MARK: Misc. functions
-    
-    fileprivate func animateEdit() {
-        editButtonHeightConstraint.constant = 0.0
-        editButtonWidthConstraint.constant = 0.0
-        self.view.layoutIfNeeded()
-        UIView.animate(withDuration: 0.18, animations: {
-            self.editButtonHeightConstraint.constant = 40.0
-            self.editButtonWidthConstraint.constant = 40.0
-            self.view.layoutIfNeeded()
-        }) { (completed) in
-            UIView.animate(withDuration: 0.06, animations: {
-                self.editButtonHeightConstraint.constant = 35.0
-                self.editButtonWidthConstraint.constant = 35.0
-                self.view.layoutIfNeeded()
-            })
-        }
     }
 }
