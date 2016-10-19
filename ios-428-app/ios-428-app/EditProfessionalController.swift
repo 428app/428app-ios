@@ -9,7 +9,7 @@
 import Foundation
 import UIKit
 
-class EditProfessionalController: UIViewController, UITextFieldDelegate {
+class EditProfessionalController: UIViewController, UITextFieldDelegate, UIPickerViewDelegate, UIPickerViewDataSource {
     
     var organization: String? {
         didSet {
@@ -29,12 +29,34 @@ class EditProfessionalController: UIViewController, UITextFieldDelegate {
         }
     }
     
+    var disciplineIcon: String!
+    
+    fileprivate lazy var saveButton: UIBarButtonItem = {
+        let button: UIBarButtonItem = UIBarButtonItem(title: "Save", style: .done, target: self, action: #selector(self.saveEdits))
+        button.isEnabled = false
+        return button
+    }()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         self.view.backgroundColor = UIColor.white
         
-        self.automaticallyAdjustsScrollViewInsets = false
+        // Initially set discipline icon in textfield
+        self.editDisciplineIconInTextField(imageString: disciplineIcon)
+        
+        // Gesture recognizer to keep keyboard
+        let tapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(keepKeyboard))
+        self.view.addGestureRecognizer(tapGestureRecognizer)
+        
+        // Override back bar button item to Save
+        self.navigationItem.rightBarButtonItem = saveButton
+        
         self.setupViews()
+    }
+    
+    func saveEdits() {
+        log.info("Save edits server side")
+        _ = self.navigationController?.popViewController(animated: true)
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -96,22 +118,31 @@ class EditProfessionalController: UIViewController, UITextFieldDelegate {
     }
     
     fileprivate lazy var orgTextField: UITextField = {
-        let textfield = self.textfieldTemplate()
+        let textfield: UITextField = self.textfieldTemplate()
         textfield.placeholder = "Your company, or school"
         return textfield
     }()
     
     fileprivate lazy var schoolTextField: UITextField = {
-        let textfield = self.textfieldTemplate()
+        let textfield: UITextField = self.textfieldTemplate()
         textfield.placeholder = "Your current or past school"
         return textfield
     }()
     
     fileprivate lazy var disciplineTextField: UITextField = {
-        let textfield = self.textfieldTemplate()
+        let textfield: UITextField = self.textfieldTemplate()
         textfield.placeholder = "Your discipline or industry"
+        textfield.inputView = self.pickerView
         return textfield
     }()
+    
+    fileprivate func editDisciplineIconInTextField(imageString: String) {
+        let imageView: UIImageView = UIImageView(image: UIImage(named: imageString))
+        imageView.frame = CGRect(x: 0, y: 0, width: imageView.image!.size.width + 20, height: imageView.image!.size.height)
+        imageView.contentMode = .center
+        disciplineTextField.leftView = imageView
+        disciplineTextField.leftViewMode = .always
+    }
     
     fileprivate func setupViews() {
         view.addSubview(orgTitleLabel)
@@ -132,17 +163,26 @@ class EditProfessionalController: UIViewController, UITextFieldDelegate {
         view.addConstraintsWithFormat("V:[v0(20)]-5-[v1(45)]-25-[v2(20)]-5-[v3(45)]-25-[v4(20)]-5-[v5(45)]", views: orgTitleLabel, orgTextField, schoolTitleLabel, schoolTextField, disciplineTitleLabel, disciplineTextField)
     }
     
-    // Mark: Text field
+    // MARK: Text field
     
     func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange,
                    replacementString string: String) -> Bool {
-        // Max number of characters is 50
-        let maxLength = 50
+        // Max number of characters is 40
+        let maxLength = 40
         let nsString = textField.text as NSString?
         let newString = nsString?.replacingCharacters(in: range, with: string)
         if let newLength = newString?.characters.count {
+            saveButton.isEnabled = newLength > 0
+            
+            if textField == orgTextField {
+                saveButton.isEnabled = newString != organization
+            } else if textField == schoolTextField {
+                saveButton.isEnabled = newString != school
+            }
+            
             return newLength <= maxLength
         }
+        saveButton.isEnabled = false
         return false
     }
     
@@ -151,7 +191,37 @@ class EditProfessionalController: UIViewController, UITextFieldDelegate {
         return true
     }
     
-    // MARK: Move keyboard up if blocking
+    // MARK: Pickerview for discipline
+    
+    fileprivate let pickOption = ["Business", "Computer Science", "Biology", "East Asian Studies", "Physics", "Electrical Engineering"] // TODO: Add in the full list of disciplines here
+    fileprivate let pickIcons = ["business", "computer", "biology", "eastasian", "physics", "electricengineering"]
+    
+    fileprivate lazy var pickerView: UIPickerView = {
+       let picker = UIPickerView()
+        picker.delegate = self
+        picker.tintColor = GREEN_UICOLOR
+        return picker
+    }()
+    
+    func numberOfComponents(in pickerView: UIPickerView) -> Int {
+        return 1
+    }
+    
+    func pickerView(_ pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
+        return pickOption.count
+    }
+    
+    func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
+        return pickOption[row]
+    }
+    
+    func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
+        saveButton.isEnabled = pickOption[row] != discipline
+        disciplineTextField.text = pickOption[row]
+        editDisciplineIconInTextField(imageString: pickIcons[row])
+    }
+    
+    // MARK: Keep keyboard
     
     fileprivate func registerObservers() {
         NotificationCenter.default.addObserver(self, selector: #selector(handleKeyboardNotification), name: NSNotification.Name.UIKeyboardWillHide, object: nil)
@@ -197,6 +267,10 @@ class EditProfessionalController: UIViewController, UITextFieldDelegate {
                 }
             })
         }
+    }
+    
+    func keepKeyboard() {
+        self.view.endEditing(true)
     }
 }
 

@@ -307,8 +307,9 @@ class EditProfileController: UIViewController, UIScrollViewDelegate, UITableView
         controller.organization = profile.org
         controller.school = profile.school
         controller.discipline = profile.discipline
+        controller.disciplineIcon = profile.disciplineImageName
         let backItem = UIBarButtonItem()
-        backItem.title = "Save"
+        backItem.title = " "
         navigationItem.backBarButtonItem = backItem
         navigationController?.pushViewController(controller, animated: true)
     }
