@@ -10,7 +10,7 @@ import Foundation
 import UIKit
 
 
-class ProfileController: UIViewController, UITableViewDelegate, UITableViewDataSource, UIScrollViewDelegate {
+class ProfileController: UIViewController, UITableViewDelegate, UITableViewDataSource, UIScrollViewDelegate, UIGestureRecognizerDelegate {
     
     var profile: Profile! {
         didSet { // Set from ChatController's openProfile
@@ -36,11 +36,43 @@ class ProfileController: UIViewController, UITableViewDelegate, UITableViewDataS
     
     // MARK: Set up views
     
-    fileprivate let profileBgImageView: UIImageView = {
+    func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWith otherGestureRecognizer: UIGestureRecognizer) -> Bool {
+        return true
+    }
+    
+    func expandPic(sender: UITapGestureRecognizer) {
+        let pictureModalController = PictureModalController()
+        if sender == self.bgTap {
+            pictureModalController.picture = self.profileBgImageView.image
+        } else {
+            pictureModalController.picture = self.profileImageView.image
+        }
+        pictureModalController.modalPresentationStyle = .overFullScreen
+        pictureModalController.modalTransitionStyle = .crossDissolve
+        
+        self.present(pictureModalController, animated: true, completion: nil)
+    }
+    
+    fileprivate lazy var bgTap: UITapGestureRecognizer = {
+        let tap = UITapGestureRecognizer(target: self, action: #selector(ProfileController.expandPic(sender:)))
+        tap.delegate = self
+        return tap
+    }()
+    
+    fileprivate lazy var picTap: UITapGestureRecognizer = {
+        let tap = UITapGestureRecognizer(target: self, action: #selector(ProfileController.expandPic(sender:)))
+        tap.delegate = self
+        return tap
+    }()
+    
+    fileprivate lazy var profileBgImageView: UIImageView = {
         let imageView = UIImageView()
         imageView.contentMode = .scaleAspectFill
         imageView.autoresizesSubviews = true
         imageView.clipsToBounds = true
+        imageView.isUserInteractionEnabled = true
+        
+        imageView.addGestureRecognizer(self.bgTap)
         return imageView
     }()
     
@@ -59,7 +91,7 @@ class ProfileController: UIViewController, UITableViewDelegate, UITableViewDataS
         return imageView
     }()
     
-    fileprivate let profileImageView: UIImageView = {
+    fileprivate lazy var profileImageView: UIImageView = {
         let imageView = UIImageView()
         imageView.contentMode = .scaleAspectFill
         imageView.layer.borderColor = UIColor.white.cgColor
@@ -70,6 +102,8 @@ class ProfileController: UIViewController, UITableViewDelegate, UITableViewDataS
         imageView.layer.shadowOpacity = 0.75
         imageView.layer.shadowRadius = 3.0
         imageView.layer.shadowOffset = CGSize(width: 2.0, height: 2.0)
+        imageView.isUserInteractionEnabled = true
+        imageView.addGestureRecognizer(self.picTap)
         return imageView
     }()
     
