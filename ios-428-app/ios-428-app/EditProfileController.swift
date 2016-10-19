@@ -316,6 +316,13 @@ class EditProfileController: UIViewController, UIScrollViewDelegate, UITableView
     
     func editTagline() {
         log.info("edit tagline")
+        let controller = EditTaglineController()
+        controller.tagline1 = profile.tagline1
+        controller.tagline2 = profile.tagline2
+        let backItem = UIBarButtonItem()
+        backItem.title = " "
+        navigationItem.backBarButtonItem = backItem
+        navigationController?.pushViewController(controller, animated: true)
     }
     
     fileprivate func animateEditButtons() {

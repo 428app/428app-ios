@@ -11,6 +11,8 @@ import UIKit
 
 class EditProfessionalController: UIViewController, UITextFieldDelegate, UIPickerViewDelegate, UIPickerViewDataSource {
     
+    fileprivate let MAX_CHARACTERS = 40
+    
     var organization: String? {
         didSet {
             self.orgTextField.text = organization
@@ -55,7 +57,11 @@ class EditProfessionalController: UIViewController, UITextFieldDelegate, UIPicke
     }
     
     func saveEdits() {
-        log.info("Save edits server side")
+        log.info("Save professional info edits server side")
+        guard let orgSaved = orgTextField.text?.trim(), let schoolSaved = schoolTextField.text?.trim(), let disciplineSaved = disciplineTextField.text?.trim() else {
+            saveButton.isEnabled = false
+            return
+        }
         _ = self.navigationController?.popViewController(animated: true)
     }
     
@@ -167,8 +173,6 @@ class EditProfessionalController: UIViewController, UITextFieldDelegate, UIPicke
     
     func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange,
                    replacementString string: String) -> Bool {
-        // Max number of characters is 40
-        let maxLength = 40
         let nsString = textField.text as NSString?
         let newString = nsString?.replacingCharacters(in: range, with: string)
         if let newLength = newString?.characters.count {
@@ -180,7 +184,7 @@ class EditProfessionalController: UIViewController, UITextFieldDelegate, UIPicke
                 saveButton.isEnabled = newString != school
             }
             
-            return newLength <= maxLength
+            return newLength <= MAX_CHARACTERS
         }
         saveButton.isEnabled = false
         return false
