@@ -48,6 +48,8 @@
 		40AB7FFE1DB5B89C00492788 /* Setting.swift in Sources */ = {isa = PBXBuildFile; fileRef = 40AB7FFD1DB5B89C00492788 /* Setting.swift */; };
 		40AB80001DB5FDB100492788 /* EditProfileController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 40AB7FFF1DB5FDB100492788 /* EditProfileController.swift */; };
 		40AB80031DB6FAA200492788 /* PictureModalController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 40AB80021DB6FAA200492788 /* PictureModalController.swift */; };
+		40AB80051DB7094700492788 /* EditProfessionalController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 40AB80041DB7094700492788 /* EditProfessionalController.swift */; };
+		40AB80071DB7095200492788 /* EditTaglineController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 40AB80061DB7095200492788 /* EditTaglineController.swift */; };
 		FED3D2F8E9831031BBFFDBEB /* Pods_ios_428_app.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1B0A78A64649B55915C0C572 /* Pods_ios_428_app.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
 /* End PBXBuildFile section */
 
@@ -98,6 +100,8 @@
 		40AB7FFD1DB5B89C00492788 /* Setting.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Setting.swift; sourceTree = "<group>"; };
 		40AB7FFF1DB5FDB100492788 /* EditProfileController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EditProfileController.swift; sourceTree = "<group>"; };
 		40AB80021DB6FAA200492788 /* PictureModalController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PictureModalController.swift; sourceTree = "<group>"; };
+		40AB80041DB7094700492788 /* EditProfessionalController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EditProfessionalController.swift; sourceTree = "<group>"; };
+		40AB80061DB7095200492788 /* EditTaglineController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EditTaglineController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -239,6 +243,8 @@
 			isa = PBXGroup;
 			children = (
 				40AB7FFF1DB5FDB100492788 /* EditProfileController.swift */,
+				40AB80041DB7094700492788 /* EditProfessionalController.swift */,
+				40AB80061DB7095200492788 /* EditTaglineController.swift */,
 			);
 			name = EditProfile;
 			sourceTree = "<group>";
@@ -409,6 +415,7 @@
 				4064A1E61DAC7DA600071383 /* CustomTabBarController.swift in Sources */,
 				4064A2521DB346A800071383 /* Profile.swift in Sources */,
 				4064A2561DB3E5E800071383 /* ProfileCell.swift in Sources */,
+				40AB80071DB7095200492788 /* EditTaglineController.swift in Sources */,
 				4064A2271DB13FBD00071383 /* Debug.swift in Sources */,
 				4064A2211DADE67E00071383 /* ChatHeaderView.swift in Sources */,
 				40AB7FFE1DB5B89C00492788 /* Setting.swift in Sources */,
@@ -422,6 +429,7 @@
 				40AB7FFC1DB5B09700492788 /* BaseTableViewCell.swift in Sources */,
 				4064A2161DACBCDC00071383 /* Extensions.swift in Sources */,
 				40AB80031DB6FAA200492788 /* PictureModalController.swift in Sources */,
+				40AB80051DB7094700492788 /* EditProfessionalController.swift in Sources */,
 				4064A21A1DACC20E00071383 /* ConnectionCell.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

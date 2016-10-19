@@ -303,6 +303,14 @@ class EditProfileController: UIViewController, UIScrollViewDelegate, UITableView
     
     func editProfessionalInfo() {
         log.info("edit professional info")
+        let controller = EditProfessionalController()
+        controller.organization = profile.org
+        controller.school = profile.school
+        controller.discipline = profile.discipline
+        let backItem = UIBarButtonItem()
+        backItem.title = "Save"
+        navigationItem.backBarButtonItem = backItem
+        navigationController?.pushViewController(controller, animated: true)
     }
     
     func editTagline() {
@@ -406,7 +414,7 @@ class EditProfileController: UIViewController, UIScrollViewDelegate, UITableView
         
         heightOfTableViewConstraint = NSLayoutConstraint(item: self.tableView, attribute: .height, relatedBy: .equal, toItem: nil, attribute: .notAnAttribute, multiplier: 1.0, constant: 1000)
         containerView.addConstraint(heightOfTableViewConstraint)
-        containerView.addConstraintsWithFormat("V:|-175-[v0(150)]-10-[v1]-6-[v2(20)]-8-[v3(0.5)]-10-[v4(30)]-5-[v5]-2-[v6(0.5)]-12-[v7(30)]-10-[v8]-20-[v9]-\(bottomMargin)-|", views: self.profileImageView, nameDisciplineContainer, self.ageLocationLbl, self.topDividerLineView, self.editProfessionalInfoButton, self.tableView, self.bottomDividerLineView, self.editTaglineButton, self.tagline1Lbl, self.tagline2Lbl)
+        containerView.addConstraintsWithFormat("V:|-175-[v0(150)]-10-[v1]-6-[v2(20)]-8-[v3(0.5)]-10-[v4(40)]-5-[v5]-2-[v6(0.5)]-12-[v7(40)]-10-[v8]-20-[v9]-\(bottomMargin)-|", views: self.profileImageView, nameDisciplineContainer, self.ageLocationLbl, self.topDividerLineView, self.editProfessionalInfoButton, self.tableView, self.bottomDividerLineView, self.editTaglineButton, self.tagline1Lbl, self.tagline2Lbl)
         containerView.addConstraintsWithFormat("H:|[v0]|", views: self.tableView)
         
         UIView.animate(withDuration: 0, animations: {

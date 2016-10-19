@@ -88,6 +88,7 @@ public extension UIImage {
         return newImage!
     }
     
+    // Change the color of the image, but recommended not to use on large images as poor resolution
     func maskWithColor(color: UIColor) -> UIImage? {
         
         let maskImage = self.cgImage
