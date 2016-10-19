@@ -45,5 +45,9 @@
 	<array>
 		<string>UIInterfaceOrientationPortrait</string>
 	</array>
+	<key>NSCameraUsageDescription</key>
+	<string>Access to the camera will be for the sole purpose of selecting your profile picture.</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>Access to the library will be for the sole purpose of selecting your profile picture.</string>
 </dict>
 </plist>
