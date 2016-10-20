@@ -86,7 +86,7 @@ class ProfileController: UIViewController, UITableViewDelegate, UITableViewDataS
     
     fileprivate let closeButtonBg: UIImageView = {
         let imageView = UIImageView()
-        imageView.image = #imageLiteral(resourceName: "downbg").alpha(value: 0.45)
+        imageView.image = #imageLiteral(resourceName: "downbg").alpha(value: 0.55)
         imageView.contentMode = .scaleAspectFill
         return imageView
     }()
