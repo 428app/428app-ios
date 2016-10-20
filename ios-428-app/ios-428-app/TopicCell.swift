@@ -42,7 +42,6 @@ class TopicCell: BaseTableViewCell {
         imageView.contentMode = .scaleAspectFill
         imageView.clipsToBounds = true
         imageView.autoresizesSubviews = true
-        
         return imageView
     }()
     
@@ -107,6 +106,14 @@ class TopicCell: BaseTableViewCell {
         paragraphStyle.lineSpacing = 6
         let formatedPrompt = NSMutableAttributedString(string: topic.prompt, attributes: [NSParagraphStyleAttributeName: paragraphStyle])
         promptLabel.attributedText = formatedPrompt
+        
+        if topic.isSeen {
+            self.messageCountLabel.textColor = GREEN_UICOLOR
+            self.iconImageView.tintColor = GREEN_UICOLOR
+        } else {
+            self.messageCountLabel.textColor = RED_UICOLOR
+            self.iconImageView.tintColor = RED_UICOLOR
+        }
     }
     
 }
