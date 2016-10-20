@@ -43,10 +43,10 @@ class EditTaglineController: UIViewController, UITextViewDelegate {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        self.view.backgroundColor = UIColor.white
+        self.view.backgroundColor = GRAY_UICOLOR
         self.navigationItem.rightBarButtonItem = saveButton
-        let tapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(keepKeyboard))
-        self.view.addGestureRecognizer(tapGestureRecognizer)
+        let panGestureRecognizer = UIPanGestureRecognizer(target: self, action: #selector(keepKeyboard))
+        self.view.addGestureRecognizer(panGestureRecognizer)
         self.setupViews()
     }
     
@@ -87,8 +87,8 @@ class EditTaglineController: UIViewController, UITextViewDelegate {
     fileprivate func textViewTemplate() -> UITextView {
         let textView = UITextView()
         textView.font = FONT_MEDIUM_MID
-        textView.textColor = UIColor.black
-        textView.backgroundColor = GRAY_UICOLOR
+        textView.textColor = UIColor.darkGray
+        textView.backgroundColor = UIColor.white
         textView.delegate = self
         textView.textAlignment = .left
         textView.tintColor = GREEN_UICOLOR
@@ -130,7 +130,7 @@ class EditTaglineController: UIViewController, UITextViewDelegate {
         label.font = FONT_HEAVY_SMALL
         label.textColor = UIColor.gray
         label.textAlignment = .right
-        label.backgroundColor = GRAY_UICOLOR
+        label.backgroundColor = UIColor.white
         return label
     }
     

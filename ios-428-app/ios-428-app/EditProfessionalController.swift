@@ -41,7 +41,7 @@ class EditProfessionalController: UIViewController, UITextFieldDelegate, UIPicke
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        self.view.backgroundColor = UIColor.white
+        self.view.backgroundColor = GRAY_UICOLOR
         
         // Initially set discipline icon in textfield
         self.editDisciplineIconInTextField(imageString: disciplineIcon)
@@ -109,7 +109,7 @@ class EditProfessionalController: UIViewController, UITextFieldDelegate, UIPicke
         textfield.font = FONT_MEDIUM_LARGE
         textfield.textColor = UIColor.darkGray
         textfield.borderStyle = .none
-        textfield.backgroundColor = GRAY_UICOLOR
+        textfield.backgroundColor = UIColor.white
         let paddingView = UIView(frame: CGRect(x: 0, y: 0, width: 15, height: textfield.frame.height))
         textfield.leftView = paddingView
         textfield.leftViewMode = .always
