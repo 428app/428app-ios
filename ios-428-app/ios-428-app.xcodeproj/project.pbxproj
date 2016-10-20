@@ -7,6 +7,10 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		4024F2211DB7E2E9007819F7 /* TopicsController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4024F2201DB7E2E9007819F7 /* TopicsController.swift */; };
+		4024F2231DB7F664007819F7 /* Topic.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4024F2221DB7F664007819F7 /* Topic.swift */; };
+		4024F2251DB7F83F007819F7 /* TopicMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4024F2241DB7F83F007819F7 /* TopicMessage.swift */; };
+		4024F2271DB82239007819F7 /* TopicCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4024F2261DB82239007819F7 /* TopicCell.swift */; };
 		4064A1B61DAC381300071383 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4064A1B51DAC381300071383 /* AppDelegate.swift */; };
 		4064A1B81DAC381300071383 /* ConnectionsController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4064A1B71DAC381300071383 /* ConnectionsController.swift */; };
 		4064A1BE1DAC381300071383 /* ios_428_app.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 4064A1BC1DAC381300071383 /* ios_428_app.xcdatamodeld */; };
@@ -57,6 +61,10 @@
 		04E3B82C0B8AC7357CE89687 /* Pods-ios-428-app.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ios-428-app.debug.xcconfig"; path = "Pods/Target Support Files/Pods-ios-428-app/Pods-ios-428-app.debug.xcconfig"; sourceTree = "<group>"; };
 		0D2BDEFFA9091FABC468335E /* Pods-ios-428-app.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ios-428-app.release.xcconfig"; path = "Pods/Target Support Files/Pods-ios-428-app/Pods-ios-428-app.release.xcconfig"; sourceTree = "<group>"; };
 		1B0A78A64649B55915C0C572 /* Pods_ios_428_app.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_ios_428_app.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		4024F2201DB7E2E9007819F7 /* TopicsController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TopicsController.swift; sourceTree = "<group>"; };
+		4024F2221DB7F664007819F7 /* Topic.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Topic.swift; sourceTree = "<group>"; };
+		4024F2241DB7F83F007819F7 /* TopicMessage.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TopicMessage.swift; sourceTree = "<group>"; };
+		4024F2261DB82239007819F7 /* TopicCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TopicCell.swift; sourceTree = "<group>"; };
 		4064A1B21DAC381300071383 /* ios-428-app.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "ios-428-app.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		4064A1B51DAC381300071383 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		4064A1B71DAC381300071383 /* ConnectionsController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectionsController.swift; sourceTree = "<group>"; };
@@ -116,6 +124,14 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		4024F21F1DB7E2DB007819F7 /* Topic */ = {
+			isa = PBXGroup;
+			children = (
+				4024F2201DB7E2E9007819F7 /* TopicsController.swift */,
+			);
+			name = Topic;
+			sourceTree = "<group>";
+		};
 		4064A1A91DAC381300071383 = {
 			isa = PBXGroup;
 			children = (
@@ -197,6 +213,8 @@
 				4064A22A1DB2B27F00071383 /* Friend.swift */,
 				4064A2511DB346A800071383 /* Profile.swift */,
 				40AB7FFD1DB5B89C00492788 /* Setting.swift */,
+				4024F2221DB7F664007819F7 /* Topic.swift */,
+				4024F2241DB7F83F007819F7 /* TopicMessage.swift */,
 			);
 			name = Model;
 			sourceTree = "<group>";
@@ -211,6 +229,7 @@
 				4064A2191DACC20E00071383 /* ConnectionCell.swift */,
 				4064A2551DB3E5E800071383 /* ProfileCell.swift */,
 				40AB7FF91DB5B06A00492788 /* SettingCell.swift */,
+				4024F2261DB82239007819F7 /* TopicCell.swift */,
 			);
 			name = View;
 			sourceTree = "<group>";
@@ -225,6 +244,7 @@
 				4064A1E31DAC590900071383 /* ChatController.swift */,
 				4064A2531DB34E4D00071383 /* ProfileController.swift */,
 				40AB7FF71DB59C9600492788 /* SettingsController.swift */,
+				4024F21F1DB7E2DB007819F7 /* Topic */,
 				40AB80011DB6FA9500492788 /* EditProfile */,
 			);
 			name = Controller;
@@ -404,17 +424,21 @@
 			buildActionMask = 2147483647;
 			files = (
 				4064A2051DAC868E00071383 /* CustomNavigationController.swift in Sources */,
+				4024F2231DB7F664007819F7 /* Topic.swift in Sources */,
 				4064A1E41DAC590900071383 /* ChatController.swift in Sources */,
 				4064A2541DB34E4D00071383 /* ProfileController.swift in Sources */,
 				40AB7FF81DB59C9600492788 /* SettingsController.swift in Sources */,
 				40AB7FFA1DB5B06A00492788 /* SettingCell.swift in Sources */,
 				4064A1EB1DAC80F100071383 /* Constants.swift in Sources */,
 				4064A2141DACBCAA00071383 /* BaseCollectionCell.swift in Sources */,
+				4024F2211DB7E2E9007819F7 /* TopicsController.swift in Sources */,
+				4024F2271DB82239007819F7 /* TopicCell.swift in Sources */,
 				4064A1BE1DAC381300071383 /* ios_428_app.xcdatamodeld in Sources */,
 				4064A2181DACC1B700071383 /* ChatCell.swift in Sources */,
 				4064A1E61DAC7DA600071383 /* CustomTabBarController.swift in Sources */,
 				4064A2521DB346A800071383 /* Profile.swift in Sources */,
 				4064A2561DB3E5E800071383 /* ProfileCell.swift in Sources */,
+				4024F2251DB7F83F007819F7 /* TopicMessage.swift in Sources */,
 				40AB80071DB7095200492788 /* EditTaglineController.swift in Sources */,
 				4064A2271DB13FBD00071383 /* Debug.swift in Sources */,
 				4064A2211DADE67E00071383 /* ChatHeaderView.swift in Sources */,

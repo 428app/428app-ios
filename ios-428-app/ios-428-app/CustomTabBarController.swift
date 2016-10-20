@@ -25,7 +25,7 @@ class CustomTabBarController: UITabBarController {
         connectionsNavController.tabBarItem.image = #imageLiteral(resourceName: "connections-U")
         connectionsNavController.tabBarItem.selectedImage = #imageLiteral(resourceName: "connections-F")
         
-        let topicsController = UIViewController()
+        let topicsController = TopicsController()
         let topicsNavController = CustomNavigationController(rootViewController: topicsController)
         topicsNavController.tabBarItem.title = "Topics"
         topicsNavController.tabBarItem.image = #imageLiteral(resourceName: "topics-U")

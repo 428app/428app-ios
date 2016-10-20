@@ -51,9 +51,15 @@ class SettingsController: UIViewController, UITableViewDelegate, UITableViewData
         NotificationCenter.default.addObserver(self, selector: #selector(openEditProfile), name: NOTIF_EDITPROFILE, object: nil)
     }
     
+    fileprivate var cameFromViewDidLoad = true // Prevents table view from being reloaded twice on first entering
+    
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-        tableView.reloadData()
+        if !cameFromViewDidLoad {
+            tableView.reloadData()
+        } else {
+            cameFromViewDidLoad = false
+        }
     }
     
     override func viewWillDisappear(_ animated: Bool) {
