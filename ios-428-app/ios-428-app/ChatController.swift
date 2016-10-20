@@ -141,7 +141,7 @@ class ChatController: UIViewController, UICollectionViewDelegateFlowLayout, UITe
     }()
     
     func openProfile(button: UIButton) {
-        // TODOL Fetch profile from server based on this friend id
+        // TODO: Fetch profile from server based on this friend id
         let controller = ProfileController()
         controller.profile = jennyprof
         controller.modalTransitionStyle = .coverVertical

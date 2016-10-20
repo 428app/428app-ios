@@ -45,7 +45,7 @@ class DiscussController: UIViewController, UIGestureRecognizerDelegate, UITextVi
     // MARK: Prompt
     
     fileprivate func animatePrompt() {
-        UIView.animate(withDuration: 0.25, delay: 0.3, animations: {
+        UIView.animate(withDuration: 0.25, delay: 0.45, animations: {
             self.promptExpandIcon.transform = CGAffineTransform(scaleX: 1.4, y: 1.4)
             }) { (completed) in
                 UIView.animate(withDuration: 0.1, animations: { 
@@ -81,7 +81,6 @@ class DiscussController: UIViewController, UIGestureRecognizerDelegate, UITextVi
     }()
     
     func openDescription() {
-        log.info("open description modal")
         let discussModalController = DiscussModalController()
         discussModalController.topic = self.topic
         discussModalController.modalPresentationStyle = .overFullScreen
@@ -103,7 +102,7 @@ class DiscussController: UIViewController, UIGestureRecognizerDelegate, UITextVi
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         self.extendedLayoutIncludesOpaqueBars = true
-        self.collectionView.isHidden = false
+        self.showViewsAfterTransitioning()
         self.registerObservers()
     }
     
@@ -118,6 +117,20 @@ class DiscussController: UIViewController, UIGestureRecognizerDelegate, UITextVi
         self.unregisterObservers()
     }
     
+    fileprivate func hideViewsBeforeTransitioning() {
+        self.navigationController?.navigationBar.isHidden = true
+        self.collectionView.isHidden = true
+        self.promptLabel.isHidden = true
+        self.promptExpandIcon.isHidden = true
+    }
+    
+    fileprivate func showViewsAfterTransitioning() {
+        self.navigationController?.navigationBar.isHidden = false
+        self.collectionView.isHidden = false
+        self.promptLabel.isHidden = false
+        self.promptExpandIcon.isHidden = false
+    }
+    
     fileprivate func setupPromptView() {
         let paragraphStyle = NSMutableParagraphStyle()
         paragraphStyle.lineSpacing = 6
@@ -128,9 +141,16 @@ class DiscussController: UIViewController, UIGestureRecognizerDelegate, UITextVi
         view.addSubview(promptExpandIcon)
         view.addConstraintsWithFormat("H:|[v0]|", views: promptLabel)
         view.addConstraintsWithFormat("H:[v0(20)]-8-|", views: promptExpandIcon)
-        view.addConstraint(NSLayoutConstraint(item: promptLabel, attribute: .top, relatedBy: .equal, toItem: topLayoutGuide, attribute: .bottom, multiplier: 1.0, constant: 0.0))
+        
+        
+        if let navHeight = navigationController?.navigationBar.frame.height {
+           view.addConstraintsWithFormat("V:|-\(navHeight * 1.45)-[v0(60)]", views: promptLabel)
+        } else {
+            view.addConstraint(NSLayoutConstraint(item: promptLabel, attribute: .top, relatedBy: .equal, toItem: topLayoutGuide, attribute: .bottom, multiplier: 1.0, constant: 0.0))
+           view.addConstraintsWithFormat("V:[v0(60)]", views: promptLabel)
+
+        }
         view.addConstraint(NSLayoutConstraint(item: promptExpandIcon, attribute: .centerY, relatedBy: .equal, toItem: promptLabel, attribute: .centerY, multiplier: 1.0, constant: 0.0))
-        view.addConstraintsWithFormat("V:[v0(60)]", views: promptLabel)
         view.addConstraintsWithFormat("V:[v0(20)]", views: promptExpandIcon)
         
     }
@@ -338,12 +358,26 @@ class DiscussController: UIViewController, UIGestureRecognizerDelegate, UITextVi
         NotificationCenter.default.addObserver(self, selector: #selector(handleKeyboardNotification), name: NSNotification.Name.UIKeyboardWillHide, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(handleKeyboardNotification), name: NSNotification.Name.UIKeyboardWillChangeFrame, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(expandCell), name: NOTIF_EXPANDTOPICCELL, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(openProfile), name: NOTIF_OPENPROFILE, object: nil)
     }
     
     private func unregisterObservers() {
         NotificationCenter.default.removeObserver(self, name: NSNotification.Name.UIKeyboardWillHide, object: nil)
         NotificationCenter.default.removeObserver(self, name: NSNotification.Name.UIKeyboardWillChangeFrame, object: nil)
         NotificationCenter.default.removeObserver(self, name: NOTIF_EXPANDTOPICCELL, object: nil)
+        NotificationCenter.default.removeObserver(self, name: NOTIF_OPENPROFILE, object: nil)
+    }
+    
+    func openProfile(notif: Notification) {
+        if let userInfo = notif.userInfo as? [String: String], let uid = userInfo["uid"] {
+            log.info("opening profile of uid: \(uid)")
+            // TODO: Grab the profile info using this uid
+            let controller = ProfileController()
+            controller.profile = jennyprof
+            controller.modalTransitionStyle = .coverVertical
+            self.hideViewsBeforeTransitioning()
+            self.present(controller, animated: true, completion: nil)
+        }
     }
     
     fileprivate func isCollectionViewBlockingInput() -> Bool {
@@ -557,5 +591,4 @@ class DiscussController: UIViewController, UIGestureRecognizerDelegate, UITextVi
             self.collectionView.collectionViewLayout.invalidateLayout()
         }
     }
-
 }

@@ -48,6 +48,7 @@ class DiscussModalController: UIViewController {
         textView.textColor = UIColor.darkGray
         textView.textAlignment = .left
         textView.showsHorizontalScrollIndicator = false
+        textView.showsVerticalScrollIndicator = true
         textView.isEditable = false
         textView.isSelectable = false
         return textView
@@ -64,6 +65,10 @@ class DiscussModalController: UIViewController {
         view.addGestureRecognizer(tapGestureRecognizer)
         view.isUserInteractionEnabled = true
         self.setupViews()
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
     }
     
     override func viewDidAppear(_ animated: Bool) {

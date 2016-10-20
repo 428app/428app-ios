@@ -44,13 +44,19 @@ class TopicChatCell: BaseCollectionCell {
         return view
     }()
     
-    fileprivate let disciplineImageView: UIImageView = {
+    fileprivate lazy var disciplineImageView: UIImageView = {
         let imageView = UIImageView()
         imageView.contentMode = .scaleAspectFit
         imageView.tintColor = GREEN_UICOLOR
+        let tapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(self.openProfile))
+        imageView.isUserInteractionEnabled = true
+        imageView.addGestureRecognizer(tapGestureRecognizer)
         return imageView
     }()
     
+    func openProfile() {
+        NotificationCenter.default.post(name: NOTIF_OPENPROFILE, object: nil, userInfo: ["uid": self.message.posterUid])
+    }
     
     fileprivate let BUBBLE_RECIPIENT_IMAGE = UIImage(named: "bubble_recipient")?.resizableImage(withCapInsets: UIEdgeInsets(top: 22, left: 26, bottom: 22, right: 26))
     fileprivate let BUBBLE_ME_IMAGE = UIImage(named: "bubble_me")?.resizableImage(withCapInsets: UIEdgeInsets(top: 22, left: 26, bottom: 22, right: 26))
