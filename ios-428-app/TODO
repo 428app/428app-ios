@@ -13,7 +13,8 @@ DiscussController
 !SLIDERS!
 
 
-
+!ENHANCEMENTS!
+- Empty placeholder for no messages in DiscussController and ChatController
 
 
 

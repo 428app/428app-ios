@@ -10,7 +10,8 @@ import Foundation
 import UIKit
 
 // Notifications
-let NOTIF_EXPANDCELL = NSNotification.Name.init(rawValue: "expandCell")
+let NOTIF_EXPANDCHATCELL = NSNotification.Name.init(rawValue: "expandChatCell")
+let NOTIF_EXPANDTOPICCELL = NSNotification.Name.init(rawValue: "expandTopicCell")
 let NOTIF_CHANGESETTING = NSNotification.Name.init(rawValue: "changeSetting")
 let NOTIF_EDITPROFILE = NSNotification.Name.init(rawValue: "editProfile")
 

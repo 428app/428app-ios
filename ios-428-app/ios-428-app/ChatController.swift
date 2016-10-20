@@ -106,6 +106,9 @@ class ChatController: UIViewController, UICollectionViewDelegateFlowLayout, UITe
     }
     
     fileprivate func assembleMessageIsLastInChain() {
+        if self.messagesInTimeBuckets.count <= 0 {
+            return
+        }
         self.messageIsLastInChain = [[Bool]]()
         for i in 0...self.messagesInTimeBuckets.count - 1 {
             let section: [Message] = self.messagesInTimeBuckets[i]
@@ -353,18 +356,21 @@ class ChatController: UIViewController, UICollectionViewDelegateFlowLayout, UITe
     fileprivate func registerObservers() {
         NotificationCenter.default.addObserver(self, selector: #selector(handleKeyboardNotification), name: NSNotification.Name.UIKeyboardWillHide, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(handleKeyboardNotification), name: NSNotification.Name.UIKeyboardWillChangeFrame, object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(expandCell), name: NOTIF_EXPANDCELL, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(expandCell), name: NOTIF_EXPANDCHATCELL, object: nil)
     }
     
     private func unregisterObservers() {
         NotificationCenter.default.removeObserver(self, name: NSNotification.Name.UIKeyboardWillHide, object: nil)
         NotificationCenter.default.removeObserver(self, name: NSNotification.Name.UIKeyboardWillChangeFrame, object: nil)
-        NotificationCenter.default.removeObserver(self, name: NOTIF_EXPANDCELL, object: nil)
+        NotificationCenter.default.removeObserver(self, name: NOTIF_EXPANDCHATCELL, object: nil)
     }
     
     fileprivate func isCollectionViewBlockingInput() -> Bool {
         // Find bottom of collection view
         let lastSection = self.timeBucketHeaders.count - 1
+        if lastSection < 0 || lastSection >= self.messagesInTimeBuckets.count {
+            return false
+        }
         let lastRow = self.messagesInTimeBuckets[lastSection].count - 1
         let indexPath = IndexPath(item: lastRow, section: lastSection)
         let attributes = self.collectionView.layoutAttributesForItem(at: indexPath)!

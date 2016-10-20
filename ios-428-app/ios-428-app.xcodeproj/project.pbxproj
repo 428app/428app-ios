@@ -13,6 +13,7 @@
 		4024F2271DB82239007819F7 /* TopicCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4024F2261DB82239007819F7 /* TopicCell.swift */; };
 		4024F2291DB853F9007819F7 /* DiscussController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4024F2281DB853F9007819F7 /* DiscussController.swift */; };
 		4024F22B1DB85C0E007819F7 /* PaddingLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4024F22A1DB85C0E007819F7 /* PaddingLabel.swift */; };
+		4024F22D1DB86B18007819F7 /* TopicChatCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4024F22C1DB86B18007819F7 /* TopicChatCell.swift */; };
 		4064A1B61DAC381300071383 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4064A1B51DAC381300071383 /* AppDelegate.swift */; };
 		4064A1B81DAC381300071383 /* ConnectionsController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4064A1B71DAC381300071383 /* ConnectionsController.swift */; };
 		4064A1BE1DAC381300071383 /* ios_428_app.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 4064A1BC1DAC381300071383 /* ios_428_app.xcdatamodeld */; };
@@ -69,6 +70,7 @@
 		4024F2261DB82239007819F7 /* TopicCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TopicCell.swift; sourceTree = "<group>"; };
 		4024F2281DB853F9007819F7 /* DiscussController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DiscussController.swift; sourceTree = "<group>"; };
 		4024F22A1DB85C0E007819F7 /* PaddingLabel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PaddingLabel.swift; sourceTree = "<group>"; };
+		4024F22C1DB86B18007819F7 /* TopicChatCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TopicChatCell.swift; sourceTree = "<group>"; };
 		4064A1B21DAC381300071383 /* ios-428-app.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "ios-428-app.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		4064A1B51DAC381300071383 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		4064A1B71DAC381300071383 /* ConnectionsController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectionsController.swift; sourceTree = "<group>"; };
@@ -236,6 +238,7 @@
 				4064A2551DB3E5E800071383 /* ProfileCell.swift */,
 				40AB7FF91DB5B06A00492788 /* SettingCell.swift */,
 				4024F2261DB82239007819F7 /* TopicCell.swift */,
+				4024F22C1DB86B18007819F7 /* TopicChatCell.swift */,
 			);
 			name = View;
 			sourceTree = "<group>";
@@ -438,6 +441,7 @@
 				40AB7FFA1DB5B06A00492788 /* SettingCell.swift in Sources */,
 				4064A1EB1DAC80F100071383 /* Constants.swift in Sources */,
 				4064A2141DACBCAA00071383 /* BaseCollectionCell.swift in Sources */,
+				4024F22D1DB86B18007819F7 /* TopicChatCell.swift in Sources */,
 				4024F2211DB7E2E9007819F7 /* TopicsController.swift in Sources */,
 				4024F2271DB82239007819F7 /* TopicCell.swift in Sources */,
 				4064A1BE1DAC381300071383 /* ios_428_app.xcdatamodeld in Sources */,

@@ -1,17 +1,17 @@
 //
-//  ChatCell.swift
+//  TopicChatCell.swift
 //  ios-428-app
 //
-//  Created by Leonard Loo on 10/11/16.
+//  Created by Leonard Loo on 10/19/16.
 //  Copyright © 2016 428. All rights reserved.
 //
 
 import Foundation
 import UIKit
 
-class ChatCell: BaseCollectionCell {
+class TopicChatCell: BaseCollectionCell {
     
-    fileprivate var message: Message!
+    fileprivate var message: TopicMessage!
     open var shouldExpand = false
     fileprivate let TEXT_VIEW_FONT = UIFont.systemFont(ofSize: 16.0)
     
@@ -36,14 +36,13 @@ class ChatCell: BaseCollectionCell {
         return view
     }()
     
-    fileprivate let profileImageView: UIImageView = {
+    fileprivate let disciplineImageView: UIImageView = {
         let imageView = UIImageView()
-        imageView.contentMode = .scaleAspectFill
-        imageView.layer.cornerRadius = 15
-        imageView.layer.masksToBounds = true
+        imageView.contentMode = .scaleAspectFit
+        imageView.tintColor = GREEN_UICOLOR
         return imageView
     }()
-
+    
     
     fileprivate let BUBBLE_RECIPIENT_IMAGE = UIImage(named: "bubble_recipient")?.resizableImage(withCapInsets: UIEdgeInsets(top: 22, left: 26, bottom: 22, right: 26))
     fileprivate let BUBBLE_ME_IMAGE = UIImage(named: "bubble_me")?.resizableImage(withCapInsets: UIEdgeInsets(top: 22, left: 26, bottom: 22, right: 26))
@@ -58,10 +57,10 @@ class ChatCell: BaseCollectionCell {
         self.messageTextView.font = TEXT_VIEW_FONT
         addSubview(textBubbleView)
         addSubview(messageTextView)
-        addSubview(profileImageView)
+        addSubview(disciplineImageView)
         
-        addConstraintsWithFormat("H:|-8-[v0(30)]", views: profileImageView)
-        addConstraintsWithFormat("V:[v0(30)]|", views: profileImageView)
+        addConstraintsWithFormat("H:|-9-[v0(23)]", views: disciplineImageView)
+        addConstraintsWithFormat("V:[v0(23)]|", views: disciplineImageView)
         
         textBubbleView.addSubview(bubbleImageView)
         textBubbleView.addConstraintsWithFormat("H:|[v0]|", views: bubbleImageView)
@@ -72,22 +71,19 @@ class ChatCell: BaseCollectionCell {
         
     }
     
-    func configureCell(messageObj: Message, viewWidth: CGFloat, isLastInChain: Bool) {
+    func configureCell(messageObj: TopicMessage, viewWidth: CGFloat, isLastInChain: Bool) {
         self.message = messageObj
-        let messageText = self.message.text
-        let profileImageName = self.message.friend.profileImageName
-
         self.messageTextView.isScrollEnabled = true
-        self.messageTextView.text = self.message?.text
-
-        self.profileImageView.image = UIImage(named: profileImageName)
+        self.messageTextView.text = self.message.text
+        
+        self.disciplineImageView.image = UIImage(named: self.message.posterDisciplineImageName)
         
         let size = CGSize(width: 250, height: 1000)
         let options = NSStringDrawingOptions.usesFontLeading.union(.usesLineFragmentOrigin)
-        let estimatedFrame = NSString(string: messageText).boundingRect(with: size, options: options, attributes: [NSFontAttributeName: TEXT_VIEW_FONT], context: nil)
+        let estimatedFrame = NSString(string: self.message.text).boundingRect(with: size, options: options, attributes: [NSFontAttributeName: TEXT_VIEW_FONT], context: nil)
         if !self.message.isSender {
             self.messageTextView.frame = CGRect(x: 45 + 8, y: 2, width: estimatedFrame.width + 14, height: estimatedFrame.height + 16)
-            self.profileImageView.isHidden = false
+            self.disciplineImageView.isHidden = false
             self.messageTextView.textColor = UIColor.black
             
             if isLastInChain {
@@ -102,7 +98,7 @@ class ChatCell: BaseCollectionCell {
             }
         } else {
             self.messageTextView.frame = CGRect(x: viewWidth - estimatedFrame.width - 16 - 16 - 8, y: 2, width: estimatedFrame.width + 16, height: estimatedFrame.height + 16)
-            self.profileImageView.isHidden = true
+            self.disciplineImageView.isHidden = true
             self.messageTextView.textColor = UIColor.white
             
             if isLastInChain {
@@ -121,7 +117,7 @@ class ChatCell: BaseCollectionCell {
     
     func notifyControllerToExpand(tap: UITapGestureRecognizer) {
         self.shouldExpand = true
-        NotificationCenter.default.post(name: NOTIF_EXPANDCHATCELL, object: nil)
+        NotificationCenter.default.post(name: NOTIF_EXPANDTOPICCELL, object: nil)
     }
     
 }
