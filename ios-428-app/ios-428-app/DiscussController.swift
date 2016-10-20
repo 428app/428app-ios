@@ -477,7 +477,7 @@ class DiscussController: UIViewController, UIGestureRecognizerDelegate, UITextVi
         self.collectionView.register(TopicChatCell.self, forCellWithReuseIdentifier: CELL_ID)
         self.collectionView.register(ChatHeaderView.self, forSupplementaryViewOfKind: UICollectionElementKindSectionHeader, withReuseIdentifier: CELL_HEADER_ID)
         
-        self.view.addSubview(collectionView)
+        self.view.insertSubview(collectionView, at: 0)
         
         self.view.addConstraintsWithFormat("H:|[v0]|", views: collectionView)
         self.view.addConstraintsWithFormat("V:[v0]", views: collectionView)
