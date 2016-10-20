@@ -15,6 +15,14 @@ class TopicChatCell: BaseCollectionCell {
     open var shouldExpand = false
     fileprivate let TEXT_VIEW_FONT = UIFont.systemFont(ofSize: 16.0)
     
+    fileprivate let nameLabel: UILabel = {
+        let label = UILabel()
+        label.font = FONT_HEAVY_MID
+        label.textColor = UIColor.black
+        label.textAlignment = .left
+        return label
+    }()
+    
     fileprivate let messageTextView: UITextView = {
         var textView = UITextView()
         textView.backgroundColor = UIColor.clear
@@ -75,6 +83,7 @@ class TopicChatCell: BaseCollectionCell {
         self.message = messageObj
         self.messageTextView.isScrollEnabled = true
         self.messageTextView.text = self.message.text
+        self.nameLabel.text = self.message.posterName
         
         self.disciplineImageView.image = UIImage(named: self.message.posterDisciplineImageName)
         
@@ -82,21 +91,19 @@ class TopicChatCell: BaseCollectionCell {
         let options = NSStringDrawingOptions.usesFontLeading.union(.usesLineFragmentOrigin)
         let estimatedFrame = NSString(string: self.message.text).boundingRect(with: size, options: options, attributes: [NSFontAttributeName: TEXT_VIEW_FONT], context: nil)
         if !self.message.isSender {
-            self.messageTextView.frame = CGRect(x: 45 + 8, y: 2, width: estimatedFrame.width + 14, height: estimatedFrame.height + 16)
+            addSubview(nameLabel)
+            self.nameLabel.frame = CGRect(x: 45 + 13, y: 12, width: estimatedFrame.width, height: 18)
+            self.messageTextView.frame = CGRect(x: 45 + 8, y: 21, width: estimatedFrame.width + 14, height: estimatedFrame.height + 16)
             self.disciplineImageView.isHidden = false
             self.messageTextView.textColor = UIColor.black
-            
-            if isLastInChain {
-                self.textBubbleView.frame = CGRect(x: 45 - 8, y: 0, width: estimatedFrame.width + 20 + 8 + 8, height: estimatedFrame.height + 16 + 6)
-                self.bubbleImageView.backgroundColor = UIColor.clear
-                self.bubbleImageView.image = BUBBLE_RECIPIENT_IMAGE
-                self.bubbleImageView.tintColor = UIColor(white: 0.95, alpha: 1)
-            } else {
-                self.bubbleImageView.image = nil
-                self.textBubbleView.frame = CGRect(x: 45, y: 2, width: estimatedFrame.width + 20 + 8, height: estimatedFrame.height + 16)
-                self.bubbleImageView.backgroundColor = UIColor(white: 0.95, alpha: 1)
-            }
+            // No difference between isLastInChain or not for non sender, just apply tails to all
+            self.textBubbleView.frame = CGRect(x: 45 - 8, y: 0, width: estimatedFrame.width + 20 + 8 + 8, height: estimatedFrame.height + 16 + 6 + 19)
+            self.bubbleImageView.backgroundColor = UIColor.clear
+            self.bubbleImageView.image = BUBBLE_RECIPIENT_IMAGE
+            self.bubbleImageView.tintColor = UIColor(white: 0.95, alpha: 1)
+
         } else {
+            nameLabel.removeFromSuperview()
             self.messageTextView.frame = CGRect(x: viewWidth - estimatedFrame.width - 16 - 16 - 8, y: 2, width: estimatedFrame.width + 16, height: estimatedFrame.height + 16)
             self.disciplineImageView.isHidden = true
             self.messageTextView.textColor = UIColor.white

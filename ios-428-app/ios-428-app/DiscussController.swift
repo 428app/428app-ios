@@ -11,9 +11,6 @@ import UIKit
 
 class DiscussController: UIViewController, UIGestureRecognizerDelegate, UITextViewDelegate, UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
     
-    // TODO:
-    // 1) Put in message input container and collection view
-    
     /** CONSTANTS **/
     fileprivate let CELL_ID = "topicChatCell"
     fileprivate let CELL_HEADER_ID = "topicChatHeaderView"
@@ -33,7 +30,6 @@ class DiscussController: UIViewController, UIGestureRecognizerDelegate, UITextVi
     fileprivate var bottomConstraintForInput: NSLayoutConstraint!
     fileprivate var topConstraintForCollectionView: NSLayoutConstraint!
     fileprivate var keyboardHeight: CGFloat = 216.0 // Default of 216.0, but reset the first time keyboard pops up
-    
     
     var topic: Topic! {
         didSet {
@@ -490,8 +486,8 @@ class DiscussController: UIViewController, UIGestureRecognizerDelegate, UITextVi
         let size = CGSize(width: 250, height: 1000)
         let options = NSStringDrawingOptions.usesFontLeading.union(.usesLineFragmentOrigin)
         let estimatedFrame = NSString(string: messageText).boundingRect(with: size, options: options, attributes: [NSFontAttributeName: UIFont.systemFont(ofSize: 16.0)], context: nil)
+        let cellHeight = message.isSender ? estimatedFrame.height + 16 : estimatedFrame.height + 16 + 19
         if let cell = self.collectionView.cellForItem(at: indexPath) as? TopicChatCell {
-            
             if cell.shouldExpand {
                 self.cellTimeLabel.removeFromSuperview()
                 let cellFrame = self.collectionView.convert(cell.frame, to: self.view)
@@ -514,7 +510,7 @@ class DiscussController: UIViewController, UIGestureRecognizerDelegate, UITextVi
                         self.tappedIndexPath = nil
                         cell.shouldExpand = false
                         // Return with no expansion
-                        return CGSize(width: view.frame.width, height: estimatedFrame.height + 16)
+                        return CGSize(width: view.frame.width, height: cellHeight)
                     }
                     tappedIndexPath = indexPath
                 }
@@ -538,11 +534,11 @@ class DiscussController: UIViewController, UIGestureRecognizerDelegate, UITextVi
                 self.collectionView.addSubview(cellTimeLabel)
                 cell.shouldExpand = false
                 // Return with expansion
-                return CGSize(width: view.frame.width, height: estimatedFrame.height + 40)
+                return CGSize(width: view.frame.width, height: cellHeight + 24)
             }
         }
         // Return with no expansion
-        return CGSize(width: view.frame.width, height: estimatedFrame.height + 16)
+        return CGSize(width: view.frame.width, height: cellHeight)
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
