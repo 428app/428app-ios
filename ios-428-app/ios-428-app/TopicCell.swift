@@ -71,7 +71,6 @@ class TopicCell: BaseTableViewCell {
         contentView.backgroundColor = GRAY_UICOLOR
         containerView.backgroundColor = UIColor.white
         containerView.translatesAutoresizingMaskIntoConstraints = false
-//        contentView.translatesAutoresizingMaskIntoConstraints = false
         contentView.addSubview(containerView)
         contentView.addConstraintsWithFormat("H:|-8-[v0]-8-|", views: containerView)
         contentView.addConstraintsWithFormat("V:|-8-[v0]-8-|", views: containerView)
@@ -96,7 +95,10 @@ class TopicCell: BaseTableViewCell {
         self.topic = topic
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "d MMM yyyy"
-        dateLabel.text = dateFormatter.string(from: topic.date)
+        dateLabel.text = ""
+        if let dateString = topic.dateString {
+            dateLabel.text = dateString
+        }
         messageCountLabel.text = "\(topic.topicMessages.count)"
         topicImageView.image = UIImage(named: topic.imageName)
         

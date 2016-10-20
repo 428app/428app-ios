@@ -1,6 +1,9 @@
 !TOPICS!
-- Fix overall app data model
--
+DiscussController
+- Fill in dummy data for messages
+- Add title to the page with ellipses
+- Chat feature
+- Click on title to load modal view on image, title and description
 
 
 

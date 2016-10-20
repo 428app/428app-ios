@@ -125,8 +125,8 @@ class EditTaglineController: UIViewController, UITextViewDelegate {
         return label
     }()
     
-    fileprivate func countLabelTemplate() -> UILabel {
-        let label = UILabel()
+    fileprivate func countLabelTemplate() -> PaddingLabel {
+        let label = PaddingLabel()
         label.font = FONT_HEAVY_SMALL
         label.textColor = UIColor.gray
         label.textAlignment = .right

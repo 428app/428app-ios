@@ -38,6 +38,11 @@ class TopicsController: UIViewController, UITableViewDelegate, UITableViewDataSo
         self.setupViews()
     }
     
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        self.tabBarController?.tabBar.isHidden = false
+    }
+    
     override func viewWillLayoutSubviews() {
         super.viewWillLayoutSubviews()
         tableView.estimatedRowHeight = 300
@@ -123,5 +128,15 @@ class TopicsController: UIViewController, UITableViewDelegate, UITableViewDataSo
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return UITableViewAutomaticDimension
+    }
+    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        let topic = topics[indexPath.row]
+        let controller = DiscussController()
+        controller.topic = topic
+        let backItem = UIBarButtonItem()
+        backItem.title = " "
+        navigationItem.backBarButtonItem = backItem
+        self.navigationController?.pushViewController(controller, animated: true)
     }
 }

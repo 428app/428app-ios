@@ -18,7 +18,10 @@ class Topic {
     fileprivate var _topicMessages: [TopicMessage] // Sorted where most recent topic message is at the top
     fileprivate var _latestMessageDate: Date
     
-    init(tid: String, prompt: String, imageName: String, description: String, date: Date = Date(), topicMessages: [TopicMessage] = [], latestMessageDate: Date = Date()) {
+    // Computed variables
+    var dateString: String?
+    
+    init(tid: String, prompt: String, imageName: String, description: String, date: Date = Date(), topicMessages: [TopicMessage] = [], latestMessageDate: Date = Date.distantPast) {
         _tid = tid
         _prompt = prompt
         _imageName = imageName
@@ -26,6 +29,13 @@ class Topic {
         _date = date
         _topicMessages = topicMessages
         _latestMessageDate = latestMessageDate
+        dateString = self.convertDateToString(date: date)
+    }
+    
+    fileprivate func convertDateToString(date: Date) -> String {
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "d MMM yyyy"
+        return dateFormatter.string(from: date)
     }
     
     var tid: String {

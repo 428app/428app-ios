@@ -73,11 +73,11 @@ class SettingCell: BaseTableViewCell {
     }
 
     fileprivate func animateEdit() {
-        UIView.animate(withDuration: 0.2, animations: {
-            self.editButton.transform = CGAffineTransform(scaleX: 2.0, y: 2.0)
+        UIView.animate(withDuration: 0.2, delay: 0.2, animations: {
+            self.editButton.transform = CGAffineTransform(scaleX: 1.3, y: 1.3)
             }) { (completion) in
                 UIView.animate(withDuration: 0.1, animations: {
-                    self.editButton.transform = CGAffineTransform(scaleX: 1.6, y: 1.6)
+                    self.editButton.transform = CGAffineTransform(scaleX: 1.0, y: 1.0)
                 })
         }
     }
@@ -208,8 +208,8 @@ class SettingCell: BaseTableViewCell {
             constraintsToDelete.append(centerXPicConstraint)
             constraintsToDelete.append(contentsOf: addAndGetConstraintsWithFormat("V:[v0(170)]|", views: myPicImageView))
             
-            constraintsToDelete.append(contentsOf: addAndGetConstraintsWithFormat("V:[v0(25.0)]", views: editButton))
-            constraintsToDelete.append(contentsOf: addAndGetConstraintsWithFormat("H:[v0(25.0)]", views: editButton))
+            constraintsToDelete.append(contentsOf: addAndGetConstraintsWithFormat("V:[v0(40.0)]", views: editButton))
+            constraintsToDelete.append(contentsOf: addAndGetConstraintsWithFormat("H:[v0(40.0)]", views: editButton))
             let editButtonRightConstraint = NSLayoutConstraint(item: editButton, attribute: .right, relatedBy: .equal, toItem: myPicImageView, attribute: .right, multiplier: 1.0, constant: -10.0)
             addConstraint(editButtonRightConstraint)
             constraintsToDelete.append(editButtonRightConstraint)

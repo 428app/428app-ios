@@ -327,7 +327,7 @@ class EditProfileController: UIViewController, UIScrollViewDelegate, UITableView
     
     fileprivate func animateEditButtons() {
         // Called in viewDidAppear to animate the edit buttons to signal to the user that they can click on these
-        UIView.animate(withDuration: 0.2, animations: { 
+        UIView.animate(withDuration: 0.2, delay: 0.2, animations: {
             self.editProfileBgButton.imageView?.transform = CGAffineTransform(scaleX: 1.2, y: 1.2)
             self.editProfileImageButton.imageView?.transform = CGAffineTransform(scaleX: 1.2, y: 1.2)
             }) { (completion) in

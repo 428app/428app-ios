@@ -53,11 +53,14 @@ class ChatController: UIViewController, UICollectionViewDelegateFlowLayout, UITe
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         self.extendedLayoutIncludesOpaqueBars = true
-        self.tabBarController?.tabBar.isHidden = true
         self.navigationController?.navigationBar.isHidden = false
-        
         self.collectionView.isHidden = false
         self.registerObservers()
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        self.tabBarController?.tabBar.isHidden = true
     }
     
     override func viewWillDisappear(_ animated: Bool) {

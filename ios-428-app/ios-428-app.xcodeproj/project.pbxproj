@@ -11,6 +11,8 @@
 		4024F2231DB7F664007819F7 /* Topic.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4024F2221DB7F664007819F7 /* Topic.swift */; };
 		4024F2251DB7F83F007819F7 /* TopicMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4024F2241DB7F83F007819F7 /* TopicMessage.swift */; };
 		4024F2271DB82239007819F7 /* TopicCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4024F2261DB82239007819F7 /* TopicCell.swift */; };
+		4024F2291DB853F9007819F7 /* DiscussController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4024F2281DB853F9007819F7 /* DiscussController.swift */; };
+		4024F22B1DB85C0E007819F7 /* PaddingLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4024F22A1DB85C0E007819F7 /* PaddingLabel.swift */; };
 		4064A1B61DAC381300071383 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4064A1B51DAC381300071383 /* AppDelegate.swift */; };
 		4064A1B81DAC381300071383 /* ConnectionsController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4064A1B71DAC381300071383 /* ConnectionsController.swift */; };
 		4064A1BE1DAC381300071383 /* ios_428_app.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 4064A1BC1DAC381300071383 /* ios_428_app.xcdatamodeld */; };
@@ -65,6 +67,8 @@
 		4024F2221DB7F664007819F7 /* Topic.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Topic.swift; sourceTree = "<group>"; };
 		4024F2241DB7F83F007819F7 /* TopicMessage.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TopicMessage.swift; sourceTree = "<group>"; };
 		4024F2261DB82239007819F7 /* TopicCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TopicCell.swift; sourceTree = "<group>"; };
+		4024F2281DB853F9007819F7 /* DiscussController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DiscussController.swift; sourceTree = "<group>"; };
+		4024F22A1DB85C0E007819F7 /* PaddingLabel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PaddingLabel.swift; sourceTree = "<group>"; };
 		4064A1B21DAC381300071383 /* ios-428-app.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "ios-428-app.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		4064A1B51DAC381300071383 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		4064A1B71DAC381300071383 /* ConnectionsController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectionsController.swift; sourceTree = "<group>"; };
@@ -128,6 +132,7 @@
 			isa = PBXGroup;
 			children = (
 				4024F2201DB7E2E9007819F7 /* TopicsController.swift */,
+				4024F2281DB853F9007819F7 /* DiscussController.swift */,
 			);
 			name = Topic;
 			sourceTree = "<group>";
@@ -222,6 +227,7 @@
 		4064A2111DACBB1C00071383 /* View */ = {
 			isa = PBXGroup;
 			children = (
+				4024F22A1DB85C0E007819F7 /* PaddingLabel.swift */,
 				4064A2131DACBCAA00071383 /* BaseCollectionCell.swift */,
 				40AB7FFB1DB5B09700492788 /* BaseTableViewCell.swift */,
 				4064A2171DACC1B700071383 /* ChatCell.swift */,
@@ -423,6 +429,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				4024F2291DB853F9007819F7 /* DiscussController.swift in Sources */,
 				4064A2051DAC868E00071383 /* CustomNavigationController.swift in Sources */,
 				4024F2231DB7F664007819F7 /* Topic.swift in Sources */,
 				4064A1E41DAC590900071383 /* ChatController.swift in Sources */,
@@ -450,6 +457,7 @@
 				4064A1B61DAC381300071383 /* AppDelegate.swift in Sources */,
 				4064A1CB1DAC495D00071383 /* DataService.swift in Sources */,
 				4064A2291DB2B0B500071383 /* Message.swift in Sources */,
+				4024F22B1DB85C0E007819F7 /* PaddingLabel.swift in Sources */,
 				40AB7FFC1DB5B09700492788 /* BaseTableViewCell.swift in Sources */,
 				4064A2161DACBCDC00071383 /* Extensions.swift in Sources */,
 				40AB80031DB6FAA200492788 /* PictureModalController.swift in Sources */,
