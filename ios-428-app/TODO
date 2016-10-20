@@ -1,6 +1,5 @@
 !TOPICS!
 DiscussController
-- Click on image to pull up profile
 - More options on the right to mute notifications or report group
 - 
 
@@ -13,7 +12,7 @@ DiscussController
 
 
 !ENHANCEMENTS!
-- Empty placeholder for no messages in DiscussController and ChatController
+- Empty placeholder for no messages in DiscussController and ChatController (done after server)
 
 
 

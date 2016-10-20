@@ -196,7 +196,10 @@ class ChatController: UIViewController, UICollectionViewDelegateFlowLayout, UITe
     }
     
     fileprivate func setupNavigationBar() {
-        self.navigationItem.rightBarButtonItem = UIBarButtonItem(image: #imageLiteral(resourceName: "more"), style: .plain, target: self, action: #selector(handleNavMore))
+        let negativeSpace = UIBarButtonItem(barButtonSystemItem: .fixedSpace, target: nil, action: nil)
+        negativeSpace.width = -6.0
+        let moreButton = UIBarButtonItem(image: #imageLiteral(resourceName: "more"), style: .plain, target: self, action: #selector(handleNavMore))
+        self.navigationItem.rightBarButtonItems = [negativeSpace, moreButton]
         self.setupNavTitleView()
     }
     
@@ -206,7 +209,7 @@ class ChatController: UIViewController, UICollectionViewDelegateFlowLayout, UITe
         alertController.view.tintColor = GREEN_UICOLOR
         let cancelAction = UIAlertAction(title: "Cancel", style: .cancel, handler: nil)
         let muteAction = UIAlertAction(title: "Mute Notifications", style: .default) { (action) in
-            // Mute user's notifications
+            // TODO: Mute user's notifications
         }
         let reportAction = UIAlertAction(title: "Report \(self.friend.name)", style: .default) { (action) in
             // Report user

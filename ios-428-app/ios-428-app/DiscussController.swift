@@ -42,58 +42,11 @@ class DiscussController: UIViewController, UIGestureRecognizerDelegate, UITextVi
         }
     }
     
-    // MARK: Prompt
-    
-    fileprivate func animatePrompt() {
-        UIView.animate(withDuration: 0.25, delay: 0.45, animations: {
-            self.promptExpandIcon.transform = CGAffineTransform(scaleX: 1.4, y: 1.4)
-            }) { (completed) in
-                UIView.animate(withDuration: 0.1, animations: { 
-                    self.promptExpandIcon.transform = CGAffineTransform(scaleX: 1.0, y: 1.0)
-                })
-        }
-    }
-    
-    func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWith otherGestureRecognizer: UIGestureRecognizer) -> Bool {
-        return true
-    }
-    
-    fileprivate lazy var promptLabel: PaddingLabel = {
-        let label = PaddingLabel()
-        label.rightInset = 40.0
-        label.backgroundColor = RED_UICOLOR
-        label.font = FONT_HEAVY_MID
-        label.textColor = UIColor.white
-        label.textAlignment = .left
-        label.numberOfLines = 2
-        let tapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(openDescription))
-        tapGestureRecognizer.delegate = self
-        label.isUserInteractionEnabled = true
-        label.addGestureRecognizer(tapGestureRecognizer)
-        return label
-    }()
-    
-    fileprivate let promptExpandIcon: UIImageView = {
-        let imageView = UIImageView(image: #imageLiteral(resourceName: "expand"))
-        imageView.contentMode = .scaleAspectFit
-        imageView.tintColor = UIColor.white
-        return imageView
-    }()
-    
-    func openDescription() {
-        let discussModalController = DiscussModalController()
-        discussModalController.topic = self.topic
-        discussModalController.modalPresentationStyle = .overFullScreen
-        discussModalController.modalTransitionStyle = .crossDissolve
-        self.present(discussModalController, animated: true, completion: nil)
-    }
-    
-    // MARK: Open description modal
-    
     override func viewDidLoad() {
         super.viewDidLoad()
         self.automaticallyAdjustsScrollViewInsets = false
         self.view.backgroundColor = UIColor.white
+        self.setupNavigationBar()
         self.setupPromptView()
         self.setupCollectionView()
         self.setupInputComponents()
@@ -129,6 +82,78 @@ class DiscussController: UIViewController, UIGestureRecognizerDelegate, UITextVi
         self.collectionView.isHidden = false
         self.promptLabel.isHidden = false
         self.promptExpandIcon.isHidden = false
+    }
+    
+    // MARK: Navigation
+    
+    fileprivate func setupNavigationBar() {
+        let negativeSpace = UIBarButtonItem(barButtonSystemItem: .fixedSpace, target: nil, action: nil)
+        negativeSpace.width = -6.0
+        let moreButton = UIBarButtonItem(image: #imageLiteral(resourceName: "more"), style: .plain, target: self, action: #selector(handleNavMore))
+        self.navigationItem.rightBarButtonItems = [negativeSpace, moreButton]
+    }
+    
+    func handleNavMore() {
+        // Bring up alert controller to Mute or Report group
+        let alertController = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
+        alertController.view.tintColor = GREEN_UICOLOR
+        let cancelAction = UIAlertAction(title: "Cancel", style: .cancel, handler: nil)
+        let muteAction = UIAlertAction(title: "Mute Notifications", style: .default) { (action) in
+            // TODO: Mute user's notifications
+        }
+        let reportAction = UIAlertAction(title: "Report Group", style: .default) { (action) in
+            // Report group
+        }
+        alertController.addAction(muteAction)
+        alertController.addAction(reportAction)
+        alertController.addAction(cancelAction)
+        self.present(alertController, animated: true, completion: nil)
+    }
+    
+    // MARK: Prompt
+    
+    fileprivate func animatePrompt() {
+        UIView.animate(withDuration: 0.25, delay: 0.45, animations: {
+            self.promptExpandIcon.transform = CGAffineTransform(scaleX: 1.4, y: 1.4)
+        }) { (completed) in
+            UIView.animate(withDuration: 0.1, animations: {
+                self.promptExpandIcon.transform = CGAffineTransform(scaleX: 1.0, y: 1.0)
+            })
+        }
+    }
+    
+    func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWith otherGestureRecognizer: UIGestureRecognizer) -> Bool {
+        return true
+    }
+    
+    fileprivate lazy var promptLabel: PaddingLabel = {
+        let label = PaddingLabel()
+        label.rightInset = 40.0
+        label.backgroundColor = RED_UICOLOR
+        label.font = FONT_HEAVY_MID
+        label.textColor = UIColor.white
+        label.textAlignment = .left
+        label.numberOfLines = 2
+        let tapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(openDescription))
+        tapGestureRecognizer.delegate = self
+        label.isUserInteractionEnabled = true
+        label.addGestureRecognizer(tapGestureRecognizer)
+        return label
+    }()
+    
+    fileprivate let promptExpandIcon: UIImageView = {
+        let imageView = UIImageView(image: #imageLiteral(resourceName: "expand"))
+        imageView.contentMode = .scaleAspectFit
+        imageView.tintColor = UIColor.white
+        return imageView
+    }()
+    
+    func openDescription() {
+        let discussModalController = DiscussModalController()
+        discussModalController.topic = self.topic
+        discussModalController.modalPresentationStyle = .overFullScreen
+        discussModalController.modalTransitionStyle = .crossDissolve
+        self.present(discussModalController, animated: true, completion: nil)
     }
     
     fileprivate func setupPromptView() {
