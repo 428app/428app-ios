@@ -82,6 +82,11 @@ class DiscussController: UIViewController, UIGestureRecognizerDelegate, UITextVi
     
     func openDescription() {
         log.info("open description modal")
+        let discussModalController = DiscussModalController()
+        discussModalController.topic = self.topic
+        discussModalController.modalPresentationStyle = .overFullScreen
+        discussModalController.modalTransitionStyle = .crossDissolve
+        self.present(discussModalController, animated: true, completion: nil)
     }
     
     // MARK: Open description modal
