@@ -147,6 +147,9 @@ class SettingsController: UIViewController, UITableViewDelegate, UITableViewData
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let setting = settings[indexPath.section][indexPath.row]
         log.info("Selected row: \(setting.text)") // TODO: Perform right logic based on the selected row
+        if setting.text == "Log out" {
+            self.dismiss(animated: true, completion: nil)
+        }
     }
 
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
