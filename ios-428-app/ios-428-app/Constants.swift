@@ -18,9 +18,8 @@ let NOTIF_OPENPROFILE = NSNotification.Name.init(rawValue: "openProfile")
 
 // Colors
 let GRAY_UICOLOR: UIColor = UIColor(red: 0.95, green: 0.95, blue: 0.95, alpha: 1)
-//let GREEN_UICOLOR: UIColor = UIColor(red: 71/255.0, green: 217/255.0, blue: 191/255.0, alpha: 1.0) // #47d9bf
 let GREEN_UICOLOR: UIColor = UIColor(red: 54/255.0, green: 208/255.0, blue: 112/255.0, alpha: 1.0) // #36d070
-
+let FB_BLUE_UICOLOR: UIColor = UIColor(red: 59/255.0, green: 89/255.0, blue: 152/255.0, alpha: 1.0) // #3b5998
 let RED_UICOLOR: UIColor = UIColor(red: 217/255.0, green: 71/255.0, blue: 129/255.0, alpha: 1.0) // #d94781
 
 // Fonts
