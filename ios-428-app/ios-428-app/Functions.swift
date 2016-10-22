@@ -25,3 +25,7 @@ func presentTopToDown(src: UIViewController, dst: UIViewController) {
 
 // Used in SettingsController and SettingCell to countdown time till 4:28pm
 var timerForCountdown = Timer()
+
+// TODO: Add in the full list of disciplines here
+let DISCIPLINE_OPTIONS = ["Business", "Computer Science", "Biology", "East Asian Studies", "Physics", "Electrical Engineering"]
+let DISCIPLINE_ICONS = ["business", "computer", "biology", "eastasian", "physics", "electricengineering"]

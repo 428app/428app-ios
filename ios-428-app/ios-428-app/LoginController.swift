@@ -18,6 +18,16 @@ class LoginController: UIViewController, UIScrollViewDelegate {
         self.setupViews()
     }
     
+    override func viewWillAppear(_ animated: Bool) {
+        if justFinishedIntro {
+            justFinishedIntro = false
+            let controller = CustomTabBarController()
+            controller.modalTransitionStyle = .coverVertical
+            self.present(controller, animated: true, completion: nil)
+        }
+        super.viewWillAppear(animated)
+    }
+    
     fileprivate lazy var loginButton: UIButton = {
         let button = UIButton()
         button.titleLabel?.font = FONT_MEDIUM_LARGE
@@ -32,8 +42,8 @@ class LoginController: UIViewController, UIScrollViewDelegate {
     }()
     
     func fbLogin() {
-        log.info("Facebook login")
-        let controller = CustomTabBarController()
+        // TODO: Integrate FB Login
+        let controller = isFirstTimeUser ? IntroController() : CustomTabBarController()
         controller.modalTransitionStyle = .coverVertical
         self.present(controller, animated: true, completion: nil)
     }

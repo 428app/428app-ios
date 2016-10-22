@@ -35,3 +35,4 @@ let FONT_HEAVY_SMALL = UIFont(name: "AvenirLTStd-Heavy", size: 14)!
 let FONT_HEAVY_MID = UIFont(name: "AvenirLTStd-Heavy", size: 16)!
 let FONT_HEAVY_LARGE = UIFont(name: "AvenirLTStd-Heavy", size: 18)!
 let FONT_HEAVY_XLARGE = UIFont(name: "AvenirLTStd-Heavy", size: 20)!
+let FONT_HEAVY_XXLARGE = UIFont(name: "AvenirLTStd-Heavy", size: 30)!

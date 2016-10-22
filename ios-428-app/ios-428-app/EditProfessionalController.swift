@@ -197,9 +197,6 @@ class EditProfessionalController: UIViewController, UITextFieldDelegate, UIPicke
     
     // MARK: Pickerview for discipline
     
-    fileprivate let pickOption = ["Business", "Computer Science", "Biology", "East Asian Studies", "Physics", "Electrical Engineering"] // TODO: Add in the full list of disciplines here
-    fileprivate let pickIcons = ["business", "computer", "biology", "eastasian", "physics", "electricengineering"]
-    
     fileprivate lazy var pickerView: UIPickerView = {
        let picker = UIPickerView()
         picker.delegate = self
@@ -212,17 +209,17 @@ class EditProfessionalController: UIViewController, UITextFieldDelegate, UIPicke
     }
     
     func pickerView(_ pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
-        return pickOption.count
+        return DISCIPLINE_OPTIONS.count
     }
     
     func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
-        return pickOption[row]
+        return DISCIPLINE_OPTIONS[row]
     }
     
     func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
-        saveButton.isEnabled = pickOption[row] != discipline
-        disciplineTextField.text = pickOption[row]
-        editDisciplineIconInTextField(imageString: pickIcons[row])
+        saveButton.isEnabled = DISCIPLINE_OPTIONS[row] != discipline
+        disciplineTextField.text = DISCIPLINE_OPTIONS[row]
+        editDisciplineIconInTextField(imageString: DISCIPLINE_ICONS[row])
     }
     
     // MARK: Keep keyboard
