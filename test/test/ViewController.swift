@@ -30,7 +30,7 @@ class ViewController: UIViewController,UIScrollViewDelegate {
     
     fileprivate let scrollView: UIScrollView = {
         let frame = UIScreen.main.bounds
-        let scrollView = UIScrollView(frame: CGRect(x: 0, y: 0, width: frame.width - 40, height: 300))
+        let scrollView = UIScrollView(frame: CGRect(x: 0, y: 0, width: frame.width - 40, height: 500))
         scrollView.showsHorizontalScrollIndicator = false
         scrollView.bounces = false
         scrollView.isPagingEnabled = true
@@ -64,7 +64,10 @@ class ViewController: UIViewController,UIScrollViewDelegate {
         for index in 0..<2 {
             frame.origin.x = self.scrollView.frame.size.width * CGFloat(index)
             frame.size = self.scrollView.frame.size
-            let subView = UIView(frame: frame)
+            let subView = UIImageView(frame: frame)
+            subView.image = #imageLiteral(resourceName: "LoginSlider1")
+            subView.contentMode = .scaleAspectFit
+            
             subView.backgroundColor = sliderViews[index]
             self.scrollView .addSubview(subView)
         }

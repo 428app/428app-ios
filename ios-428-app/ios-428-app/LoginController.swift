@@ -47,7 +47,7 @@ class LoginController: UIViewController, UIScrollViewDelegate {
         paragraphStyle.lineBreakMode = .byTruncatingTail
         label.numberOfLines = 0
         paragraphStyle.alignment = .center
-        let str1 = NSMutableAttributedString(string: "By logging in, you agree to our ", attributes: [NSParagraphStyleAttributeName: paragraphStyle])
+        let str1 = NSMutableAttributedString(string: "By continuing, you agree to our ", attributes: [NSParagraphStyleAttributeName: paragraphStyle])
         let str2 = NSMutableAttributedString(string: "Terms of Service", attributes: [NSFontAttributeName: FONT_HEAVY_SMALL])
         let str3 = NSMutableAttributedString(string: " and ")
         let str4 = NSMutableAttributedString(string: "Privacy Policy", attributes: [NSFontAttributeName: FONT_HEAVY_SMALL])
@@ -71,7 +71,7 @@ class LoginController: UIViewController, UIScrollViewDelegate {
         label.font = FONT_MEDIUM_SMALL
         label.textColor = UIColor.darkGray
         label.textAlignment = .center
-        label.text = "We don't post anything to Facebook."
+        label.text = "We do not post anything to Facebook."
         return label
     }()
     
@@ -79,8 +79,10 @@ class LoginController: UIViewController, UIScrollViewDelegate {
     
     fileprivate let scrollView: UIScrollView = {
         let frame = UIScreen.main.bounds
-        let scrollView = UIScrollView(frame: CGRect(x: 0, y: 0, width: frame.width - 40, height: 20000))
+        // Scroll view width and height set according to constraints defined in setupViews
+        let scrollView = UIScrollView(frame: CGRect(x: 0, y: 0, width: frame.width - 40, height: frame.height - 205))
         scrollView.showsHorizontalScrollIndicator = false
+        scrollView.showsVerticalScrollIndicator = false
         scrollView.bounces = false
         scrollView.isPagingEnabled = true
         return scrollView
@@ -96,7 +98,24 @@ class LoginController: UIViewController, UIScrollViewDelegate {
         return control
     }()
     
-    var sliderViews: [UIColor] = [UIColor.red, UIColor.blue]
+    fileprivate let slider1View: UIImageView = {
+        let imageView = UIImageView()
+        imageView.contentMode = .scaleAspectFit
+        imageView.image = #imageLiteral(resourceName: "LoginSlider1")
+        imageView.backgroundColor = GRAY_UICOLOR
+        return imageView
+    }()
+    
+    fileprivate let slider2View: UIImageView = {
+        let imageView = UIImageView()
+        imageView.contentMode = .scaleAspectFit
+        imageView.image = #imageLiteral(resourceName: "LoginSlider2")
+        imageView.backgroundColor = GRAY_UICOLOR
+        return imageView
+    }()
+    
+    var sliderViews: [UIImageView] = []
+    var colors: [UIColor] = [UIColor.red, UIColor.blue]
     var frame: CGRect = CGRect(x: 0, y: 0, width: 0, height: 0)
     
     func changePage(sender: AnyObject) -> () {
@@ -111,6 +130,8 @@ class LoginController: UIViewController, UIScrollViewDelegate {
     }
     
     fileprivate func setupViews() {
+        sliderViews.append(slider1View)
+        sliderViews.append(slider2View)
         view.addSubview(scrollView)
         view.addSubview(pageControl)
         view.addSubview(warningLabel)
@@ -119,17 +140,16 @@ class LoginController: UIViewController, UIScrollViewDelegate {
         for index in 0..<2 {
             frame.origin.x = self.scrollView.frame.size.width * CGFloat(index)
             frame.size = self.scrollView.frame.size
-            let subView = UIView(frame: frame)
-            subView.backgroundColor = sliderViews[index]
-            self.scrollView .addSubview(subView)
+            let subView = self.sliderViews[index]
+            subView.frame = frame
+            self.scrollView.addSubview(subView)
         }
         self.scrollView.contentSize = CGSize(width: self.scrollView.frame.size.width * CGFloat(sliderViews.count), height: self.scrollView.frame.size.height)
         pageControl.addTarget(self, action: #selector(changePage), for: .valueChanged)
         
         view.addConstraintsWithFormat("H:|-20-[v0]-20-|", views: pageControl)
         view.addConstraintsWithFormat("H:|-20-[v0]-20-|", views: scrollView)
-//        view.addConstraintsWithFormat("V:|-60-[v0(\(self.scrollView.contentSize.height))]-10-[v1]", views: scrollView, pageControl)
-        
+
         let disclaimerContainer = UIView()
         disclaimerContainer.addSubview(fbDisclaimerIcon)
         disclaimerContainer.addSubview(fbDisclaimerLabel)
@@ -141,18 +161,8 @@ class LoginController: UIViewController, UIScrollViewDelegate {
         view.addConstraint(NSLayoutConstraint(item: disclaimerContainer, attribute: .centerX, relatedBy: .equal, toItem: view, attribute: .centerX, multiplier: 1.0, constant: 0.0))
         
         view.addConstraint(NSLayoutConstraint(item: scrollView, attribute: .top, relatedBy: .equal, toItem: topLayoutGuide, attribute: .bottom, multiplier: 1.0, constant: 8.0))
-        view.addConstraintsWithFormat("V:[v0]-8-[v1(45)]-8-[v2(45)]-8-[v3(45)]-15-[v4]-15-|", views: scrollView, pageControl, warningLabel, loginButton, disclaimerContainer)
+        view.addConstraintsWithFormat("V:[v0][v1(30)]-2-[v2(45)]-8-[v3(45)]-15-[v4]-15-|", views: scrollView, pageControl, warningLabel, loginButton, disclaimerContainer)
         view.addConstraintsWithFormat("H:|-20-[v0]-20-|", views: warningLabel)
         view.addConstraintsWithFormat("H:|-20-[v0]-20-|", views: loginButton)
-        
-
-        
-
-        
-        
-        
     }
-    
-    
-    
 }

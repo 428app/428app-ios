@@ -148,7 +148,15 @@ class SettingsController: UIViewController, UITableViewDelegate, UITableViewData
         let setting = settings[indexPath.section][indexPath.row]
         log.info("Selected row: \(setting.text)") // TODO: Perform right logic based on the selected row
         if setting.text == "Log out" {
-            self.dismiss(animated: true, completion: nil)
+            let alertController = UIAlertController(title: "Are you sure?", message: "You will not be notified of your daily connections and topics!", preferredStyle: .actionSheet)
+            alertController.view.tintColor = GREEN_UICOLOR
+            let cancelAction = UIAlertAction(title: "Cancel", style: .cancel, handler: nil)
+            let logoutAction = UIAlertAction(title: "Log out", style: .default) { (action) in
+                self.dismiss(animated: true, completion: nil)
+            }
+            alertController.addAction(logoutAction)
+            alertController.addAction(cancelAction)
+            self.present(alertController, animated: true, completion: nil)
         }
     }
 

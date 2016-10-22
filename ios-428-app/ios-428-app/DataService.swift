@@ -67,10 +67,10 @@ extension ConnectionsController {
         let emil = Friend(uid: "5", name: "Emil", profileImageName: "emil-profile", disciplineImageName: "physics")
         let kezi = Friend(uid: "6", name: "Kezi", profileImageName: "kezi-profile", disciplineImageName: "physics")
         
-        _ = self.createMessageForFriend(tomas, text: "Let's go to the gym! When do you want to do it?", minutesAgo: 60 * 24 * 3, isSender: true)
-        _ = self.createMessageForFriend(kyooeun, text: "ni hao ma??", minutesAgo: 60 * 24, isSeen: false)
-        _ = self.createMessageForFriend(emil, text: "Dude! Quantum mechanics is my true love. You should go check it out.", minutesAgo: 25, isSeen: false)
-        _ = self.createMessageForFriend(kezi, text: "How have you been Kezi?", minutesAgo: 29, isSender: true)
+        _ = self.createMessageForFriend(tomas, text: "Programming assignments take up so much time. But they are worthwhile.", minutesAgo: 60 * 24 * 3, isSender: true)
+        _ = self.createMessageForFriend(kyooeun, text: "China is a wonderland. I frequent Beijing whenever I go back to do research.", minutesAgo: 60 * 24, isSeen: false)
+        _ = self.createMessageForFriend(emil, text: "Quantum mechanics is my true love. You should go check it out.", minutesAgo: 25, isSeen: false)
+        _ = self.createMessageForFriend(kezi, text: "What are your views about time travel? Is it PHYSICALLY possible?", minutesAgo: 29, isSender: true)
 
         createLeoMessages()
         createThomasMessages()
@@ -91,7 +91,7 @@ extension ConnectionsController {
         _ = self.createMessageForFriend(leo, text: "Hi! My name is Yihang.", minutesAgo: 90, isSender: true)
         _ = self.createMessageForFriend(leo, text: "I'm currently pursuing a Masters in Computational Science & Engineering.", minutesAgo: 89, isSender: true)
         _ = self.createMessageForFriend(leo, text: "That's cool! Okay I'll brb and talk to you later all right?", minutesAgo: 20)
-        _ = self.createMessageForFriend(leo, text: "Ok gotcha. I'm gonna go do data science homework first!", minutesAgo: 15, isSender: true)
+        _ = self.createMessageForFriend(leo, text: "Data science is every where these days. Do you think you want to be involved in that?", minutesAgo: 15, isSender: true)
     }
     
     fileprivate func createThomasMessages() {
@@ -106,7 +106,7 @@ extension ConnectionsController {
         _ = self.createMessageForFriend(thomas, text: "Sure. How about 6pm tomorrow at Richard's Basement?", minutesAgo: 60 * 24 * 1.25, isSender: true)
         _ = self.createMessageForFriend(thomas, text: "Also I'm not so sure how free I am from tomorrow onwards. I'm going to be coding 428 non stop until I finally finish implementing it! This is a product that has real value for people - Imagine you having connections from multiple different disciplines! And all those disciplines are already right here at Harvard, but unfortunately with no easy way to connect them... until now!!", minutesAgo: 60 * 24 * 1.2, isSender: true)
         _ = self.createMessageForFriend(thomas, text: "OK good luck with your crazy ideas then! I hope you do well in that.", minutesAgo: 60 * 24 * 1.19)
-        _ = self.createMessageForFriend(thomas, text: "www.google.com", minutesAgo: 60 * 24 * 1.1, isSeen: false)
+        _ = self.createMessageForFriend(thomas, text: "Whoever said it is the end of Moore's law is kidding!", minutesAgo: 60 * 24 * 1.1, isSeen: false)
     }
 
     fileprivate func createMessageForFriend(_ friend: Friend, text: String, minutesAgo: Double, isSender: Bool = false, isSeen: Bool = true) -> Message {
