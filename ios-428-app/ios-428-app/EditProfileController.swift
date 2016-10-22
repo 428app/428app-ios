@@ -215,8 +215,17 @@ class EditProfileController: UIViewController, UIScrollViewDelegate, UITableView
         let cancelAction = UIAlertAction(title: "Cancel", style: .cancel, handler: nil)
         let takePhotoAction = UIAlertAction(title: "Take a new photo", style: .default) { (action) in
             // Take a new photo
-            self.picPicker.sourceType = .camera
-            self.present(self.picPicker, animated: true, completion: nil)
+            if UIImagePickerController.availableCaptureModes(for: .rear) == nil {
+               // No camera
+                let alertController = UIAlertController(title: "No camera", message: "Your device does not have a camera.", preferredStyle: .alert)
+                alertController.view.tintColor = GREEN_UICOLOR
+                let okAction = UIAlertAction(title: "Okay", style: .default, handler: nil)
+                alertController.addAction(okAction)
+                self.present(alertController, animated: true, completion: nil)
+            } else {
+                self.picPicker.sourceType = .camera
+                self.present(self.picPicker, animated: true, completion: nil)
+            }
         }
         let uploadPhotoAction = UIAlertAction(title: "Upload a photo", style: .default) { (action) in
             // Upload a photo
