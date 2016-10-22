@@ -173,6 +173,9 @@ class EditProfessionalController: UIViewController, UITextFieldDelegate, UIPicke
     
     func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange,
                    replacementString string: String) -> Bool {
+        if textField == disciplineTextField {
+            return false
+        }
         let nsString = textField.text as NSString?
         let newString = nsString?.replacingCharacters(in: range, with: string)
         if let newLength = newString?.characters.count {

@@ -219,8 +219,9 @@ class IntroController: UIViewController, UIScrollViewDelegate, UITextFieldDelega
         let label = UILabel()
         label.text = "Please fill in all three fields."
         label.font = FONT_HEAVY_SMALL
-        label.textColor = GREEN_UICOLOR
+        label.textColor = RED_UICOLOR
         label.textAlignment = .center
+        label.isHidden = false
         return label
     }()
     
@@ -482,6 +483,7 @@ class IntroController: UIViewController, UIScrollViewDelegate, UITextFieldDelega
     fileprivate func enableGo(yes: Bool) {
         goButton.isEnabled = yes
         cautionText.isHidden = yes
+        slider1FillInNow.isHidden = yes
     }
     
     func goIntoApp() {
@@ -530,9 +532,12 @@ class IntroController: UIViewController, UIScrollViewDelegate, UITextFieldDelega
     }
     
     // MARK: Text field
-    
+
     func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange,
                    replacementString string: String) -> Bool {
+        if textField == disciplineTextField {
+            return false
+        }
         let nsString = textField.text as NSString?
         let newString = nsString?.replacingCharacters(in: range, with: string)
         if let newLength = newString?.characters.count {

@@ -5,8 +5,8 @@ TO NOTE:
 
 
 Known issues in descending urgency:
-1) ChatController taking a long time to open
+1) When shifting up screen in EditProfessionalController and EditTaglineController as keyboard pops up, a bit of black background is seen (because self.view is shifted up, and reveals the black underneath)
 2) For chat that is not fully blocked by keyboard, should only scroll by diff and not whole height of keyboard: ChatController: handleKeyboardNotification()
-3) When shifting up screen in EditProfessionalController and EditTaglineController as keyboard pops up, a bit of black background is seen (because self.view is shifted up, and reveals the black underneath)
+3) ChatController taking a long time to open
 
 

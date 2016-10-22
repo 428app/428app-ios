@@ -131,6 +131,7 @@ class TopicsController: UIViewController, UITableViewDelegate, UITableViewDataSo
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        tableView.deselectRow(at: indexPath, animated: false)
         let topic = topics[indexPath.row]
         let controller = DiscussController()
         controller.topic = topic

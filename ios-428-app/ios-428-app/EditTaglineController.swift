@@ -65,7 +65,7 @@ class EditTaglineController: UIViewController, UITextViewDelegate {
     fileprivate func placeholderTemplate() -> UILabel {
         let label = UILabel()
         label.numberOfLines = 0
-        label.font = FONT_MEDIUM_MID
+        label.font = UIFont.systemFont(ofSize: 16.0)
         label.textColor = UIColor.lightGray
         label.sizeToFit()
         label.isHidden = true
@@ -86,7 +86,7 @@ class EditTaglineController: UIViewController, UITextViewDelegate {
     
     fileprivate func textViewTemplate() -> UITextView {
         let textView = UITextView()
-        textView.font = FONT_MEDIUM_MID
+        textView.font = UIFont.systemFont(ofSize: 16.0)
         textView.textColor = UIColor.darkGray
         textView.backgroundColor = UIColor.white
         textView.delegate = self
@@ -107,7 +107,7 @@ class EditTaglineController: UIViewController, UITextViewDelegate {
     
     fileprivate func labelTemplate() -> UILabel {
         let label = UILabel()
-        label.font = FONT_HEAVY_MID
+        label.font = FONT_HEAVY_LARGE
         label.textColor = GREEN_UICOLOR
         label.textAlignment = .left
         return label
@@ -154,12 +154,12 @@ class EditTaglineController: UIViewController, UITextViewDelegate {
         view.addSubview(tagline1CountLabel)
         view.addSubview(tagline2CountLabel)
         
-        view.addConstraintsWithFormat("H:|-8-[v0]", views: tagline1Label)
-        view.addConstraintsWithFormat("H:|-8-[v0]-8-|", views: tagline1TextView)
-        view.addConstraintsWithFormat("H:|-8-[v0]", views: tagline2Label)
-        view.addConstraintsWithFormat("H:|-8-[v0]-8-|", views: tagline2TextView)
-        view.addConstraintsWithFormat("H:|-8-[v0]-8-|", views: tagline1CountLabel)
-        view.addConstraintsWithFormat("H:|-8-[v0]-8-|", views: tagline2CountLabel)
+        view.addConstraintsWithFormat("H:|-12-[v0]", views: tagline1Label)
+        view.addConstraintsWithFormat("H:|-12-[v0]-12-|", views: tagline1TextView)
+        view.addConstraintsWithFormat("H:|-12-[v0]", views: tagline2Label)
+        view.addConstraintsWithFormat("H:|-12-[v0]-12-|", views: tagline2TextView)
+        view.addConstraintsWithFormat("H:|-12-[v0]-12-|", views: tagline1CountLabel)
+        view.addConstraintsWithFormat("H:|-12-[v0]-12-|", views: tagline2CountLabel)
         
         view.addConstraint(NSLayoutConstraint(item: tagline1Label, attribute: .top, relatedBy: .equal, toItem: topLayoutGuide, attribute: .bottom, multiplier: 1.0, constant: 12.0))
         

@@ -26,6 +26,9 @@ class LoginController: UIViewController, UIScrollViewDelegate {
             self.present(controller, animated: true, completion: nil)
         }
         super.viewWillAppear(animated)
+        // Scroll back to first 
+        pageControl.currentPage = 0
+        scrollView.setContentOffset(CGPoint(x: 0, y: 0), animated: true)
     }
     
     fileprivate lazy var loginButton: UIButton = {
