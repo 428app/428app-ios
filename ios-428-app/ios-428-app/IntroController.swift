@@ -247,6 +247,7 @@ class IntroController: UIViewController, UIScrollViewDelegate, UITextFieldDelega
     
     func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
         disciplineTextField.text = DISCIPLINE_OPTIONS[row]
+        enableGo(yes: orgTextField.text!.characters.count > 0 && schoolTextField.text!.characters.count > 0)
         editDisciplineIconInTextField(imageString: DISCIPLINE_ICONS[row])
     }
     
@@ -461,9 +462,27 @@ class IntroController: UIViewController, UIScrollViewDelegate, UITextFieldDelega
         button.layer.cornerRadius = 4.0
         button.clipsToBounds = true
         button.addTarget(self, action: #selector(goIntoApp), for: .touchUpInside)
-//        button.isEnabled = false
+        button.isEnabled = false
         return button
     }()
+    
+    fileprivate let cautionText: UILabel = {
+        let label = UILabel()
+        label.font = FONT_HEAVY_MID
+        label.textColor = RED_UICOLOR
+        label.text = "Please fill in all profession fields."
+        label.textAlignment = .center
+        label.adjustsFontSizeToFitWidth = true
+        label.minimumScaleFactor = 0.75
+        label.isHidden = false
+        return label
+    }()
+    
+    // Function that lets user proceed to the main app
+    fileprivate func enableGo(yes: Bool) {
+        goButton.isEnabled = yes
+        cautionText.isHidden = yes
+    }
     
     func goIntoApp() {
         // Set environment variable, then dismiss to Login
@@ -475,13 +494,15 @@ class IntroController: UIViewController, UIScrollViewDelegate, UITextFieldDelega
         slider4View.addSubview(descriptionLabel)
         slider4View.addSubview(_428Label)
         slider4View.addSubview(goButton)
+        slider4View.addSubview(cautionText)
         
         slider4View.addConstraintsWithFormat("H:|-15-[v0]-15-|", views: descriptionLabel)
         slider4View.addConstraintsWithFormat("H:|-15-[v0]-15-|", views: _428Label)
         slider4View.addConstraintsWithFormat("H:|-15-[v0]-15-|", views: goButton)
+        slider4View.addConstraintsWithFormat("H:|-15-[v0]-15-|", views: cautionText)
         
         let margin: CGFloat = (scrollView.frame.height - 200) / 2.0
-        slider4View.addConstraintsWithFormat("V:|-\(margin)-[v0(60)]-8-[v1(40)]-8-[v2(40)]", views: descriptionLabel, _428Label, goButton)
+        slider4View.addConstraintsWithFormat("V:|-\(margin)-[v0(60)]-8-[v1(40)]-8-[v2(40)]-8-[v3(30)]", views: descriptionLabel, _428Label, goButton, cautionText)
     }
     
     // MARK: Text view
@@ -515,9 +536,15 @@ class IntroController: UIViewController, UIScrollViewDelegate, UITextFieldDelega
         let nsString = textField.text as NSString?
         let newString = nsString?.replacingCharacters(in: range, with: string)
         if let newLength = newString?.characters.count {
+            if textField == orgTextField {
+                enableGo(yes: newLength > 0 && schoolTextField.text!.characters.count > 0 && disciplineTextField.text!.characters.count > 0)
+            } else if textField == schoolTextField {
+                enableGo(yes: newLength > 0 && orgTextField.text!.characters.count > 0 && disciplineTextField.text!.characters.count > 0)
+            }
             return newLength <= MAX_TEXTFIELD_CHARACTERS
         }
         
+        enableGo(yes: false)
         return false
     }
     

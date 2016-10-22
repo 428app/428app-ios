@@ -1,15 +1,5 @@
-!SLIDERS!
-- Ask for inputs
-
-= Default cover photo
-= FB photo used initially
-= 
-
-- One slider on quick tutorial
-
-
-
-!ENHANCEMENTS!
+TO NOTE:
+- For login, set default cover photo and fb photo as profile pic
 - Empty placeholder for no messages in DiscussController and ChatController (done after server)
 
 
