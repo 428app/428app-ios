@@ -8,6 +8,12 @@
 
 /* Begin PBXBuildFile section */
 		4020CE151DBB569000461181 /* Environment.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4020CE141DBB569000461181 /* Environment.swift */; };
+		4020CE171DBCA1E900461181 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 4020CE161DBCA1E900461181 /* GoogleService-Info.plist */; };
+		4020CE191DBCA67A00461181 /* DataService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4020CE181DBCA67A00461181 /* DataService.swift */; };
+		4020CE1E1DBCA84C00461181 /* Bolts.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4020CE1A1DBCA84C00461181 /* Bolts.framework */; };
+		4020CE1F1DBCA84C00461181 /* FBSDKCoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4020CE1B1DBCA84C00461181 /* FBSDKCoreKit.framework */; };
+		4020CE201DBCA84C00461181 /* FBSDKLoginKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4020CE1C1DBCA84C00461181 /* FBSDKLoginKit.framework */; };
+		4020CE211DBCA84C00461181 /* FBSDKShareKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4020CE1D1DBCA84C00461181 /* FBSDKShareKit.framework */; };
 		4024F2211DB7E2E9007819F7 /* TopicsController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4024F2201DB7E2E9007819F7 /* TopicsController.swift */; };
 		4024F2231DB7F664007819F7 /* Topic.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4024F2221DB7F664007819F7 /* Topic.swift */; };
 		4024F2251DB7F83F007819F7 /* TopicMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4024F2241DB7F83F007819F7 /* TopicMessage.swift */; };
@@ -20,10 +26,9 @@
 		4024F2351DBB2155007819F7 /* IntroController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4024F2341DBB2155007819F7 /* IntroController.swift */; };
 		4064A1B61DAC381300071383 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4064A1B51DAC381300071383 /* AppDelegate.swift */; };
 		4064A1B81DAC381300071383 /* ConnectionsController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4064A1B71DAC381300071383 /* ConnectionsController.swift */; };
-		4064A1BE1DAC381300071383 /* ios_428_app.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 4064A1BC1DAC381300071383 /* ios_428_app.xcdatamodeld */; };
 		4064A1C01DAC381300071383 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 4064A1BF1DAC381300071383 /* Assets.xcassets */; };
 		4064A1C31DAC381300071383 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 4064A1C11DAC381300071383 /* LaunchScreen.storyboard */; };
-		4064A1CB1DAC495D00071383 /* DataService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4064A1CA1DAC495D00071383 /* DataService.swift */; };
+		4064A1CB1DAC495D00071383 /* DummyDataService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4064A1CA1DAC495D00071383 /* DummyDataService.swift */; };
 		4064A1E41DAC590900071383 /* ChatController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4064A1E31DAC590900071383 /* ChatController.swift */; };
 		4064A1E61DAC7DA600071383 /* CustomTabBarController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4064A1E51DAC7DA600071383 /* CustomTabBarController.swift */; };
 		4064A1EB1DAC80F100071383 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4064A1EA1DAC80F100071383 /* Constants.swift */; };
@@ -69,6 +74,13 @@
 		0D2BDEFFA9091FABC468335E /* Pods-ios-428-app.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ios-428-app.release.xcconfig"; path = "Pods/Target Support Files/Pods-ios-428-app/Pods-ios-428-app.release.xcconfig"; sourceTree = "<group>"; };
 		1B0A78A64649B55915C0C572 /* Pods_ios_428_app.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_ios_428_app.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		4020CE141DBB569000461181 /* Environment.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Environment.swift; sourceTree = "<group>"; };
+		4020CE161DBCA1E900461181 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
+		4020CE181DBCA67A00461181 /* DataService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DataService.swift; sourceTree = "<group>"; };
+		4020CE1A1DBCA84C00461181 /* Bolts.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Bolts.framework; sourceTree = "<group>"; };
+		4020CE1B1DBCA84C00461181 /* FBSDKCoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = FBSDKCoreKit.framework; sourceTree = "<group>"; };
+		4020CE1C1DBCA84C00461181 /* FBSDKLoginKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = FBSDKLoginKit.framework; sourceTree = "<group>"; };
+		4020CE1D1DBCA84C00461181 /* FBSDKShareKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = FBSDKShareKit.framework; sourceTree = "<group>"; };
+		4020CE221DBCADFD00461181 /* ios-428-app.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "ios-428-app.entitlements"; sourceTree = "<group>"; };
 		4024F2201DB7E2E9007819F7 /* TopicsController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TopicsController.swift; sourceTree = "<group>"; };
 		4024F2221DB7F664007819F7 /* Topic.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Topic.swift; sourceTree = "<group>"; };
 		4024F2241DB7F83F007819F7 /* TopicMessage.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TopicMessage.swift; sourceTree = "<group>"; };
@@ -82,11 +94,10 @@
 		4064A1B21DAC381300071383 /* ios-428-app.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "ios-428-app.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		4064A1B51DAC381300071383 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		4064A1B71DAC381300071383 /* ConnectionsController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectionsController.swift; sourceTree = "<group>"; };
-		4064A1BD1DAC381300071383 /* ios_428_app.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = ios_428_app.xcdatamodel; sourceTree = "<group>"; };
 		4064A1BF1DAC381300071383 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		4064A1C21DAC381300071383 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		4064A1C41DAC381300071383 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		4064A1CA1DAC495D00071383 /* DataService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DataService.swift; sourceTree = "<group>"; };
+		4064A1CA1DAC495D00071383 /* DummyDataService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DummyDataService.swift; sourceTree = "<group>"; };
 		4064A1E31DAC590900071383 /* ChatController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChatController.swift; sourceTree = "<group>"; };
 		4064A1E51DAC7DA600071383 /* CustomTabBarController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CustomTabBarController.swift; sourceTree = "<group>"; };
 		4064A1EA1DAC80F100071383 /* Constants.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
@@ -132,6 +143,10 @@
 			buildActionMask = 2147483647;
 			files = (
 				FED3D2F8E9831031BBFFDBEB /* Pods_ios_428_app.framework in Frameworks */,
+				4020CE1F1DBCA84C00461181 /* FBSDKCoreKit.framework in Frameworks */,
+				4020CE211DBCA84C00461181 /* FBSDKShareKit.framework in Frameworks */,
+				4020CE201DBCA84C00461181 /* FBSDKLoginKit.framework in Frameworks */,
+				4020CE1E1DBCA84C00461181 /* Bolts.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -179,8 +194,9 @@
 				4064A1B51DAC381300071383 /* AppDelegate.swift */,
 				4064A1BF1DAC381300071383 /* Assets.xcassets */,
 				4064A1C11DAC381300071383 /* LaunchScreen.storyboard */,
+				4020CE161DBCA1E900461181 /* GoogleService-Info.plist */,
+				4020CE221DBCADFD00461181 /* ios-428-app.entitlements */,
 				4064A1C41DAC381300071383 /* Info.plist */,
-				4064A1BC1DAC381300071383 /* ios_428_app.xcdatamodeld */,
 			);
 			path = "ios-428-app";
 			sourceTree = "<group>";
@@ -275,7 +291,8 @@
 			isa = PBXGroup;
 			children = (
 				4064A2261DB13FBD00071383 /* Debug.swift */,
-				4064A1CA1DAC495D00071383 /* DataService.swift */,
+				4064A1CA1DAC495D00071383 /* DummyDataService.swift */,
+				4020CE181DBCA67A00461181 /* DataService.swift */,
 			);
 			name = Services;
 			sourceTree = "<group>";
@@ -302,6 +319,10 @@
 		734284813DDF0C951C19BCCA /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				4020CE1A1DBCA84C00461181 /* Bolts.framework */,
+				4020CE1B1DBCA84C00461181 /* FBSDKCoreKit.framework */,
+				4020CE1C1DBCA84C00461181 /* FBSDKLoginKit.framework */,
+				4020CE1D1DBCA84C00461181 /* FBSDKShareKit.framework */,
 				1B0A78A64649B55915C0C572 /* Pods_ios_428_app.framework */,
 			);
 			name = Frameworks;
@@ -314,12 +335,12 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 4064A1C71DAC381300071383 /* Build configuration list for PBXNativeTarget "ios-428-app" */;
 			buildPhases = (
-				83AC00D59BBC5F7B96D7D229 /* Check Pods Manifest.lock */,
+				83AC00D59BBC5F7B96D7D229 /* [CP] Check Pods Manifest.lock */,
 				4064A1AE1DAC381300071383 /* Sources */,
 				4064A1AF1DAC381300071383 /* Frameworks */,
 				4064A1B01DAC381300071383 /* Resources */,
-				F88A9F202BC3599A865F8C62 /* Embed Pods Frameworks */,
-				84FF72238AF9FBEE0BCDBB17 /* Copy Pods Resources */,
+				F88A9F202BC3599A865F8C62 /* [CP] Embed Pods Frameworks */,
+				84FF72238AF9FBEE0BCDBB17 /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -345,6 +366,11 @@
 						DevelopmentTeam = EUUML7WPQP;
 						LastSwiftMigration = 0800;
 						ProvisioningStyle = Automatic;
+						SystemCapabilities = {
+							com.apple.Keychain = {
+								enabled = 1;
+							};
+						};
 					};
 				};
 			};
@@ -380,6 +406,7 @@
 				4064A20F1DACB62500071383 /* TODO in Resources */,
 				4064A1F81DAC811F00071383 /* AvenirLTStd-Black.otf in Resources */,
 				4064A2001DAC811F00071383 /* AvenirLTStd-Medium.otf in Resources */,
+				4020CE171DBCA1E900461181 /* GoogleService-Info.plist in Resources */,
 				4064A1F91DAC811F00071383 /* AvenirLTStd-BlackOblique.otf in Resources */,
 				4064A1C01DAC381300071383 /* Assets.xcassets in Resources */,
 				4064A1FD1DAC811F00071383 /* AvenirLTStd-HeavyOblique.otf in Resources */,
@@ -392,29 +419,29 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
-		83AC00D59BBC5F7B96D7D229 /* Check Pods Manifest.lock */ = {
+		83AC00D59BBC5F7B96D7D229 /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			inputPaths = (
 			);
-			name = "Check Pods Manifest.lock";
+			name = "[CP] Check Pods Manifest.lock";
 			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [[ $? != 0 ]] ; then\n    cat << EOM\nerror: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\nEOM\n    exit 1\nfi\n";
+			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n";
 			showEnvVarsInLog = 0;
 		};
-		84FF72238AF9FBEE0BCDBB17 /* Copy Pods Resources */ = {
+		84FF72238AF9FBEE0BCDBB17 /* [CP] Copy Pods Resources */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			inputPaths = (
 			);
-			name = "Copy Pods Resources";
+			name = "[CP] Copy Pods Resources";
 			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -422,14 +449,14 @@
 			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-ios-428-app/Pods-ios-428-app-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
-		F88A9F202BC3599A865F8C62 /* Embed Pods Frameworks */ = {
+		F88A9F202BC3599A865F8C62 /* [CP] Embed Pods Frameworks */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			inputPaths = (
 			);
-			name = "Embed Pods Frameworks";
+			name = "[CP] Embed Pods Frameworks";
 			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -458,7 +485,6 @@
 				4024F22D1DB86B18007819F7 /* TopicChatCell.swift in Sources */,
 				4024F2211DB7E2E9007819F7 /* TopicsController.swift in Sources */,
 				4024F2271DB82239007819F7 /* TopicCell.swift in Sources */,
-				4064A1BE1DAC381300071383 /* ios_428_app.xcdatamodeld in Sources */,
 				4064A2181DACC1B700071383 /* ChatCell.swift in Sources */,
 				4064A1E61DAC7DA600071383 /* CustomTabBarController.swift in Sources */,
 				4064A2521DB346A800071383 /* Profile.swift in Sources */,
@@ -472,8 +498,9 @@
 				40AB80001DB5FDB100492788 /* EditProfileController.swift in Sources */,
 				4064A21F1DAD72DF00071383 /* Functions.swift in Sources */,
 				4064A22B1DB2B27F00071383 /* Friend.swift in Sources */,
+				4020CE191DBCA67A00461181 /* DataService.swift in Sources */,
 				4064A1B61DAC381300071383 /* AppDelegate.swift in Sources */,
-				4064A1CB1DAC495D00071383 /* DataService.swift in Sources */,
+				4064A1CB1DAC495D00071383 /* DummyDataService.swift in Sources */,
 				4064A2291DB2B0B500071383 /* Message.swift in Sources */,
 				4024F22B1DB85C0E007819F7 /* PaddingLabel.swift in Sources */,
 				40AB7FFC1DB5B09700492788 /* BaseTableViewCell.swift in Sources */,
@@ -522,9 +549,11 @@
 				CLANG_WARN_SUSPICIOUS_MOVES = YES;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = dwarf;
+				DEVELOPMENT_TEAM = EUUML7WPQP;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
@@ -541,7 +570,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
@@ -572,9 +601,11 @@
 				CLANG_WARN_SUSPICIOUS_MOVES = YES;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DEVELOPMENT_TEAM = EUUML7WPQP;
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
@@ -585,7 +616,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				SDKROOT = iphoneos;
 				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
@@ -598,8 +629,14 @@
 			baseConfigurationReference = 04E3B82C0B8AC7357CE89687 /* Pods-ios-428-app.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = "ios-428-app/ios-428-app.entitlements";
 				DEVELOPMENT_TEAM = EUUML7WPQP;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)",
+				);
 				INFOPLIST_FILE = "ios-428-app/Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "com.428app.ios-428-app";
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -612,8 +649,14 @@
 			baseConfigurationReference = 0D2BDEFFA9091FABC468335E /* Pods-ios-428-app.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = "ios-428-app/ios-428-app.entitlements";
 				DEVELOPMENT_TEAM = EUUML7WPQP;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)",
+				);
 				INFOPLIST_FILE = "ios-428-app/Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "com.428app.ios-428-app";
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -643,19 +686,6 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
-
-/* Begin XCVersionGroup section */
-		4064A1BC1DAC381300071383 /* ios_428_app.xcdatamodeld */ = {
-			isa = XCVersionGroup;
-			children = (
-				4064A1BD1DAC381300071383 /* ios_428_app.xcdatamodel */,
-			);
-			currentVersion = 4064A1BD1DAC381300071383 /* ios_428_app.xcdatamodel */;
-			path = ios_428_app.xcdatamodeld;
-			sourceTree = "<group>";
-			versionGroupType = wrapper.xcdatamodel;
-		};
-/* End XCVersionGroup section */
 	};
 	rootObject = 4064A1AA1DAC381300071383 /* Project object */;
 }

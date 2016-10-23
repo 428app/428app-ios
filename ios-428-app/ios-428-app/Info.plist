@@ -4,6 +4,8 @@
 <dict>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>en</string>
+	<key>CFBundleDisplayName</key>
+	<string>428</string>
 	<key>CFBundleExecutable</key>
 	<string>$(EXECUTABLE_NAME)</string>
 	<key>CFBundleIdentifier</key>
@@ -20,6 +22,10 @@
 	<string>1</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
+	<key>NSCameraUsageDescription</key>
+	<string>Access to the camera will be for the sole purpose of selecting your profile picture.</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>Access to the library will be for the sole purpose of selecting your profile picture.</string>
 	<key>UIAppFonts</key>
 	<array>
 		<string>AvenirLTStd-Light.otf</string>
@@ -45,9 +51,25 @@
 	<array>
 		<string>UIInterfaceOrientationPortrait</string>
 	</array>
-	<key>NSCameraUsageDescription</key>
-	<string>Access to the camera will be for the sole purpose of selecting your profile picture.</string>
-	<key>NSPhotoLibraryUsageDescription</key>
-	<string>Access to the library will be for the sole purpose of selecting your profile picture.</string>
+    <key>CFBundleURLTypes</key>
+    <array>
+        <dict>
+            <key>CFBundleURLSchemes</key>
+            <array>
+                <string>fb202997740127765</string>
+            </array>
+        </dict>
+    </array>
+    <key>FacebookAppID</key>
+    <string>202997740127765</string>
+    <key>FacebookDisplayName</key>
+    <string>428app</string>
+    <key>LSApplicationQueriesSchemes</key>
+    <array>
+        <string>fbapi</string>
+        <string>fb-messenger-api</string>
+        <string>fbauth2</string>
+        <string>fbshareextension</string>
+    </array>
 </dict>
 </plist>

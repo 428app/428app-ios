@@ -4,12 +4,12 @@
 <dict>
 	<key>SchemeUserState</key>
 	<dict>
-		<key>Pods-ios-428-app-XCGLogger.xcscheme</key>
+		<key>Pods-ios-428-app.xcscheme</key>
 		<dict>
 			<key>isShown</key>
 			<false/>
 		</dict>
-		<key>Pods-ios-428-app.xcscheme</key>
+		<key>XCGLogger.xcscheme</key>
 		<dict>
 			<key>isShown</key>
 			<false/>
@@ -17,12 +17,12 @@
 	</dict>
 	<key>SuppressBuildableAutocreation</key>
 	<dict>
-		<key>14E2E659518F54A44E5E4B0E</key>
+		<key>6D183AEAB4C543AC9848D585120EE6E1</key>
 		<dict>
 			<key>primary</key>
 			<true/>
 		</dict>
-		<key>3CF4304AD9A957522A44FCA0</key>
+		<key>BC37490DCB86CC41ACB8502540EE5A93</key>
 		<dict>
 			<key>primary</key>
 			<true/>

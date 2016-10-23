@@ -1,7 +1,38 @@
-TO NOTE:
-- For login, set default cover photo and fb photo as profile pic
-- Empty placeholder for no messages in DiscussController and ChatController (done after server)
+==== BACKEND ====
+1) Integrate login, and read the right data
+2) Implement createUser Firebase service
 
+
+!LOGIN!
+
+
+!PROFILE!
+
+
+!CHAT!
+
+!TOPICS!
+
+!SETTINGS!
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+==== FRONTEND ====
+TO NOTE:
+- For login, set default cover photo and fb photo as profile pic, also pull name and age from FB
+- Empty placeholder for no messages in DiscussController and ChatController (done after server)
+- Read in location while reading FB info
 
 
 Known issues in descending urgency:

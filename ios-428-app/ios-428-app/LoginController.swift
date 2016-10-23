@@ -8,6 +8,10 @@
 
 import Foundation
 import UIKit
+import Firebase
+import FirebaseAuth
+import FBSDKCoreKit
+import FBSDKLoginKit
 
 class LoginController: UIViewController, UIScrollViewDelegate {
     
@@ -45,10 +49,21 @@ class LoginController: UIViewController, UIScrollViewDelegate {
     }()
     
     func fbLogin() {
-        // TODO: Integrate FB Login
-        let controller = isFirstTimeUser ? IntroController() : CustomTabBarController()
-        controller.modalTransitionStyle = .coverVertical
-        self.present(controller, animated: true, completion: nil)
+        let facebookLogin = FBSDKLoginManager()
+        // TODO: Add in additional read permissions, and read the relevant info
+        // TODO: Also add in FIR Auth
+        facebookLogin.logIn(withReadPermissions: ["public_profile"], from: self) { (facebookResult, facebookError) in
+            if facebookError != nil || facebookResult == nil {
+                log.error("Facebook login failed. Error \(facebookError)")
+            } else if facebookResult!.isCancelled {
+                log.warning("Facebook login was cancelled.")
+            } else {
+                log.info("Login success")
+                let controller = isFirstTimeUser ? IntroController() : CustomTabBarController()
+                controller.modalTransitionStyle = .coverVertical
+                self.present(controller, animated: true, completion: nil)
+            }
+        }
     }
     
     fileprivate let warningLabel: UILabel = {

@@ -1,7 +1,12 @@
-platform :ios, '10.0'
+platform :ios, '9.0'
 use_frameworks!
 
 target 'ios-428-app' do
 pod 'XCGLogger', '~> 4.0.0'
+pod 'Firebase'
+pod 'Firebase/Database'
+pod 'Firebase/Core'
+pod 'Firebase/Auth'
 end
+
 
