@@ -14,4 +14,4 @@ import Foundation
 var justFinishedIntro = false
 
 // Shows IntroController if it is first time user, otherwise just progress straight to CustomTabBar
-var isFirstTimeUser = true
+//var isFirstTimeUser = true

@@ -1,8 +1,7 @@
 ==== BACKEND ====
 
 !LOGIN!
-1) Get location and timezone to put in DB
-2) Try login for non-new user
+1) Logout
 
 
 
@@ -15,7 +14,7 @@
 
 !SETTINGS!
 
-
+!SECURITY SETTINGS!
 
 
 

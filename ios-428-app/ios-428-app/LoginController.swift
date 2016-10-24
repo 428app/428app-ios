@@ -14,7 +14,7 @@ import FBSDKCoreKit
 import FBSDKLoginKit
 import CoreLocation
 
-class LoginController: UIViewController, UIScrollViewDelegate {
+class LoginController: UIViewController, UIScrollViewDelegate, CLLocationManagerDelegate {
     
     fileprivate let MINIMAL_FRIEND_COUNT = 50 // Minimal number of friends required to authenticate 'real' user
     
@@ -38,6 +38,17 @@ class LoginController: UIViewController, UIScrollViewDelegate {
         scrollView.setContentOffset(CGPoint(x: 0, y: 0), animated: true)
     }
     
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        if let _ = FBSDKAccessToken.current(), let user = FIRAuth.auth()?.currentUser {
+            STORED_UID = user.providerData[0].uid
+            self.startLocationManager()
+            let controller = CustomTabBarController()
+            controller.modalTransitionStyle = .coverVertical
+            self.present(controller, animated: true, completion: nil)
+        }
+    }
+    
     fileprivate lazy var loginButton: UIButton = {
         let button = UIButton()
         button.titleLabel?.font = FONT_MEDIUM_LARGE
@@ -50,6 +61,45 @@ class LoginController: UIViewController, UIScrollViewDelegate {
         button.clipsToBounds = true
         return button
     }()
+    
+    // MARK: Location manager
+    
+    fileprivate var locationManager = CLLocationManager()
+
+    fileprivate func startLocationManager() {
+        if CLLocationManager.locationServicesEnabled() {
+            locationManager.requestWhenInUseAuthorization()
+            locationManager.delegate = self
+            locationManager.desiredAccuracy = kCLLocationAccuracyBest
+            // Get location once, once location obtained, stop location manager
+            locationManager.startUpdatingLocation()
+        }
+    }
+    
+    func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
+        locationManager.stopUpdatingLocation()
+        log.error(error)
+    }
+    
+    func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
+        // Last location captured must have positive accuracy and not captured more than 10 seconds ago
+        if let loc = locations.last, loc.horizontalAccuracy > 0.0, loc.timestamp.timeIntervalSinceNow > -10.0 {
+            let lat = loc.coordinate.latitude
+            let lon = loc.coordinate.longitude
+            // Update user's location, and stops location manager
+            if STORED_UID == "" {
+                log.error("Stored uid not set yet")
+                return
+            }
+            DataService.ds.updateUserLocation(fbid: STORED_UID, lat: lat, lon: lon, completed: { (isSuccess) in
+                if isSuccess {
+                    self.locationManager.stopUpdatingLocation()
+                } else {
+                    log.error("There was an error in getting user's location")
+                }
+            })
+        }
+    }
     
     // MARK: Server login
     
@@ -95,10 +145,6 @@ class LoginController: UIViewController, UIScrollViewDelegate {
                         
                         // Real user ascertained. Continue to login user to Firebase
                         self.loginToFirebase(birthdayString: birthdayString, pictureUrl: pictureUrl)
-                        
-                        log.info("\(birthdayString)")
-                        log.info("\(friendCount)")
-                        log.info("\(pictureUrl)")
                     }
                 })
                 connection.start()
@@ -120,18 +166,21 @@ class LoginController: UIViewController, UIScrollViewDelegate {
             let fbid = user!.providerData[0].uid // Use FBID as the key for users
             let displayName = user!.providerData[0].displayName!
             
-            // TODO: Also get user location, and timezone
-            
+            // Get timezone
+            let secondsFromGMT: Double = Double(NSTimeZone.local.secondsFromGMT())
+            let timezone: Double = secondsFromGMT*1.0 / (60.0*60.0)
             
             // Create/Update Firebase user with details
-            DataService.ds.createFirebaseUser(fbid: fbid, name: displayName, birthday: birthdayString, pictureUrl: pictureUrl, completed: { (isSuccess) in
+            DataService.ds.loginFirebaseUser(fbid: fbid, name: displayName, birthday: birthdayString, pictureUrl: pictureUrl, timezone: timezone, completed: { (isSuccess, isFirstTimeUser) in
                 if !isSuccess {
                     log.error("Login to Firebase failed")
                     showErrorAlert(vc: self, title: "Could not sign in", message: "There was a problem signing in. We apologize. Please try again later.")
                     return
                 }
 
-                // Successfully updated user info in DB, log user in!
+                STORED_UID = fbid
+                // Successfully updated user info in DB, get user's location, and logs user in!
+                self.startLocationManager()
                 let controller = isFirstTimeUser ? IntroController() : CustomTabBarController()
                 controller.modalTransitionStyle = .coverVertical
                 self.present(controller, animated: true, completion: nil)
@@ -139,6 +188,8 @@ class LoginController: UIViewController, UIScrollViewDelegate {
         })
 
     }
+    
+    // MARK: Frontend
     
     fileprivate let warningLabel: UILabel = {
         let label = UILabel()

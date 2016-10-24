@@ -36,21 +36,56 @@ class DataService {
         _REF_USER.removeAllObservers()
     }
     
-    func createFirebaseUser(fbid: String, name: String, birthday: String, pictureUrl: String, completed: @escaping (_ isSuccess: Bool) -> ()) {
+    // MARK: User
+    
+    // Called in LoginController to create new user or log existing user in
+    func loginFirebaseUser(fbid: String, name: String, birthday: String, pictureUrl: String, timezone: Double, completed: @escaping (_ isSuccess: Bool, _ isFirstTimeUser: Bool) -> ()) {
         let timeNow = Date().timeIntervalSince1970
-        let user: [String: Any] = ["name": name, "birthday": birthday, "profilePhoto": pictureUrl, "lastSeen": timeNow]
+        let user: [String: Any] = ["name": name, "birthday": birthday, "profilePhoto": pictureUrl, "timezone": timezone, "lastSeen": timeNow]
         self.REF_USER.child(fbid).observeSingleEvent(of: .value, with: { snapshot in
             if snapshot.exists() {
-                // User already exists, update server details and login
-                self.REF_USER.child(fbid).updateChildValues(user, withCompletionBlock: { (error, ref) in
-                    completed(error == nil)
-                })
+                // User already exists, return
+                completed(true, false)
             } else {
                 // Create new user
                 self.REF_USER.child(fbid).setValue(user, withCompletionBlock: { (error, ref) in
-                    completed(error == nil)
+                    completed(error == nil, true)
                 })
             }
         })
     }
+    
+    // Called in LoginController to update user's location, after location manager gets it
+    func updateUserLocation(fbid: String, lat: Double, lon: Double, completed: @escaping (_ isSuccess: Bool) -> ()) {
+        let timeNow = Date().timeIntervalSince1970
+        self.REF_USER.child(fbid).observeSingleEvent(of: .value, with: { snapshot in
+            if snapshot.exists() {
+                self.REF_USER.child(fbid).updateChildValues(["location": "\(lat), \(lon)", "lastSeen": timeNow], withCompletionBlock: { (error, ref) in
+                    completed(error == nil)
+                })
+            } else {
+                // User does not exist. Error.
+                completed(false)
+            }
+        })
+    }
+    
+    // Updates user's last seen in AppDelegate's
+    func updateUserLastSeen(fbid: String, completed: @escaping (_ isSuccess: Bool) -> ()) {
+        if fbid == "" { // User's fbid not initialized yet
+            return
+        }
+        let timeNow = Date().timeIntervalSince1970
+        self.REF_USER.child(fbid).observeSingleEvent(of: .value, with: { snapshot in
+            if snapshot.exists() {
+                self.REF_USER.child(fbid).updateChildValues(["lastSeen": timeNow], withCompletionBlock: { (error, ref) in
+                    completed(error == nil)
+                })
+            } else {
+                // User does not exist. Error
+                completed(false)
+            }
+        })
+    }
+    
 }

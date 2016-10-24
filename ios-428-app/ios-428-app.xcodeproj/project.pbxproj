@@ -24,6 +24,7 @@
 		4024F2311DB88262007819F7 /* DiscussModalController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4024F2301DB88262007819F7 /* DiscussModalController.swift */; };
 		4024F2331DB9454B007819F7 /* LoginController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4024F2321DB9454B007819F7 /* LoginController.swift */; };
 		4024F2351DBB2155007819F7 /* IntroController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4024F2341DBB2155007819F7 /* IntroController.swift */; };
+		404C22FA1DBDB86D0054FE19 /* Server.swift in Sources */ = {isa = PBXBuildFile; fileRef = 404C22F91DBDB86D0054FE19 /* Server.swift */; };
 		4064A1B61DAC381300071383 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4064A1B51DAC381300071383 /* AppDelegate.swift */; };
 		4064A1B81DAC381300071383 /* ConnectionsController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4064A1B71DAC381300071383 /* ConnectionsController.swift */; };
 		4064A1C01DAC381300071383 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 4064A1BF1DAC381300071383 /* Assets.xcassets */; };
@@ -91,6 +92,7 @@
 		4024F2301DB88262007819F7 /* DiscussModalController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DiscussModalController.swift; sourceTree = "<group>"; };
 		4024F2321DB9454B007819F7 /* LoginController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LoginController.swift; sourceTree = "<group>"; };
 		4024F2341DBB2155007819F7 /* IntroController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IntroController.swift; sourceTree = "<group>"; };
+		404C22F91DBDB86D0054FE19 /* Server.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Server.swift; sourceTree = "<group>"; };
 		4064A1B21DAC381300071383 /* ios-428-app.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "ios-428-app.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		4064A1B51DAC381300071383 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		4064A1B71DAC381300071383 /* ConnectionsController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectionsController.swift; sourceTree = "<group>"; };
@@ -163,6 +165,24 @@
 			name = Topic;
 			sourceTree = "<group>";
 		};
+		404C22F71DBDB8580054FE19 /* Frontend */ = {
+			isa = PBXGroup;
+			children = (
+				4064A1EA1DAC80F100071383 /* Constants.swift */,
+				4064A2151DACBCDC00071383 /* Extensions.swift */,
+				4064A21E1DAD72DF00071383 /* Functions.swift */,
+			);
+			name = Frontend;
+			sourceTree = "<group>";
+		};
+		404C22F81DBDB8600054FE19 /* Backend */ = {
+			isa = PBXGroup;
+			children = (
+				404C22F91DBDB86D0054FE19 /* Server.swift */,
+			);
+			name = Backend;
+			sourceTree = "<group>";
+		};
 		4064A1A91DAC381300071383 = {
 			isa = PBXGroup;
 			children = (
@@ -204,9 +224,8 @@
 		4064A1E71DAC80DF00071383 /* Util */ = {
 			isa = PBXGroup;
 			children = (
-				4064A1EA1DAC80F100071383 /* Constants.swift */,
-				4064A2151DACBCDC00071383 /* Extensions.swift */,
-				4064A21E1DAD72DF00071383 /* Functions.swift */,
+				404C22F81DBDB8600054FE19 /* Backend */,
+				404C22F71DBDB8580054FE19 /* Frontend */,
 				4020CE141DBB569000461181 /* Environment.swift */,
 			);
 			name = Util;
@@ -501,6 +520,7 @@
 				4020CE191DBCA67A00461181 /* DataService.swift in Sources */,
 				4064A1B61DAC381300071383 /* AppDelegate.swift in Sources */,
 				4064A1CB1DAC495D00071383 /* DummyDataService.swift in Sources */,
+				404C22FA1DBDB86D0054FE19 /* Server.swift in Sources */,
 				4064A2291DB2B0B500071383 /* Message.swift in Sources */,
 				4024F22B1DB85C0E007819F7 /* PaddingLabel.swift in Sources */,
 				40AB7FFC1DB5B09700492788 /* BaseTableViewCell.swift in Sources */,
