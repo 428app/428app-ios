@@ -9,6 +9,11 @@
 			<key>isShown</key>
 			<false/>
 		</dict>
+		<key>SwiftSpinner.xcscheme</key>
+		<dict>
+			<key>isShown</key>
+			<false/>
+		</dict>
 		<key>XCGLogger.xcscheme</key>
 		<dict>
 			<key>isShown</key>
@@ -17,12 +22,17 @@
 	</dict>
 	<key>SuppressBuildableAutocreation</key>
 	<dict>
-		<key>6D183AEAB4C543AC9848D585120EE6E1</key>
+		<key>13CC2B20AF001696904EDF7FB8EBAF76</key>
 		<dict>
 			<key>primary</key>
 			<true/>
 		</dict>
-		<key>BC37490DCB86CC41ACB8502540EE5A93</key>
+		<key>651E3A621FCA6134740D742556759577</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>6F3211354E3192528800555D13604BD3</key>
 		<dict>
 			<key>primary</key>
 			<true/>

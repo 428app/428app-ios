@@ -168,6 +168,7 @@
 		404C22F71DBDB8580054FE19 /* Frontend */ = {
 			isa = PBXGroup;
 			children = (
+				4020CE141DBB569000461181 /* Environment.swift */,
 				4064A1EA1DAC80F100071383 /* Constants.swift */,
 				4064A2151DACBCDC00071383 /* Extensions.swift */,
 				4064A21E1DAD72DF00071383 /* Functions.swift */,
@@ -226,7 +227,6 @@
 			children = (
 				404C22F81DBDB8600054FE19 /* Backend */,
 				404C22F71DBDB8580054FE19 /* Frontend */,
-				4020CE141DBB569000461181 /* Environment.swift */,
 			);
 			name = Util;
 			sourceTree = "<group>";

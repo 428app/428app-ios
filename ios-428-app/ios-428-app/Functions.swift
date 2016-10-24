@@ -8,6 +8,7 @@
 
 import Foundation
 import XCGLogger
+import SwiftSpinner
 
 let log = XCGLogger.default
 
@@ -32,4 +33,14 @@ func showErrorAlert(vc: UIViewController, title: String, message: String) {
     let okAction = UIAlertAction(title: "Okay", style: .default, handler: nil)
     alertController.addAction(okAction)
     vc.present(alertController, animated: true, completion: nil)
+}
+
+// SwiftSpinner loader
+func showLoader(message: String) {
+    SwiftSpinner.setTitleFont(FONT_MEDIUM_XLARGE)
+    SwiftSpinner.show(message)
+}
+
+func hideLoader() {
+    SwiftSpinner.hide()
 }

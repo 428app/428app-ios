@@ -107,7 +107,6 @@ class LoginController: UIViewController, UIScrollViewDelegate, CLLocationManager
     func fbLogin() {
         let facebookLogin = FBSDKLoginManager()
         // TODO: Submit app review to facebook to get permission for user_birthday
-        
         facebookLogin.logIn(withReadPermissions: ["public_profile", "user_friends", "user_birthday"], from: self) { (facebookResult, facebookError) in
             
             if facebookError != nil || facebookResult == nil {
@@ -117,7 +116,7 @@ class LoginController: UIViewController, UIScrollViewDelegate, CLLocationManager
                 log.warning("Facebook login was cancelled.")
                 return
             } else {
-                
+                showLoader(message: "Syncing you with Facebook...")
                 // Launch FB graph search to get birthday, higher resolution picture, and friends
                 let fbRequest = FBSDKGraphRequest.init(graphPath: "me", parameters: ["fields": "birthday,picture.width(960).height(960),friends"])
                 let connection = FBSDKGraphRequestConnection()
@@ -155,6 +154,7 @@ class LoginController: UIViewController, UIScrollViewDelegate, CLLocationManager
     fileprivate func loginToFirebase(birthdayString: String, pictureUrl: String) {
         let accessToken: String = FBSDKAccessToken.current().tokenString
         let credential = FIRFacebookAuthProvider.credential(withAccessToken: accessToken)
+        showLoader(message: "Logging you in...")
         FIRAuth.auth()?.signIn(with: credential, completion: { (user, error) in
             
             if error != nil || user == nil || user!.providerData[0].displayName == nil {
@@ -178,6 +178,7 @@ class LoginController: UIViewController, UIScrollViewDelegate, CLLocationManager
                     return
                 }
 
+                hideLoader()
                 STORED_UID = fbid
                 // Successfully updated user info in DB, get user's location, and logs user in!
                 self.startLocationManager()
