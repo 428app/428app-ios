@@ -23,9 +23,9 @@
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>NSCameraUsageDescription</key>
-	<string>Access to the camera will be for the sole purpose of selecting your profile picture.</string>
+	<string>$(PRODUCT_NAME) Access to the camera will be for the sole purpose of selecting your profile picture.</string>
 	<key>NSPhotoLibraryUsageDescription</key>
-	<string>Access to the library will be for the sole purpose of selecting your profile picture.</string>
+	<string>$(PRODUCT_NAME) Access to the library will be for the sole purpose of selecting your profile picture.</string>
 	<key>UIAppFonts</key>
 	<array>
 		<string>AvenirLTStd-Light.otf</string>

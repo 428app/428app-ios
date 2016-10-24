@@ -486,10 +486,18 @@ class IntroController: UIViewController, UIScrollViewDelegate, UITextFieldDelega
         slider1FillInNow.isHidden = yes
     }
     
+    // Enter main app after updating user profile data
     func goIntoApp() {
         // Set environment variable, then dismiss to Login
-        justFinishedIntro = true
-        self.dismiss(animated: true, completion: nil)
+        DataService.ds.updateUserFields(organization: orgTextField.text, school: schoolTextField.text, discipline: disciplineTextField.text, tagline1: tagline1TextView.text, tagline2: tagline2TextView.text) { (isSuccess) in
+            if !isSuccess {
+                showErrorAlert(vc: self, title: "Unable to proceed", message: "We apologize. We seem to be unable to log you in at this time. Please try again later.")
+            } else {
+                justFinishedIntro = true
+                setHasToFillInfo(hasToFill: false)
+                self.dismiss(animated: true, completion: nil)
+            }
+        }
     }
     
     fileprivate func setupSlider4() {

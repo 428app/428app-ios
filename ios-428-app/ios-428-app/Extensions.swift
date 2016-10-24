@@ -137,4 +137,13 @@ extension String {
         
         return boundingBox.height
     }
+    
+    func lowercaseFirstLetter() -> String {
+        if characters.count < 1 {
+            return self
+        }
+        let first = String(characters.prefix(1)).lowercased()
+        let other = String(characters.dropFirst())
+        return first + other
+    }
 }

@@ -12,4 +12,3 @@ import Foundation
 // After user completes intro flow and dismisses, the user goes back to LoginController
 // LoginController will immediately segue to CustomTabBar if this value is true
 var justFinishedIntro = false
-

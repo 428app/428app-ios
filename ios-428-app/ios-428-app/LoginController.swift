@@ -26,24 +26,19 @@ class LoginController: UIViewController, UIScrollViewDelegate, CLLocationManager
     }
     
     override func viewWillAppear(_ animated: Bool) {
-        if justFinishedIntro {
-            justFinishedIntro = false
-            let controller = CustomTabBarController()
-            controller.modalTransitionStyle = .coverVertical
-            self.present(controller, animated: true, completion: nil)
-        }
         super.viewWillAppear(animated)
-        // Scroll back to first 
+        // Scroll back to first
         pageControl.currentPage = 0
         scrollView.setContentOffset(CGPoint(x: 0, y: 0), animated: true)
     }
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
+        // These have to be in viewDidAppear, or they will not work
         if let _ = FBSDKAccessToken.current(), let user = FIRAuth.auth()?.currentUser {
-            STORED_UID = user.providerData[0].uid
-            self.startLocationManager()
-            let controller = CustomTabBarController()
+            saveUid(uid: user.providerData[0].uid) // Saving here is not really necessary, but just a safeguard
+            self.startLocationManager() // Update user location and timeSeen
+            let controller = hasToFill() ? IntroController() : CustomTabBarController()
             controller.modalTransitionStyle = .coverVertical
             self.present(controller, animated: true, completion: nil)
         }
@@ -82,16 +77,17 @@ class LoginController: UIViewController, UIScrollViewDelegate, CLLocationManager
     }
     
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
+        log.info("Getting location")
         // Last location captured must have positive accuracy and not captured more than 10 seconds ago
         if let loc = locations.last, loc.horizontalAccuracy > 0.0, loc.timestamp.timeIntervalSinceNow > -10.0 {
             let lat = loc.coordinate.latitude
             let lon = loc.coordinate.longitude
             // Update user's location, and stops location manager
-            if STORED_UID == "" {
+            if getStoredUid() == nil {
                 log.error("Stored uid not set yet")
                 return
             }
-            DataService.ds.updateUserLocation(fbid: STORED_UID, lat: lat, lon: lon, completed: { (isSuccess) in
+            DataService.ds.updateUserLocation(lat: lat, lon: lon, completed: { (isSuccess) in
                 if isSuccess {
                     self.locationManager.stopUpdatingLocation()
                 } else {
@@ -165,29 +161,30 @@ class LoginController: UIViewController, UIScrollViewDelegate, CLLocationManager
             
             let fbid = user!.providerData[0].uid // Use FBID as the key for users
             let displayName = user!.providerData[0].displayName!
+            saveUid(uid: fbid) // Saving uid here is crucial for the rest of the app to function right
             
             // Get timezone
             let secondsFromGMT: Double = Double(NSTimeZone.local.secondsFromGMT())
             let timezone: Double = secondsFromGMT*1.0 / (60.0*60.0)
             
             // Create/Update Firebase user with details
-            DataService.ds.loginFirebaseUser(fbid: fbid, name: displayName, birthday: birthdayString, pictureUrl: pictureUrl, timezone: timezone, completed: { (isSuccess, isFirstTimeUser) in
+            DataService.ds.loginFirebaseUser(name: displayName, birthday: birthdayString, pictureUrl: pictureUrl, timezone: timezone, completed: { (isSuccess, isFirstTimeUser) in
                 if !isSuccess {
                     log.error("Login to Firebase failed")
                     showErrorAlert(vc: self, title: "Could not sign in", message: "There was a problem signing in. We apologize. Please try again later.")
                     return
                 }
-
                 hideLoader()
-                STORED_UID = fbid
-                // Successfully updated user info in DB, get user's location, and logs user in!
+                if isFirstTimeUser {
+                    setHasToFillInfo(hasToFill: true)
+                }
+                // Successfully updated user info in DB, get user's location, and log user in!
                 self.startLocationManager()
                 let controller = isFirstTimeUser ? IntroController() : CustomTabBarController()
                 controller.modalTransitionStyle = .coverVertical
                 self.present(controller, animated: true, completion: nil)
             })
         })
-
     }
     
     // MARK: Frontend
