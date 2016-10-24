@@ -12,8 +12,11 @@ import Firebase
 import FirebaseAuth
 import FBSDKCoreKit
 import FBSDKLoginKit
+import CoreLocation
 
 class LoginController: UIViewController, UIScrollViewDelegate {
+    
+    fileprivate let MINIMAL_FRIEND_COUNT = 50 // Minimal number of friends required to authenticate 'real' user
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -48,22 +51,93 @@ class LoginController: UIViewController, UIScrollViewDelegate {
         return button
     }()
     
+    // MARK: Server login
+    
+    // Triggered on clicking Facebook Login button
     func fbLogin() {
         let facebookLogin = FBSDKLoginManager()
-        // TODO: Add in additional read permissions, and read the relevant info
-        // TODO: Also add in FIR Auth
-        facebookLogin.logIn(withReadPermissions: ["public_profile"], from: self) { (facebookResult, facebookError) in
+        // TODO: Submit app review to facebook to get permission for user_birthday
+        
+        facebookLogin.logIn(withReadPermissions: ["public_profile", "user_friends", "user_birthday"], from: self) { (facebookResult, facebookError) in
+            
             if facebookError != nil || facebookResult == nil {
                 log.error("Facebook login failed. Error \(facebookError)")
+                return
             } else if facebookResult!.isCancelled {
                 log.warning("Facebook login was cancelled.")
+                return
             } else {
-                log.info("Login success")
+                
+                // Launch FB graph search to get birthday, higher resolution picture, and friends
+                let fbRequest = FBSDKGraphRequest.init(graphPath: "me", parameters: ["fields": "birthday,picture.width(960).height(960),friends"])
+                let connection = FBSDKGraphRequestConnection()
+                connection.add(fbRequest, completionHandler: { (conn, fbResult, error) in
+                    
+                    if error != nil || fbResult == nil {
+                        log.error("Could not fetch user details from FB graph")
+                        showErrorAlert(vc: self, title: "Could not sign in", message: "There was a problem syncing with Facebook. Please check back again later.")
+                        return
+                    } else {
+                        
+                        // Chaining to get friend count, picture url and birthday from graph request result
+                        guard let result = fbResult as? [String: Any], let friendCount = (result as NSDictionary).value(forKeyPath: "friends.summary.total_count") as? Int, let pictureUrl = (result as NSDictionary).value(forKeyPath: "picture.data.url") as? String, let birthdayString = result["birthday"] as? String else {
+                            log.error("Could not fetch user details from FB graph")
+                            showErrorAlert(vc: self, title: "Could not sign in", message: "There was a problem syncing with Facebook. Please check back again later.")
+                            return
+                        }
+                        
+                        // Make sure user at least has a certain number of friends, if not flag fake account
+                        if friendCount < self.MINIMAL_FRIEND_COUNT {
+                            log.error("User does not have enough FB friends")
+                            showErrorAlert(vc: self, title: "Oops", message: "Hmm... we suspect you're not using your genuine Facebook account. Kindly login using your real account. If you feel that that's a problem, contact us.")
+                            return
+                        }
+                        
+                        // Real user ascertained. Continue to login user to Firebase
+                        self.loginToFirebase(birthdayString: birthdayString, pictureUrl: pictureUrl)
+                        
+                        log.info("\(birthdayString)")
+                        log.info("\(friendCount)")
+                        log.info("\(pictureUrl)")
+                    }
+                })
+                connection.start()
+            }
+        }
+    }
+    
+    fileprivate func loginToFirebase(birthdayString: String, pictureUrl: String) {
+        let accessToken: String = FBSDKAccessToken.current().tokenString
+        let credential = FIRFacebookAuthProvider.credential(withAccessToken: accessToken)
+        FIRAuth.auth()?.signIn(with: credential, completion: { (user, error) in
+            
+            if error != nil || user == nil || user!.providerData[0].displayName == nil {
+                log.error("Auth with Firebase failed")
+                showErrorAlert(vc: self, title: "Could not sign in", message: "There was a problem signing in. We apologize. Please try again later.")
+                return
+            }
+            
+            let fbid = user!.providerData[0].uid // Use FBID as the key for users
+            let displayName = user!.providerData[0].displayName!
+            
+            // TODO: Also get user location, and timezone
+            
+            
+            // Create/Update Firebase user with details
+            DataService.ds.createFirebaseUser(fbid: fbid, name: displayName, birthday: birthdayString, pictureUrl: pictureUrl, completed: { (isSuccess) in
+                if !isSuccess {
+                    log.error("Login to Firebase failed")
+                    showErrorAlert(vc: self, title: "Could not sign in", message: "There was a problem signing in. We apologize. Please try again later.")
+                    return
+                }
+
+                // Successfully updated user info in DB, log user in!
                 let controller = isFirstTimeUser ? IntroController() : CustomTabBarController()
                 controller.modalTransitionStyle = .coverVertical
                 self.present(controller, animated: true, completion: nil)
-            }
-        }
+            })
+        })
+
     }
     
     fileprivate let warningLabel: UILabel = {

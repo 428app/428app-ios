@@ -25,3 +25,11 @@ func presentTopToDown(src: UIViewController, dst: UIViewController) {
 
 // Used in SettingsController and SettingCell to countdown time till 4:28pm
 var timerForCountdown = Timer()
+
+func showErrorAlert(vc: UIViewController, title: String, message: String) {
+    let alertController = UIAlertController(title: title, message: message, preferredStyle: .alert)
+    alertController.view.tintColor = GREEN_UICOLOR
+    let okAction = UIAlertAction(title: "Okay", style: .default, handler: nil)
+    alertController.addAction(okAction)
+    vc.present(alertController, animated: true, completion: nil)
+}

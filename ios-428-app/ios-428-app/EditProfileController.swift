@@ -217,11 +217,7 @@ class EditProfileController: UIViewController, UIScrollViewDelegate, UITableView
             // Take a new photo
             if UIImagePickerController.availableCaptureModes(for: .rear) == nil {
                // No camera
-                let alertController = UIAlertController(title: "No camera", message: "Your device does not have a camera.", preferredStyle: .alert)
-                alertController.view.tintColor = GREEN_UICOLOR
-                let okAction = UIAlertAction(title: "Okay", style: .default, handler: nil)
-                alertController.addAction(okAction)
-                self.present(alertController, animated: true, completion: nil)
+                showErrorAlert(vc: self, title: "No camera", message: "Your device does not have a camera")
             } else {
                 self.picPicker.sourceType = .camera
                 self.present(self.picPicker, animated: true, completion: nil)

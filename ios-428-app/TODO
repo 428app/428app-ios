@@ -1,9 +1,9 @@
 ==== BACKEND ====
-1) Integrate login, and read the right data
-2) Implement createUser Firebase service
-
 
 !LOGIN!
+1) Get location and timezone to put in DB
+2) Try login for non-new user
+
 
 
 !PROFILE!
