@@ -148,16 +148,27 @@ class SettingsController: UIViewController, UITableViewDelegate, UITableViewData
         let setting = settings[indexPath.section][indexPath.row]
         log.info("Selected row: \(setting.text)") // TODO: Perform right logic based on the selected row
         if setting.text == "Log out" {
-            let alertController = UIAlertController(title: "Are you sure?", message: "You will not be notified of your daily connections and topics!", preferredStyle: .actionSheet)
-            alertController.view.tintColor = GREEN_UICOLOR
-            let cancelAction = UIAlertAction(title: "Cancel", style: .cancel, handler: nil)
-            let logoutAction = UIAlertAction(title: "Log out", style: .default) { (action) in
-                self.dismiss(animated: true, completion: nil)
-            }
-            alertController.addAction(logoutAction)
-            alertController.addAction(cancelAction)
-            self.present(alertController, animated: true, completion: nil)
+            self.logout()
         }
+    }
+    
+    fileprivate func logout() {
+        let alertController = UIAlertController(title: "Are you sure?", message: "You will not be notified of your daily connections and topics!", preferredStyle: .actionSheet)
+        alertController.view.tintColor = GREEN_UICOLOR
+        let cancelAction = UIAlertAction(title: "Cancel", style: .cancel, handler: nil)
+        let logoutAction = UIAlertAction(title: "Log out", style: .default) { (action) in
+            DataService.ds.logout(completed: { (isSuccess) in
+                if isSuccess {
+                    self.dismiss(animated: true, completion: nil)
+                } else {
+                    log.error("Could not log user out")
+                    showErrorAlert(vc: self, title: "Could not log out", message: "We apologize. We could not log you out for now. Please try again later.")
+                }
+            })
+        }
+        alertController.addAction(logoutAction)
+        alertController.addAction(cancelAction)
+        self.present(alertController, animated: true, completion: nil)
     }
 
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {

@@ -2,6 +2,7 @@
 //  DataService.swift
 //  ios-428-app
 //
+//  DataService powered by Firebase
 //  Created by Leonard Loo on 10/23/16.
 //  Copyright © 2016 428. All rights reserved.
 //
@@ -10,7 +11,8 @@ import Foundation
 import Firebase
 import FirebaseDatabase
 import FirebaseAuth
-
+import FBSDKCoreKit
+import FBSDKLoginKit
 
 class DataService {
     
@@ -37,6 +39,15 @@ class DataService {
     }
     
     // MARK: User
+    
+    func logout(completed: (_ isSuccess: Bool) -> ()) {
+        if let auth = FIRAuth.auth(), let _ = try? auth.signOut() {
+            FBSDKLoginManager().logOut()
+            completed(true)
+            return
+        }
+        completed(false)
+    }
     
     // Called in LoginController to create new user or log existing user in
     func loginFirebaseUser(fbid: String, name: String, birthday: String, pictureUrl: String, timezone: Double, completed: @escaping (_ isSuccess: Bool, _ isFirstTimeUser: Bool) -> ()) {
