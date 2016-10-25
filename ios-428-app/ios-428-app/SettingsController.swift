@@ -91,11 +91,13 @@ class SettingsController: UIViewController, UITableViewDelegate, UITableViewData
         DataService.ds.getUserFields(uid: getStoredUid()) { (isSuccess, profile) in
             if isSuccess && profile != nil {
                 self.profile = profile!
-                // TODO: Build Alamofire to download this profile photo and set in settings, then move on to download
                 log.info("\(self.profile.profileImageName)")
+                downloadImage(imageUrlString: self.profile.profileImageName, completed: { (isSuccess, image) in
+                    self.settings[1][0].image = image
+                    self.tableView.reloadData()
+                })
             }
         }
-        self.settings.insert([Setting(text: "yihang-profile", type: .profilepic)], at: 1)
         self.settingsChosen = ["Daily connection": true, "Daily topic": true, "New connections": true, "New topics": true, "Connection messages": true, "Topic messages": true, "In-app vibrations": true]
     }
     
@@ -108,10 +110,11 @@ class SettingsController: UIViewController, UITableViewDelegate, UITableViewData
     
     // MARK: Table view
     
-    fileprivate let settingHeaders: [String] = ["", "", "Discovery Settings", "Notifications", "Contact and Share", "Legal", "", ""]
+    fileprivate var settingHeaders: [String] = ["", "", "Discovery Settings", "Notifications", "Contact and Share", "Legal", "", ""]
     
     fileprivate var settings: [[Setting]] = [
         [Setting(text: "", type: .timer)],
+        [Setting(text: "", type: .profilepic, image: UIImage(color: UIColor.white))],
         [Setting(text: "Daily connection", type: .toggle), Setting(text: "Daily topic", type: .toggle, isLastCell: true)],
         [Setting(text: "New connections", type: .toggle), Setting(text: "New topics", type: .toggle), Setting(text: "Connection messages", type: .toggle), Setting(text: "Topic messages", type: .toggle), Setting(text: "In-app vibrations", type: .toggle, isLastCell: true)],
         [Setting(text: "Help and Support", type: .link), Setting(text: "Rate us", type: .link), Setting(text: "Share 428", type: .link, isLastCell: true)],

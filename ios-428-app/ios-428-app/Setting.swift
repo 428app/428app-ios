@@ -9,6 +9,7 @@
 //
 
 import Foundation
+import UIKit
 
 class Setting {
     
@@ -19,10 +20,12 @@ class Setting {
     fileprivate var _text: String // Can be text or url for profilepic
     fileprivate var _type: Setting.TYPE
     fileprivate var _isLastCell: Bool
+    fileprivate var _image: UIImage?
     
-    init(text: String, type: Setting.TYPE, isLastCell: Bool = false) {
+    init(text: String, type: Setting.TYPE, image: UIImage? = nil, isLastCell: Bool = false) {
         _text = text
         _type = type
+        _image = image
         _isLastCell = isLastCell
     }
     
@@ -35,6 +38,15 @@ class Setting {
     var type: Setting.TYPE {
         get {
             return _type
+        }
+    }
+    
+    var image: UIImage? {
+        get {
+            return _image
+        }
+        set (image) {
+            _image = image
         }
     }
     

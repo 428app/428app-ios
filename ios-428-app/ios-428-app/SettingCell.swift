@@ -194,7 +194,9 @@ class SettingCell: BaseTableViewCell {
             // Used to display profile pic on top
 
             backgroundColor = GRAY_UICOLOR
-            myPicImageView.image = UIImage(named: setting.text)
+            if let image = setting.image {
+                myPicImageView.image = image
+            }
             addSubview(myPicImageView)
             addSubview(editButton)
             viewsToRemove.append(myPicImageView)

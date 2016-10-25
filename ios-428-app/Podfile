@@ -5,6 +5,7 @@ target 'ios-428-app' do
 pod 'XCGLogger', '~> 4.0.0'
 pod "SwiftSpinner"
 pod 'Alamofire', '~> 4.0'
+pod 'AlamofireImage', '~> 3.1'
 pod 'Firebase'
 pod 'Firebase/Database'
 pod 'Firebase/Core'
