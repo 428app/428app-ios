@@ -23,12 +23,12 @@ func m(minutesAgo: Double) -> Date {
 
 
 func loadTopicMessages() -> [TopicMessage] {
-    let m1 = TopicMessage(tmid: "1", parentTid: "4", posterUid: "999", posterName: "Leonard", posterDisciplineImageName: "business", text: "Creating a million jobs is not easy. Let's start with improving our own education system first.", date: m(minutesAgo: 200))
-    let m2 = TopicMessage(tmid: "2", parentTid: "4", posterUid: "999", posterName: "Jenny", posterDisciplineImageName: "biology", text: "Just open more restaurants so we get more jobs... and more food!", date: m(minutesAgo: 195))
-    let m3 = TopicMessage(tmid: "3", parentTid: "4", posterUid: "999", posterName: "Yihang", posterDisciplineImageName: "business", text: "The economy is that bad right now and the financial sector where I come from is being hit that heavily. Let's think about how to preserve our own jobs first before thinking of how automation is replacing future jobs.", date: m(minutesAgo: 192), isSender: true)
-    let m4 = TopicMessage(tmid: "4", parentTid: "4", posterUid: "999", posterName: "Tomas", posterDisciplineImageName: "computer", text: "Yihang, you're right in saying that. Times are tough, even interviews for tech jobs are dwindling, and too many people are fighting for those coveted positions.", date: m(minutesAgo: 180))
-    let m5 = TopicMessage(tmid: "5", parentTid: "4", posterUid: "999", posterName: "Leonard", posterDisciplineImageName: "business", text: "No one addressing the problem with education? I thought about it for a while and realized our education system is not creating enough creative and bold visionaries who can go on and generate more jobs. We need more open-ended education, and exclude memorization of text.", date: m(minutesAgo: 100))
-    let m6 = TopicMessage(tmid: "6", parentTid: "4", posterUid: "999", posterName: "Thomas", posterDisciplineImageName: "electricengineering", text: "Let's not focus on such a grandiose idea for now. Let's think about how each of us can generate 5-10 jobs by starting small businesses so that collectively we can achieve this vision. After all, the startups ARE the backbone of the American economy.", date: m(minutesAgo: 75))
+    let m1 = TopicMessage(tmid: "1", parentTid: "4", posterUid: "999", posterName: "Leonard", postercoverImageName: "business", text: "Creating a million jobs is not easy. Let's start with improving our own education system first.", date: m(minutesAgo: 200))
+    let m2 = TopicMessage(tmid: "2", parentTid: "4", posterUid: "999", posterName: "Jenny", postercoverImageName: "biology", text: "Just open more restaurants so we get more jobs... and more food!", date: m(minutesAgo: 195))
+    let m3 = TopicMessage(tmid: "3", parentTid: "4", posterUid: "999", posterName: "Yihang", postercoverImageName: "business", text: "The economy is that bad right now and the financial sector where I come from is being hit that heavily. Let's think about how to preserve our own jobs first before thinking of how automation is replacing future jobs.", date: m(minutesAgo: 192), isSender: true)
+    let m4 = TopicMessage(tmid: "4", parentTid: "4", posterUid: "999", posterName: "Tomas", postercoverImageName: "computer", text: "Yihang, you're right in saying that. Times are tough, even interviews for tech jobs are dwindling, and too many people are fighting for those coveted positions.", date: m(minutesAgo: 180))
+    let m5 = TopicMessage(tmid: "5", parentTid: "4", posterUid: "999", posterName: "Leonard", postercoverImageName: "business", text: "No one addressing the problem with education? I thought about it for a while and realized our education system is not creating enough creative and bold visionaries who can go on and generate more jobs. We need more open-ended education, and exclude memorization of text.", date: m(minutesAgo: 100))
+    let m6 = TopicMessage(tmid: "6", parentTid: "4", posterUid: "999", posterName: "Thomas", postercoverImageName: "electricengineering", text: "Let's not focus on such a grandiose idea for now. Let's think about how each of us can generate 5-10 jobs by starting small businesses so that collectively we can achieve this vision. After all, the startups ARE the backbone of the American economy.", date: m(minutesAgo: 75))
     // Sorted by earliest first
     return [m1, m2, m3, m4, m5, m6]
 }
@@ -50,8 +50,8 @@ func loadTopics() -> [Topic] {
 
 
 // Set up profiles
-let jennyprof = Profile(uid: "1", name: "Jenny", disciplineImageName: "biology", profileImageName: "jenny-profile", disciplineBgName: "jenny-bg", age: 22, location: "USA, MA, Cambridge", org: "Maxwell Dworkin Corp", school: "Harvard University of Wizardry, Angels and the Forbidden Arts", discipline: "Biology", tagline1: "understanding mutations in DNA and how they lead to cancer. I'm doing it because I've always enjoyed Biology. In middle school I dissected an animal's heart, and my interest just escalated from there!", tagline2: "make a breakthrough in cancer research and win a Nobel prize. That's a big statement I know, but gotta dream big right?")
-let yihangprof = Profile(uid: "99", name: "Yihang", disciplineImageName: "business", profileImageName: "yihang-profile", disciplineBgName: "yihang-bg", age: 24, location: "USA, MA, Cambridge", org: "428", school: "Harvard University", discipline: "Business", tagline1: "an app that lets you easily meet people from different industries. There's LinkedIn, and we're LinkedOut. On the app, you get matched with a new connection and introduced to a new topic once a day, at 4:28pm.", tagline2: "make my mark on the world, and have a happy family.")
+let jennyprof = Profile(uid: "1", name: "Jenny", coverImageName: "jenny-bg", profileImageName: "jenny-profile", age: 22, location: "USA, MA, Cambridge", org: "Maxwell Dworkin Corp", school: "Harvard University of Wizardry, Angels and the Forbidden Arts", discipline: "Biology", tagline1: "understanding mutations in DNA and how they lead to cancer. I'm doing it because I've always enjoyed Biology. In middle school I dissected an animal's heart, and my interest just escalated from there!", tagline2: "make a breakthrough in cancer research and win a Nobel prize. That's a big statement I know, but gotta dream big right?")
+let yihangprof = Profile(uid: "99", name: "Yihang", coverImageName: "yihang-bg", profileImageName: "yihang-profile", age: 24, location: "USA, MA, Cambridge", org: "428", school: "Harvard University", discipline: "Business", tagline1: "an app that lets you easily meet people from different industries. There's LinkedIn, and we're LinkedOut. On the app, you get matched with a new connection and introduced to a new topic once a day, at 4:28pm.", tagline2: "make my mark on the world, and have a happy family.")
 
 
 // Set up messages
@@ -59,12 +59,12 @@ extension ConnectionsController {
 
     func setupData() {
         // Create messages
-        let jenny = Friend(uid: "1", name: "Jenny", profileImageName: "jenny-profile", disciplineImageName: "biology")
-        let spandan = Friend(uid: "2", name: "Spandan", profileImageName: "spandan-profile", disciplineImageName: "computer")
-        let tomas = Friend(uid: "3", name: "Tomas", profileImageName: "tomas-profile", disciplineImageName: "computer")
-        let kyooeun = Friend(uid: "4", name: "Kyooeun", profileImageName: "kyooeun-profile", disciplineImageName: "eastasian")
-        let emil = Friend(uid: "5", name: "Emil", profileImageName: "emil-profile", disciplineImageName: "physics")
-        let kezi = Friend(uid: "6", name: "Kezi", profileImageName: "kezi-profile", disciplineImageName: "physics")
+        let jenny = Friend(uid: "1", name: "Jenny", profileImageName: "jenny-profile", coverImageName: "biology")
+        let spandan = Friend(uid: "2", name: "Spandan", profileImageName: "spandan-profile", coverImageName: "computer")
+        let tomas = Friend(uid: "3", name: "Tomas", profileImageName: "tomas-profile", coverImageName: "computer")
+        let kyooeun = Friend(uid: "4", name: "Kyooeun", profileImageName: "kyooeun-profile", coverImageName: "eastasian")
+        let emil = Friend(uid: "5", name: "Emil", profileImageName: "emil-profile", coverImageName: "physics")
+        let kezi = Friend(uid: "6", name: "Kezi", profileImageName: "kezi-profile", coverImageName: "physics")
         
         _ = self.createMessageForFriend(tomas, text: "Programming assignments take up so much time. But they are worthwhile.", minutesAgo: 60 * 24 * 3, isSender: true)
         _ = self.createMessageForFriend(kyooeun, text: "China is a wonderland. I frequent Beijing whenever I go back to do research.", minutesAgo: 60 * 24, isSeen: false)
@@ -84,7 +84,7 @@ extension ConnectionsController {
     }
     
     fileprivate func createLeoMessages() {
-        let leo = Friend(uid: "7", name: "Leonard", profileImageName: "leo-profile", disciplineImageName: "business")
+        let leo = Friend(uid: "7", name: "Leonard", profileImageName: "leo-profile", coverImageName: "business")
         _ = self.createMessageForFriend(leo, text: "Hello, my name is Leonard. Nice to meet you!", minutesAgo: 200)
         _ = self.createMessageForFriend(leo, text: "What do you do?", minutesAgo: 198)
         _ = self.createMessageForFriend(leo, text: "Hi! My name is Yihang.", minutesAgo: 90, isSender: true)
@@ -94,7 +94,7 @@ extension ConnectionsController {
     }
     
     fileprivate func createThomasMessages() {
-        let thomas = Friend(uid: "8", name: "Thomas", profileImageName: "thomas-profile", disciplineImageName: "electricengineering")
+        let thomas = Friend(uid: "8", name: "Thomas", profileImageName: "thomas-profile", coverImageName: "electricengineering")
         _ = self.createMessageForFriend(thomas, text: "Let's engage in cooking and combine it with art! That way it's a lot more engaging. Don't you think we should do it immediately? Hurray!", minutesAgo: 60 * 24 * 1.7)
         _ = self.createMessageForFriend(thomas, text: "Hey, you haven't replied. You there?", minutesAgo: 60 * 24 * 1.6)
         _ = self.createMessageForFriend(thomas, text: "Anyway just thought of a new twist. Let's meet for a while.", minutesAgo: 60 * 24 * 1.5)

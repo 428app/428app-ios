@@ -312,7 +312,7 @@ class EditProfileController: UIViewController, UIScrollViewDelegate, UITableView
         controller.organization = profile.org
         controller.school = profile.school
         controller.discipline = profile.discipline
-        controller.disciplineIcon = profile.disciplineImageName
+        controller.disciplineIcon = profile.coverImageName
         let backItem = UIBarButtonItem()
         backItem.title = " "
         navigationItem.backBarButtonItem = backItem
@@ -351,10 +351,10 @@ class EditProfileController: UIViewController, UIScrollViewDelegate, UITableView
         scrollView.delegate = self // Delegate so as to disable top bounce only
         
         // Set values for elements in scroll view
-        profileBgImageView.image = UIImage(named: profile.disciplineBgName)
+        profileBgImageView.image = UIImage(named: profile.coverImageName)
         profileImageView.image = UIImage(named: profile.profileImageName)
         nameLbl.text = profile.name
-        disciplineImageView.image = UIImage(named: profile.disciplineImageName)
+        disciplineImageView.image = UIImage(named: profile.coverImageName)
         ageLocationLbl.text = "\(profile.age), \(profile.location)"
         
         // Taglines

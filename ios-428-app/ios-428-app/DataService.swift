@@ -83,7 +83,7 @@ class DataService {
         let timeNow = Date().timeIntervalSince1970
         self.REF_USER.child(uid).observeSingleEvent(of: .value, with: { snapshot in
             if snapshot.exists() {
-                self.REF_USER.child(uid).updateChildValues(["location": "\(lat), \(lon)", "lastSeen": timeNow], withCompletionBlock: { (error, ref) in
+                self.REF_USER.child(uid).updateChildValues(["location": "\(lat),\(lon)", "lastSeen": timeNow], withCompletionBlock: { (error, ref) in
                     completed(error == nil)
                 })
             } else {
@@ -141,6 +141,55 @@ class DataService {
             } else {
                 // User does not exist. Error
                 completed(false)
+            }
+        })
+    }
+    
+    // Retrive user's profile data
+    func getUserFields(completed: @escaping (_ isSuccess: Bool, _ user: Profile?) -> ()) {
+        guard let uid = getStoredUid() else {
+            completed(false, nil)
+            return
+        }
+        self.REF_USER.child(uid).observeSingleEvent(of: .value, with: { snapshot in
+            if snapshot.exists() {
+                // Name, birthday, discipline, organization, profile photo, school are compulsory fields
+                guard let userDict = snapshot.value as? [String: Any], let name = userDict["name"] as? String, let birthday = userDict["birthday"] as? String, let discipline = userDict["discipline"] as? String, let org = userDict["organization"] as? String, let profilePhotoUrl = userDict["profilePhoto"] as? String, let school = userDict["school"] as? String else {
+                    completed(false, nil)
+                    return
+                }
+                var tagline1 = ""
+                if let t = userDict["tagline1"] as? String {
+                    tagline1 = t
+                }
+                var tagline2 = ""
+                if let t = userDict["tagline2"] as? String {
+                    tagline2 = t
+                }
+                var location = ""
+                if let l = userDict["location"] as? String {
+                    location = l
+                }
+                var coverPhotoUrl = ""
+                if let c = userDict["coverPhoto"] as? String {
+                    coverPhotoUrl = c
+                }
+                // Convert birthday of "MM/DD/yyyy" to age integer
+                let age = convertBirthdayToAge(birthday: birthday)
+                if location == "" {
+                    // User disabled location, return here without location
+                    let user = Profile(uid: uid, name: name, coverImageName: coverPhotoUrl, profileImageName: profilePhotoUrl, age: age, location: "", org: org, school: school, discipline: discipline, tagline1: tagline1, tagline2: tagline2)
+                    completed(true, user)
+                }
+                // Convert "<lat>,<lon>" to "<City>, <State>, <Country>"
+                convertLocationToCityAndCountry(location: location) { (cityCountry) in
+                    // User has city country here
+                    let user = Profile(uid: uid, name: name, coverImageName: coverPhotoUrl, profileImageName: profilePhotoUrl, age: age, location: cityCountry, org: org, school: school, discipline: discipline, tagline1: tagline1, tagline2: tagline2)
+                    completed(true, user)
+                }
+            } else {
+                // User does not exist. Error
+                completed(false, nil)
             }
         })
     }

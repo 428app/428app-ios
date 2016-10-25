@@ -12,9 +12,8 @@ class Profile {
     
     fileprivate var _uid: String
     fileprivate var _name: String
-    fileprivate var _disciplineImageName: String
+    fileprivate var _coverImageName: String
     fileprivate var _profileImageName: String
-    fileprivate var _disciplineBgName: String
     fileprivate var _age: Int
     fileprivate var _location: String // Country, City
     fileprivate var _org: String
@@ -23,19 +22,22 @@ class Profile {
     fileprivate var _tagline1: String // I am working on ...
     fileprivate var _tagline2: String // I want to eventually ...
     
-    init(uid: String, name: String, disciplineImageName: String, profileImageName: String, disciplineBgName: String, age: Int, location: String, org: String, school: String, discipline: String, tagline1: String, tagline2: String) {
+    // Calculated variable
+    fileprivate var _disciplineIcon: String
+    
+    init(uid: String, name: String, coverImageName: String, profileImageName: String, age: Int, location: String, org: String, school: String, discipline: String, tagline1: String, tagline2: String) {
         _uid = uid
         _name = name
-        _disciplineImageName = disciplineImageName
+        _coverImageName = coverImageName
         _profileImageName = profileImageName
-        _disciplineBgName = disciplineBgName
         _age = age
         _location = location
         _org = org
         _school = school
-        _discipline = discipline
         _tagline1 = tagline1
         _tagline2 = tagline2
+        _discipline = discipline
+        _disciplineIcon = "business" // TODO: Map discipline string to local icon
     }
     
     var uid: String {
@@ -50,21 +52,15 @@ class Profile {
         }
     }
     
-    var disciplineImageName: String {
+    var coverImageName: String {
         get {
-            return _disciplineImageName
+            return _coverImageName
         }
     }
     
     var profileImageName: String {
         get {
             return _profileImageName
-        }
-    }
-    
-    var disciplineBgName: String {
-        get {
-            return _disciplineBgName
         }
     }
     
@@ -107,6 +103,12 @@ class Profile {
     var tagline2: String {
         get {
             return _tagline2
+        }
+    }
+    
+    var disciplineIcon: String {
+        get {
+            return _disciplineIcon
         }
     }
 }

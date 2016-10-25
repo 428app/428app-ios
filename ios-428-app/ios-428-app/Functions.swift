@@ -9,6 +9,7 @@
 import Foundation
 import XCGLogger
 import SwiftSpinner
+import CoreLocation
 
 let log = XCGLogger.default
 
@@ -43,4 +44,64 @@ func showLoader(message: String) {
 
 func hideLoader() {
     SwiftSpinner.hide()
+}
+
+// Converts age birthday MM/DD/YYYY string to age: Returns -1 if invalid Sting
+func convertBirthdayToAge(birthday: String) -> Int {
+    let dateFormatter = DateFormatter()
+    dateFormatter.dateFormat = "MM/dd/yyyy"
+    if let birthDate = dateFormatter.date(from: birthday),
+        let age = Calendar.current.dateComponents([.year], from: birthDate, to: Date()).year {
+        return age
+    }
+    return -1
+}
+
+// Converts <lat>, <lon> String to <Country>, <City> String
+func convertLocationToCityAndCountry(location: String, completed: @escaping (_ cityCountry: String) -> ()) {
+    let latlon = location.components(separatedBy: ",")
+    if latlon.count != 2 {
+        completed("")
+        return
+    }
+    guard let lat = Double(latlon[0].trim()), let lon = Double(latlon[1].trim()) else {
+        completed("")
+        return
+    }
+    let geocoder = CLGeocoder()
+    let loc = CLLocation(latitude: lat, longitude: lon)
+    
+    geocoder.reverseGeocodeLocation(loc) { (placemarks, error) in
+        if error != nil || placemarks == nil || placemarks!.count == 0 {
+            completed("")
+            return
+        }
+        let place: CLPlacemark = placemarks![0]
+        guard let address = place.addressDictionary else {
+            completed("")
+            return
+        }
+        // Outputs <City>, <State>, <Country> provided city =/= state =/= country
+        var cityCountry = ""
+        var city = ""
+        var state = ""
+        var country = ""
+        if let c = address["City"] as? String {
+            city = c
+        }
+        if let s = address["State"] as? String {
+            state = s
+        }
+        if let c = address["Country"] as? String {
+           country = c
+        }
+        cityCountry = city
+        if city != state {
+            cityCountry += ", \(state)"
+        }
+        if city != country && state != country {
+            cityCountry += ", \(country)"
+        }
+        completed(cityCountry)
+    }
 }

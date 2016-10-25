@@ -176,7 +176,7 @@ class ChatController: UIViewController, UICollectionViewDelegateFlowLayout, UITe
     fileprivate func setupNavTitleView() {
         navButton.setTitle(self.friend.name, for: .normal)
         navButton.setTitleColor(UIColor.black, for: .normal)
-        navDisciplineImageView.image = UIImage(named: self.friend.disciplineImageName)
+        navDisciplineImageView.image = UIImage(named: self.friend.coverImageName)
         
         navTitleView.addTarget(self, action: #selector(openProfile), for: .touchUpInside)
         navButton.addTarget(self, action: #selector(openProfile), for: .touchUpInside)

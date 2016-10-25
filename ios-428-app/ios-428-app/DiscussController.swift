@@ -368,7 +368,7 @@ class DiscussController: UIViewController, UIGestureRecognizerDelegate, UITextVi
     func handleSend() {
         if let text = inputTextView.text {
             // Trim text before sending
-            let message = TopicMessage(tmid: "999", parentTid: "4", posterUid: "999", posterName: "Yihang", posterDisciplineImageName: "business", text: text.trim(), date: Date(), isSender: true)
+            let message = TopicMessage(tmid: "999", parentTid: "4", posterUid: "999", posterName: "Yihang", postercoverImageName: "business", text: text.trim(), date: Date(), isSender: true)
             self.messages.append(message)
             self.bucketMessagesIntoTime()
             self.assembleMessageIsLastInChain()

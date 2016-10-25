@@ -204,10 +204,10 @@ class ProfileController: UIViewController, UITableViewDelegate, UITableViewDataS
         closeButton.addTarget(self, action: #selector(closeProfile), for: .touchUpInside)
         
         // Set values for elements in scroll view
-        profileBgImageView.image = UIImage(named: profile.disciplineBgName)
+        profileBgImageView.image = UIImage(named: profile.coverImageName)
         profileImageView.image = UIImage(named: profile.profileImageName)
         nameLbl.text = profile.name
-        disciplineImageView.image = UIImage(named: profile.disciplineImageName)
+        disciplineImageView.image = UIImage(named: profile.disciplineIcon)
         ageLocationLbl.text = "\(profile.age), \(profile.location)"
         
         // Taglines

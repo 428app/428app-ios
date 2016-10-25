@@ -142,7 +142,7 @@ class ConnectionCell: BaseCollectionCell {
         self.message = messageObj
         self.nameLabel.text = self.message.friend.name
         self.profileImageView.image = UIImage(named: self.message.friend.profileImageName)
-        self.disciplineImageView.image = UIImage(named: self.message.friend.disciplineImageName)
+        self.disciplineImageView.image = UIImage(named: self.message.friend.coverImageName)
         self.messageLabel.text = self.message.text
         self.timeLabel.text = formatDateToText(date: self.message.date)
         

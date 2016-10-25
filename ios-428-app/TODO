@@ -1,11 +1,7 @@
 ==== BACKEND ====
 
-!LOGIN!
-1) Setup user org, etc. to the DB
-2) What if user logs in, but does not fill in info and quits the app? Should be able to check that!
-
-
 !PROFILE!
+
 
 
 !CHAT!

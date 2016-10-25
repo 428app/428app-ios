@@ -13,14 +13,14 @@ class Friend {
     fileprivate var _uid: String
     fileprivate var _name: String
     fileprivate var _profileImageName: String
-    fileprivate var _disciplineImageName: String // Packaged in the app's assets
+    fileprivate var _coverImageName: String // Packaged in the app's assets
     fileprivate var _messages = [Message]()
     
-    init(uid: String, name: String, profileImageName: String, disciplineImageName: String, messages: [Message] = [Message]()) {
+    init(uid: String, name: String, profileImageName: String, coverImageName: String, messages: [Message] = [Message]()) {
         _uid = uid
         _name = name
         _profileImageName = profileImageName
-        _disciplineImageName = disciplineImageName
+        _coverImageName = coverImageName
         _messages = messages
     }
     
@@ -42,9 +42,9 @@ class Friend {
         }
     }
     
-    var disciplineImageName: String {
+    var coverImageName: String {
         get {
-            return _disciplineImageName
+            return _coverImageName
         }
     }
     
