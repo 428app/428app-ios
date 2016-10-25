@@ -312,7 +312,7 @@ class EditProfileController: UIViewController, UIScrollViewDelegate, UITableView
         controller.organization = profile.org
         controller.school = profile.school
         controller.discipline = profile.discipline
-        controller.disciplineIcon = profile.coverImageName
+        controller.disciplineIcon = profile.disciplineIcon
         let backItem = UIBarButtonItem()
         backItem.title = " "
         navigationItem.backBarButtonItem = backItem
@@ -354,7 +354,7 @@ class EditProfileController: UIViewController, UIScrollViewDelegate, UITableView
         profileBgImageView.image = UIImage(named: profile.coverImageName)
         profileImageView.image = UIImage(named: profile.profileImageName)
         nameLbl.text = profile.name
-        disciplineImageView.image = UIImage(named: profile.coverImageName)
+        disciplineImageView.image = UIImage(named: profile.disciplineIcon)
         ageLocationLbl.text = "\(profile.age), \(profile.location)"
         
         // Taglines

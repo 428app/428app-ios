@@ -11,6 +11,8 @@ import UIKit
 
 class SettingsController: UIViewController, UITableViewDelegate, UITableViewDataSource {
     
+    fileprivate var profile: Profile!
+    
     fileprivate let CELL_ID = "SETTING_CELL"
     fileprivate lazy var tableView: UITableView = {
         let tableView = UITableView(frame: self.view.frame, style: .grouped)
@@ -86,6 +88,13 @@ class SettingsController: UIViewController, UITableViewDelegate, UITableViewData
     
     // Grabs profile pic, and server settings for this user
     fileprivate func populateData() {
+        DataService.ds.getUserFields(uid: getStoredUid()) { (isSuccess, profile) in
+            if isSuccess && profile != nil {
+                self.profile = profile!
+                // TODO: Build Alamofire to download this profile photo and set in settings, then move on to download
+                log.info("\(self.profile.profileImageName)")
+            }
+        }
         self.settings.insert([Setting(text: "yihang-profile", type: .profilepic)], at: 1)
         self.settingsChosen = ["Daily connection": true, "Daily topic": true, "New connections": true, "New topics": true, "Connection messages": true, "Topic messages": true, "In-app vibrations": true]
     }
