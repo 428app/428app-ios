@@ -42,6 +42,37 @@ func setHasToFillInfo(hasToFill: Bool) {
     DEFAULTS.synchronize()
 }
 
+// Store profile photo or cover photo temporarily
+func setPhotoToUpload(data: Data?, isProfilePic: Bool = true) {
+    let fileManager = FileManager.default
+    let picPath = isProfilePic ? "profile_photo.jpg" : "cover_photo.jpg"
+    let paths = (NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true)[0] as NSString).appendingPathComponent(picPath)
+    if data == nil {
+        // Delete stored data
+        do {
+            try fileManager.removeItem(atPath: paths as String)
+        } catch {
+            log.info("Failed to remove profile_photo after upload is complete")
+        }
+    } else {
+        // Store data
+        fileManager.createFile(atPath: paths as String, contents: data, attributes: nil)
+    }
+}
+
+func getPhotoToUpload(isProfilePic: Bool = true) -> UIImage? {
+    let picPath = isProfilePic ? "profile_photo.jpg" : "cover_photo.jpg"
+    let paths = NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true)
+    let documentsDirectory = paths[0] as NSString
+    let fileManager = FileManager.default
+    let imagePath = documentsDirectory.appendingPathComponent(picPath)
+    if fileManager.fileExists(atPath: imagePath){
+        return UIImage(contentsOfFile: imagePath)
+    }
+    return nil
+}
+
+
 // MARK: Alamofire
 
 // Image cache which stores 100MB of data, and prefers 60MB of data
@@ -53,7 +84,7 @@ let imageCache = AutoPurgingImageCache(
 
 func downloadImage(imageUrlString: String, completed: @escaping (_ isSuccess: Bool, _ image: UIImage?) -> ()) -> Request? {
     if let image = imageCache.image(withIdentifier: imageUrlString) {
-        log.info("here")
+        log.info("Image retrieved from cache")
         completed(true, image)
         return nil
     }

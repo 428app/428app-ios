@@ -38,7 +38,7 @@ class PictureModalController: UIViewController {
     
     fileprivate func setupViews() {
         view.addSubview(pictureImageView)
-        view.addConstraintsWithFormat("H:|[v0]|", views: pictureImageView)
+        view.addConstraintsWithFormat("H:|-8-[v0]-8-|", views: pictureImageView)
         view.addConstraint(NSLayoutConstraint(item: pictureImageView, attribute: .centerY, relatedBy: .equal, toItem: view, attribute: .centerY, multiplier: 1.0, constant: 0))
     }
 }

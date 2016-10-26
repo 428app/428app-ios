@@ -106,23 +106,63 @@ class SettingsController: UIViewController, UITableViewDelegate, UITableViewData
                 myProfile = profile
                 // Notify all edit profile controllers that myProfile variable has been set
                 NotificationCenter.default.post(name: NOTIF_MYPROFILEDOWNLOADED, object: nil)
-                // Downloads profile photo
-                _ = downloadImage(imageUrlString: profile!.profileImageName, completed: { (isSuccess, image) in
-                    if isSuccess && image != nil {
-                        self.settings[1][0].image = image
-                        self.tableView.reloadData()
-                        myProfilePhoto = image
-                        // Notify all edit profile controllers again that myProfile variable has been set
-                        NotificationCenter.default.post(name: NOTIF_MYPROFILEDOWNLOADED, object: nil)
+                
+                // Downloads profile photo, or get from uploaded pic that previously failed
+                myProfilePhoto = getPhotoToUpload(isProfilePic: true)
+                if myProfilePhoto != nil {
+                    // Retry upload of image
+                    self.settings[1][0].image = myProfilePhoto!
+                    self.tableView.reloadData()
+                    if let imageData = UIImageJPEGRepresentation(myProfilePhoto!, 1.0) {
+                        StorageService.ss.uploadOwnPic(data: imageData, isProfilePic: true, completed: { (isSuccess) in
+                            if !isSuccess {
+                                log.error("Server unable to save profile pic")
+                            } else {
+                                setPhotoToUpload(data: nil, isProfilePic: true)
+                            }
+                        })
                     }
-                })
-                _ = downloadImage(imageUrlString: profile!.coverImageName, completed: { (isSuccess, image) in
-                    if isSuccess && image != nil {
-                        myCoverPhoto = image
-                        // Notify all edit profile controllers again that myProfile variable has been set
-                        NotificationCenter.default.post(name: NOTIF_MYPROFILEDOWNLOADED, object: nil)
+                    NotificationCenter.default.post(name: NOTIF_MYPROFILEDOWNLOADED, object: nil)
+                } else {
+                    // Download image
+                    _ = downloadImage(imageUrlString: profile!.profileImageName, completed: { (isSuccess, image) in
+                        if isSuccess && image != nil {
+                            self.settings[1][0].image = image
+                            self.tableView.reloadData()
+                            
+                            // Set profile photo here to profile photo to upload if it exists
+                            myProfilePhoto = image!
+                            
+                            // Notify all edit profile controllers again that myProfile variable has been set
+                            NotificationCenter.default.post(name: NOTIF_MYPROFILEDOWNLOADED, object: nil)
+                        }
+                    })
+                }
+                
+                // Do the same for cover photo
+                myCoverPhoto = getPhotoToUpload(isProfilePic: false)
+                if myCoverPhoto != nil {
+                    // Retry upload of image
+                    if let imageData = UIImageJPEGRepresentation(myCoverPhoto!, 1.0) {
+                        StorageService.ss.uploadOwnPic(data: imageData, isProfilePic: false, completed: { (isSuccess) in
+                            if !isSuccess {
+                                log.error("Server unable to save cover pic")
+                            } else {
+                                setPhotoToUpload(data: nil, isProfilePic: false)
+                            }
+                        })
                     }
-                })
+                    NotificationCenter.default.post(name: NOTIF_MYPROFILEDOWNLOADED, object: nil)
+                } else {
+                    // Download image
+                    _ = downloadImage(imageUrlString: profile!.coverImageName, completed: { (isSuccess, image) in
+                        if isSuccess && image != nil {
+                            myCoverPhoto = image!
+                            // Notify all edit profile controllers again that myProfile variable has been set
+                            NotificationCenter.default.post(name: NOTIF_MYPROFILEDOWNLOADED, object: nil)
+                        }
+                    })
+                }
             }
         }
         self.settingsChosen = ["Daily connection": true, "Daily topic": true, "New connections": true, "New topics": true, "Connection messages": true, "Topic messages": true, "In-app vibrations": true]

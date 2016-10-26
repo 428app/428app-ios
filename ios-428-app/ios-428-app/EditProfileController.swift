@@ -39,18 +39,24 @@ class EditProfileController: UIViewController, UIScrollViewDelegate, UITableView
     }
     
     // Called upon checking myProfile on viewDidLoad, or upon receiving Notification from SettingsController
-    func loadProfileData() {
+    func loadProfileData(notif: Notification? = nil) {
         guard let profile = myProfile else {
             return
         }
-        
+        log.info("Load profile data")
         // Basic info on top
         nameLbl.text = profile.name
         disciplineImageView.image = UIImage(named: profile.disciplineIcon)
         ageLocationLbl.text = "\(profile.age), \(profile.location)"
-        if let coverImage = myCoverPhoto {
-            coverImageView.image = coverImage
+        
+        if let notif_ = notif, let userInfo = notif_.userInfo, let _ = userInfo["doNotUpdateCover"] as? Bool {
+            // Don't do anything
+        } else {
+            if let coverImage = myCoverPhoto {
+                coverImageView.image = coverImage
+            }
         }
+        
         if let profileImage = myProfilePhoto {
             profileImageView.image = profileImage
         }
@@ -211,18 +217,26 @@ class EditProfileController: UIViewController, UIScrollViewDelegate, UITableView
         let compressionRatio: CGFloat = min(1.0, 2.0/sizeInMB)
         log.info("Uploading with compression ratio: \(compressionRatio)")
         if let data = UIImageJPEGRepresentation(image, compressionRatio) {
-            // Save locally first before server completes
+            // Save locally first in model before server completes (Before user closes app)
+            // Save locally in file path so that when user closes app, we can retry upload when user logs in
             if isProfilePic {
                 myProfilePhoto = image
+                setPhotoToUpload(data: data, isProfilePic: true)
+                // Tell SettingsController that profile pic has changed
+//                NotificationCenter.default.post(name: NOTIF_MYPROFILEDOWNLOADED, object: nil)
+                NotificationCenter.default.post(name: NOTIF_MYPROFILEDOWNLOADED, object: nil, userInfo: ["doNotUpdateCover": true])
             } else {
                 myCoverPhoto = image
+                setPhotoToUpload(data: data, isProfilePic: false)
             }
-            NotificationCenter.default.post(name: NOTIF_MYPROFILEDOWNLOADED, object: nil)
+
             StorageService.ss.uploadOwnPic(data: data, isProfilePic: isProfilePic, completed: { (isSuccess) in
                 if !isSuccess {
                     // NOTE: This does not revert back to previous photo. Meaning if the user closes the app and comes back, his photo will be reverted.
                     log.error("Server unable to save profile pic")
                     self.showErrorForImageUploadFail()
+                } else {
+                    setPhotoToUpload(data: nil, isProfilePic: isProfilePic)
                 }
             })
         } else {
