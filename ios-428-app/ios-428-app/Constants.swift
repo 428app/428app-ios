@@ -11,6 +11,7 @@ import UIKit
 
 // TODO: Add in the full list of disciplines here
 let DISCIPLINE_OPTIONS = ["Business", "Computer Science", "Biology", "East Asian Studies", "Physics", "Electrical Engineering"]
+// Maps in sorted order
 let DISCIPLINE_ICONS = ["business", "computer", "biology", "eastasian", "physics", "electricengineering"]
 
 // Notifications
@@ -19,6 +20,7 @@ let NOTIF_EXPANDTOPICCELL = NSNotification.Name.init(rawValue: "expandTopicCell"
 let NOTIF_CHANGESETTING = NSNotification.Name.init(rawValue: "changeSetting")
 let NOTIF_EDITPROFILE = NSNotification.Name.init(rawValue: "editProfile")
 let NOTIF_OPENPROFILE = NSNotification.Name.init(rawValue: "openProfile")
+let NOTIF_MYPROFILEDOWNLOADED = NSNotification.Name.init(rawValue: "myProfileDownloaded")
 
 // Colors
 let GRAY_UICOLOR: UIColor = UIColor(red: 0.95, green: 0.95, blue: 0.95, alpha: 1)

@@ -12,8 +12,6 @@ import UIKit
 
 class EditProfileController: UIViewController, UIScrollViewDelegate, UITableViewDelegate, UITableViewDataSource, UIGestureRecognizerDelegate, UINavigationControllerDelegate, UIImagePickerControllerDelegate {
     
-    var profile: Profile!
-    
     fileprivate let CELL_ID = "editProfileCell"
     fileprivate var heightOfTableViewConstraint: NSLayoutConstraint! // Used to find dynamic height of UITableView
     fileprivate var profileCellTitles = [String]()
@@ -24,9 +22,19 @@ class EditProfileController: UIViewController, UIScrollViewDelegate, UITableView
         self.navigationItem.title = "Edit Profile"
         self.navigationItem.rightBarButtonItem = saveButton
         self.view.backgroundColor = UIColor.white
-        self.loadProfileData()
-        self.setupTableView()
         self.setupViews()
+        self.setupTableView()
+        self.loadProfileData() // Note that this must come AFTER the above setup
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        NotificationCenter.default.addObserver(self, selector: #selector(loadProfileData), name: NOTIF_MYPROFILEDOWNLOADED, object: nil)
+    }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        NotificationCenter.default.removeObserver(self, name: NOTIF_MYPROFILEDOWNLOADED, object: nil)
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -34,28 +42,73 @@ class EditProfileController: UIViewController, UIScrollViewDelegate, UITableView
         self.animateEditButtons()
     }
     
-    fileprivate func loadProfileData() {
-        // TODO: Pull profile from server
-        profile = yihangprof
+    // Called upon checking myProfile on viewDidLoad, or upon receiving Notification from SettingsController
+    func loadProfileData() {
+        log.info("Profile called")
+        guard let profile = myProfile else {
+            return
+        }
+        
+        log.info("Ready to setup profile")
+        
+        // Basic info on top
+        nameLbl.text = profile.name
+        disciplineImageView.image = UIImage(named: profile.disciplineIcon)
+        ageLocationLbl.text = "\(profile.age), \(profile.location)"
+        if let coverImage = myCoverPhoto {
+            coverImageView.image = coverImage
+            coverImageView.isUserInteractionEnabled = true
+            editCoverImageButton.isEnabled = true
+        }
+        if let profileImage = myProfilePhoto {
+            log.info("Image set")
+            profileImageView.image = profileImage
+            profileImageView.isUserInteractionEnabled = true
+            editProfileImageButton.isEnabled = true
+        }
+        
+        // Professional info in the order: Organization, School, Discipline
+        self.profileCellContent = [profile.org, profile.school, profile.discipline]
+        self.tableView.reloadData()
+        
+        // Tags
+        let paragraphStyle = NSMutableParagraphStyle()
+        paragraphStyle.lineSpacing = 6
+        let tagstr1 = NSMutableAttributedString(string: "I am working on", attributes: [NSForegroundColorAttributeName: UIColor.black, NSFontAttributeName: FONT_HEAVY_MID, NSParagraphStyleAttributeName: paragraphStyle])
+        let tag1 = profile.tagline1 == "" ? "..." : profile.tagline1
+        let tagline1 = NSMutableAttributedString(string: " " + tag1, attributes: [NSParagraphStyleAttributeName: paragraphStyle])
+        tagstr1.append(tagline1)
+        tagline1Lbl.attributedText = tagstr1
+
+        let tagstr2 = NSMutableAttributedString(string: "I want to eventually", attributes: [NSForegroundColorAttributeName: UIColor.black, NSFontAttributeName: FONT_HEAVY_MID, NSParagraphStyleAttributeName: paragraphStyle])
+        let tag2 = profile.tagline2 == "" ? "..." : profile.tagline2
+        let tagline2 = NSMutableAttributedString(string: " " + tag2, attributes: [NSParagraphStyleAttributeName: paragraphStyle])
+        tagstr2.append(tagline2)
+        tagline2Lbl.attributedText = tagstr2
+        
+        editProfessionalInfoButton.isEnabled = true
+        editTaglineButton.isEnabled = true
     }
     
     // MARK: Profile views
     
-    fileprivate lazy var profileBgImageView: UIImageView = {
+    fileprivate lazy var coverImageView: UIImageView = {
         let imageView = UIImageView()
         imageView.contentMode = .scaleAspectFill
+        imageView.image = UIImage(color: GRAY_UICOLOR)
         imageView.autoresizesSubviews = true
         imageView.clipsToBounds = true
         let tapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(editProfileBg))
         tapGestureRecognizer.delegate = self
         imageView.addGestureRecognizer(tapGestureRecognizer)
-        imageView.isUserInteractionEnabled = true
+        imageView.isUserInteractionEnabled = false
         return imageView
     }()
     
     fileprivate lazy var profileImageView: UIImageView = {
         let imageView = UIImageView()
         imageView.contentMode = .scaleAspectFill
+        imageView.image = UIImage(color: GRAY_UICOLOR)
         imageView.layer.borderColor = UIColor.white.cgColor
         imageView.layer.borderWidth = 1.5
         imageView.layer.cornerRadius = 5.0
@@ -67,7 +120,7 @@ class EditProfileController: UIViewController, UIScrollViewDelegate, UITableView
         let tapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(editProfileImage))
         tapGestureRecognizer.delegate = self
         imageView.addGestureRecognizer(tapGestureRecognizer)
-        imageView.isUserInteractionEnabled = true
+        imageView.isUserInteractionEnabled = false
         return imageView
     }()
     
@@ -86,6 +139,7 @@ class EditProfileController: UIViewController, UIScrollViewDelegate, UITableView
     fileprivate let disciplineImageView: UIImageView = {
         let imageView = UIImageView()
         imageView.contentMode = .scaleAspectFill
+        imageView.image = UIImage(color: GRAY_UICOLOR)
         imageView.tintColor = UIColor.lightGray
         return imageView
     }()
@@ -171,6 +225,7 @@ class EditProfileController: UIViewController, UIScrollViewDelegate, UITableView
         button.backgroundColor = UIColor.white.withAlphaComponent(0.6)
         button.layer.cornerRadius = 6.0
         button.clipsToBounds = true
+        button.isEnabled = false
         return button
     }
     
@@ -180,7 +235,7 @@ class EditProfileController: UIViewController, UIScrollViewDelegate, UITableView
         return button
     }()
     
-    fileprivate lazy var editProfileBgButton: UIButton = {
+    fileprivate lazy var editCoverImageButton: UIButton = {
         let button = self.editImageTemplateButton()
         button.addTarget(self, action: #selector(editProfileBg), for: .touchUpInside)
         return button
@@ -205,7 +260,7 @@ class EditProfileController: UIViewController, UIScrollViewDelegate, UITableView
         if picker == picPicker {
             profileImageView.image = info[UIImagePickerControllerOriginalImage] as? UIImage
         } else {
-            profileBgImageView.image = info[UIImagePickerControllerOriginalImage] as? UIImage
+            coverImageView.image = info[UIImagePickerControllerOriginalImage] as? UIImage
         }
     }
     
@@ -262,7 +317,7 @@ class EditProfileController: UIViewController, UIScrollViewDelegate, UITableView
             let pictureModalController = PictureModalController()
             pictureModalController.modalPresentationStyle = .overFullScreen
             pictureModalController.modalTransitionStyle = .crossDissolve
-            pictureModalController.picture = self.profileBgImageView.image
+            pictureModalController.picture = self.coverImageView.image
             self.present(pictureModalController, animated: true, completion: nil)
         }
         alertController.addAction(takePhotoAction)
@@ -291,6 +346,7 @@ class EditProfileController: UIViewController, UIScrollViewDelegate, UITableView
         button.clipsToBounds = true
         button.setBackgroundColor(color: UIColor.white, forState: .normal)
         button.setBackgroundColor(color: GREEN_UICOLOR, forState: .highlighted)
+        button.isEnabled = false
         return button
     }
     
@@ -309,10 +365,6 @@ class EditProfileController: UIViewController, UIScrollViewDelegate, UITableView
     func editProfessionalInfo() {
         log.info("edit professional info")
         let controller = EditProfessionalController()
-        controller.organization = profile.org
-        controller.school = profile.school
-        controller.discipline = profile.discipline
-        controller.disciplineIcon = profile.disciplineIcon
         let backItem = UIBarButtonItem()
         backItem.title = " "
         navigationItem.backBarButtonItem = backItem
@@ -322,8 +374,6 @@ class EditProfileController: UIViewController, UIScrollViewDelegate, UITableView
     func editTagline() {
         log.info("edit tagline")
         let controller = EditTaglineController()
-        controller.tagline1 = profile.tagline1
-        controller.tagline2 = profile.tagline2
         let backItem = UIBarButtonItem()
         backItem.title = " "
         navigationItem.backBarButtonItem = backItem
@@ -333,11 +383,11 @@ class EditProfileController: UIViewController, UIScrollViewDelegate, UITableView
     fileprivate func animateEditButtons() {
         // Called in viewDidAppear to animate the edit buttons to signal to the user that they can click on these
         UIView.animate(withDuration: 0.2, delay: 0.2, animations: {
-            self.editProfileBgButton.imageView?.transform = CGAffineTransform(scaleX: 1.2, y: 1.2)
+            self.editCoverImageButton.imageView?.transform = CGAffineTransform(scaleX: 1.2, y: 1.2)
             self.editProfileImageButton.imageView?.transform = CGAffineTransform(scaleX: 1.2, y: 1.2)
             }) { (completion) in
                 UIView.animate(withDuration: 0.15, animations: { 
-                    self.editProfileBgButton.imageView?.transform = CGAffineTransform(scaleX: 1.0, y: 1.0)
+                    self.editCoverImageButton.imageView?.transform = CGAffineTransform(scaleX: 1.0, y: 1.0)
                     self.editProfileImageButton.imageView?.transform = CGAffineTransform(scaleX: 1.0, y: 1.0)
                 })
         }
@@ -350,31 +400,11 @@ class EditProfileController: UIViewController, UIScrollViewDelegate, UITableView
         let containerView = views[1]
         scrollView.delegate = self // Delegate so as to disable top bounce only
         
-        // Set values for elements in scroll view
-        profileBgImageView.image = UIImage(named: profile.coverImageName)
-        profileImageView.image = UIImage(named: profile.profileImageName)
-        nameLbl.text = profile.name
-        disciplineImageView.image = UIImage(named: profile.disciplineIcon)
-        ageLocationLbl.text = "\(profile.age), \(profile.location)"
-        
-        // Taglines
-        let paragraphStyle = NSMutableParagraphStyle()
-        paragraphStyle.lineSpacing = 6
-        let tagstr1 = NSMutableAttributedString(string: "I am working on", attributes: [NSForegroundColorAttributeName: UIColor.black, NSFontAttributeName: FONT_HEAVY_MID, NSParagraphStyleAttributeName: paragraphStyle])
-        let tagline1 = NSMutableAttributedString(string: " " + profile.tagline1, attributes: [NSParagraphStyleAttributeName: paragraphStyle])
-        tagstr1.append(tagline1)
-        tagline1Lbl.attributedText = tagstr1
-        
-        let tagstr2 = NSMutableAttributedString(string: "I want to eventually", attributes: [NSForegroundColorAttributeName: UIColor.black, NSFontAttributeName: FONT_HEAVY_MID, NSParagraphStyleAttributeName: paragraphStyle])
-        let tagline2 = NSMutableAttributedString(string: " " + profile.tagline2, attributes: [NSParagraphStyleAttributeName: paragraphStyle])
-        tagstr2.append(tagline2)
-        tagline2Lbl.attributedText = tagstr2
-        
         // Add to subviews
-        containerView.addSubview(profileBgImageView)
+        containerView.addSubview(coverImageView)
         containerView.addSubview(profileImageView)
         containerView.addSubview(editProfileImageButton)
-        containerView.addSubview(editProfileBgButton)
+        containerView.addSubview(editCoverImageButton)
         
         // Centered discipline icon and name label
         let nameDisciplineContainer = UIView()
@@ -398,12 +428,12 @@ class EditProfileController: UIViewController, UIScrollViewDelegate, UITableView
         
         // Define constraints
         
-        containerView.addConstraintsWithFormat("H:|[v0]|", views: profileBgImageView)
-        containerView.addConstraintsWithFormat("V:|[v0(250)]", views: profileBgImageView)
-        containerView.addConstraint(NSLayoutConstraint(item: editProfileBgButton, attribute: .bottom, relatedBy: .equal, toItem: profileBgImageView, attribute: .bottom, multiplier: 1.0, constant: 4.0))
-        containerView.addConstraint(NSLayoutConstraint(item: editProfileBgButton, attribute: .right, relatedBy: .equal, toItem: profileBgImageView, attribute: .right, multiplier: 1.0, constant: 4.0))
-        containerView.addConstraintsWithFormat("H:[v0(80)]", views: editProfileBgButton)
-        containerView.addConstraintsWithFormat("V:[v0(35)]", views: editProfileBgButton)
+        containerView.addConstraintsWithFormat("H:|[v0]|", views: coverImageView)
+        containerView.addConstraintsWithFormat("V:|[v0(250)]", views: coverImageView)
+        containerView.addConstraint(NSLayoutConstraint(item: editCoverImageButton, attribute: .bottom, relatedBy: .equal, toItem: coverImageView, attribute: .bottom, multiplier: 1.0, constant: 4.0))
+        containerView.addConstraint(NSLayoutConstraint(item: editCoverImageButton, attribute: .right, relatedBy: .equal, toItem: coverImageView, attribute: .right, multiplier: 1.0, constant: 4.0))
+        containerView.addConstraintsWithFormat("H:[v0(80)]", views: editCoverImageButton)
+        containerView.addConstraintsWithFormat("V:[v0(35)]", views: editCoverImageButton)
         
         containerView.addConstraintsWithFormat("H:[v0(150)]", views: profileImageView)
         containerView.addConstraint(NSLayoutConstraint(item: profileImageView, attribute: .centerX, relatedBy: .equal, toItem: containerView, attribute: .centerX, multiplier: 1.0, constant: 0))
@@ -458,7 +488,7 @@ class EditProfileController: UIViewController, UIScrollViewDelegate, UITableView
     
     fileprivate func assembleCellData() {
         self.profileCellTitles = ["Organization", "School", "Discipline"]
-        self.profileCellContent = [self.profile.org, self.profile.school, self.profile.discipline]
+        self.profileCellContent = ["-", "-", "-"]
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {

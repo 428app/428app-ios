@@ -37,7 +37,12 @@ class Profile {
         _tagline1 = tagline1
         _tagline2 = tagline2
         _discipline = discipline
-        _disciplineIcon = "business" // TODO: Map discipline string to local icon
+        
+        let ind = DISCIPLINE_OPTIONS.index(of: discipline)
+        _disciplineIcon = "business" // TODO: Set a default discipline here
+        if ind != nil && ind! > 0 && ind! < DISCIPLINE_ICONS.count {
+            _disciplineIcon = DISCIPLINE_ICONS[ind!]
+        }
     }
     
     var uid: String {

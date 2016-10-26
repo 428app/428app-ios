@@ -11,8 +11,6 @@ import UIKit
 
 class SettingsController: UIViewController, UITableViewDelegate, UITableViewDataSource {
     
-    fileprivate var profile: Profile!
-    
     fileprivate let CELL_ID = "SETTING_CELL"
     fileprivate lazy var tableView: UITableView = {
         let tableView = UITableView(frame: self.view.frame, style: .grouped)
@@ -79,22 +77,28 @@ class SettingsController: UIViewController, UITableViewDelegate, UITableViewData
     }
     
     func openEditProfile(notif: Notification) {
-        log.info("Open edit profile")
         let controller = EditProfileController()
         self.navigationController?.pushViewController(controller, animated: true)
     }
     
     // MARK: Set up views
     
-    // Grabs profile pic, and server settings for this user
+    // Grabs server settings, user profile from Firebase, then downloads profile image
     fileprivate func populateData() {
         DataService.ds.getUserFields(uid: getStoredUid()) { (isSuccess, profile) in
             if isSuccess && profile != nil {
-                self.profile = profile!
-                log.info("\(self.profile.profileImageName)")
-                downloadImage(imageUrlString: self.profile.profileImageName, completed: { (isSuccess, image) in
-                    self.settings[1][0].image = image
-                    self.tableView.reloadData()
+                myProfile = profile
+                // Notify all edit profile controllers that myProfile variable has been set
+                NotificationCenter.default.post(name: NOTIF_MYPROFILEDOWNLOADED, object: nil)
+                // Downloads profile photo
+                _ = downloadImage(imageUrlString: profile!.profileImageName, completed: { (isSuccess, image) in
+                    if isSuccess && image != nil {
+                        self.settings[1][0].image = image
+                        self.tableView.reloadData()
+                        myProfilePhoto = image
+                        // Notify all edit profile controllers again that myProfile variable has been set
+                        NotificationCenter.default.post(name: NOTIF_MYPROFILEDOWNLOADED, object: nil)
+                    }
                 })
             }
         }

@@ -72,15 +72,15 @@ class SettingCell: BaseTableViewCell {
         NotificationCenter.default.post(name: NOTIF_EDITPROFILE, object: nil)
     }
 
-    fileprivate func animateEdit() {
-        UIView.animate(withDuration: 0.2, delay: 0.2, animations: {
-            self.editButton.transform = CGAffineTransform(scaleX: 1.3, y: 1.3)
-            }) { (completion) in
-                UIView.animate(withDuration: 0.1, animations: {
-                    self.editButton.transform = CGAffineTransform(scaleX: 1.0, y: 1.0)
-                })
-        }
-    }
+//    fileprivate func animateEdit() {
+//        UIView.animate(withDuration: 0.2, delay: 0.2, animations: {
+//            self.editButton.transform = CGAffineTransform(scaleX: 1.3, y: 1.3)
+//            }) { (completion) in
+//                UIView.animate(withDuration: 0.1, animations: {
+//                    self.editButton.transform = CGAffineTransform(scaleX: 1.0, y: 1.0)
+//                })
+//        }
+//    }
     
     // MARK: Timer
     
@@ -218,8 +218,8 @@ class SettingCell: BaseTableViewCell {
             let editButtonBottomConstraint = NSLayoutConstraint(item: editButton, attribute: .bottom, relatedBy: .equal, toItem: myPicImageView, attribute: .bottom, multiplier: 1.0, constant: 0)
             addConstraint(editButtonBottomConstraint)
             constraintsToDelete.append(editButtonBottomConstraint)
-            
-            animateEdit()
+            // Removed animation of edit button for now as it might irritate user
+//            animateEdit()
         
         } else if setting.type == .timer {
             

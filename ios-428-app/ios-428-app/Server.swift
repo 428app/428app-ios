@@ -44,17 +44,20 @@ func setHasToFillInfo(hasToFill: Bool) {
 
 // MARK: Alamofire
 
-let photoCache = AutoPurgingImageCache(
+// Image cache which stores 100MB of data, and prefers 60MB of data
+let imageCache = AutoPurgingImageCache(
     memoryCapacity: 100 * 1024 * 1024,
     preferredMemoryUsageAfterPurge: 60 * 1024 * 1024
 )
 
-func downloadImage(imageUrlString: String, completed: @escaping (_ isSuccess: Bool, _ image: UIImage?) -> ()) {
-//    guard let url = NSURL(string: imageUrlString) else {
-//        completed(false, nil)
-//        return
-//    }
-    Alamofire.request(imageUrlString, method: .get, encoding: JSONEncoding.default).validate(contentType: ["image/*"]).responseImage { response in
+
+func downloadImage(imageUrlString: String, completed: @escaping (_ isSuccess: Bool, _ image: UIImage?) -> ()) -> Request? {
+    if let image = imageCache.image(withIdentifier: imageUrlString) {
+        log.info("here")
+        completed(true, image)
+        return nil
+    }
+    let request = Alamofire.request(imageUrlString, method: .get, encoding: JSONEncoding.default).validate(contentType: ["image/*"]).responseImage { response in
         log.info("\(response)")
         if response.result.isFailure {
             completed(false, nil)
@@ -62,41 +65,11 @@ func downloadImage(imageUrlString: String, completed: @escaping (_ isSuccess: Bo
         }
         if let image = response.result.value {
             completed(true, image)
+            imageCache.add(image, withIdentifier: imageUrlString)
             return
         }
         completed(false, nil)
     }
-    
-    
-//    Alamofire.request(url, method: .get, parameters: nil, encoding: URLEncoding.default, headers: nil).validate(contentType: ["image/*"]).responseImage() {
+    return request
     
 }
-//    Alamofire.request(.GET, imageUrlString).validate(contentType: ["image/*"]).responseImage() {
-    
-
-
-//if let image = self.imageCache.objectForKey(imageURL) as? UIImage {
-//    cell.imageView.image = image
-//} else {
-//    // 3
-//    cell.imageView.image = nil
-//    
-//    // 4
-//    cell.request = Alamofire.request(.GET, imageURL).validate(contentType: ["image/*"]).responseImage() {
-//        (request, _, image, error) in
-//        if error == nil && image != nil {
-//            // 5
-//            self.imageCache.setObject(image!, forKey: request.URLString)
-//            
-//            // 6
-//            if request.URLString == cell.request?.request.URLString {
-//                cell.imageView.image = image
-//            }
-//        } else {
-//            /*
-//             If the cell went off-screen before the image was downloaded, we cancel it and
-//             an NSURLErrorDomain (-999: cancelled) is returned. This is a normal behavior.
-//             */
-//        }
-//    }
-//}
