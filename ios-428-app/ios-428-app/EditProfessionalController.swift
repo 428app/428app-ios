@@ -16,21 +16,18 @@ class EditProfessionalController: UIViewController, UITextFieldDelegate, UIPicke
     var organization: String? {
         didSet {
             self.orgTextField.text = organization
-            self.orgTextField.isEnabled = true
         }
     }
     
     var school: String? {
         didSet {
             self.schoolTextField.text = school
-            self.schoolTextField.isEnabled = true
         }
     }
     
     var discipline: String? {
         didSet {
             self.disciplineTextField.text = discipline
-            self.disciplineTextField.isEnabled = true
         }
     }
     
@@ -136,7 +133,6 @@ class EditProfessionalController: UIViewController, UITextFieldDelegate, UIPicke
         textfield.rightView = editImageView
         textfield.rightViewMode = .unlessEditing
         textfield.returnKeyType = .done
-        textfield.isEnabled = false
         return textfield
     }
     

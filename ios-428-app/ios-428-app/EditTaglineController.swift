@@ -18,6 +18,7 @@ class EditTaglineController: UIViewController, UITextViewDelegate {
         didSet {
             self.tagline1TextView.text = tagline1
             self.tagline1CountLabel.text = "\(MAX_CHARACTERS - tagline1!.characters.count)"
+            self.tagline1Placeholder.isHidden = tagline1 != ""
         }
     }
     
@@ -25,6 +26,7 @@ class EditTaglineController: UIViewController, UITextViewDelegate {
         didSet {
             self.tagline2TextView.text = tagline2
             self.tagline2CountLabel.text = "\(MAX_CHARACTERS - tagline2!.characters.count)"
+            self.tagline2Placeholder.isHidden = tagline2 != ""
         }
     }
     
@@ -48,6 +50,7 @@ class EditTaglineController: UIViewController, UITextViewDelegate {
         let panGestureRecognizer = UIPanGestureRecognizer(target: self, action: #selector(keepKeyboard))
         self.view.addGestureRecognizer(panGestureRecognizer)
         self.setupViews()
+        self.loadProfileData()
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -58,6 +61,14 @@ class EditTaglineController: UIViewController, UITextViewDelegate {
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         self.unregisterObservers()
+    }
+    
+    func loadProfileData() {
+        guard let profile = myProfile else {
+            return
+        }
+        self.tagline1 = profile.tagline1
+        self.tagline2 = profile.tagline2
     }
     
     // MARK: Views
@@ -168,8 +179,8 @@ class EditTaglineController: UIViewController, UITextViewDelegate {
         view.addConstraintsWithFormat("V:[v0(20)]-8-[v1(\(textviewHeight))][v2(20)]-20-[v3(20)]-8-[v4(\(textviewHeight))][v5(20)]", views: tagline1Label, tagline1TextView, tagline1CountLabel, tagline2Label, tagline2TextView, tagline2CountLabel)
         
         // Align placeholders to text views
-        view.addConstraintsWithFormat("H:|-13-[v0]-13-|", views: tagline1Placeholder)
-        view.addConstraintsWithFormat("H:|-13-[v0]-13-|", views: tagline2Placeholder)
+        view.addConstraintsWithFormat("H:|-18-[v0]-13-|", views: tagline1Placeholder)
+        view.addConstraintsWithFormat("H:|-18-[v0]-13-|", views: tagline2Placeholder)
         view.addConstraintsWithFormat("V:[v0(100)]", views: tagline1Placeholder)
         view.addConstraintsWithFormat("V:[v0(100)]", views: tagline2Placeholder)
         
