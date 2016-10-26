@@ -25,6 +25,7 @@
 		4024F2331DB9454B007819F7 /* LoginController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4024F2321DB9454B007819F7 /* LoginController.swift */; };
 		4024F2351DBB2155007819F7 /* IntroController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4024F2341DBB2155007819F7 /* IntroController.swift */; };
 		4031FB9A1DC04B490066E6B6 /* MyProfile.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4031FB991DC04B490066E6B6 /* MyProfile.swift */; };
+		4031FB9C1DC0691C0066E6B6 /* StorageService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4031FB9B1DC0691C0066E6B6 /* StorageService.swift */; };
 		404C22FA1DBDB86D0054FE19 /* Server.swift in Sources */ = {isa = PBXBuildFile; fileRef = 404C22F91DBDB86D0054FE19 /* Server.swift */; };
 		4064A1B61DAC381300071383 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4064A1B51DAC381300071383 /* AppDelegate.swift */; };
 		4064A1B81DAC381300071383 /* ConnectionsController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4064A1B71DAC381300071383 /* ConnectionsController.swift */; };
@@ -94,6 +95,7 @@
 		4024F2321DB9454B007819F7 /* LoginController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LoginController.swift; sourceTree = "<group>"; };
 		4024F2341DBB2155007819F7 /* IntroController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IntroController.swift; sourceTree = "<group>"; };
 		4031FB991DC04B490066E6B6 /* MyProfile.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MyProfile.swift; sourceTree = "<group>"; };
+		4031FB9B1DC0691C0066E6B6 /* StorageService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StorageService.swift; sourceTree = "<group>"; };
 		404C22F91DBDB86D0054FE19 /* Server.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Server.swift; sourceTree = "<group>"; };
 		4064A1B21DAC381300071383 /* ios-428-app.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "ios-428-app.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		4064A1B51DAC381300071383 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -315,6 +317,7 @@
 				4064A2261DB13FBD00071383 /* Debug.swift */,
 				4064A1CA1DAC495D00071383 /* DummyDataService.swift */,
 				4020CE181DBCA67A00461181 /* DataService.swift */,
+				4031FB9B1DC0691C0066E6B6 /* StorageService.swift */,
 			);
 			name = Services;
 			sourceTree = "<group>";
@@ -522,6 +525,7 @@
 				4064A21F1DAD72DF00071383 /* Functions.swift in Sources */,
 				4064A22B1DB2B27F00071383 /* Friend.swift in Sources */,
 				4020CE191DBCA67A00461181 /* DataService.swift in Sources */,
+				4031FB9C1DC0691C0066E6B6 /* StorageService.swift in Sources */,
 				4064A1B61DAC381300071383 /* AppDelegate.swift in Sources */,
 				4064A1CB1DAC495D00071383 /* DummyDataService.swift in Sources */,
 				404C22FA1DBDB86D0054FE19 /* Server.swift in Sources */,

@@ -25,16 +25,11 @@ class EditProfileController: UIViewController, UIScrollViewDelegate, UITableView
         self.setupViews()
         self.setupTableView()
         self.loadProfileData() // Note that this must come AFTER the above setup
-    }
-    
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-        
+        // This observer is not removed when view disappears, as it is required to be updated
         NotificationCenter.default.addObserver(self, selector: #selector(loadProfileData), name: NOTIF_MYPROFILEDOWNLOADED, object: nil)
     }
     
-    override func viewWillDisappear(_ animated: Bool) {
-        super.viewWillDisappear(animated)
+    deinit {
         NotificationCenter.default.removeObserver(self, name: NOTIF_MYPROFILEDOWNLOADED, object: nil)
     }
     
@@ -55,13 +50,9 @@ class EditProfileController: UIViewController, UIScrollViewDelegate, UITableView
         ageLocationLbl.text = "\(profile.age), \(profile.location)"
         if let coverImage = myCoverPhoto {
             coverImageView.image = coverImage
-            coverImageView.isUserInteractionEnabled = true
-            editCoverImageButton.isEnabled = true
         }
         if let profileImage = myProfilePhoto {
             profileImageView.image = profileImage
-            profileImageView.isUserInteractionEnabled = true
-            editProfileImageButton.isEnabled = true
         }
         
         // Professional info in the order: Organization, School, Discipline
@@ -82,9 +73,6 @@ class EditProfileController: UIViewController, UIScrollViewDelegate, UITableView
         let tagline2 = NSMutableAttributedString(string: " " + tag2, attributes: [NSParagraphStyleAttributeName: paragraphStyle])
         tagstr2.append(tagline2)
         tagline2Lbl.attributedText = tagstr2
-        
-        editProfessionalInfoButton.isEnabled = true
-        editTaglineButton.isEnabled = true
     }
     
     // MARK: Profile views
@@ -95,10 +83,10 @@ class EditProfileController: UIViewController, UIScrollViewDelegate, UITableView
         imageView.image = UIImage(color: GRAY_UICOLOR)
         imageView.autoresizesSubviews = true
         imageView.clipsToBounds = true
-        let tapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(editProfileBg))
+        let tapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(editCoverImage))
         tapGestureRecognizer.delegate = self
         imageView.addGestureRecognizer(tapGestureRecognizer)
-        imageView.isUserInteractionEnabled = false
+        imageView.isUserInteractionEnabled = true
         return imageView
     }()
     
@@ -117,7 +105,7 @@ class EditProfileController: UIViewController, UIScrollViewDelegate, UITableView
         let tapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(editProfileImage))
         tapGestureRecognizer.delegate = self
         imageView.addGestureRecognizer(tapGestureRecognizer)
-        imageView.isUserInteractionEnabled = false
+        imageView.isUserInteractionEnabled = true
         return imageView
     }()
     
@@ -204,9 +192,53 @@ class EditProfileController: UIViewController, UIScrollViewDelegate, UITableView
         return saveButton
     }()
     
+    fileprivate func showErrorForImageUploadFail() {
+        showErrorAlert(vc: self, title: "Failed to save image", message: "We apologize. It doesn't seem like we managed to save your picture. Please check your connection, and try again later.")
+    }
+    
+    // Private function used by sendEditsToServer()
+    fileprivate func uploadImageForImageView(isProfilePic: Bool) {
+        let imageView = isProfilePic ? profileImageView : coverImageView
+        
+        guard let image = imageView.image, let testData = UIImageJPEGRepresentation(image, 1.0) else {
+            log.error("Unable to convert image to data")
+            self.showErrorForImageUploadFail()
+            return
+        }
+        // Compress image to save storage space
+        let sizeInBytes = NSData(data: testData).length
+        let sizeInMB = CGFloat(sizeInBytes) / (1024.0  * 1024.0)
+        let compressionRatio: CGFloat = min(1.0, 5.0/sizeInMB)
+        log.info("\(compressionRatio)")
+        if let data = UIImageJPEGRepresentation(image, compressionRatio) {
+            // Save locally first before server completes
+            if isProfilePic {
+                myProfilePhoto = image
+            } else {
+                myCoverPhoto = image
+            }
+            NotificationCenter.default.post(name: NOTIF_MYPROFILEDOWNLOADED, object: nil)
+            StorageService.ss.uploadOwnPic(data: data, isProfilePic: isProfilePic, completed: { (isSuccess) in
+                if !isSuccess {
+                    // NOTE: This does not revert back to previous photo. Meaning if the user closes the app and comes back, his photo will be reverted.
+                    log.error("Server unable to save profile pic")
+                    self.showErrorForImageUploadFail()
+                }
+            })
+        } else {
+            log.error("Profile image unable to be converted to data")
+            showErrorForImageUploadFail()
+        }
+    }
+    
     func sendEditsToServer() {
-        // After getting response, make saveButton disabled again
-        saveButton.isEnabled = false
+        if profileImageHasChanged {
+            uploadImageForImageView(isProfilePic: true)
+        }
+        if coverImageHasChanged {
+            uploadImageForImageView(isProfilePic: false)
+        }
+        saveButton.isEnabled = false // Disable to prevent repeated upload to server
     }
     
     // MARK: Edit photos
@@ -222,7 +254,6 @@ class EditProfileController: UIViewController, UIScrollViewDelegate, UITableView
         button.backgroundColor = UIColor.white.withAlphaComponent(0.6)
         button.layer.cornerRadius = 6.0
         button.clipsToBounds = true
-        button.isEnabled = false
         return button
     }
     
@@ -234,7 +265,7 @@ class EditProfileController: UIViewController, UIScrollViewDelegate, UITableView
     
     fileprivate lazy var editCoverImageButton: UIButton = {
         let button = self.editImageTemplateButton()
-        button.addTarget(self, action: #selector(editProfileBg), for: .touchUpInside)
+        button.addTarget(self, action: #selector(editCoverImage), for: .touchUpInside)
         return button
     }()
     
@@ -249,14 +280,20 @@ class EditProfileController: UIViewController, UIScrollViewDelegate, UITableView
         picker.delegate = self
         return picker
     }()
+    
+    // Variables used to determine which to send to server
+    fileprivate var profileImageHasChanged = false
+    fileprivate var coverImageHasChanged = false
 
     // Delegate function that assigns image after picked
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : Any]) {
         picker.dismiss(animated: true, completion: nil)
         saveButton.isEnabled = true
         if picker == picPicker {
+            profileImageHasChanged = true
             profileImageView.image = info[UIImagePickerControllerOriginalImage] as? UIImage
         } else {
+            coverImageHasChanged = true
             coverImageView.image = info[UIImagePickerControllerOriginalImage] as? UIImage
         }
     }
@@ -295,7 +332,7 @@ class EditProfileController: UIViewController, UIScrollViewDelegate, UITableView
         self.present(alertController, animated: true, completion: nil)
     }
     
-    func editProfileBg() {
+    func editCoverImage() {
         let alertController = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
         alertController.view.tintColor = GREEN_UICOLOR
         let cancelAction = UIAlertAction(title: "Cancel", style: .cancel, handler: nil)
@@ -343,7 +380,6 @@ class EditProfileController: UIViewController, UIScrollViewDelegate, UITableView
         button.clipsToBounds = true
         button.setBackgroundColor(color: UIColor.white, forState: .normal)
         button.setBackgroundColor(color: GREEN_UICOLOR, forState: .highlighted)
-        button.isEnabled = false
         return button
     }
     
@@ -369,9 +405,6 @@ class EditProfileController: UIViewController, UIScrollViewDelegate, UITableView
     
     func editTagline() {
         let controller = EditTaglineController()
-//        let backItem = UIBarButtonItem()
-//        backItem.title = " "
-//        navigationItem.backBarButtonItem = backItem
         navigationController?.pushViewController(controller, animated: true)
     }
     

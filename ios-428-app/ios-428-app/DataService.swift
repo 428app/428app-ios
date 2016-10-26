@@ -145,6 +145,31 @@ class DataService {
         })
     }
     
+    // Similar to updateUserFields, but only used by StorageService
+    func updateUserPhotos(profilePhotoUrl: String? = nil, coverPhotoUrl: String? = nil, completed: @escaping (_ isSuccess: Bool) -> ()) {
+        guard let uid = getStoredUid() else {
+            completed(false)
+            return
+        }
+        var userPhotos: [String: Any] = [:]
+        if profilePhotoUrl != nil {
+            userPhotos["profilePhoto"] = profilePhotoUrl!
+        }
+        if coverPhotoUrl != nil {
+            userPhotos["coverPhoto"] = coverPhotoUrl!
+        }
+        self.REF_USER.child(uid).observeSingleEvent(of: .value, with: { snapshot in
+            if snapshot.exists() {
+                self.REF_USER.child(uid).updateChildValues(userPhotos, withCompletionBlock: { (error, ref) in
+                    completed(error == nil)
+                })
+            } else {
+                // User does not exist. Error
+                completed(false)
+            }
+        })
+    }
+    
     // Retrive user's profile data based on input user id
     func getUserFields(uid: String?, completed: @escaping (_ isSuccess: Bool, _ user: Profile?) -> ()) {
         guard let uid_ = uid else {

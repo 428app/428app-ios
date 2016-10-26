@@ -34,6 +34,12 @@ class SettingsController: UIViewController, UITableViewDelegate, UITableViewData
         self.navigationItem.title = "Settings"
         self.navigationItem.backBarButtonItem = UIBarButtonItem(title: " ", style: .plain, target: nil, action: nil)
         setupViews()
+        // This observer is not removed when view disappears, as it is required to be updated
+        NotificationCenter.default.addObserver(self, selector: #selector(loadImage), name: NOTIF_MYPROFILEDOWNLOADED, object: nil)
+    }
+    
+    deinit {
+        NotificationCenter.default.removeObserver(self, name: NOTIF_MYPROFILEDOWNLOADED, object: nil)
     }
     
     // MARK: Getting setting change and sending them to server
@@ -41,7 +47,7 @@ class SettingsController: UIViewController, UITableViewDelegate, UITableViewData
     func saveSettings() {
         // TODO: Send settings to server upon view disappearing
         for (k, v) in settingsChosen {
-            log.info("\(k): \(v)")
+//            log.info("\(k): \(v)")
         }
     }
     
@@ -83,6 +89,16 @@ class SettingsController: UIViewController, UITableViewDelegate, UITableViewData
     
     // MARK: Set up views
     
+    func loadImage() {
+        // Change Setting cell's image upon getting a change
+        var imageUsed = UIImage(color: UIColor.white)
+        if let profileImage = myProfilePhoto {
+            imageUsed = profileImage
+        }
+        self.settings[1][0].image = imageUsed
+        self.tableView.reloadData()
+    }
+    
     // Grabs server settings, user profile from Firebase, then downloads profile image
     fileprivate func populateData() {
         DataService.ds.getUserFields(uid: getStoredUid()) { (isSuccess, profile) in
@@ -96,6 +112,13 @@ class SettingsController: UIViewController, UITableViewDelegate, UITableViewData
                         self.settings[1][0].image = image
                         self.tableView.reloadData()
                         myProfilePhoto = image
+                        // Notify all edit profile controllers again that myProfile variable has been set
+                        NotificationCenter.default.post(name: NOTIF_MYPROFILEDOWNLOADED, object: nil)
+                    }
+                })
+                _ = downloadImage(imageUrlString: profile!.coverImageName, completed: { (isSuccess, image) in
+                    if isSuccess && image != nil {
+                        myCoverPhoto = image
                         // Notify all edit profile controllers again that myProfile variable has been set
                         NotificationCenter.default.post(name: NOTIF_MYPROFILEDOWNLOADED, object: nil)
                     }
