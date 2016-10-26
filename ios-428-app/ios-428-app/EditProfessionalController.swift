@@ -12,6 +12,7 @@ import UIKit
 class EditProfessionalController: UIViewController, UITextFieldDelegate, UIPickerViewDelegate, UIPickerViewDataSource {
     
     fileprivate let MAX_CHARACTERS = 40
+    fileprivate var hasFieldsChanged = false // Used to prevent unnecessary updating of server when user presses back
     
     var organization: String? {
         didSet {
@@ -37,12 +38,6 @@ class EditProfessionalController: UIViewController, UITextFieldDelegate, UIPicke
         }
     }
     
-    fileprivate lazy var saveButton: UIBarButtonItem = {
-        let button: UIBarButtonItem = UIBarButtonItem(title: "Save", style: .done, target: self, action: #selector(self.saveEdits))
-        button.isEnabled = false
-        return button
-    }()
-    
     override func viewDidLoad() {
         super.viewDidLoad()
         self.view.backgroundColor = GRAY_UICOLOR
@@ -50,9 +45,6 @@ class EditProfessionalController: UIViewController, UITextFieldDelegate, UIPicke
         // Gesture recognizer to keep keyboard
         let tapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(keepKeyboard))
         self.view.addGestureRecognizer(tapGestureRecognizer)
-        
-        // Override back bar button item to Save
-        self.navigationItem.rightBarButtonItem = saveButton
         
         self.setupViews()
         self.loadProfileData()
@@ -70,12 +62,19 @@ class EditProfessionalController: UIViewController, UITextFieldDelegate, UIPicke
     }
     
     func saveEdits() {
-        log.info("Save professional info edits server side")
-        guard let orgSaved = orgTextField.text?.trim(), let schoolSaved = schoolTextField.text?.trim(), let disciplineSaved = disciplineTextField.text?.trim() else {
-            saveButton.isEnabled = false
-            return
+        if let orgSaved = orgTextField.text?.trim(), let schoolSaved = schoolTextField.text?.trim(), let disciplineSaved = disciplineTextField.text?.trim() {
+            hasFieldsChanged = false
+            DataService.ds.updateUserFields(organization: orgSaved, school: schoolSaved, discipline: disciplineSaved, completed: { (isSuccess) in
+                if !isSuccess {
+                    log.error("Professional fields failed to be updated")
+                }
+                // Set myProfile and notify other controllers of change
+                myProfile?.org = orgSaved
+                myProfile?.school = schoolSaved
+                myProfile?.discipline = disciplineSaved
+                NotificationCenter.default.post(name: NOTIF_MYPROFILEDOWNLOADED, object: nil)
+            })
         }
-        _ = self.navigationController?.popViewController(animated: true)
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -85,6 +84,9 @@ class EditProfessionalController: UIViewController, UITextFieldDelegate, UIPicke
     
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
+        if hasFieldsChanged {
+            saveEdits() // Save edits on pressing back button
+        }
         self.unregisterObservers()
     }
     
@@ -192,17 +194,17 @@ class EditProfessionalController: UIViewController, UITextFieldDelegate, UIPicke
         let nsString = textField.text as NSString?
         let newString = nsString?.replacingCharacters(in: range, with: string)
         if let newLength = newString?.characters.count {
-            saveButton.isEnabled = newLength > 0
+            hasFieldsChanged = newLength > 0
             
             if textField == orgTextField {
-                saveButton.isEnabled = newString != organization
+                hasFieldsChanged = newString != organization
             } else if textField == schoolTextField {
-                saveButton.isEnabled = newString != school
+                hasFieldsChanged = newString != school
             }
             
             return newLength <= MAX_CHARACTERS
         }
-        saveButton.isEnabled = false
+        hasFieldsChanged = false
         return false
     }
     
@@ -233,7 +235,7 @@ class EditProfessionalController: UIViewController, UITextFieldDelegate, UIPicke
     }
     
     func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
-        saveButton.isEnabled = DISCIPLINE_OPTIONS[row] != discipline
+        hasFieldsChanged = DISCIPLINE_OPTIONS[row] != discipline
         disciplineTextField.text = DISCIPLINE_OPTIONS[row]
         editDisciplineIconInTextField(imageString: DISCIPLINE_ICONS[row])
     }

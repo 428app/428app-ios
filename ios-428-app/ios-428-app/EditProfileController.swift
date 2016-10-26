@@ -29,6 +29,7 @@ class EditProfileController: UIViewController, UIScrollViewDelegate, UITableView
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+        
         NotificationCenter.default.addObserver(self, selector: #selector(loadProfileData), name: NOTIF_MYPROFILEDOWNLOADED, object: nil)
     }
     
@@ -359,7 +360,6 @@ class EditProfileController: UIViewController, UIScrollViewDelegate, UITableView
     }()
     
     func editProfessionalInfo() {
-        log.info("edit professional info")
         let controller = EditProfessionalController()
         let backItem = UIBarButtonItem()
         backItem.title = " "
@@ -368,7 +368,6 @@ class EditProfileController: UIViewController, UIScrollViewDelegate, UITableView
     }
     
     func editTagline() {
-        log.info("edit tagline")
         let controller = EditTaglineController()
         let backItem = UIBarButtonItem()
         backItem.title = " "

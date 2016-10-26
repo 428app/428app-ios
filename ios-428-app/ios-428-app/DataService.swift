@@ -74,7 +74,7 @@ class DataService {
         })
     }
     
-    // Called in LoginController to update user's location, after location manager gets it
+    // Called in LoginController to update own location, after location manager gets it
     func updateUserLocation(lat: Double, lon: Double, completed: @escaping (_ isSuccess: Bool) -> ()) {
         guard let uid = getStoredUid() else {
             completed(false)
@@ -93,7 +93,7 @@ class DataService {
         })
     }
     
-    // Updates user's last seen in AppDelegate's applicationDidBecomeActive
+    // Updates own last seen in AppDelegate's applicationDidBecomeActive
     func updateUserLastSeen(completed: @escaping (_ isSuccess: Bool) -> ()) {
         guard let uid = getStoredUid() else {
             return
@@ -111,8 +111,8 @@ class DataService {
         })
     }
     
-    // Update user's profile data called in IntroController and SettingControllers
-    func updateUserFields(organization: String?, school: String?, discipline: String?, tagline1: String?, tagline2: String?, completed: @escaping (_ isSuccess: Bool) -> ()) {
+    // Update own profile data; Called in IntroController and SettingControllers
+    func updateUserFields(organization: String? = nil, school: String? = nil, discipline: String? = nil, tagline1: String? = nil, tagline2: String? = nil, completed: @escaping (_ isSuccess: Bool) -> ()) {
         guard let uid = getStoredUid() else {
             completed(false)
             return
@@ -145,7 +145,7 @@ class DataService {
         })
     }
     
-    // Retrive user's profile data
+    // Retrive user's profile data based on input user id
     func getUserFields(uid: String?, completed: @escaping (_ isSuccess: Bool, _ user: Profile?) -> ()) {
         guard let uid_ = uid else {
             completed(false, nil)
@@ -193,6 +193,4 @@ class DataService {
             }
         })
     }
-    
-    
 }
