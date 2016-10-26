@@ -31,15 +31,24 @@ class EditTaglineController: UIViewController, UITextViewDelegate {
     }
     
     fileprivate lazy var saveButton: UIBarButtonItem = {
-        let button: UIBarButtonItem = UIBarButtonItem(title: "Save", style: .done, target: self, action: #selector(self.saveEdits))
+        let button: UIBarButtonItem = UIBarButtonItem(title: "Done", style: .done, target: self, action: #selector(self.saveEdits))
         button.isEnabled = false
         return button
     }()
     
     func saveEdits() {
         log.info("Save tagline edits to server")
-        let tagline1Saved = tagline1TextView.text.trim()
-        let tagline2Saved = tagline2TextView.text.trim()
+        let tagline1Saved = tagline1TextView.text.trim().lowercaseFirstLetter()
+        let tagline2Saved = tagline2TextView.text.trim().lowercaseFirstLetter()
+        DataService.ds.updateUserFields(tagline1: tagline1Saved, tagline2: tagline2Saved) { (isSuccess) in
+            if !isSuccess {
+                log.error("Professional fields fail to be updated")
+            }
+            // Set myProfile and notify other controllers of change
+            myProfile?.tagline1 = tagline1Saved
+            myProfile?.tagline2 = tagline2Saved
+            NotificationCenter.default.post(name: NOTIF_MYPROFILEDOWNLOADED, object: nil)
+        }
         _ = self.navigationController?.popViewController(animated: true)
     }
     
@@ -47,10 +56,16 @@ class EditTaglineController: UIViewController, UITextViewDelegate {
         super.viewDidLoad()
         self.view.backgroundColor = GRAY_UICOLOR
         self.navigationItem.rightBarButtonItem = saveButton
+        self.navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: .cancel, target: self, action: #selector(popController))
+        
         let panGestureRecognizer = UIPanGestureRecognizer(target: self, action: #selector(keepKeyboard))
         self.view.addGestureRecognizer(panGestureRecognizer)
         self.setupViews()
         self.loadProfileData()
+    }
+    
+    func popController() {
+        _ = self.navigationController?.popViewController(animated: true)
     }
     
     override func viewWillAppear(_ animated: Bool) {

@@ -66,7 +66,7 @@ class EditProfessionalController: UIViewController, UITextFieldDelegate, UIPicke
             hasFieldsChanged = false
             DataService.ds.updateUserFields(organization: orgSaved, school: schoolSaved, discipline: disciplineSaved, completed: { (isSuccess) in
                 if !isSuccess {
-                    log.error("Professional fields failed to be updated")
+                    log.error("Professional fields fail to be updated")
                 }
                 // Set myProfile and notify other controllers of change
                 myProfile?.org = orgSaved
