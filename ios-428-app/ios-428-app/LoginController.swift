@@ -160,7 +160,10 @@ class LoginController: UIViewController, UIScrollViewDelegate, CLLocationManager
             }
             
             let fbid = user!.providerData[0].uid // Use FBID as the key for users
-            let displayName = user!.providerData[0].displayName!
+            
+            // Grab only the first part of the display name
+            let fullDisplayName = user!.providerData[0].displayName!
+            let displayName = fullDisplayName.components(separatedBy: " ")[0]
             saveUid(uid: fbid) // Saving uid here is crucial for the rest of the app to function right
             
             // Get timezone

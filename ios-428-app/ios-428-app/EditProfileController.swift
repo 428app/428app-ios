@@ -43,7 +43,10 @@ class EditProfileController: UIViewController, UIScrollViewDelegate, UITableView
         guard let profile = myProfile else {
             return
         }
-        log.info("Load profile data")
+        
+        editProfessionalInfoButton.isEnabled = true
+        editTaglineButton.isEnabled = true
+        
         // Basic info on top
         nameLbl.text = profile.name
         disciplineImageView.image = UIImage(named: profile.disciplineIcon)
@@ -53,11 +56,15 @@ class EditProfileController: UIViewController, UIScrollViewDelegate, UITableView
             // Don't do anything
         } else {
             if let coverImage = myCoverPhoto {
+                coverImageView.isUserInteractionEnabled = true
+                editCoverImageButton.isEnabled = true
                 coverImageView.image = coverImage
             }
         }
         
         if let profileImage = myProfilePhoto {
+            profileImageView.isUserInteractionEnabled = true
+            editProfileImageButton.isEnabled = true
             profileImageView.image = profileImage
         }
         
@@ -79,6 +86,7 @@ class EditProfileController: UIViewController, UIScrollViewDelegate, UITableView
         let tagline2 = NSMutableAttributedString(string: " " + tag2, attributes: [NSParagraphStyleAttributeName: paragraphStyle])
         tagstr2.append(tagline2)
         tagline2Lbl.attributedText = tagstr2
+
     }
     
     // MARK: Profile views
@@ -352,8 +360,13 @@ class EditProfileController: UIViewController, UIScrollViewDelegate, UITableView
         let cancelAction = UIAlertAction(title: "Cancel", style: .cancel, handler: nil)
         let takePhotoAction = UIAlertAction(title: "Take a new photo", style: .default) { (action) in
             // Take a new photo
-            self.bgPicker.sourceType = .camera
-            self.present(self.bgPicker, animated: true, completion: nil)
+            if UIImagePickerController.availableCaptureModes(for: .rear) == nil {
+                // No camera
+                showErrorAlert(vc: self, title: "No camera", message: "Your device does not have a camera")
+            } else {
+                self.bgPicker.sourceType = .camera
+                self.present(self.bgPicker, animated: true, completion: nil)
+            }
         }
         let uploadPhotoAction = UIAlertAction(title: "Upload a photo", style: .default) { (action) in
             // Upload a photo
@@ -436,6 +449,13 @@ class EditProfileController: UIViewController, UIScrollViewDelegate, UITableView
     }
     
     fileprivate func setupViews() {
+        profileImageView.isUserInteractionEnabled = false
+        coverImageView.isUserInteractionEnabled = false
+        editCoverImageButton.isEnabled = false
+        editProfileImageButton.isEnabled = false
+        editProfessionalInfoButton.isEnabled = false
+        editTaglineButton.isEnabled = false
+        
         // Set up scroll view, and close button on top of scroll view
         let views = setupScrollView()
         let scrollView = views[0] as! UIScrollView
