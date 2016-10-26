@@ -16,22 +16,29 @@ class EditProfessionalController: UIViewController, UITextFieldDelegate, UIPicke
     var organization: String? {
         didSet {
             self.orgTextField.text = organization
+            self.orgTextField.isEnabled = true
         }
     }
     
     var school: String? {
         didSet {
             self.schoolTextField.text = school
+            self.schoolTextField.isEnabled = true
         }
     }
     
     var discipline: String? {
         didSet {
             self.disciplineTextField.text = discipline
+            self.disciplineTextField.isEnabled = true
         }
     }
     
-    var disciplineIcon: String!
+    var disciplineIcon: String? {
+        didSet {
+            self.editDisciplineIconInTextField(imageString: disciplineIcon!)
+        }
+    }
     
     fileprivate lazy var saveButton: UIBarButtonItem = {
         let button: UIBarButtonItem = UIBarButtonItem(title: "Save", style: .done, target: self, action: #selector(self.saveEdits))
@@ -43,9 +50,6 @@ class EditProfessionalController: UIViewController, UITextFieldDelegate, UIPicke
         super.viewDidLoad()
         self.view.backgroundColor = GRAY_UICOLOR
         
-        // Initially set discipline icon in textfield
-        self.editDisciplineIconInTextField(imageString: disciplineIcon)
-        
         // Gesture recognizer to keep keyboard
         let tapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(keepKeyboard))
         self.view.addGestureRecognizer(tapGestureRecognizer)
@@ -54,6 +58,18 @@ class EditProfessionalController: UIViewController, UITextFieldDelegate, UIPicke
         self.navigationItem.rightBarButtonItem = saveButton
         
         self.setupViews()
+        self.loadProfileData()
+    }
+    
+    
+    func loadProfileData() {
+        guard let profile = myProfile else {
+            return
+        }
+        self.organization = profile.org
+        self.school = profile.school
+        self.discipline = profile.discipline
+        self.disciplineIcon = profile.disciplineIcon
     }
     
     func saveEdits() {
@@ -120,6 +136,7 @@ class EditProfessionalController: UIViewController, UITextFieldDelegate, UIPicke
         textfield.rightView = editImageView
         textfield.rightViewMode = .unlessEditing
         textfield.returnKeyType = .done
+        textfield.isEnabled = false
         return textfield
     }
     
@@ -230,11 +247,13 @@ class EditProfessionalController: UIViewController, UITextFieldDelegate, UIPicke
     fileprivate func registerObservers() {
         NotificationCenter.default.addObserver(self, selector: #selector(handleKeyboardNotification), name: NSNotification.Name.UIKeyboardWillHide, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(handleKeyboardNotification), name: NSNotification.Name.UIKeyboardWillChangeFrame, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(loadProfileData), name: NOTIF_MYPROFILEDOWNLOADED, object: nil)
     }
     
     fileprivate func unregisterObservers() {
         NotificationCenter.default.removeObserver(self, name: NSNotification.Name.UIKeyboardWillHide, object: nil)
         NotificationCenter.default.removeObserver(self, name: NSNotification.Name.UIKeyboardWillChangeFrame, object: nil)
+        NotificationCenter.default.removeObserver(self, name: NOTIF_MYPROFILEDOWNLOADED, object: nil)
     }
     
     fileprivate func getActiveTextfield() -> UITextField? {

@@ -44,12 +44,9 @@ class EditProfileController: UIViewController, UIScrollViewDelegate, UITableView
     
     // Called upon checking myProfile on viewDidLoad, or upon receiving Notification from SettingsController
     func loadProfileData() {
-        log.info("Profile called")
         guard let profile = myProfile else {
             return
         }
-        
-        log.info("Ready to setup profile")
         
         // Basic info on top
         nameLbl.text = profile.name
@@ -61,7 +58,6 @@ class EditProfileController: UIViewController, UIScrollViewDelegate, UITableView
             editCoverImageButton.isEnabled = true
         }
         if let profileImage = myProfilePhoto {
-            log.info("Image set")
             profileImageView.image = profileImage
             profileImageView.isUserInteractionEnabled = true
             editProfileImageButton.isEnabled = true
