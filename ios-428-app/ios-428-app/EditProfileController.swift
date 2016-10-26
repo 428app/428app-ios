@@ -205,11 +205,11 @@ class EditProfileController: UIViewController, UIScrollViewDelegate, UITableView
             self.showErrorForImageUploadFail()
             return
         }
-        // Compress image to save storage space
+        // Compress image to save storage space, anything more than 2MB will be compressed
         let sizeInBytes = NSData(data: testData).length
         let sizeInMB = CGFloat(sizeInBytes) / (1024.0  * 1024.0)
-        let compressionRatio: CGFloat = min(1.0, 5.0/sizeInMB)
-        log.info("\(compressionRatio)")
+        let compressionRatio: CGFloat = min(1.0, 2.0/sizeInMB)
+        log.info("Uploading with compression ratio: \(compressionRatio)")
         if let data = UIImageJPEGRepresentation(image, compressionRatio) {
             // Save locally first before server completes
             if isProfilePic {

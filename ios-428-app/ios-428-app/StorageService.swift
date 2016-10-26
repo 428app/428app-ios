@@ -14,8 +14,6 @@ class StorageService {
     
     static let ss = StorageService()
     
-//    let storage = FIRStorage.storage()
-//    let storageRef = StorageService.ss.storage.reference(forURL: "gs://app-abdf9.appspot.com")
     fileprivate var _REF_BASE = FIRStorage.storage().reference()
     fileprivate var _REF_USER = FIRStorage.storage().reference().child("/user")
     
@@ -46,8 +44,7 @@ class StorageService {
                 log.error("Fail to store image in cloud storage")
             } else {
                  if let imageUrl = metadata?.downloadURL()?.absoluteString {
-                    log.info("is profile pic: \(isProfilePic)")
-                    log.info("\(imageUrl)")
+                    log.info("is profile pic: \(isProfilePic), and url: \(imageUrl)")
                     if isProfilePic {
                         DataService.ds.updateUserPhotos(profilePhotoUrl: imageUrl, completed: { (isSuccess) in
                             completed(isSuccess)
