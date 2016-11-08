@@ -58,64 +58,64 @@ let yihangprof = Profile(uid: "99", name: "Yihang", coverImageName: "yihang-bg",
 extension ConnectionsController {
 
     func setupData() {
-        // Create messages
-        let jenny = Friend(uid: "1", name: "Jenny", profileImageName: "jenny-profile", coverImageName: "biology")
-        let spandan = Friend(uid: "2", name: "Spandan", profileImageName: "spandan-profile", coverImageName: "computer")
-        let tomas = Friend(uid: "3", name: "Tomas", profileImageName: "tomas-profile", coverImageName: "computer")
-        let kyooeun = Friend(uid: "4", name: "Kyooeun", profileImageName: "kyooeun-profile", coverImageName: "eastasian")
-        let emil = Friend(uid: "5", name: "Emil", profileImageName: "emil-profile", coverImageName: "physics")
-        let kezi = Friend(uid: "6", name: "Kezi", profileImageName: "kezi-profile", coverImageName: "physics")
-        
-        _ = self.createMessageForFriend(tomas, text: "Programming assignments take up so much time. But they are worthwhile.", minutesAgo: 60 * 24 * 3, isSender: true)
-        _ = self.createMessageForFriend(kyooeun, text: "China is a wonderland. I frequent Beijing whenever I go back to do research.", minutesAgo: 60 * 24, isSeen: false)
-        _ = self.createMessageForFriend(emil, text: "Quantum mechanics is my true love. You should go check it out.", minutesAgo: 25, isSeen: false)
-        _ = self.createMessageForFriend(kezi, text: "What are your views about time travel? Is it PHYSICALLY possible?", minutesAgo: 29, isSender: true)
-
-        createLeoMessages()
-        createThomasMessages()
-        _ = self.createMessageForFriend(jenny, text: "I want to eat food now! Give me food or else!!", minutesAgo: 60 * 24 * 400)
-        _ = self.createMessageForFriend(spandan, text: "I love computer vision! Let's hack something cool together.", minutesAgo: 60 * 24 * 10)
-        
-        // Set messages
-        self.latestMessages = friendToLatestMessage.flatMap { (_: String, v: Message) -> Message? in
-            return v
-        }
-        self.latestMessages = self.latestMessages.sorted{($0.date.timeIntervalSince1970) > ($1.date.timeIntervalSince1970)}
+//        // Create messages
+//        let jenny = Connection(uid: "1", name: "Jenny", profileImageName: "jenny-profile", coverImageName: "biology")
+//        let spandan = Connection(uid: "2", name: "Spandan", profileImageName: "spandan-profile", coverImageName: "computer")
+//        let tomas = Connection(uid: "3", name: "Tomas", profileImageName: "tomas-profile", coverImageName: "computer")
+//        let kyooeun = Connection(uid: "4", name: "Kyooeun", profileImageName: "kyooeun-profile", coverImageName: "eastasian")
+//        let emil = Connection(uid: "5", name: "Emil", profileImageName: "emil-profile", coverImageName: "physics")
+//        let kezi = Connection(uid: "6", name: "Kezi", profileImageName: "kezi-profile", coverImageName: "physics")
+//        
+//        _ = self.createMessageForconnection(tomas, text: "Programming assignments take up so much time. But they are worthwhile.", minutesAgo: 60 * 24 * 3, isSender: true)
+//        _ = self.createMessageForconnection(kyooeun, text: "China is a wonderland. I frequent Beijing whenever I go back to do research.", minutesAgo: 60 * 24, isSeen: false)
+//        _ = self.createMessageForconnection(emil, text: "Quantum mechanics is my true love. You should go check it out.", minutesAgo: 25, isSeen: false)
+//        _ = self.createMessageForconnection(kezi, text: "What are your views about time travel? Is it PHYSICALLY possible?", minutesAgo: 29, isSender: true)
+//
+//        createLeoMessages()
+//        createThomasMessages()
+//        _ = self.createMessageForconnection(jenny, text: "I want to eat food now! Give me food or else!!", minutesAgo: 60 * 24 * 400)
+//        _ = self.createMessageForconnection(spandan, text: "I love computer vision! Let's hack something cool together.", minutesAgo: 60 * 24 * 10)
+//        
+//        // Set messages
+//        self.latestMessages = connectionToLatestMessage.flatMap { (_: String, v: Message) -> Message? in
+//            return v
+//        }
+//        self.latestMessages = self.latestMessages.sorted{($0.date.timeIntervalSince1970) > ($1.date.timeIntervalSince1970)}
     }
     
     fileprivate func createLeoMessages() {
-        let leo = Friend(uid: "7", name: "Leonard", profileImageName: "leo-profile", coverImageName: "business")
-        _ = self.createMessageForFriend(leo, text: "Hello, my name is Leonard. Nice to meet you!", minutesAgo: 200)
-        _ = self.createMessageForFriend(leo, text: "What do you do?", minutesAgo: 198)
-        _ = self.createMessageForFriend(leo, text: "Hi! My name is Yihang.", minutesAgo: 90, isSender: true)
-        _ = self.createMessageForFriend(leo, text: "I'm currently pursuing a Masters in Computational Science & Engineering.", minutesAgo: 89, isSender: true)
-        _ = self.createMessageForFriend(leo, text: "That's cool! Okay I'll brb and talk to you later all right?", minutesAgo: 20)
-        _ = self.createMessageForFriend(leo, text: "Data science is every where these days. Do you think you want to be involved in that?", minutesAgo: 15, isSender: true)
+        let leo = Connection(uid: "7", name: "Leonard", profileImageName: "leo-profile", disciplineImageName: "business")
+        _ = self.createMessageForconnection(leo, text: "Hello, my name is Leonard. Nice to meet you!", minutesAgo: 200)
+        _ = self.createMessageForconnection(leo, text: "What do you do?", minutesAgo: 198)
+        _ = self.createMessageForconnection(leo, text: "Hi! My name is Yihang.", minutesAgo: 90, isSender: true)
+        _ = self.createMessageForconnection(leo, text: "I'm currently pursuing a Masters in Computational Science & Engineering.", minutesAgo: 89, isSender: true)
+        _ = self.createMessageForconnection(leo, text: "That's cool! Okay I'll brb and talk to you later all right?", minutesAgo: 20)
+        _ = self.createMessageForconnection(leo, text: "Data science is every where these days. Do you think you want to be involved in that?", minutesAgo: 15, isSender: true)
     }
     
     fileprivate func createThomasMessages() {
-        let thomas = Friend(uid: "8", name: "Thomas", profileImageName: "thomas-profile", coverImageName: "electricengineering")
-        _ = self.createMessageForFriend(thomas, text: "Let's engage in cooking and combine it with art! That way it's a lot more engaging. Don't you think we should do it immediately? Hurray!", minutesAgo: 60 * 24 * 1.7)
-        _ = self.createMessageForFriend(thomas, text: "Hey, you haven't replied. You there?", minutesAgo: 60 * 24 * 1.6)
-        _ = self.createMessageForFriend(thomas, text: "Anyway just thought of a new twist. Let's meet for a while.", minutesAgo: 60 * 24 * 1.5)
+        let thomas = Connection(uid: "8", name: "Thomas", profileImageName: "thomas-profile", disciplineImageName: "electricengineering")
+        _ = self.createMessageForconnection(thomas, text: "Let's engage in cooking and combine it with art! That way it's a lot more engaging. Don't you think we should do it immediately? Hurray!", minutesAgo: 60 * 24 * 1.7)
+        _ = self.createMessageForconnection(thomas, text: "Hey, you haven't replied. You there?", minutesAgo: 60 * 24 * 1.6)
+        _ = self.createMessageForconnection(thomas, text: "Anyway just thought of a new twist. Let's meet for a while.", minutesAgo: 60 * 24 * 1.5)
         
         // Response message
-        _ = self.createMessageForFriend(thomas, text: "Okay, okay I'm finally replying now! Hi!", minutesAgo: 60 * 24 * 1.4, isSender: true)
-        _ = self.createMessageForFriend(thomas, text: "Ok great. Are you free anytime soon to discuss some of my ideas? We can play ping pong too if you want.", minutesAgo: 60 * 24 * 1.3)
-        _ = self.createMessageForFriend(thomas, text: "Sure. How about 6pm tomorrow at Richard's Basement?", minutesAgo: 60 * 24 * 1.25, isSender: true)
-        _ = self.createMessageForFriend(thomas, text: "Also I'm not so sure how free I am from tomorrow onwards. I'm going to be coding 428 non stop until I finally finish implementing it! This is a product that has real value for people - Imagine you having connections from multiple different disciplines! And all those disciplines are already right here at Harvard, but unfortunately with no easy way to connect them... until now!!", minutesAgo: 60 * 24 * 1.2, isSender: true)
-        _ = self.createMessageForFriend(thomas, text: "OK good luck with your crazy ideas then! I hope you do well in that.", minutesAgo: 60 * 24 * 1.19)
-        _ = self.createMessageForFriend(thomas, text: "Whoever said it is the end of Moore's law is kidding!", minutesAgo: 60 * 24 * 1.1, isSeen: false)
+        _ = self.createMessageForconnection(thomas, text: "Okay, okay I'm finally replying now! Hi!", minutesAgo: 60 * 24 * 1.4, isSender: true)
+        _ = self.createMessageForconnection(thomas, text: "Ok great. Are you free anytime soon to discuss some of my ideas? We can play ping pong too if you want.", minutesAgo: 60 * 24 * 1.3)
+        _ = self.createMessageForconnection(thomas, text: "Sure. How about 6pm tomorrow at Richard's Basement?", minutesAgo: 60 * 24 * 1.25, isSender: true)
+        _ = self.createMessageForconnection(thomas, text: "Also I'm not so sure how free I am from tomorrow onwards. I'm going to be coding 428 non stop until I finally finish implementing it! This is a product that has real value for people - Imagine you having connections from multiple different disciplines! And all those disciplines are already right here at Harvard, but unfortunately with no easy way to connect them... until now!!", minutesAgo: 60 * 24 * 1.2, isSender: true)
+        _ = self.createMessageForconnection(thomas, text: "OK good luck with your crazy ideas then! I hope you do well in that.", minutesAgo: 60 * 24 * 1.19)
+        _ = self.createMessageForconnection(thomas, text: "Whoever said it is the end of Moore's law is kidding!", minutesAgo: 60 * 24 * 1.1, isSeen: false)
     }
 
-    fileprivate func createMessageForFriend(_ friend: Friend, text: String, minutesAgo: Double, isSender: Bool = false, isSeen: Bool = true) -> Message {
-        let message = Message(mid: "\(midAutoId)", text: text, friend: friend, date: Date().addingTimeInterval(-minutesAgo * 60), isSender: isSender, isSeen: isSeen)
+    fileprivate func createMessageForconnection(_ connection: Connection, text: String, minutesAgo: Double, isSender: Bool = false, isSeen: Bool = true) -> Message {
+        let message = Message(mid: "\(midAutoId)", text: text, connection: connection, date: Date().addingTimeInterval(-minutesAgo * 60), isSender: isSender, isSeen: isSeen)
         midAutoId += 1
-        friend.addMessage(message: message) // Friend has all their own messages
-        let uid = friend.uid
-        if friendToMinutesAgo[uid] == nil || friendToMinutesAgo[uid]! > minutesAgo {
-            friendToMinutesAgo[uid] = minutesAgo
-            friendToLatestMessage[uid] = message
+        connection.addMessage(message: message) // connection has all their own messages
+        let uid = connection.uid
+        if connectionToMinutesAgo[uid] == nil || connectionToMinutesAgo[uid]! > minutesAgo {
+            connectionToMinutesAgo[uid] = minutesAgo
+            connectionToLatestMessage[uid] = message
         }
         return message
     }

@@ -75,7 +75,7 @@ class ChatCell: BaseCollectionCell {
     func configureCell(messageObj: Message, viewWidth: CGFloat, isLastInChain: Bool) {
         self.message = messageObj
         let messageText = self.message.text
-        let profileImageName = self.message.friend.profileImageName
+        let profileImageName = self.message.connection.profileImageName
 
         self.messageTextView.isScrollEnabled = true
         self.messageTextView.text = self.message?.text

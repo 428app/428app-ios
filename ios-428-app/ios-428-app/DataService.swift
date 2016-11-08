@@ -19,6 +19,7 @@ class DataService {
     static let ds = DataService()
     fileprivate var _REF_BASE = FIRDatabase.database().reference()
     fileprivate var _REF_USER = FIRDatabase.database().reference().child("/user")
+    fileprivate var _REF_CHAT = FIRDatabase.database().reference().child("/chat")
     
     var REF_BASE: FIRDatabaseReference {
         get {
@@ -32,10 +33,17 @@ class DataService {
         }
     }
     
+    var REF_CHAT: FIRDatabaseReference {
+        get {
+            return _REF_CHAT
+        }
+    }
+    
     // To be called whenever user logs out
     func removeAllObservers() {
         _REF_BASE.removeAllObservers()
         _REF_USER.removeAllObservers()
+        _REF_CHAT.removeAllObservers()
     }
     
     // MARK: User
@@ -218,4 +226,48 @@ class DataService {
             }
         })
     }
+    
+    // MARK: Chat
+    
+    // Private function to get chat id from two uids
+    fileprivate func getChatId(uid1: String, uid2: String) -> String {
+        if uid1 < uid2 {
+            return "\(uid1):\(uid2)"
+        } else {
+            return "\(uid2):\(uid1)"
+        }
+    }
+    
+    // Retrieve messages between self and connection
+    // Takes in connection (with no messages), pulls messages from server and populate connection
+    func getChat(connection: Connection, completed: @escaping (_ isSuccess: Bool, _ connection: Connection?) -> ()) {
+        guard let uid = getStoredUid() else {
+            completed(false, nil)
+            return
+        }
+        let chatId: String = getChatId(uid1: uid, uid2: connection.uid)
+        self.REF_CHAT.child(chatId).observeSingleEvent(of: .value, with: { snapshot in
+            if snapshot.exists() {
+                guard let chatDict = snapshot.value as? [String: Any], let recent = chatDict["recent"] as? [String: Any], let dateMatched = chatDict["dateMatched"] as? String, let messages = chatDict["messages"] as? [String: [String: Any]] else {
+                    completed(false, nil)
+                    return
+                }
+                // TODO: Parse it into connection and output
+                log.info("\(messages)")
+            } else {
+                // Chat does not exist. Error
+                completed(false, nil)
+            }
+        })
+    }
+    
+    func getConnections(completed: @escaping (_ isSuccess: Bool, _ connections: [Connection]) -> ()){
+        guard let uid = getStoredUid() else {
+            completed(false, [])
+            return
+        }
+        // For each connection, fill in 
+    }
+    
+    
 }

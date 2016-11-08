@@ -34,9 +34,9 @@ class ChatController: UIViewController, UICollectionViewDelegateFlowLayout, UITe
     fileprivate var topConstraintForCollectionView: NSLayoutConstraint!
     fileprivate var keyboardHeight: CGFloat = 216.0 // Default of 216.0, but reset the first time keyboard pops up
     
-    var friend: Friend! {
+    var connection: Connection! {
         didSet { // Set from didSelect in ConnectionsController
-            self.messages = friend.messages
+            self.messages = connection.messages
             self.bucketMessagesIntoTime()
             self.assembleMessageIsLastInChain()
         }
@@ -141,7 +141,7 @@ class ChatController: UIViewController, UICollectionViewDelegateFlowLayout, UITe
     }()
     
     func openProfile(button: UIButton) {
-        // TODO: Fetch profile from server based on this friend id
+        // TODO: Fetch profile from server based on this connection id
         let controller = ProfileController()
         controller.profile = jennyprof
         controller.modalTransitionStyle = .coverVertical
@@ -174,9 +174,9 @@ class ChatController: UIViewController, UICollectionViewDelegateFlowLayout, UITe
     }()
     
     fileprivate func setupNavTitleView() {
-        navButton.setTitle(self.friend.name, for: .normal)
+        navButton.setTitle(self.connection.name, for: .normal)
         navButton.setTitleColor(UIColor.black, for: .normal)
-        navDisciplineImageView.image = UIImage(named: self.friend.coverImageName)
+        navDisciplineImageView.image = UIImage(named: self.connection.disciplineImageName)
         
         navTitleView.addTarget(self, action: #selector(openProfile), for: .touchUpInside)
         navButton.addTarget(self, action: #selector(openProfile), for: .touchUpInside)
@@ -211,7 +211,7 @@ class ChatController: UIViewController, UICollectionViewDelegateFlowLayout, UITe
         let muteAction = UIAlertAction(title: "Mute Notifications", style: .default) { (action) in
             // TODO: Mute user's notifications
         }
-        let reportAction = UIAlertAction(title: "Report \(self.friend.name)", style: .default) { (action) in
+        let reportAction = UIAlertAction(title: "Report \(self.connection.name)", style: .default) { (action) in
             // Report user
         }
         alertController.addAction(muteAction)
@@ -343,7 +343,7 @@ class ChatController: UIViewController, UICollectionViewDelegateFlowLayout, UITe
     func handleSend() {
         if let text = inputTextView.text {
             // Trim text before sending
-            let message = Message(mid: "9999", text: text.trim(), friend: friend, date: Date(), isSender: true)
+            let message = Message(mid: "9999", text: text.trim(), connection: connection, date: Date(), isSender: true)
             self.messages.append(message)
             self.bucketMessagesIntoTime()
             self.assembleMessageIsLastInChain()

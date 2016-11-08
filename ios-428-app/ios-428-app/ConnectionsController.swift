@@ -55,13 +55,13 @@ class ConnectionsController: UICollectionViewController, UICollectionViewDelegat
     override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         collectionView.deselectItem(at: indexPath, animated: false)
         let controller = ChatController()
-        controller.friend = self.latestMessages[indexPath.item].friend
+        controller.connection = self.latestMessages[indexPath.item].connection
         navigationController?.pushViewController(controller, animated: true)
     }
     
     // MARK: Used by extension to generate data
-    open var friendToMinutesAgo = [String: Double]()
-    open var friendToLatestMessage = [String: Message]()
+    open var connectionToMinutesAgo = [String: Double]()
+    open var connectionToLatestMessage = [String: Message]()
     open var midAutoId = 1
     
 //    func collec

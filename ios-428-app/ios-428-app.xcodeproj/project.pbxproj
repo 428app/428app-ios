@@ -57,7 +57,7 @@
 		4064A2211DADE67E00071383 /* ChatHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4064A2201DADE67E00071383 /* ChatHeaderView.swift */; };
 		4064A2271DB13FBD00071383 /* Debug.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4064A2261DB13FBD00071383 /* Debug.swift */; };
 		4064A2291DB2B0B500071383 /* Message.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4064A2281DB2B0B500071383 /* Message.swift */; };
-		4064A22B1DB2B27F00071383 /* Friend.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4064A22A1DB2B27F00071383 /* Friend.swift */; };
+		4064A22B1DB2B27F00071383 /* Connection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4064A22A1DB2B27F00071383 /* Connection.swift */; };
 		4064A2521DB346A800071383 /* Profile.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4064A2511DB346A800071383 /* Profile.swift */; };
 		4064A2541DB34E4D00071383 /* ProfileController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4064A2531DB34E4D00071383 /* ProfileController.swift */; };
 		4064A2561DB3E5E800071383 /* ProfileCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4064A2551DB3E5E800071383 /* ProfileCell.swift */; };
@@ -129,7 +129,7 @@
 		4064A2201DADE67E00071383 /* ChatHeaderView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChatHeaderView.swift; sourceTree = "<group>"; };
 		4064A2261DB13FBD00071383 /* Debug.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Debug.swift; sourceTree = "<group>"; };
 		4064A2281DB2B0B500071383 /* Message.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Message.swift; sourceTree = "<group>"; };
-		4064A22A1DB2B27F00071383 /* Friend.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Friend.swift; sourceTree = "<group>"; };
+		4064A22A1DB2B27F00071383 /* Connection.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Connection.swift; sourceTree = "<group>"; };
 		4064A2511DB346A800071383 /* Profile.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Profile.swift; sourceTree = "<group>"; };
 		4064A2531DB34E4D00071383 /* ProfileController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProfileController.swift; sourceTree = "<group>"; };
 		4064A2551DB3E5E800071383 /* ProfileCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProfileCell.swift; sourceTree = "<group>"; };
@@ -267,7 +267,7 @@
 			isa = PBXGroup;
 			children = (
 				4064A2281DB2B0B500071383 /* Message.swift */,
-				4064A22A1DB2B27F00071383 /* Friend.swift */,
+				4064A22A1DB2B27F00071383 /* Connection.swift */,
 				4064A2511DB346A800071383 /* Profile.swift */,
 				40AB7FFD1DB5B89C00492788 /* Setting.swift */,
 				4024F2221DB7F664007819F7 /* Topic.swift */,
@@ -523,7 +523,7 @@
 				4064A1B81DAC381300071383 /* ConnectionsController.swift in Sources */,
 				40AB80001DB5FDB100492788 /* EditProfileController.swift in Sources */,
 				4064A21F1DAD72DF00071383 /* Functions.swift in Sources */,
-				4064A22B1DB2B27F00071383 /* Friend.swift in Sources */,
+				4064A22B1DB2B27F00071383 /* Connection.swift in Sources */,
 				4020CE191DBCA67A00461181 /* DataService.swift in Sources */,
 				4031FB9C1DC0691C0066E6B6 /* StorageService.swift in Sources */,
 				4064A1B61DAC381300071383 /* AppDelegate.swift in Sources */,

@@ -140,9 +140,9 @@ class ConnectionCell: BaseCollectionCell {
     
     func configureCell(messageObj: Message) {
         self.message = messageObj
-        self.nameLabel.text = self.message.friend.name
-        self.profileImageView.image = UIImage(named: self.message.friend.profileImageName)
-        self.disciplineImageView.image = UIImage(named: self.message.friend.coverImageName)
+        self.nameLabel.text = self.message.connection.name
+        self.profileImageView.image = UIImage(named: self.message.connection.profileImageName)
+        self.disciplineImageView.image = UIImage(named: self.message.connection.disciplineImageName)
         self.messageLabel.text = self.message.text
         self.timeLabel.text = formatDateToText(date: self.message.date)
         
