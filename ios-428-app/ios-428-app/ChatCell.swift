@@ -99,7 +99,7 @@ class ChatCell: BaseCollectionCell {
             self.messageTextView.textColor = UIColor.black
             
             if isLastInChain {
-                self.textBubbleView.frame = CGRect(x: 45 - 8, y: 0, width: estimatedFrame.width + 20 + 8 + 8, height: estimatedFrame.height + 16 + 5)
+                self.textBubbleView.frame = CGRect(x: 45 - 8, y: 0, width: estimatedFrame.width + 20 + 8 + 8, height: estimatedFrame.height + 16 + 3)
                 self.bubbleImageView.backgroundColor = UIColor.clear
                 self.bubbleImageView.image = BUBBLE_RECIPIENT_IMAGE
                 self.bubbleImageView.tintColor = UIColor(white: 0.95, alpha: 1)

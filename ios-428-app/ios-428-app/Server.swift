@@ -104,3 +104,7 @@ func downloadImage(imageUrlString: String, completed: @escaping (_ isSuccess: Bo
     return request
     
 }
+
+// MARK: Store message pull limits
+
+var connectionUidToMessageLimit: [String: UInt] = [:]

@@ -17,6 +17,9 @@ class ChatController: UIViewController, UICollectionViewDelegateFlowLayout, UITe
     
     /** FIREBASE **/
     fileprivate var firebaseRefsAndHandles: [(FIRDatabaseReference, FIRDatabaseHandle)] = []
+    fileprivate var numMessages: UInt = 50 // Increases as user scrolls to top of collection view
+    fileprivate let NUM_INCREMENT: UInt = 50 // Downloads 50 messages per scroll
+    fileprivate var countdownToAddLimitAfterAddingMessage: UInt = 10 // Reobserve on every 10 messages added
     
     /** CONSTANTS **/
     fileprivate let CELL_ID = "chatCell"
@@ -38,7 +41,14 @@ class ChatController: UIViewController, UICollectionViewDelegateFlowLayout, UITe
     fileprivate var topConstraintForCollectionView: NSLayoutConstraint!
     fileprivate var keyboardHeight: CGFloat = 216.0 // Default of 216.0, but reset the first time keyboard pops up
     
-    var connection: Connection!
+    var connection: Connection! {
+        didSet {
+            let limit = connectionUidToMessageLimit[self.connection.uid]
+            if limit != nil {
+                self.numMessages = limit!
+            }
+        }
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -64,6 +74,8 @@ class ChatController: UIViewController, UICollectionViewDelegateFlowLayout, UITe
     
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
+        // Retain numMessages limit when user reopens this chat
+        connectionUidToMessageLimit[self.connection.uid] = self.numMessages
         self.unregisterObservers()
     }
     
@@ -75,9 +87,21 @@ class ChatController: UIViewController, UICollectionViewDelegateFlowLayout, UITe
     
     // MARK: Firebase
     
-    func setupFirebase() {
-        self.firebaseRefsAndHandles.append(DataService.ds.observeChatMessages(connection: self.connection, completed: { (isSuccess, updatedConnection) in
+    func loadMoreMessages() {
+        numMessages += NUM_INCREMENT
+        self.reobserveMessages(isReobserved: true)
+    }
+    
+    fileprivate func reobserveMessages(isReobserved: Bool) {
+        for (ref, handle) in firebaseRefsAndHandles {
+            ref.removeObserver(withHandle: handle)
+        }
+        self.firebaseRefsAndHandles.append(DataService.ds.observeChatMessages(connection: self.connection, limit: self.numMessages, completed: { (isSuccess, updatedConnection) in
             if (!isSuccess || updatedConnection == nil) {
+                if (isReobserved) {
+                    // Rewind numMessages
+                    self.numMessages -= self.NUM_INCREMENT
+                }
                 log.error("[Error] Can't pull chats for individual connection")
                 return
             }
@@ -85,7 +109,23 @@ class ChatController: UIViewController, UICollectionViewDelegateFlowLayout, UITe
             self.messages = updatedConnection!.messages
             self.organizeMessages()
             self.collectionView.reloadData()
+            self.refreshControl.endRefreshing()
         }))
+    }
+    
+    fileprivate lazy var refreshControl: UIRefreshControl = {
+       let control = UIRefreshControl()
+        control.tintColor = UIColor.white
+        control.backgroundColor = GREEN_UICOLOR
+        control.attributedTitle = NSAttributedString(string: "Pull to load more messages", attributes: [NSFontAttributeName: FONT_HEAVY_SMALL, NSForegroundColorAttributeName: UIColor.white])
+        control.addTarget(self, action: #selector(loadMoreMessages), for: .valueChanged)
+        return control
+    }()
+    
+    func setupFirebase() {
+        // Also setup refresh control
+        collectionView.addSubview(self.refreshControl)
+        self.reobserveMessages(isReobserved: false)
     }
     
     // MARK: Process messages into buckets based on hourly time intervals
@@ -368,8 +408,21 @@ class ChatController: UIViewController, UICollectionViewDelegateFlowLayout, UITe
     func handleSend() {
         if let text = inputTextView.text {
             // Trim text before sending
+            
+            // Reobserve every 10 messages
+            self.countdownToAddLimitAfterAddingMessage -= 1
+            if self.countdownToAddLimitAfterAddingMessage <= 0 {
+                self.countdownToAddLimitAfterAddingMessage = 10
+                self.numMessages += 10
+                self.reobserveMessages(isReobserved: true)
+            }
+            
             DataService.ds.addChatMessage(connection: connection, text: text.trim(), completed: { (isSuccess, updatedConnection) in
                 if !isSuccess || updatedConnection == nil {
+                    // Reset countdown if failure to add
+                    self.countdownToAddLimitAfterAddingMessage += 1
+                    self.countdownToAddLimitAfterAddingMessage %= 10
+                    
                     log.error("[Error] Message failed to be posted")
                     showErrorAlert(vc: self, title: "Error", message: "Could not send message. Please try again.")
                     return
@@ -464,7 +517,7 @@ class ChatController: UIViewController, UICollectionViewDelegateFlowLayout, UITe
         layout.headerReferenceSize = CGSize(width: UIScreen.main.bounds.width, height: SECTION_HEADER_HEIGHT)
         self.collectionView.setCollectionViewLayout(layout, animated: false)
         self.automaticallyAdjustsScrollViewInsets = false
-        self.collectionView.contentInset = UIEdgeInsets(top: (self.navigationController?.navigationBar.frame.height)! + 0.8*SECTION_HEADER_HEIGHT, left: 0, bottom: 0.8*SECTION_HEADER_HEIGHT, right: 0) // Fix top and bottom padding since automaticallyAdjustScrollViewInsets set to false
+        self.collectionView.contentInset = UIEdgeInsets(top: (self.navigationController?.navigationBar.frame.height)! + 0.7*SECTION_HEADER_HEIGHT, left: 0, bottom: 0.8*SECTION_HEADER_HEIGHT, right: 0) // Fix top and bottom padding since automaticallyAdjustScrollViewInsets set to false
         
         self.collectionView.register(ChatCell.self, forCellWithReuseIdentifier: CELL_ID)
         self.collectionView.register(ChatHeaderView.self, forSupplementaryViewOfKind: UICollectionElementKindSectionHeader, withReuseIdentifier: CELL_HEADER_ID)

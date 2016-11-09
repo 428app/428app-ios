@@ -77,7 +77,6 @@ class ConnectionsController: UICollectionViewController, UICollectionViewDelegat
                     self.latestMessages.sort(by: { (m1, m2) -> Bool in
                         return m1.date.compare(m2.date) == .orderedDescending
                     })
-                    
                     self.collectionView?.reloadData()
                 }))
             }

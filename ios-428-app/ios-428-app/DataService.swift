@@ -308,12 +308,13 @@ class DataService {
     }
     
     // Observes all chat messags of one connection, used in ChatController
-    func observeChatMessages(connection: Connection, completed: @escaping (_ isSuccess: Bool, _ connection: Connection?) -> ()) -> (FIRDatabaseReference, FIRDatabaseHandle) {
+    func observeChatMessages(connection: Connection, limit: UInt = 0, completed: @escaping (_ isSuccess: Bool, _ connection: Connection?) -> ()) -> (FIRDatabaseReference, FIRDatabaseHandle) {
         let uid = getStoredUid() == nil ? "" : getStoredUid()!
         let chatId: String = getChatId(uid1: uid, uid2: connection.uid)
         let ref: FIRDatabaseReference = REF_MESSAGES.child(chatId)
         
-        let handle = ref.observe(.value, with: { snapshot in
+        let q = limit == 0 ? ref : ref.queryOrdered(byChild: "timestamp").queryLimited(toLast: limit)
+        let handle = q.observe(.value, with: { snapshot in
             if !snapshot.exists() {
                 completed(false, nil)
                 return
@@ -332,8 +333,6 @@ class DataService {
                     let isSentByYou: Bool = poster == uid
                     let date = Date(timeIntervalSince1970: timestamp)
                     let msg = Message(mid: mid, text: text, connection: connection, date: date, isSentByYou: isSentByYou)
-                    
-                    // TODO: Check if this duplicates all messages or not
                     connection.addMessage(message: msg)
                 }
             }
