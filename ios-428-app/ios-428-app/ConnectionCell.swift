@@ -145,9 +145,6 @@ class ConnectionCell: BaseCollectionCell {
         self.nameLabel.text = self.message.connection.name
         
         // Download profile image
-        
-        self.profileImageView.image = UIImage(named: self.message.connection.profileImageName)
-        
         self.request = downloadImage(imageUrlString: self.message.connection.profileImageName, completed: { (isSuccess, image) in
             if isSuccess && image != nil {
                 self.profileImageView.image = image
@@ -162,7 +159,7 @@ class ConnectionCell: BaseCollectionCell {
         repliedImageView.removeFromSuperview()
         constraintsToDelete = [NSLayoutConstraint]()
         
-        if message.isSender {
+        if message.isSentByYou {
             containerView.addSubview(repliedImageView)
             constraintsToDelete.append(contentsOf: containerView.addAndGetConstraintsWithFormat("H:|[v0(16)]-3-[v1]-12-|", views: repliedImageView, messageLabel))
             let topOfRepliedConstraint = NSLayoutConstraint(item: repliedImageView, attribute: .top, relatedBy: .equal, toItem: disciplineImageView, attribute: .bottom, multiplier: 1.0, constant: 5.0)

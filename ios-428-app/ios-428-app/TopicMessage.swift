@@ -17,9 +17,9 @@ class TopicMessage {
     fileprivate var _posterName: String
     fileprivate var _text: String
     fileprivate var _date: Date
-    fileprivate var _isSender: Bool
+    fileprivate var _isSentByYou: Bool
     
-    init(tmid: String, parentTid: String, posterUid: String, posterName: String, postercoverImageName: String, text: String, date: Date = Date(), isSender: Bool = false) {
+    init(tmid: String, parentTid: String, posterUid: String, posterName: String, postercoverImageName: String, text: String, date: Date = Date(), isSentByYou: Bool = false) {
         _tmid = tmid
         _parentTid = parentTid
         _posterUid = posterUid
@@ -27,7 +27,7 @@ class TopicMessage {
         _postercoverImageName = postercoverImageName
         _text = text
         _date = date
-        _isSender = isSender
+        _isSentByYou = isSentByYou
     }
     
     var tmid: String {
@@ -72,9 +72,9 @@ class TopicMessage {
         }
     }
     
-    var isSender: Bool {
+    var isSentByYou: Bool {
         get {
-            return _isSender
+            return _isSentByYou
         }
     }
 }

@@ -18,8 +18,9 @@ class DataService {
     
     static let ds = DataService()
     fileprivate var _REF_BASE = FIRDatabase.database().reference()
-    fileprivate var _REF_USER = FIRDatabase.database().reference().child("/user")
-    fileprivate var _REF_CHAT = FIRDatabase.database().reference().child("/chat")
+    fileprivate var _REF_USERS = FIRDatabase.database().reference().child("/users")
+    fileprivate var _REF_CHATS = FIRDatabase.database().reference().child("/chats")
+    fileprivate var _REF_MESSAGES = FIRDatabase.database().reference().child("/messages")
     
     var REF_BASE: FIRDatabaseReference {
         get {
@@ -27,29 +28,37 @@ class DataService {
         }
     }
     
-    var REF_USER: FIRDatabaseReference {
+    var REF_USERS: FIRDatabaseReference {
         get {
-            return _REF_USER
+            return _REF_USERS
         }
     }
     
-    var REF_CHAT: FIRDatabaseReference {
+    var REF_CHATS: FIRDatabaseReference {
         get {
-            return _REF_CHAT
+            return _REF_CHATS
+        }
+    }
+    
+    var REF_MESSAGES: FIRDatabaseReference {
+        get {
+            return _REF_MESSAGES
         }
     }
     
     // To be called whenever user logs out
     func removeAllObservers() {
         _REF_BASE.removeAllObservers()
-        _REF_USER.removeAllObservers()
-        _REF_CHAT.removeAllObservers()
+        _REF_USERS.removeAllObservers()
+        _REF_CHATS.removeAllObservers()
+        _REF_MESSAGES.removeAllObservers()
     }
     
     // MARK: User
     
     func logout(completed: (_ isSuccess: Bool) -> ()) {
         if let auth = FIRAuth.auth(), let _ = try? auth.signOut() {
+            self.removeAllObservers()
             FBSDKLoginManager().logOut()
             completed(true)
             return
@@ -65,7 +74,7 @@ class DataService {
         }
         let timeNow = Date().timeIntervalSince1970
         let user: [String: Any] = ["name": name, "birthday": birthday, "profilePhoto": pictureUrl, "timezone": timezone, "lastSeen": timeNow]
-        self.REF_USER.child(uid).observeSingleEvent(of: .value, with: { snapshot in
+        self.REF_USERS.child(uid).observeSingleEvent(of: .value, with: { snapshot in
             if snapshot.exists() {
                 // Check if user has already filled in at least org, school and discipline, if not label first time user
                 guard let userDict = snapshot.value as? [String: Any], let _ = userDict["organization"] as? String, let _ = userDict["school"] as? String, let _ = userDict["discipline"] as? String else {
@@ -75,7 +84,7 @@ class DataService {
                 completed(true, false)
             } else {
                 // Create new user
-                self.REF_USER.child(uid).setValue(user, withCompletionBlock: { (error, ref) in
+                self.REF_USERS.child(uid).setValue(user, withCompletionBlock: { (error, ref) in
                     completed(error == nil, true)
                 })
             }
@@ -89,9 +98,9 @@ class DataService {
             return
         }
         let timeNow = Date().timeIntervalSince1970
-        self.REF_USER.child(uid).observeSingleEvent(of: .value, with: { snapshot in
+        self.REF_USERS.child(uid).observeSingleEvent(of: .value, with: { snapshot in
             if snapshot.exists() {
-                self.REF_USER.child(uid).updateChildValues(["location": "\(lat),\(lon)", "lastSeen": timeNow], withCompletionBlock: { (error, ref) in
+                self.REF_USERS.child(uid).updateChildValues(["location": "\(lat),\(lon)", "lastSeen": timeNow], withCompletionBlock: { (error, ref) in
                     completed(error == nil)
                 })
             } else {
@@ -107,9 +116,9 @@ class DataService {
             return
         }
         let timeNow = Date().timeIntervalSince1970
-        self.REF_USER.child(uid).observeSingleEvent(of: .value, with: { snapshot in
+        self.REF_USERS.child(uid).observeSingleEvent(of: .value, with: { snapshot in
             if snapshot.exists() {
-                self.REF_USER.child(uid).updateChildValues(["lastSeen": timeNow], withCompletionBlock: { (error, ref) in
+                self.REF_USERS.child(uid).updateChildValues(["lastSeen": timeNow], withCompletionBlock: { (error, ref) in
                     completed(error == nil)
                 })
             } else {
@@ -141,9 +150,9 @@ class DataService {
         if tagline2 != nil {
             userFields["tagline2"] = tagline2!.lowercaseFirstLetter()
         }
-        self.REF_USER.child(uid).observeSingleEvent(of: .value, with: { snapshot in
+        self.REF_USERS.child(uid).observeSingleEvent(of: .value, with: { snapshot in
             if snapshot.exists() {
-                self.REF_USER.child(uid).updateChildValues(userFields, withCompletionBlock: { (error, ref) in
+                self.REF_USERS.child(uid).updateChildValues(userFields, withCompletionBlock: { (error, ref) in
                     completed(error == nil)
                 })
             } else {
@@ -166,9 +175,9 @@ class DataService {
         if coverPhotoUrl != nil {
             userPhotos["coverPhoto"] = coverPhotoUrl!
         }
-        self.REF_USER.child(uid).observeSingleEvent(of: .value, with: { snapshot in
+        self.REF_USERS.child(uid).observeSingleEvent(of: .value, with: { snapshot in
             if snapshot.exists() {
-                self.REF_USER.child(uid).updateChildValues(userPhotos, withCompletionBlock: { (error, ref) in
+                self.REF_USERS.child(uid).updateChildValues(userPhotos, withCompletionBlock: { (error, ref) in
                     completed(error == nil)
                 })
             } else {
@@ -184,7 +193,7 @@ class DataService {
             completed(false, nil)
             return
         }
-        self.REF_USER.child(uid_).observeSingleEvent(of: .value, with: { snapshot in
+        self.REF_USERS.child(uid_).observeSingleEvent(of: .value, with: { snapshot in
             if snapshot.exists() {
                 // Name, birthday, discipline, organization, profile photo, school are compulsory fields
                 guard let userDict = snapshot.value as? [String: Any], let name = userDict["name"] as? String, let birthday = userDict["birthday"] as? String, let discipline = userDict["discipline"] as? String, let org = userDict["organization"] as? String, let profilePhotoUrl = userDict["profilePhoto"] as? String, let school = userDict["school"] as? String else {
@@ -237,36 +246,11 @@ class DataService {
             return "\(uid2):\(uid1)"
         }
     }
-    
-    // Retrieve messages between self and connection
-    // Takes in connection (with no messages), pulls messages from server and populate connection
-//    func getChat(connection: Connection, completed: @escaping (_ isSuccess: Bool, _ connection: Connection?) -> ()) {
-//        guard let uid = getStoredUid() else {
-//            completed(false, nil)
-//            return
-//        }
-//        let chatId: String = getChatId(uid1: uid, uid2: connection.uid)
-//        self.REF_CHAT.child(chatId).observeSingleEvent(of: .value, with: { snapshot in
-//            if snapshot.exists() {
-//                guard let chatDict = snapshot.value as? [String: Any], let recent = chatDict["recent"] as? [String: Any], let dateMatched = chatDict["dateMatched"] as? String, let messages = chatDict["messages"] as? [String: [String: Any]] else {
-//                    completed(false, nil)
-//                    return
-//                }
-//                // TODO: Parse it into connection and output
-//                log.info("\(messages)")
-//            } else {
-//                // Chat does not exist. Error
-//                completed(false, nil)
-//            }
-//        })
-//    }
-    
-    
+
     // Observes the connection names, photos and disciplines, used in ConnectionsController
     func observeConnections(completed: @escaping (_ isSuccess: Bool, _ connections: [Connection]) -> ()) -> (FIRDatabaseReference, FIRDatabaseHandle) {
         let uid = getStoredUid() == nil ? "" : getStoredUid()!
-        let ref: FIRDatabaseReference = REF_USER.child("\(uid)/connections")
-        
+        let ref: FIRDatabaseReference = REF_USERS.child("\(uid)/connections")
         
         // Observed on value as not childAdded, as profile pic can change
         let handle = ref.observe(.value, with: { snapshot in
@@ -282,7 +266,7 @@ class DataService {
             var connections: [Connection] = []
             
             for snap in snaps {
-                if let dict = snap.value as? [String: Any], let discipline = dict["d"] as? String, let name = dict["n"] as? String, let photo = dict["p"] as? String {
+                if let dict = snap.value as? [String: Any], let discipline = dict["discipline"] as? String, let name = dict["name"] as? String, let photo = dict["profilePhoto"] as? String {
                     let conn: Connection = Connection(uid: snap.key, name: name, profileImageName: photo, disciplineImageName: getDisciplineIconForDiscipline(discipline: discipline))
                     connections.append(conn)
                 }
@@ -296,7 +280,7 @@ class DataService {
     func observeRecentChat(connection: Connection, completed: @escaping (_ isSuccess: Bool, _ connection: Connection?) -> ()) -> (FIRDatabaseReference, FIRDatabaseHandle) {
         let uid = getStoredUid() == nil ? "" : getStoredUid()!
         let chatId: String = getChatId(uid1: uid, uid2: connection.uid)
-        let ref: FIRDatabaseReference = REF_CHAT.child(chatId)
+        let ref: FIRDatabaseReference = REF_CHATS.child(chatId)
         let handle = ref.observe(.value, with: { snapshot in
             if !snapshot.exists() {
                 completed(false, nil)
@@ -311,9 +295,9 @@ class DataService {
             connection.dateMatched = dateMatched
             
             let date: Date = Date(timeIntervalSince1970: timestamp)
-            let isSender: Bool = poster == uid
+            let isSentByYou: Bool = poster == uid
             
-            let msg = Message(mid: mid, text: text, connection: connection, date: date, isSender: isSender)
+            let msg = Message(mid: mid, text: text, connection: connection, date: date, isSentByYou: isSentByYou)
             
             connection.clearMessages()
             connection.addMessage(message: msg)
@@ -323,42 +307,71 @@ class DataService {
         return (ref, handle)
     }
     
-//    func getConnections(completed: @escaping (_ isSuccess: Bool, _ connections: [Connection]) -> ()){
-//        guard let uid = getStoredUid() else {
-//            completed(false, [])
-//            return
-//        }
-//        
-//        self.REF_USER.child(uid).observeSingleEvent(of: .value, with: { snapshot in
-//            if snapshot.exists() {
-//                // Grab connections, and for each of those connections, check chat and grab recent and date matched
-//                guard let userDict = snapshot.value as? [String: Any], let connections = userDict["connections"] as? [String: [String: Any]] else {
-//                    completed(false, [])
-//                    return
-//                }
-//                for (cid, dict) in connections {
-//                    guard let name = dict["n"] as? String, let discipline = dict["d"] as? String, let picture = dict["p"] as? String else {
-//                        continue
-//                    }
-//                    // Map discipline name to packaged discipline icon image name
-//                    var conn: Connection = Connection(uid: cid, name: name, profileImageName: picture, disciplineImageName: getDisciplineIconForDiscipline(discipline: discipline))
-//                    
-//                    let chatId: String = getChatId(uid1: uid, uid2: cid)
-//                    // Get recent, date matched, (and might as well get all messages here)
-//                    
-//                    
-//                    
-//                }
-//                
-//            } else {
-//                // User does not exist. Error
-//                completed(false, [])
-//            }
-//            
-//        })
-//        
-//        // For each connection, fill in
-//    }
+    // Observes all chat messags of one connection, used in ChatController
+    func observeChatMessages(connection: Connection, completed: @escaping (_ isSuccess: Bool, _ connection: Connection?) -> ()) -> (FIRDatabaseReference, FIRDatabaseHandle) {
+        let uid = getStoredUid() == nil ? "" : getStoredUid()!
+        let chatId: String = getChatId(uid1: uid, uid2: connection.uid)
+        let ref: FIRDatabaseReference = REF_MESSAGES.child(chatId)
+        
+        let handle = ref.observe(.value, with: { snapshot in
+            if !snapshot.exists() {
+                completed(false, nil)
+                return
+            }
+            
+            // TODO: Have to deal with the case of a fresh connection, with no messages
+            
+            guard let snaps = snapshot.children.allObjects as? [FIRDataSnapshot] else {
+                completed(false, nil)
+                return
+            }
+            connection.clearMessages()
+            for snap in snaps {
+                if let dict = snap.value as? [String: Any], let text = dict["message"] as? String, let timestamp = dict["timestamp"] as? Double, let poster = dict["poster"] as? String {
+                    let mid: String = snap.key
+                    let isSentByYou: Bool = poster == uid
+                    let date = Date(timeIntervalSince1970: timestamp)
+                    let msg = Message(mid: mid, text: text, connection: connection, date: date, isSentByYou: isSentByYou)
+                    
+                    // TODO: Check if this duplicates all messages or not
+                    connection.addMessage(message: msg)
+                }
+            }
+            completed(true, connection)
+        })
+        return (ref, handle)
+    }
     
-    
+    // Adds a chat message to the messages with a connection, used in ChatController
+    func addChatMessage(connection: Connection, text: String, completed: @escaping (_ isSuccess: Bool, _ connection: Connection?) -> ()) {
+        let uid = getStoredUid() == nil ? "" : getStoredUid()!
+        let poster = uid
+        let chatId: String = getChatId(uid1: uid, uid2: connection.uid)
+        let timestamp = Date().timeIntervalSince1970
+        
+        // Creates new message in two places: Messages and Chats (lastMessage)
+        
+        let messagesRef: FIRDatabaseReference = REF_MESSAGES.child(chatId)
+        let newMessage: [String: Any] = ["message": text, "timestamp": timestamp, "poster": poster]
+        messagesRef.childByAutoId().setValue(newMessage) { (err, ref) in
+            if (err != nil) {
+                completed(false, nil)
+                return
+            }
+            let mid = ref.key
+            let chatsRef: FIRDatabaseReference = self.REF_CHATS.child(chatId)
+            let updatedChats: [String: Any] = ["mid": mid, "lastMessage": text, "timestamp": timestamp, "poster": poster]
+            chatsRef.updateChildValues(updatedChats, withCompletionBlock: { (err2, ref2) in
+                if (err2 != nil) {
+                    // Rewind addition to messagesRef to preserve atomicity
+                    messagesRef.child(mid).setValue(nil)
+                    completed(false, nil)
+                    return
+                }
+                let msg = Message(mid: mid, text: text, connection: connection, date: Date(timeIntervalSince1970: timestamp), isSentByYou: true)
+                connection.addMessage(message: msg)
+                completed(true, connection)
+            })
+        }
+    }
 }

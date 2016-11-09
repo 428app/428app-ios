@@ -21,8 +21,8 @@ class ConnectionsController: UICollectionViewController, UICollectionViewDelegat
     override func viewDidLoad() {
         super.viewDidLoad()
         self.extendedLayoutIncludesOpaqueBars = true
+        self.setupFirebase()
 //        self.setupData() // Setting up dummy data from DataService
-        
         navigationItem.title = "Connections"
         let layout = UICollectionViewFlowLayout()
         layout.minimumInteritemSpacing = 0
@@ -37,12 +37,10 @@ class ConnectionsController: UICollectionViewController, UICollectionViewDelegat
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        self.setupFirebase()
         tabBarController?.tabBar.isHidden = false
     }
     
-    override func viewWillDisappear(_ animated: Bool) {
-        super.viewWillDisappear(animated)
+    deinit {
         for (ref, handle) in firebaseRefsAndHandles {
             ref.removeObserver(withHandle: handle)
         }
@@ -51,6 +49,9 @@ class ConnectionsController: UICollectionViewController, UICollectionViewDelegat
     // MARK: Firebase
     
     func setupFirebase() {
+        // Note that there is no pagination with connections, because at the rate of 1 new connection a day, 
+        // this list will not likely become obscenely large
+        
         self.firebaseRefsAndHandles.append(DataService.ds.observeConnections { (isSuccess, connections) in
             for conn in connections {
                 // Register handlers for each of these
@@ -70,13 +71,17 @@ class ConnectionsController: UICollectionViewController, UICollectionViewDelegat
                     // Log new messages coming in
                     self.latestMessages.append(contentsOf: connection!.messages)
                     
-                    
+                    // Sort latest messages based on time
+                    // I know, not the most efficient. Could have done a binary search and insert, but frontend 
+                    // efficiency is not a concern given the limited number of connections.
+                    self.latestMessages.sort(by: { (m1, m2) -> Bool in
+                        return m1.date.compare(m2.date) == .orderedDescending
+                    })
                     
                     self.collectionView?.reloadData()
                 }))
             }
         })
-        
     }
     
     // MARK: Collection view 
@@ -108,7 +113,5 @@ class ConnectionsController: UICollectionViewController, UICollectionViewDelegat
     open var connectionToMinutesAgo = [String: Double]()
     open var connectionToLatestMessage = [String: Message]()
     open var midAutoId = 1
-    
-//    func collec
     
 }

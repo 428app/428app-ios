@@ -14,15 +14,15 @@ class Message {
     fileprivate var _text: String
     fileprivate var _connection: Connection
     fileprivate var _date: Date
-    fileprivate var _isSender: Bool // True if is sent by you
+    fileprivate var _isSentByYou: Bool // True if is sent by you
     fileprivate var _isSeen: Bool
     
-    init(mid: String, text: String, connection: Connection, date: Date, isSender: Bool = false, isSeen: Bool = true) {
+    init(mid: String, text: String, connection: Connection, date: Date, isSentByYou: Bool = false, isSeen: Bool = true) {
         _mid = mid
         _date = date
         _text = text
         _connection = connection
-        _isSender = isSender
+        _isSentByYou = isSentByYou
         _isSeen = isSeen
     }
     
@@ -50,9 +50,9 @@ class Message {
         }
     }
     
-    var isSender: Bool {
+    var isSentByYou: Bool {
         get {
-            return _isSender
+            return _isSentByYou
         }
     }
     

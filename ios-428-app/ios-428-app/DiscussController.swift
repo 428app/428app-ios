@@ -237,7 +237,7 @@ class DiscussController: UIViewController, UIGestureRecognizerDelegate, UITextVi
                     let m0: TopicMessage = section[j]
                     let m1: TopicMessage = section[j+1]
                     // Last in chain if next one is different from current
-                    chains.append(!((m0.isSender && m1.isSender) || (!m0.isSender && !m1.isSender)))
+                    chains.append(!((m0.isSentByYou && m1.isSentByYou) || (!m0.isSentByYou && !m1.isSentByYou)))
                 }
             }
             // End of row will be last in chain automatically
@@ -368,7 +368,7 @@ class DiscussController: UIViewController, UIGestureRecognizerDelegate, UITextVi
     func handleSend() {
         if let text = inputTextView.text {
             // Trim text before sending
-            let message = TopicMessage(tmid: "999", parentTid: "4", posterUid: "999", posterName: "Yihang", postercoverImageName: "business", text: text.trim(), date: Date(), isSender: true)
+            let message = TopicMessage(tmid: "999", parentTid: "4", posterUid: "999", posterName: "Yihang", postercoverImageName: "business", text: text.trim(), date: Date(), isSentByYou: true)
             self.messages.append(message)
             self.bucketMessagesIntoTime()
             self.assembleMessageIsLastInChain()
@@ -550,7 +550,7 @@ class DiscussController: UIViewController, UIGestureRecognizerDelegate, UITextVi
         let size = CGSize(width: 250, height: 1000)
         let options = NSStringDrawingOptions.usesFontLeading.union(.usesLineFragmentOrigin)
         let estimatedFrame = NSString(string: messageText).boundingRect(with: size, options: options, attributes: [NSFontAttributeName: UIFont.systemFont(ofSize: 16.0)], context: nil)
-        let cellHeight = message.isSender ? estimatedFrame.height + 16 : estimatedFrame.height + 16 + 19
+        let cellHeight = message.isSentByYou ? estimatedFrame.height + 16 : estimatedFrame.height + 16 + 19
         if let cell = self.collectionView.cellForItem(at: indexPath) as? TopicChatCell {
             if cell.shouldExpand {
                 self.cellTimeLabel.removeFromSuperview()
@@ -589,8 +589,8 @@ class DiscussController: UIViewController, UIGestureRecognizerDelegate, UITextVi
                 let dateString = dateFormatter.string(from: messageDate)
                 
                 // Alignment based on who texted
-                cellTimeLabel.textAlignment = message.isSender ? .right : .left
-                cellTimeLabel.text = (message.isSender ? "Sent at " : "Received at ") + dateString
+                cellTimeLabel.textAlignment = message.isSentByYou ? .right : .left
+                cellTimeLabel.text = (message.isSentByYou ? "Sent at " : "Received at ") + dateString
                 
                 cellTimeLabel.font = UIFont.systemFont(ofSize: 12.0)
                 cellTimeLabel.textColor = UIColor.lightGray

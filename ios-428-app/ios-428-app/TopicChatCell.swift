@@ -96,7 +96,7 @@ class TopicChatCell: BaseCollectionCell {
         let size = CGSize(width: 250, height: 1000)
         let options = NSStringDrawingOptions.usesFontLeading.union(.usesLineFragmentOrigin)
         let estimatedFrame = NSString(string: self.message.text).boundingRect(with: size, options: options, attributes: [NSFontAttributeName: TEXT_VIEW_FONT], context: nil)
-        if !self.message.isSender {
+        if !self.message.isSentByYou {
             addSubview(nameLabel)
             self.nameLabel.frame = CGRect(x: 45 + 13, y: 12, width: estimatedFrame.width, height: 18)
             self.messageTextView.frame = CGRect(x: 45 + 8, y: 21, width: estimatedFrame.width + 14, height: estimatedFrame.height + 16)

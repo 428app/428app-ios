@@ -8,12 +8,14 @@
 
 import Foundation
 import UIKit
+import Alamofire
 
 class ChatCell: BaseCollectionCell {
     
     fileprivate var message: Message!
     open var shouldExpand = false
     fileprivate let TEXT_VIEW_FONT = UIFont.systemFont(ofSize: 16.0)
+    open var request: Request?
     
     fileprivate let messageTextView: UITextView = {
         var textView = UITextView()
@@ -80,18 +82,24 @@ class ChatCell: BaseCollectionCell {
         self.messageTextView.isScrollEnabled = true
         self.messageTextView.text = self.message?.text
 
-        self.profileImageView.image = UIImage(named: profileImageName)
+//        self.profileImageView.image = UIImage(named: profileImageName)
+        // Download profile image
+        self.request = downloadImage(imageUrlString: self.message.connection.profileImageName, completed: { (isSuccess, image) in
+            if isSuccess && image != nil {
+                self.profileImageView.image = image
+            }
+        })
         
         let size = CGSize(width: 250, height: 1000)
         let options = NSStringDrawingOptions.usesFontLeading.union(.usesLineFragmentOrigin)
         let estimatedFrame = NSString(string: messageText).boundingRect(with: size, options: options, attributes: [NSFontAttributeName: TEXT_VIEW_FONT], context: nil)
-        if !self.message.isSender {
+        if !self.message.isSentByYou {
             self.messageTextView.frame = CGRect(x: 45 + 8, y: 2, width: estimatedFrame.width + 14, height: estimatedFrame.height + 16)
             self.profileImageView.isHidden = false
             self.messageTextView.textColor = UIColor.black
             
             if isLastInChain {
-                self.textBubbleView.frame = CGRect(x: 45 - 8, y: 0, width: estimatedFrame.width + 20 + 8 + 8, height: estimatedFrame.height + 16 + 6)
+                self.textBubbleView.frame = CGRect(x: 45 - 8, y: 0, width: estimatedFrame.width + 20 + 8 + 8, height: estimatedFrame.height + 16 + 5)
                 self.bubbleImageView.backgroundColor = UIColor.clear
                 self.bubbleImageView.image = BUBBLE_RECIPIENT_IMAGE
                 self.bubbleImageView.tintColor = UIColor(white: 0.95, alpha: 1)

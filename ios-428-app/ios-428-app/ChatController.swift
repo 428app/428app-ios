@@ -11,8 +11,12 @@
 
 import Foundation
 import UIKit
+import Firebase
 
 class ChatController: UIViewController, UICollectionViewDelegateFlowLayout, UITextViewDelegate, UICollectionViewDelegate, UICollectionViewDataSource, UIGestureRecognizerDelegate {
+    
+    /** FIREBASE **/
+    fileprivate var firebaseRefsAndHandles: [(FIRDatabaseReference, FIRDatabaseHandle)] = []
     
     /** CONSTANTS **/
     fileprivate let CELL_ID = "chatCell"
@@ -34,16 +38,11 @@ class ChatController: UIViewController, UICollectionViewDelegateFlowLayout, UITe
     fileprivate var topConstraintForCollectionView: NSLayoutConstraint!
     fileprivate var keyboardHeight: CGFloat = 216.0 // Default of 216.0, but reset the first time keyboard pops up
     
-    var connection: Connection! {
-        didSet { // Set from didSelect in ConnectionsController
-            self.messages = connection.messages
-            self.bucketMessagesIntoTime()
-            self.assembleMessageIsLastInChain()
-        }
-    }
+    var connection: Connection!
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        self.setupFirebase()
         self.view.backgroundColor = UIColor.white
         self.setupNavigationBar()
         self.setupCollectionView()
@@ -68,7 +67,33 @@ class ChatController: UIViewController, UICollectionViewDelegateFlowLayout, UITe
         self.unregisterObservers()
     }
     
+    deinit {
+        for (ref, handle) in firebaseRefsAndHandles {
+            ref.removeObserver(withHandle: handle)
+        }
+    }
+    
+    // MARK: Firebase
+    
+    func setupFirebase() {
+        self.firebaseRefsAndHandles.append(DataService.ds.observeChatMessages(connection: self.connection, completed: { (isSuccess, updatedConnection) in
+            if (!isSuccess || updatedConnection == nil) {
+                log.error("[Error] Can't pull chats for individual connection")
+                return
+            }
+            log.info("Messages updated")
+            self.messages = updatedConnection!.messages
+            self.organizeMessages()
+            self.collectionView.reloadData()
+        }))
+    }
+    
     // MARK: Process messages into buckets based on hourly time intervals
+    
+    fileprivate func organizeMessages() {
+        self.bucketMessagesIntoTime()
+        self.assembleMessageIsLastInChain()
+    }
     
     fileprivate func bucketMessagesIntoTime() {
         if self.messages.count == 0 {
@@ -123,7 +148,7 @@ class ChatController: UIViewController, UICollectionViewDelegateFlowLayout, UITe
                     let m0: Message = section[j]
                     let m1: Message = section[j+1]
                     // Last in chain if next one is different from current
-                    chains.append(!((m0.isSender && m1.isSender) || (!m0.isSender && !m1.isSender)))
+                    chains.append(!((m0.isSentByYou && m1.isSentByYou) || (!m0.isSentByYou && !m1.isSentByYou)))
                 }
             }
             // End of row will be last in chain automatically
@@ -343,14 +368,18 @@ class ChatController: UIViewController, UICollectionViewDelegateFlowLayout, UITe
     func handleSend() {
         if let text = inputTextView.text {
             // Trim text before sending
-            let message = Message(mid: "9999", text: text.trim(), connection: connection, date: Date(), isSender: true)
-            self.messages.append(message)
-            self.bucketMessagesIntoTime()
-            self.assembleMessageIsLastInChain()
-            self.resetInputContainer()
-            self.collectionView.reloadData()
-            self.collectionView.layoutIfNeeded()
-            self.scrollToLastItemInCollectionView()
+            DataService.ds.addChatMessage(connection: connection, text: text.trim(), completed: { (isSuccess, updatedConnection) in
+                if !isSuccess || updatedConnection == nil {
+                    log.error("[Error] Message failed to be posted")
+                    showErrorAlert(vc: self, title: "Error", message: "Could not send message. Please try again.")
+                    return
+                }
+                self.organizeMessages()
+                self.resetInputContainer()
+                self.collectionView.reloadData()
+                self.collectionView.layoutIfNeeded()
+                self.scrollToLastItemInCollectionView()
+            })
         }
     }
     
@@ -500,6 +529,7 @@ class ChatController: UIViewController, UICollectionViewDelegateFlowLayout, UITe
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: CELL_ID, for: indexPath) as! ChatCell
+        cell.request?.cancel()
         let message = self.messagesInTimeBuckets[indexPath.section][indexPath.row]
         let isLastInChain = self.messageIsLastInChain[indexPath.section][indexPath.row]
         cell.configureCell(messageObj: message, viewWidth: view.frame.width, isLastInChain: isLastInChain)
@@ -556,8 +586,8 @@ class ChatController: UIViewController, UICollectionViewDelegateFlowLayout, UITe
                 let dateString = dateFormatter.string(from: messageDate)
                 
                 // Alignment based on who texted
-                cellTimeLabel.textAlignment = message.isSender ? .right : .left
-                cellTimeLabel.text = (message.isSender ? "Sent at " : "Received at ") + dateString
+                cellTimeLabel.textAlignment = message.isSentByYou ? .right : .left
+                cellTimeLabel.text = (message.isSentByYou ? "Sent at " : "Received at ") + dateString
                 
                 cellTimeLabel.font = UIFont.systemFont(ofSize: 12.0)
                 cellTimeLabel.textColor = UIColor.lightGray

@@ -25,7 +25,7 @@ func m(minutesAgo: Double) -> Date {
 func loadTopicMessages() -> [TopicMessage] {
     let m1 = TopicMessage(tmid: "1", parentTid: "4", posterUid: "999", posterName: "Leonard", postercoverImageName: "business", text: "Creating a million jobs is not easy. Let's start with improving our own education system first.", date: m(minutesAgo: 200))
     let m2 = TopicMessage(tmid: "2", parentTid: "4", posterUid: "999", posterName: "Jenny", postercoverImageName: "biology", text: "Just open more restaurants so we get more jobs... and more food!", date: m(minutesAgo: 195))
-    let m3 = TopicMessage(tmid: "3", parentTid: "4", posterUid: "999", posterName: "Yihang", postercoverImageName: "business", text: "The economy is that bad right now and the financial sector where I come from is being hit that heavily. Let's think about how to preserve our own jobs first before thinking of how automation is replacing future jobs.", date: m(minutesAgo: 192), isSender: true)
+    let m3 = TopicMessage(tmid: "3", parentTid: "4", posterUid: "999", posterName: "Yihang", postercoverImageName: "business", text: "The economy is that bad right now and the financial sector where I come from is being hit that heavily. Let's think about how to preserve our own jobs first before thinking of how automation is replacing future jobs.", date: m(minutesAgo: 192), isSentByYou: true)
     let m4 = TopicMessage(tmid: "4", parentTid: "4", posterUid: "999", posterName: "Tomas", postercoverImageName: "computer", text: "Yihang, you're right in saying that. Times are tough, even interviews for tech jobs are dwindling, and too many people are fighting for those coveted positions.", date: m(minutesAgo: 180))
     let m5 = TopicMessage(tmid: "5", parentTid: "4", posterUid: "999", posterName: "Leonard", postercoverImageName: "business", text: "No one addressing the problem with education? I thought about it for a while and realized our education system is not creating enough creative and bold visionaries who can go on and generate more jobs. We need more open-ended education, and exclude memorization of text.", date: m(minutesAgo: 100))
     let m6 = TopicMessage(tmid: "6", parentTid: "4", posterUid: "999", posterName: "Thomas", postercoverImageName: "electricengineering", text: "Let's not focus on such a grandiose idea for now. Let's think about how each of us can generate 5-10 jobs by starting small businesses so that collectively we can achieve this vision. After all, the startups ARE the backbone of the American economy.", date: m(minutesAgo: 75))
@@ -66,10 +66,10 @@ extension ConnectionsController {
 //        let emil = Connection(uid: "5", name: "Emil", profileImageName: "emil-profile", coverImageName: "physics")
 //        let kezi = Connection(uid: "6", name: "Kezi", profileImageName: "kezi-profile", coverImageName: "physics")
 //        
-//        _ = self.createMessageForconnection(tomas, text: "Programming assignments take up so much time. But they are worthwhile.", minutesAgo: 60 * 24 * 3, isSender: true)
+//        _ = self.createMessageForconnection(tomas, text: "Programming assignments take up so much time. But they are worthwhile.", minutesAgo: 60 * 24 * 3, isSentByYou: true)
 //        _ = self.createMessageForconnection(kyooeun, text: "China is a wonderland. I frequent Beijing whenever I go back to do research.", minutesAgo: 60 * 24, isSeen: false)
 //        _ = self.createMessageForconnection(emil, text: "Quantum mechanics is my true love. You should go check it out.", minutesAgo: 25, isSeen: false)
-//        _ = self.createMessageForconnection(kezi, text: "What are your views about time travel? Is it PHYSICALLY possible?", minutesAgo: 29, isSender: true)
+//        _ = self.createMessageForconnection(kezi, text: "What are your views about time travel? Is it PHYSICALLY possible?", minutesAgo: 29, isSentByYou: true)
 //
 //        createLeoMessages()
 //        createThomasMessages()
@@ -87,10 +87,10 @@ extension ConnectionsController {
         let leo = Connection(uid: "7", name: "Leonard", profileImageName: "leo-profile", disciplineImageName: "business")
         _ = self.createMessageForconnection(leo, text: "Hello, my name is Leonard. Nice to meet you!", minutesAgo: 200)
         _ = self.createMessageForconnection(leo, text: "What do you do?", minutesAgo: 198)
-        _ = self.createMessageForconnection(leo, text: "Hi! My name is Yihang.", minutesAgo: 90, isSender: true)
-        _ = self.createMessageForconnection(leo, text: "I'm currently pursuing a Masters in Computational Science & Engineering.", minutesAgo: 89, isSender: true)
+        _ = self.createMessageForconnection(leo, text: "Hi! My name is Yihang.", minutesAgo: 90, isSentByYou: true)
+        _ = self.createMessageForconnection(leo, text: "I'm currently pursuing a Masters in Computational Science & Engineering.", minutesAgo: 89, isSentByYou: true)
         _ = self.createMessageForconnection(leo, text: "That's cool! Okay I'll brb and talk to you later all right?", minutesAgo: 20)
-        _ = self.createMessageForconnection(leo, text: "Data science is every where these days. Do you think you want to be involved in that?", minutesAgo: 15, isSender: true)
+        _ = self.createMessageForconnection(leo, text: "Data science is every where these days. Do you think you want to be involved in that?", minutesAgo: 15, isSentByYou: true)
     }
     
     fileprivate func createThomasMessages() {
@@ -100,16 +100,16 @@ extension ConnectionsController {
         _ = self.createMessageForconnection(thomas, text: "Anyway just thought of a new twist. Let's meet for a while.", minutesAgo: 60 * 24 * 1.5)
         
         // Response message
-        _ = self.createMessageForconnection(thomas, text: "Okay, okay I'm finally replying now! Hi!", minutesAgo: 60 * 24 * 1.4, isSender: true)
+        _ = self.createMessageForconnection(thomas, text: "Okay, okay I'm finally replying now! Hi!", minutesAgo: 60 * 24 * 1.4, isSentByYou: true)
         _ = self.createMessageForconnection(thomas, text: "Ok great. Are you free anytime soon to discuss some of my ideas? We can play ping pong too if you want.", minutesAgo: 60 * 24 * 1.3)
-        _ = self.createMessageForconnection(thomas, text: "Sure. How about 6pm tomorrow at Richard's Basement?", minutesAgo: 60 * 24 * 1.25, isSender: true)
-        _ = self.createMessageForconnection(thomas, text: "Also I'm not so sure how free I am from tomorrow onwards. I'm going to be coding 428 non stop until I finally finish implementing it! This is a product that has real value for people - Imagine you having connections from multiple different disciplines! And all those disciplines are already right here at Harvard, but unfortunately with no easy way to connect them... until now!!", minutesAgo: 60 * 24 * 1.2, isSender: true)
+        _ = self.createMessageForconnection(thomas, text: "Sure. How about 6pm tomorrow at Richard's Basement?", minutesAgo: 60 * 24 * 1.25, isSentByYou: true)
+        _ = self.createMessageForconnection(thomas, text: "Also I'm not so sure how free I am from tomorrow onwards. I'm going to be coding 428 non stop until I finally finish implementing it! This is a product that has real value for people - Imagine you having connections from multiple different disciplines! And all those disciplines are already right here at Harvard, but unfortunately with no easy way to connect them... until now!!", minutesAgo: 60 * 24 * 1.2, isSentByYou: true)
         _ = self.createMessageForconnection(thomas, text: "OK good luck with your crazy ideas then! I hope you do well in that.", minutesAgo: 60 * 24 * 1.19)
         _ = self.createMessageForconnection(thomas, text: "Whoever said it is the end of Moore's law is kidding!", minutesAgo: 60 * 24 * 1.1, isSeen: false)
     }
 
-    fileprivate func createMessageForconnection(_ connection: Connection, text: String, minutesAgo: Double, isSender: Bool = false, isSeen: Bool = true) -> Message {
-        let message = Message(mid: "\(midAutoId)", text: text, connection: connection, date: Date().addingTimeInterval(-minutesAgo * 60), isSender: isSender, isSeen: isSeen)
+    fileprivate func createMessageForconnection(_ connection: Connection, text: String, minutesAgo: Double, isSentByYou: Bool = false, isSeen: Bool = true) -> Message {
+        let message = Message(mid: "\(midAutoId)", text: text, connection: connection, date: Date().addingTimeInterval(-minutesAgo * 60), isSentByYou: isSentByYou, isSeen: isSeen)
         midAutoId += 1
         connection.addMessage(message: message) // connection has all their own messages
         let uid = connection.uid
