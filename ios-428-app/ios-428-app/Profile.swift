@@ -37,18 +37,18 @@ class Profile {
         _tagline1 = tagline1
         _tagline2 = tagline2
         _discipline = discipline
-        _disciplineIcon = Profile.getDisciplineIconForDiscipline(discipline: _discipline)
+        _disciplineIcon = getDisciplineIconForDiscipline(discipline: _discipline)
         
     }
     
-    static func getDisciplineIconForDiscipline(discipline: String) -> String {
-        let ind = DISCIPLINE_OPTIONS.index(of: discipline)
-        if ind != nil && ind! > 0 && ind! < DISCIPLINE_ICONS.count {
-            return DISCIPLINE_ICONS[ind!]
-        }
-        return "business" // TODO: Set a default discipline here
-    }
-    
+//    static func getDisciplineIconForDiscipline(discipline: String) -> String {
+//        let ind = DISCIPLINE_OPTIONS.index(of: discipline)
+//        if ind != nil && ind! > 0 && ind! < DISCIPLINE_ICONS.count {
+//            return DISCIPLINE_ICONS[ind!]
+//        }
+//        return "business" // TODO: Set a default discipline here
+//    }
+//    
     var uid: String {
         get {
             return _uid
@@ -109,7 +109,7 @@ class Profile {
         }
         set(d) {
             _discipline = d
-            _disciplineIcon = Profile.getDisciplineIconForDiscipline(discipline: d)
+            _disciplineIcon = getDisciplineIconForDiscipline(discipline: d)
         }
     }
     

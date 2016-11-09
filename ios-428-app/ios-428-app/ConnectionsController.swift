@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import Firebase
 
 class ConnectionsController: UICollectionViewController, UICollectionViewDelegateFlowLayout {
     
@@ -14,10 +15,14 @@ class ConnectionsController: UICollectionViewController, UICollectionViewDelegat
     
     open var latestMessages: [Message] = [Message]() // Non-private so DataService can access
     
+    fileprivate var firebaseRefsAndHandles: [(FIRDatabaseReference, FIRDatabaseHandle)] = []
+    
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         self.extendedLayoutIncludesOpaqueBars = true
-        self.setupData() // Setting up dummy data from DataService
+//        self.setupData() // Setting up dummy data from DataService
+        
         navigationItem.title = "Connections"
         let layout = UICollectionViewFlowLayout()
         layout.minimumInteritemSpacing = 0
@@ -32,7 +37,54 @@ class ConnectionsController: UICollectionViewController, UICollectionViewDelegat
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+        self.setupFirebase()
         tabBarController?.tabBar.isHidden = false
+    }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        for (ref, handle) in firebaseRefsAndHandles {
+            ref.removeObserver(withHandle: handle)
+        }
+    }
+    
+    // MARK: Firebase
+    
+    func setupFirebase() {
+        self.firebaseRefsAndHandles.append(DataService.ds.observeConnections { (isSuccess, connections) in
+            for conn in connections {
+                // Register handlers for each of these
+                if !isSuccess {
+                    log.error("[Error] Can't pull all connections")
+                    return
+                }
+                self.firebaseRefsAndHandles.append(DataService.ds.observeRecentChat(connection: conn, completed: { (isSuccess, connection) in
+                    if !isSuccess || connection == nil {
+                        log.error("[Error] Can't pull a certain connection")
+                        return
+                    }
+                    
+                    // Find the messages belonging to this connection, remove them, then add this
+                    self.latestMessages = self.latestMessages.filter() {$0.connection.uid != connection!.uid}
+                    log.info("\(self.latestMessages.count)")
+                    
+                    
+                    
+                    // Log new messages coming in
+                    
+                    for m in connection!.messages {
+                        log.info("\(m.text)")
+                    }
+                    
+                    self.latestMessages.append(contentsOf: connection!.messages)
+                    
+                    
+                    
+                    self.collectionView?.reloadData()
+                }))
+            }
+        })
+        
     }
     
     // MARK: Collection view 

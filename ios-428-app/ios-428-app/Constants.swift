@@ -9,11 +9,6 @@
 import Foundation
 import UIKit
 
-// TODO: Add in the full list of disciplines here
-let DISCIPLINE_OPTIONS = ["Business", "Computer Science", "Biology", "East Asian Studies", "Physics", "Electrical Engineering"]
-// Maps in sorted order
-let DISCIPLINE_ICONS = ["business", "computer", "biology", "eastasian", "physics", "electricengineering"]
-
 // Notifications
 let NOTIF_EXPANDCHATCELL = NSNotification.Name.init(rawValue: "expandChatCell")
 let NOTIF_EXPANDTOPICCELL = NSNotification.Name.init(rawValue: "expandTopicCell")

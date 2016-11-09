@@ -240,34 +240,125 @@ class DataService {
     
     // Retrieve messages between self and connection
     // Takes in connection (with no messages), pulls messages from server and populate connection
-    func getChat(connection: Connection, completed: @escaping (_ isSuccess: Bool, _ connection: Connection?) -> ()) {
-        guard let uid = getStoredUid() else {
-            completed(false, nil)
-            return
-        }
-        let chatId: String = getChatId(uid1: uid, uid2: connection.uid)
-        self.REF_CHAT.child(chatId).observeSingleEvent(of: .value, with: { snapshot in
-            if snapshot.exists() {
-                guard let chatDict = snapshot.value as? [String: Any], let recent = chatDict["recent"] as? [String: Any], let dateMatched = chatDict["dateMatched"] as? String, let messages = chatDict["messages"] as? [String: [String: Any]] else {
-                    completed(false, nil)
-                    return
-                }
-                // TODO: Parse it into connection and output
-                log.info("\(messages)")
-            } else {
-                // Chat does not exist. Error
-                completed(false, nil)
+//    func getChat(connection: Connection, completed: @escaping (_ isSuccess: Bool, _ connection: Connection?) -> ()) {
+//        guard let uid = getStoredUid() else {
+//            completed(false, nil)
+//            return
+//        }
+//        let chatId: String = getChatId(uid1: uid, uid2: connection.uid)
+//        self.REF_CHAT.child(chatId).observeSingleEvent(of: .value, with: { snapshot in
+//            if snapshot.exists() {
+//                guard let chatDict = snapshot.value as? [String: Any], let recent = chatDict["recent"] as? [String: Any], let dateMatched = chatDict["dateMatched"] as? String, let messages = chatDict["messages"] as? [String: [String: Any]] else {
+//                    completed(false, nil)
+//                    return
+//                }
+//                // TODO: Parse it into connection and output
+//                log.info("\(messages)")
+//            } else {
+//                // Chat does not exist. Error
+//                completed(false, nil)
+//            }
+//        })
+//    }
+    
+    
+    // Observes the connection names, photos and disciplines, used in ConnectionsController
+    func observeConnections(completed: @escaping (_ isSuccess: Bool, _ connections: [Connection]) -> ()) -> (FIRDatabaseReference, FIRDatabaseHandle) {
+        let uid = getStoredUid() == nil ? "" : getStoredUid()!
+        let ref: FIRDatabaseReference = REF_USER.child("\(uid)/connections")
+        
+        
+        // Observed on value as not childAdded, as profile pic can change
+        let handle = ref.observe(.value, with: { snapshot in
+            if !snapshot.exists() {
+                completed(false, [])
+                return
             }
+            guard let snaps = snapshot.children.allObjects as? [FIRDataSnapshot] else {
+                completed(false, [])
+                return
+            }
+            
+            var connections: [Connection] = []
+            
+            for snap in snaps {
+                if let dict = snap.value as? [String: Any], let discipline = dict["d"] as? String, let name = dict["n"] as? String, let photo = dict["p"] as? String {
+                    let conn: Connection = Connection(uid: snap.key, name: name, profileImageName: photo, disciplineImageName: discipline)
+                    connections.append(conn)
+                }
+            }
+            completed(true, connections)
         })
+        return (ref, handle)
     }
     
-    func getConnections(completed: @escaping (_ isSuccess: Bool, _ connections: [Connection]) -> ()){
-        guard let uid = getStoredUid() else {
-            completed(false, [])
-            return
-        }
-        // For each connection, fill in 
+    // Observes the recent message by one connection, used in ConnectionsController
+    func observeRecentChat(connection: Connection, completed: @escaping (_ isSuccess: Bool, _ connection: Connection?) -> ()) -> (FIRDatabaseReference, FIRDatabaseHandle) {
+        let uid = getStoredUid() == nil ? "" : getStoredUid()!
+        let chatId: String = getChatId(uid1: uid, uid2: connection.uid)
+        let ref: FIRDatabaseReference = REF_CHAT.child(chatId)
+        let handle = ref.observe(.value, with: { snapshot in
+            if !snapshot.exists() {
+                completed(false, nil)
+                return
+            }
+            
+            guard let dict = snapshot.value as? [String: Any], let mid = dict["mid"] as? String, let text = dict["lastMessage"] as? String, let timestamp = dict["timestamp"] as? Double, let poster = dict["poster"] as? String, let dateMatched = dict["dateMatched"] as? String else {
+                completed(false, nil)
+                return
+            }
+            
+            connection.dateMatched = dateMatched
+            
+            let date: Date = Date(timeIntervalSince1970: timestamp)
+            let isSender: Bool = poster == uid
+            
+            let msg = Message(mid: mid, text: text, connection: connection, date: date, isSender: isSender)
+            
+            connection.clearMessages()
+            connection.addMessage(message: msg)
+            
+            completed(true, connection)
+        })
+        return (ref, handle)
     }
+    
+//    func getConnections(completed: @escaping (_ isSuccess: Bool, _ connections: [Connection]) -> ()){
+//        guard let uid = getStoredUid() else {
+//            completed(false, [])
+//            return
+//        }
+//        
+//        self.REF_USER.child(uid).observeSingleEvent(of: .value, with: { snapshot in
+//            if snapshot.exists() {
+//                // Grab connections, and for each of those connections, check chat and grab recent and date matched
+//                guard let userDict = snapshot.value as? [String: Any], let connections = userDict["connections"] as? [String: [String: Any]] else {
+//                    completed(false, [])
+//                    return
+//                }
+//                for (cid, dict) in connections {
+//                    guard let name = dict["n"] as? String, let discipline = dict["d"] as? String, let picture = dict["p"] as? String else {
+//                        continue
+//                    }
+//                    // Map discipline name to packaged discipline icon image name
+//                    var conn: Connection = Connection(uid: cid, name: name, profileImageName: picture, disciplineImageName: getDisciplineIconForDiscipline(discipline: discipline))
+//                    
+//                    let chatId: String = getChatId(uid1: uid, uid2: cid)
+//                    // Get recent, date matched, (and might as well get all messages here)
+//                    
+//                    
+//                    
+//                }
+//                
+//            } else {
+//                // User does not exist. Error
+//                completed(false, [])
+//            }
+//            
+//        })
+//        
+//        // For each connection, fill in
+//    }
     
     
 }

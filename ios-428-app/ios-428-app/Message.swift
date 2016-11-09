@@ -14,7 +14,7 @@ class Message {
     fileprivate var _text: String
     fileprivate var _connection: Connection
     fileprivate var _date: Date
-    fileprivate var _isSender: Bool // Is sent by you
+    fileprivate var _isSender: Bool // True if is sent by you
     fileprivate var _isSeen: Bool
     
     init(mid: String, text: String, connection: Connection, date: Date, isSender: Bool = false, isSeen: Bool = true) {

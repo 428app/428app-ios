@@ -69,6 +69,7 @@
 		40AB80031DB6FAA200492788 /* PictureModalController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 40AB80021DB6FAA200492788 /* PictureModalController.swift */; };
 		40AB80051DB7094700492788 /* EditProfessionalController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 40AB80041DB7094700492788 /* EditProfessionalController.swift */; };
 		40AB80071DB7095200492788 /* EditTaglineController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 40AB80061DB7095200492788 /* EditTaglineController.swift */; };
+		40E2E1401DD26B8200469B4D /* Discipline.swift in Sources */ = {isa = PBXBuildFile; fileRef = 40E2E13F1DD26B8200469B4D /* Discipline.swift */; };
 		FED3D2F8E9831031BBFFDBEB /* Pods_ios_428_app.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1B0A78A64649B55915C0C572 /* Pods_ios_428_app.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
 /* End PBXBuildFile section */
 
@@ -141,6 +142,7 @@
 		40AB80021DB6FAA200492788 /* PictureModalController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PictureModalController.swift; sourceTree = "<group>"; };
 		40AB80041DB7094700492788 /* EditProfessionalController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EditProfessionalController.swift; sourceTree = "<group>"; };
 		40AB80061DB7095200492788 /* EditTaglineController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EditTaglineController.swift; sourceTree = "<group>"; };
+		40E2E13F1DD26B8200469B4D /* Discipline.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Discipline.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -172,6 +174,7 @@
 		404C22F71DBDB8580054FE19 /* Frontend */ = {
 			isa = PBXGroup;
 			children = (
+				40E2E13F1DD26B8200469B4D /* Discipline.swift */,
 				4020CE141DBB569000461181 /* Environment.swift */,
 				4064A1EA1DAC80F100071383 /* Constants.swift */,
 				4064A2151DACBCDC00071383 /* Extensions.swift */,
@@ -532,6 +535,7 @@
 				4064A2291DB2B0B500071383 /* Message.swift in Sources */,
 				4024F22B1DB85C0E007819F7 /* PaddingLabel.swift in Sources */,
 				40AB7FFC1DB5B09700492788 /* BaseTableViewCell.swift in Sources */,
+				40E2E1401DD26B8200469B4D /* Discipline.swift in Sources */,
 				4064A2161DACBCDC00071383 /* Extensions.swift in Sources */,
 				40AB80031DB6FAA200492788 /* PictureModalController.swift in Sources */,
 				40AB80051DB7094700492788 /* EditProfessionalController.swift in Sources */,

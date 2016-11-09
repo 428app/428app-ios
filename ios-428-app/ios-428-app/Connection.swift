@@ -14,18 +14,18 @@ class Connection {
     fileprivate var _name: String
     fileprivate var _profileImageName: String
     fileprivate var _disciplineImageName: String // Packaged in the app's assets
-    fileprivate var _messages = [Message]() // Not loaded off the start, only loaded when user clicks on chat
-    fileprivate var _dateMatched: Date
-    fileprivate var _recentMessage: String
     
-    init(uid: String, name: String, profileImageName: String, disciplineImageName: String, messages: [Message] = [Message](), dateMatched: Date = Date(), recentMessage: String = "") {
+    // NOTE: Most recent message is on top of messages
+    fileprivate var _messages = [Message]() // Not loaded off the start, only loaded when user clicks on chat
+    fileprivate var _dateMatched: String
+    
+    init(uid: String, name: String, profileImageName: String, disciplineImageName: String, messages: [Message] = [Message](), dateMatched: String = "") {
         _uid = uid
         _name = name
         _profileImageName = profileImageName
         _disciplineImageName = disciplineImageName
         _messages = messages
         _dateMatched = dateMatched
-        _recentMessage = recentMessage
     }
     
     var uid: String {
@@ -62,15 +62,18 @@ class Connection {
         _messages.append(message)
     }
     
-    var dateMatched: Date {
+    func clearMessages() {
+        _messages = []
+    }
+    
+    var dateMatched: String {
         get {
             return _dateMatched
         }
-    }
-    
-    var recentMessage: String {
-        get {
-            return _recentMessage
+        set(date) {
+            _dateMatched = date
         }
+        
     }
+
 }
