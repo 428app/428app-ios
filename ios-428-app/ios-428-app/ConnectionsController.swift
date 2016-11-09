@@ -102,7 +102,7 @@ class ConnectionsController: UICollectionViewController, UICollectionViewDelegat
     
     override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: CELL_ID, for: indexPath) as! ConnectionCell
-        cell.request?.cancel()
+//        cell.request?.cancel()
         let message = self.latestMessages[indexPath.item]
         cell.configureCell(messageObj: message)
         return cell

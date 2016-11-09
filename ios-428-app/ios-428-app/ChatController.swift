@@ -13,6 +13,9 @@ import Foundation
 import UIKit
 import Firebase
 
+// TODO: Scroll to bottom first, then load view
+
+
 class ChatController: UIViewController, UICollectionViewDelegateFlowLayout, UITextViewDelegate, UICollectionViewDelegate, UICollectionViewDataSource, UIGestureRecognizerDelegate {
     
     /** FIREBASE **/
@@ -96,6 +99,7 @@ class ChatController: UIViewController, UICollectionViewDelegateFlowLayout, UITe
         for (ref, handle) in firebaseRefsAndHandles {
             ref.removeObserver(withHandle: handle)
         }
+        self.pullToRefreshIndicator.startAnimating()
         self.firebaseRefsAndHandles.append(DataService.ds.observeChatMessages(connection: self.connection, limit: self.numMessages, completed: { (isSuccess, updatedConnection) in
             self.activityIndicator.stopAnimating()
             if (!isSuccess || updatedConnection == nil) {
@@ -117,6 +121,7 @@ class ChatController: UIViewController, UICollectionViewDelegateFlowLayout, UITe
                         self.scrollToLastItemInCollectionView()
                     }
             })
+            self.pullToRefreshIndicator.stopAnimating()
             self.refreshControl.endRefreshing()
         }))
     }
@@ -151,7 +156,6 @@ class ChatController: UIViewController, UICollectionViewDelegateFlowLayout, UITe
         // Setup refresh control for pull-to-refresh
         self.refreshControl.addSubview(self.pullToRefreshIndicator)
         self.pullToRefreshIndicator.center = CGPoint(x: self.view.center.x, y: self.refreshControl.center.y)
-        self.pullToRefreshIndicator.startAnimating() // Keeps animating, as refresh control while hide it anyway
         collectionView.addSubview(self.refreshControl)
         
         self.reobserveMessages(isReobserved: false)

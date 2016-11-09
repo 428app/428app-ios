@@ -115,7 +115,7 @@ class ChatCell: BaseCollectionCell {
             
             if isLastInChain {
                 self.bubbleImageView.backgroundColor = UIColor.clear
-                self.textBubbleView.frame = CGRect(x: viewWidth - estimatedFrame.width - 16 - 8 - 16 - 8, y: 0, width: estimatedFrame.width + 20 + 8 + 8, height: estimatedFrame.height + 16 + 6)
+                self.textBubbleView.frame = CGRect(x: viewWidth - estimatedFrame.width - 16 - 8 - 16 - 8, y: 0, width: estimatedFrame.width + 20 + 8 + 8, height: estimatedFrame.height + 16 + 3)
                 self.bubbleImageView.image = BUBBLE_ME_IMAGE
                 self.bubbleImageView.tintColor = GREEN_UICOLOR
             } else {

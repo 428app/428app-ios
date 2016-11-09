@@ -349,28 +349,20 @@ class DataService {
         let timestamp = Date().timeIntervalSince1970
         
         // Creates new message in two places: Messages and Chats (lastMessage)
+        // Do a multipath update to preserve atomicity, even for offline updates
         
-        let messagesRef: FIRDatabaseReference = REF_MESSAGES.child(chatId)
+        let messagesRef: FIRDatabaseReference = REF_MESSAGES.child(chatId).childByAutoId()
+        let mid = messagesRef.key
         let newMessage: [String: Any] = ["message": text, "timestamp": timestamp, "poster": poster]
-        messagesRef.childByAutoId().setValue(newMessage) { (err, ref) in
+        
+        REF_BASE.updateChildValues(["messages/\(chatId)/\(mid)": newMessage, "chats/\(chatId)/mid": mid, "chats/\(chatId)/lastMessage": text, "chats/\(chatId)/timestamp": timestamp, "chats/\(chatId)/poster": poster]) { (err, ref) in
             if (err != nil) {
                 completed(false, nil)
                 return
             }
-            let mid = ref.key
-            let chatsRef: FIRDatabaseReference = self.REF_CHATS.child(chatId)
-            let updatedChats: [String: Any] = ["mid": mid, "lastMessage": text, "timestamp": timestamp, "poster": poster]
-            chatsRef.updateChildValues(updatedChats, withCompletionBlock: { (err2, ref2) in
-                if (err2 != nil) {
-                    // Rewind addition to messagesRef to preserve atomicity
-                    messagesRef.child(mid).setValue(nil)
-                    completed(false, nil)
-                    return
-                }
-                let msg = Message(mid: mid, text: text, connection: connection, date: Date(timeIntervalSince1970: timestamp), isSentByYou: true)
-                connection.addMessage(message: msg)
-                completed(true, connection)
-            })
+            let msg = Message(mid: mid, text: text, connection: connection, date: Date(timeIntervalSince1970: timestamp), isSentByYou: true)
+            connection.addMessage(message: msg)
+            completed(true, connection)
         }
     }
 }

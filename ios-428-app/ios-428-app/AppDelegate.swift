@@ -22,6 +22,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         window?.rootViewController = LoginController()
         UINavigationBar.appearance().isTranslucent = true
         FIRApp.configure()
+        FIRDatabase.database().persistenceEnabled = true
         return FBSDKApplicationDelegate.sharedInstance()
             .application(application, didFinishLaunchingWithOptions: launchOptions)
     }
