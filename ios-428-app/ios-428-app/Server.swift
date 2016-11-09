@@ -84,7 +84,6 @@ let imageCache = AutoPurgingImageCache(
 
 func downloadImage(imageUrlString: String, completed: @escaping (_ isSuccess: Bool, _ image: UIImage?) -> ()) -> Request? {
     if let image = imageCache.image(withIdentifier: imageUrlString) {
-        log.info("Image retrieved from cache")
         completed(true, image)
         return nil
     }

@@ -16,7 +16,7 @@ import CoreLocation
 
 class LoginController: UIViewController, UIScrollViewDelegate, CLLocationManagerDelegate {
     
-    fileprivate let MINIMAL_connection_COUNT = 50 // Minimal number of connections required to authenticate 'real' user
+    fileprivate let MINIMAL_FRIEND_COUNT = 50 // Minimal number of FB friends required to authenticate 'real' user
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -103,7 +103,7 @@ class LoginController: UIViewController, UIScrollViewDelegate, CLLocationManager
     func fbLogin() {
         let facebookLogin = FBSDKLoginManager()
         // TODO: Submit app review to facebook to get permission for user_birthday
-        facebookLogin.logIn(withReadPermissions: ["public_profile", "user_connections", "user_birthday"], from: self) { (facebookResult, facebookError) in
+        facebookLogin.logIn(withReadPermissions: ["public_profile", "user_friends", "user_birthday"], from: self) { (facebookResult, facebookError) in
             
             if facebookError != nil || facebookResult == nil {
                 log.error("Facebook login failed. Error \(facebookError)")
@@ -113,8 +113,9 @@ class LoginController: UIViewController, UIScrollViewDelegate, CLLocationManager
                 return
             } else {
                 showLoader(message: "Syncing you with Facebook...")
-                // Launch FB graph search to get birthday, higher resolution picture, and connections
-                let fbRequest = FBSDKGraphRequest.init(graphPath: "me", parameters: ["fields": "birthday,picture.width(960).height(960),connections"])
+                // Launch FB graph search to get birthday, higher resolution picture, and friends
+                let fbRequest = FBSDKGraphRequest.init(graphPath: "me", parameters: ["fields": "birthday,picture.width(960).height(960),friends"])
+                
                 let connection = FBSDKGraphRequestConnection()
                 connection.add(fbRequest, completionHandler: { (conn, fbResult, error) in
                     
@@ -124,16 +125,16 @@ class LoginController: UIViewController, UIScrollViewDelegate, CLLocationManager
                         return
                     } else {
                         
-                        // Chaining to get connection count, picture url and birthday from graph request result
-                        guard let result = fbResult as? [String: Any], let connectionCount = (result as NSDictionary).value(forKeyPath: "connections.summary.total_count") as? Int, let pictureUrl = (result as NSDictionary).value(forKeyPath: "picture.data.url") as? String, let birthdayString = result["birthday"] as? String else {
+                        // Chaining to get friend count, picture url and birthday from graph request result
+                        guard let result = fbResult as? [String: Any], let friendCount = (result as NSDictionary).value(forKeyPath: "friends.summary.total_count") as? Int, let pictureUrl = (result as NSDictionary).value(forKeyPath: "picture.data.url") as? String, let birthdayString = result["birthday"] as? String else {
                             log.error("Could not fetch user details from FB graph")
                             showErrorAlert(vc: self, title: "Could not sign in", message: "There was a problem syncing with Facebook. Please check back again later.")
                             return
                         }
                         
-                        // Make sure user at least has a certain number of connections, if not flag fake account
-                        if connectionCount < self.MINIMAL_connection_COUNT {
-                            log.error("User does not have enough FB connections")
+                        // Make sure user at least has a certain number of friends, if not flag fake account
+                        if friendCount < self.MINIMAL_FRIEND_COUNT {
+                            log.error("User does not have enough FB friends")
                             showErrorAlert(vc: self, title: "Oops", message: "Hmm... we suspect you're not using your genuine Facebook account. Kindly login using your real account. If you feel that that's a problem, contact us.")
                             return
                         }

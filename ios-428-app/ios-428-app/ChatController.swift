@@ -109,6 +109,13 @@ class ChatController: UIViewController, UICollectionViewDelegateFlowLayout, UITe
             self.messages = updatedConnection!.messages
             self.organizeMessages()
             self.collectionView.reloadData()
+            UIView.animate(withDuration: 0, animations: { 
+                self.collectionView.reloadData()
+                }, completion: { (isSuccess) in
+                    if !isReobserved {
+                        self.scrollToLastItemInCollectionView()
+                    }
+            })
             self.refreshControl.endRefreshing()
         }))
     }
@@ -408,6 +415,7 @@ class ChatController: UIViewController, UICollectionViewDelegateFlowLayout, UITe
     func handleSend() {
         if let text = inputTextView.text {
             // Trim text before sending
+            self.sendButton.isEnabled = false // Disable straight away to prevent double send
             
             // Reobserve every 10 messages
             self.countdownToAddLimitAfterAddingMessage -= 1
