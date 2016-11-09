@@ -120,18 +120,26 @@ class ChatController: UIViewController, UICollectionViewDelegateFlowLayout, UITe
         }))
     }
     
+    fileprivate lazy var activityIndicator : CustomActivityIndicatorView = {
+        let image : UIImage = UIImage(named: "loading")!
+        return CustomActivityIndicatorView(image: image)
+    }()
+    
     fileprivate lazy var refreshControl: UIRefreshControl = {
        let control = UIRefreshControl()
-        control.tintColor = UIColor.white
-        control.backgroundColor = GREEN_UICOLOR
-        control.attributedTitle = NSAttributedString(string: "Pull to load more messages", attributes: [NSFontAttributeName: FONT_HEAVY_SMALL, NSForegroundColorAttributeName: UIColor.white])
+        control.tintColor = UIColor.clear
+        control.backgroundColor = UIColor.clear
         control.addTarget(self, action: #selector(loadMoreMessages), for: .valueChanged)
         return control
     }()
     
     func setupFirebase() {
-        // Also setup refresh control
+        // Also setup refresh control for pull-to-refresh
+        self.refreshControl.addSubview(self.activityIndicator)
+        self.activityIndicator.center = CGPoint(x: self.view.center.x, y: self.refreshControl.center.y)
+        self.activityIndicator.startAnimating()
         collectionView.addSubview(self.refreshControl)
+        
         self.reobserveMessages(isReobserved: false)
     }
     

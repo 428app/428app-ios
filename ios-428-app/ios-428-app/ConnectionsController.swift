@@ -22,7 +22,6 @@ class ConnectionsController: UICollectionViewController, UICollectionViewDelegat
         super.viewDidLoad()
         self.extendedLayoutIncludesOpaqueBars = true
         self.setupFirebase()
-//        self.setupData() // Setting up dummy data from DataService
         navigationItem.title = "Connections"
         let layout = UICollectionViewFlowLayout()
         layout.minimumInteritemSpacing = 0
@@ -48,10 +47,20 @@ class ConnectionsController: UICollectionViewController, UICollectionViewDelegat
     
     // MARK: Firebase
     
+    lazy private var activityIndicator : CustomActivityIndicatorView = {
+        let image : UIImage = UIImage(named: "loading-large")!
+        return CustomActivityIndicatorView(image: image)
+    }()
+    
     func setupFirebase() {
+        
+        // Activity indicator before posts come in
+        self.collectionView?.addSubview(activityIndicator)
+        activityIndicator.center = CGPoint(x: self.view.center.x, y: self.view.center.y - 0.08 * self.view.frame.height)
+        self.activityIndicator.startAnimating()
+        
         // Note that there is no pagination with connections, because at the rate of 1 new connection a day, 
         // this list will not likely become obscenely large
-        
         self.firebaseRefsAndHandles.append(DataService.ds.observeConnections { (isSuccess, connections) in
             for conn in connections {
                 // Register handlers for each of these
@@ -78,6 +87,8 @@ class ConnectionsController: UICollectionViewController, UICollectionViewDelegat
                         return m1.date.compare(m2.date) == .orderedDescending
                     })
                     self.collectionView?.reloadData()
+                    
+                    self.activityIndicator.stopAnimating()
                 }))
             }
         })
