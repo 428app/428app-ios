@@ -97,6 +97,7 @@ class ChatController: UIViewController, UICollectionViewDelegateFlowLayout, UITe
             ref.removeObserver(withHandle: handle)
         }
         self.firebaseRefsAndHandles.append(DataService.ds.observeChatMessages(connection: self.connection, limit: self.numMessages, completed: { (isSuccess, updatedConnection) in
+            self.activityIndicator.stopAnimating()
             if (!isSuccess || updatedConnection == nil) {
                 if (isReobserved) {
                     // Rewind numMessages
@@ -120,9 +121,10 @@ class ChatController: UIViewController, UICollectionViewDelegateFlowLayout, UITe
         }))
     }
     
-    fileprivate lazy var activityIndicator : CustomActivityIndicatorView = {
+    fileprivate lazy var pullToRefreshIndicator: CustomActivityIndicatorView = {
         let image : UIImage = UIImage(named: "loading")!
-        return CustomActivityIndicatorView(image: image)
+        let activityIndicatorView = CustomActivityIndicatorView(image: image)
+        return activityIndicatorView
     }()
     
     fileprivate lazy var refreshControl: UIRefreshControl = {
@@ -133,11 +135,23 @@ class ChatController: UIViewController, UICollectionViewDelegateFlowLayout, UITe
         return control
     }()
     
+    fileprivate lazy var activityIndicator: CustomActivityIndicatorView = {
+        let image : UIImage = UIImage(named: "loading-large")!
+        let activityIndicatorView = CustomActivityIndicatorView(image: image)
+        return activityIndicatorView
+    }()
+    
     func setupFirebase() {
-        // Also setup refresh control for pull-to-refresh
-        self.refreshControl.addSubview(self.activityIndicator)
-        self.activityIndicator.center = CGPoint(x: self.view.center.x, y: self.refreshControl.center.y)
+        
+        // Setup activity indicator for initial load
+        self.collectionView.addSubview(activityIndicator)
+        self.activityIndicator.center = CGPoint(x: self.view.center.x, y: self.view.center.y - 0.08 * self.view.frame.height)
         self.activityIndicator.startAnimating()
+        
+        // Setup refresh control for pull-to-refresh
+        self.refreshControl.addSubview(self.pullToRefreshIndicator)
+        self.pullToRefreshIndicator.center = CGPoint(x: self.view.center.x, y: self.refreshControl.center.y)
+        self.pullToRefreshIndicator.startAnimating() // Keeps animating, as refresh control while hide it anyway
         collectionView.addSubview(self.refreshControl)
         
         self.reobserveMessages(isReobserved: false)
