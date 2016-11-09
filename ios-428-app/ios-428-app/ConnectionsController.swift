@@ -66,16 +66,8 @@ class ConnectionsController: UICollectionViewController, UICollectionViewDelegat
                     
                     // Find the messages belonging to this connection, remove them, then add this
                     self.latestMessages = self.latestMessages.filter() {$0.connection.uid != connection!.uid}
-                    log.info("\(self.latestMessages.count)")
-                    
-                    
                     
                     // Log new messages coming in
-                    
-                    for m in connection!.messages {
-                        log.info("\(m.text)")
-                    }
-                    
                     self.latestMessages.append(contentsOf: connection!.messages)
                     
                     
@@ -95,6 +87,7 @@ class ConnectionsController: UICollectionViewController, UICollectionViewDelegat
     
     override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: CELL_ID, for: indexPath) as! ConnectionCell
+        cell.request?.cancel()
         let message = self.latestMessages[indexPath.item]
         cell.configureCell(messageObj: message)
         return cell

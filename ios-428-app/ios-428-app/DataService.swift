@@ -283,7 +283,7 @@ class DataService {
             
             for snap in snaps {
                 if let dict = snap.value as? [String: Any], let discipline = dict["d"] as? String, let name = dict["n"] as? String, let photo = dict["p"] as? String {
-                    let conn: Connection = Connection(uid: snap.key, name: name, profileImageName: photo, disciplineImageName: discipline)
+                    let conn: Connection = Connection(uid: snap.key, name: name, profileImageName: photo, disciplineImageName: getDisciplineIconForDiscipline(discipline: discipline))
                     connections.append(conn)
                 }
             }

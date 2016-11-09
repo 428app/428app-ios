@@ -8,10 +8,12 @@
 
 import Foundation
 import UIKit
+import Alamofire
 
 class ConnectionCell: BaseCollectionCell {
     
     fileprivate var message: Message!
+    open var request: Request?
     
     override var isHighlighted: Bool {
         didSet {
@@ -141,7 +143,17 @@ class ConnectionCell: BaseCollectionCell {
     func configureCell(messageObj: Message) {
         self.message = messageObj
         self.nameLabel.text = self.message.connection.name
+        
+        // Download profile image
+        
         self.profileImageView.image = UIImage(named: self.message.connection.profileImageName)
+        
+        self.request = downloadImage(imageUrlString: self.message.connection.profileImageName, completed: { (isSuccess, image) in
+            if isSuccess && image != nil {
+                self.profileImageView.image = image
+            }
+        })
+        
         self.disciplineImageView.image = UIImage(named: self.message.connection.disciplineImageName)
         self.messageLabel.text = self.message.text
         self.timeLabel.text = formatDateToText(date: self.message.date)
