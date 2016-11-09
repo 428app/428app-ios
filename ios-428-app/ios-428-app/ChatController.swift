@@ -199,7 +199,7 @@ class ChatController: UIViewController, UICollectionViewDelegateFlowLayout, UITe
         return activityIndicatorView
     }()
     
-    func setupFirebase() {
+    fileprivate func setupFirebase() {
         
         // Setup empty placeholder view
         self.setupEmptyPlaceholder()

@@ -52,7 +52,105 @@ class ConnectionsController: UICollectionViewController, UICollectionViewDelegat
         return CustomActivityIndicatorView(image: image)
     }()
     
-    func setupFirebase() {
+    
+    fileprivate let emptyPlaceholderView: UIView = {
+        let view = UIView(frame: CGRect(x: 0, y: 0, width: UIScreen.main.bounds.width * 0.9, height: UIScreen.main.bounds.height * 0.4))
+        view.isHidden = true
+        return view
+    }()
+    
+    fileprivate let logo428: UIImageView = {
+       let logo = #imageLiteral(resourceName: "logo")
+        let imageView = UIImageView(image: logo)
+        imageView.contentMode = .scaleAspectFit
+        return imageView
+    }()
+    
+    fileprivate let timerLabel: UILabel = {
+        let label = UILabel()
+        label.font = FONT_MEDIUM_XXLARGE
+        label.textColor = UIColor.darkGray
+        label.textAlignment = .center
+        return label
+    }()
+    
+    fileprivate let until428Label: UILabel = {
+       let label = UILabel()
+        label.font = FONT_HEAVY_LARGE
+        label.textColor = GREEN_UICOLOR
+        label.text = "until 4:28pm"
+        label.textAlignment = .center
+        return label
+    }()
+    
+    fileprivate let infoIcon: UIImageView = {
+       let icon = #imageLiteral(resourceName: "info")
+        let imageView = UIImageView(image: icon)
+        imageView.contentMode = .scaleAspectFit
+        return imageView
+    }()
+    
+    fileprivate let connectionIsOnTheWayLabel: UIView = {
+        let label = UILabel()
+        label.font = FONT_MEDIUM_MID
+        label.textColor = UIColor.darkGray
+        label.textAlignment = .center
+        label.text = "Your connection is on the way..."
+       return label
+    }()
+    
+    fileprivate func setupCountdownTimer() {
+        
+        // Setup views
+        self.collectionView?.addSubview(self.emptyPlaceholderView)
+        self.emptyPlaceholderView.center = CGPoint(x: self.view.center.x, y: self.view.center.y - 0.03 * self.view.frame.height)
+        
+        self.emptyPlaceholderView.addSubview(logo428)
+        self.emptyPlaceholderView.addSubview(timerLabel)
+        self.emptyPlaceholderView.addSubview(until428Label)
+        self.emptyPlaceholderView.addConstraintsWithFormat("H:[v0(60)]", views: logo428)
+        self.emptyPlaceholderView.addConstraint(NSLayoutConstraint(item: logo428, attribute: .centerX, relatedBy: .equal, toItem: self.emptyPlaceholderView, attribute: .centerX, multiplier: 1.0, constant: 0.0))
+        self.emptyPlaceholderView.addConstraintsWithFormat("H:|-8-[v0]-8-|", views: timerLabel)
+        self.emptyPlaceholderView.addConstraintsWithFormat("H:|-8-[v0]-8-|", views: until428Label)
+        
+        let infoContainer = UIView()
+        infoContainer.addSubview(infoIcon)
+        infoContainer.addSubview(connectionIsOnTheWayLabel)
+        infoContainer.addConstraintsWithFormat("H:|[v0(14)]-4-[v1]|", views: infoIcon, connectionIsOnTheWayLabel)
+        infoContainer.addConstraintsWithFormat("V:|-1-[v0(14)]", views: infoIcon)
+        infoContainer.addConstraintsWithFormat("V:|[v0(18)]|", views: connectionIsOnTheWayLabel)
+        self.emptyPlaceholderView.addSubview(infoContainer)
+        self.emptyPlaceholderView.addConstraint(NSLayoutConstraint(item: infoContainer, attribute: .centerX, relatedBy: .equal, toItem: self.emptyPlaceholderView, attribute: .centerX, multiplier: 1.0, constant: 0.0))
+        
+        
+        self.emptyPlaceholderView.addConstraintsWithFormat("V:|-8-[v0(60)]-5-[v1]-2-[v2]-8-[v3]", views: logo428, timerLabel, until428Label, infoContainer)
+        
+        // Start timer for countdown
+        
+        let countdownTimer = Timer.scheduledTimer(timeInterval: 1.0, target: self, selector: #selector(self.updateTime), userInfo: nil, repeats: true)
+        countdownTimer.fire()
+    }
+    
+    func updateTime() {
+        let now = Date()
+        let calendar = Calendar.current
+        let components = DateComponents(calendar: calendar, hour: 16, minute: 28)
+        guard let next438 = calendar.nextDate(after: now, matching: components, matchingPolicy: .nextTime) else {
+            return
+        }
+        let diff = calendar.dateComponents([.hour, .minute, .second], from: now, to: next438)
+        if let hours = diff.hour, let minutes = diff.minute, let seconds = diff.second {
+            let hoursString = hours < 10 ? "0\(hours)" : "\(hours)"
+            let minutesString = minutes < 10 ? "0\(minutes)" : "\(minutes)"
+            let secondsString = seconds < 10 ? "0\(seconds)" : "\(seconds)"
+            self.timerLabel.text = "\(hoursString):\(minutesString):\(secondsString)"
+        }
+    }
+    
+    fileprivate func setupFirebase() {
+        
+        // Setup timer
+        self.setupCountdownTimer()
         
         // Activity indicator before posts come in
         self.collectionView?.addSubview(activityIndicator)
@@ -62,13 +160,23 @@ class ConnectionsController: UICollectionViewController, UICollectionViewDelegat
         // Note that there is no pagination with connections, because at the rate of 1 new connection a day, 
         // this list will not likely become obscenely large
         self.firebaseRefsAndHandles.append(DataService.ds.observeConnections { (isSuccess, connections) in
+            if connections.count == 0 {
+                self.emptyPlaceholderView.isHidden = false
+                self.activityIndicator.stopAnimating()
+            } else {
+                self.emptyPlaceholderView.isHidden = true
+            }
             for conn in connections {
                 // Register handlers for each of these
                 if !isSuccess {
                     log.error("[Error] Can't pull all connections")
                     return
                 }
-                self.firebaseRefsAndHandles.append(DataService.ds.observeRecentChat(connection: conn, completed: { (isSuccess, connection) in
+                self.firebaseRefsAndHandles.append(DataService.ds.observeRecentChat(connection: conn, completed: {
+                    (isSuccess, connection) in
+                    
+                    self.activityIndicator.stopAnimating()
+                    
                     if !isSuccess || connection == nil {
                         log.error("[Error] Can't pull a certain connection")
                         return
@@ -88,7 +196,7 @@ class ConnectionsController: UICollectionViewController, UICollectionViewDelegat
                     })
                     self.collectionView?.reloadData()
                     
-                    self.activityIndicator.stopAnimating()
+                    
                 }))
             }
         })
