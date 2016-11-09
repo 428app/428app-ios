@@ -13,9 +13,6 @@ import Foundation
 import UIKit
 import Firebase
 
-// TODO: Scroll to bottom first, then load view
-
-
 class ChatController: UIViewController, UICollectionViewDelegateFlowLayout, UITextViewDelegate, UICollectionViewDelegate, UICollectionViewDataSource, UIGestureRecognizerDelegate {
     
     /** FIREBASE **/
@@ -118,7 +115,7 @@ class ChatController: UIViewController, UICollectionViewDelegateFlowLayout, UITe
                 self.collectionView.reloadData()
                 }, completion: { (isSuccess) in
                     if !isReobserved {
-                        self.scrollToLastItemInCollectionView()
+                        self.scrollToLastItemInCollectionView(animated: false)
                     }
             })
             self.pullToRefreshIndicator.stopAnimating()
