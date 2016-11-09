@@ -113,6 +113,7 @@ class LoginController: UIViewController, UIScrollViewDelegate, CLLocationManager
                 return
             } else {
                 showLoader(message: "Syncing you with Facebook...")
+                
                 // Launch FB graph search to get birthday, higher resolution picture, and friends
                 let fbRequest = FBSDKGraphRequest.init(graphPath: "me", parameters: ["fields": "birthday,picture.width(960).height(960),friends"])
                 
@@ -122,6 +123,7 @@ class LoginController: UIViewController, UIScrollViewDelegate, CLLocationManager
                     if error != nil || fbResult == nil {
                         log.error("Could not fetch user details from FB graph")
                         showErrorAlert(vc: self, title: "Could not sign in", message: "There was a problem syncing with Facebook. Please check back again later.")
+                        hideLoader()
                         return
                     } else {
                         
@@ -157,6 +159,7 @@ class LoginController: UIViewController, UIScrollViewDelegate, CLLocationManager
             if error != nil || user == nil || user!.providerData[0].displayName == nil {
                 log.error("Auth with Firebase failed")
                 showErrorAlert(vc: self, title: "Could not sign in", message: "There was a problem signing in. We apologize. Please try again later.")
+                hideLoader()
                 return
             }
             
@@ -173,12 +176,12 @@ class LoginController: UIViewController, UIScrollViewDelegate, CLLocationManager
             
             // Create/Update Firebase user with details
             DataService.ds.loginFirebaseUser(name: displayName, birthday: birthdayString, pictureUrl: pictureUrl, timezone: timezone, completed: { (isSuccess, isFirstTimeUser) in
+                hideLoader()
                 if !isSuccess {
                     log.error("Login to Firebase failed")
                     showErrorAlert(vc: self, title: "Could not sign in", message: "There was a problem signing in. We apologize. Please try again later.")
                     return
                 }
-                hideLoader()
                 if isFirstTimeUser {
                     setHasToFillInfo(hasToFill: true)
                 }
