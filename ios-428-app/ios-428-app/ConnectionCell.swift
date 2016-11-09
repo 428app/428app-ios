@@ -13,16 +13,32 @@ import AlamofireImage
 
 class ConnectionCell: BaseCollectionCell {
     
-    fileprivate var message: Message!
+    // NOTE: If message has an empty text, it means this is a new connection because we disallow empty 
+    // messages from being sent to the server
+    
+    fileprivate var message: Message! {
+        didSet {
+            self.isNewConnection = self.message.text.isEmpty
+        }
+    }
+    fileprivate var isNewConnection: Bool = false
     open var request: Request?
     
     override var isHighlighted: Bool {
         didSet {
-            backgroundColor = isHighlighted ? GREEN_UICOLOR : UIColor.white
+
             nameLabel.textColor = isHighlighted ? UIColor.white : UIColor.black
             timeLabel.textColor = isHighlighted ? UIColor.white : UIColor.lightGray
             messageLabel.textColor = isHighlighted ? UIColor.white : UIColor.lightGray
-            disciplineImageView.tintColor = isHighlighted ? UIColor.white : GREEN_UICOLOR
+            
+            if isNewConnection {
+                backgroundColor = isHighlighted ? RED_UICOLOR : UIColor.white
+                disciplineImageView.tintColor = isHighlighted ? UIColor.white : RED_UICOLOR
+            } else {
+                backgroundColor = isHighlighted ? GREEN_UICOLOR : UIColor.white
+                disciplineImageView.tintColor = isHighlighted ? UIColor.white : GREEN_UICOLOR
+            }
+            
             repliedImageView.tintColor = isHighlighted ? UIColor.white : UIColor.lightGray
         }
     }
@@ -153,7 +169,22 @@ class ConnectionCell: BaseCollectionCell {
         })
         
         self.disciplineImageView.image = UIImage(named: self.message.connection.disciplineImageName)
-        self.messageLabel.text = self.message.text
+        
+        // If empty message text, that means this is a new user
+        
+        
+        log.info("Configure cell called again for user: \(self.message.connection.name)")
+        if isNewConnection {
+            log.info("Message text is empty")
+            // New connection
+            self.messageLabel.text = "New connection!"
+//            self.messageLabel.text = "Ask Tomas about \(self.message.connection.discipline)!"
+            self.disciplineImageView.tintColor = RED_UICOLOR
+        } else {
+            self.messageLabel.text = self.message.text
+            self.disciplineImageView.tintColor = GREEN_UICOLOR
+        }
+        
         self.timeLabel.text = formatDateToText(date: self.message.date)
         
         containerView.removeConstraints(constraintsToDelete)

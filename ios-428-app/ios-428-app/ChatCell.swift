@@ -77,12 +77,9 @@ class ChatCell: BaseCollectionCell {
     func configureCell(messageObj: Message, viewWidth: CGFloat, isLastInChain: Bool) {
         self.message = messageObj
         let messageText = self.message.text
-        let profileImageName = self.message.connection.profileImageName
-
         self.messageTextView.isScrollEnabled = true
         self.messageTextView.text = self.message?.text
 
-//        self.profileImageView.image = UIImage(named: profileImageName)
         // Download profile image
         self.request = downloadImage(imageUrlString: self.message.connection.profileImageName, completed: { (isSuccess, image) in
             if isSuccess && image != nil {

@@ -92,6 +92,55 @@ class ChatController: UIViewController, UICollectionViewDelegateFlowLayout, UITe
         self.reobserveMessages(isReobserved: true)
     }
     
+    fileprivate lazy var emptyPlaceholderView: UIView = {
+        let view = UIView(frame: CGRect(x: 0, y: 0, width: UIScreen.main.bounds.width * 0.9, height: UIScreen.main.bounds.height * 0.4))
+        view.isHidden = true
+        let tapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(openProfile))
+        view.addGestureRecognizer(tapGestureRecognizer)
+        view.isUserInteractionEnabled = false
+        return view
+    }()
+    
+    fileprivate lazy var emptyPlaceholderPictureView: UIImageView = {
+        let imageView = UIImageView()
+        imageView.contentMode = .scaleAspectFill
+        imageView.layer.cornerRadius = 50
+        imageView.layer.masksToBounds = true
+        _ = downloadImage(imageUrlString: self.connection.profileImageName, completed: { (isSuccess, image) in
+            imageView.image = image
+        })
+        return imageView
+    }()
+    
+    fileprivate lazy var emptyPlaceholderLabel: UILabel = {
+       let label = UILabel()
+        label.font = FONT_MEDIUM_MID
+        label.numberOfLines = 0
+        
+        // Attributed string to highlight discipline, and increase line spacing
+        let paragraphStyle = NSMutableParagraphStyle()
+        paragraphStyle.lineSpacing = 6
+        paragraphStyle.alignment = .center
+        let preStr = NSMutableAttributedString(string: "Hey! Why don't you talk to \(self.connection.name) about ", attributes: [NSForegroundColorAttributeName: UIColor.darkGray, NSParagraphStyleAttributeName: paragraphStyle])
+        let disciplineStr = NSMutableAttributedString(string: "\(self.connection.discipline)?", attributes: [NSParagraphStyleAttributeName: paragraphStyle, NSForegroundColorAttributeName: GREEN_UICOLOR])
+        preStr.append(disciplineStr)
+        label.attributedText = preStr
+        return label
+    }()
+    
+    fileprivate func setupEmptyPlaceholder() {
+        self.collectionView.addSubview(emptyPlaceholderView)
+        self.emptyPlaceholderView.center = CGPoint(x: self.view.center.x, y: self.view.center.y - 0.05 * self.view.frame.height)
+        
+        self.emptyPlaceholderView.addSubview(self.emptyPlaceholderPictureView)
+        self.emptyPlaceholderView.addSubview(self.emptyPlaceholderLabel)
+        
+        self.emptyPlaceholderView.addConstraintsWithFormat("H:[v0(100)]", views: self.emptyPlaceholderPictureView)
+        self.emptyPlaceholderView.addConstraint(NSLayoutConstraint(item: self.emptyPlaceholderPictureView, attribute: .centerX, relatedBy: .equal, toItem: self.emptyPlaceholderView, attribute: .centerX, multiplier: 1.0, constant: 0.0))
+        self.emptyPlaceholderView.addConstraintsWithFormat("H:|-8-[v0]-8-|", views: self.emptyPlaceholderLabel)
+        self.emptyPlaceholderView.addConstraintsWithFormat("V:|-8-[v0(100)]-12-[v1]", views: self.emptyPlaceholderPictureView, self.emptyPlaceholderLabel)
+    }
+    
     fileprivate func reobserveMessages(isReobserved: Bool) {
         for (ref, handle) in firebaseRefsAndHandles {
             ref.removeObserver(withHandle: handle)
@@ -99,15 +148,23 @@ class ChatController: UIViewController, UICollectionViewDelegateFlowLayout, UITe
         self.pullToRefreshIndicator.startAnimating()
         self.firebaseRefsAndHandles.append(DataService.ds.observeChatMessages(connection: self.connection, limit: self.numMessages, completed: { (isSuccess, updatedConnection) in
             self.activityIndicator.stopAnimating()
+            self.pullToRefreshIndicator.stopAnimating()
+            self.refreshControl.endRefreshing()
             if (!isSuccess || updatedConnection == nil) {
                 if (isReobserved) {
-                    // Rewind numMessages
+                    // Rewind numMessages as download did not download anything / failed
                     self.numMessages -= self.NUM_INCREMENT
                 }
-                log.error("[Error] Can't pull chats for individual connection")
+                // No messages yet, display placeholder view in the middle to prompt user to interact with new connection
+                self.emptyPlaceholderView.isHidden = false
+                self.emptyPlaceholderView.isUserInteractionEnabled = true
+                log.info("No messages updated for connection")
                 return
             }
             log.info("Messages updated")
+            // There are messages, hide and disable empty placeholder view
+            self.emptyPlaceholderView.isHidden = true
+            self.emptyPlaceholderView.isUserInteractionEnabled = false
             self.messages = updatedConnection!.messages
             self.organizeMessages()
             self.collectionView.reloadData()
@@ -118,8 +175,7 @@ class ChatController: UIViewController, UICollectionViewDelegateFlowLayout, UITe
                         self.scrollToLastItemInCollectionView(animated: false)
                     }
             })
-            self.pullToRefreshIndicator.stopAnimating()
-            self.refreshControl.endRefreshing()
+
         }))
     }
     
@@ -144,6 +200,9 @@ class ChatController: UIViewController, UICollectionViewDelegateFlowLayout, UITe
     }()
     
     func setupFirebase() {
+        
+        // Setup empty placeholder view
+        self.setupEmptyPlaceholder()
         
         // Setup activity indicator for initial load
         self.collectionView.addSubview(activityIndicator)
@@ -235,7 +294,7 @@ class ChatController: UIViewController, UICollectionViewDelegateFlowLayout, UITe
         return button
     }()
     
-    func openProfile(button: UIButton) {
+    func openProfile() {
         // TODO: Fetch profile from server based on this connection id
         let controller = ProfileController()
         controller.profile = jennyprof
@@ -638,20 +697,15 @@ class ChatController: UIViewController, UICollectionViewDelegateFlowLayout, UITe
                 let cellFrame = self.collectionView.convert(cell.frame, to: self.view)
                 var yi = cellFrame.origin.y + cellFrame.height
                 // Insert timeLabel here
-                log.info("=====")
-                log.info("\(self.tappedIndexPath)")
                 yi += 10
                 if tappedIndexPath == nil {
-                    log.info("Indexpath nil")
                     tappedIndexPath = indexPath
                 }
                 else {
                     if indexPath.section > tappedIndexPath!.section || (indexPath.section == tappedIndexPath!.section && indexPath.row > tappedIndexPath!.row) {
-                        log.info("Tapped below")
                         yi -= 24
                     } else if indexPath.section == tappedIndexPath!.section && indexPath.row == tappedIndexPath!.row {
                         // Clicked to hide
-                        log.info("Hiding")
                         self.tappedIndexPath = nil
                         cell.shouldExpand = false
                         // Return with no expansion

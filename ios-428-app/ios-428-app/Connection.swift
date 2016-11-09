@@ -13,19 +13,22 @@ class Connection {
     fileprivate var _uid: String
     fileprivate var _name: String
     fileprivate var _profileImageName: String
-    fileprivate var _disciplineImageName: String // Packaged in the app's assets
+    fileprivate var _discipline: String
+    
     
     // NOTE: Most recent message is on top of messages
     fileprivate var _messages = [Message]() // Not loaded off the start, only loaded when user clicks on chat
     fileprivate var _dateMatched: String
+    fileprivate var _disciplineImageName: String // Packaged in the app's assets
     
-    init(uid: String, name: String, profileImageName: String, disciplineImageName: String, messages: [Message] = [Message](), dateMatched: String = "") {
+    init(uid: String, name: String, profileImageName: String, discipline: String, messages: [Message] = [Message](), dateMatched: String = "") {
         _uid = uid
         _name = name
         _profileImageName = profileImageName
-        _disciplineImageName = disciplineImageName
+        _discipline = discipline
         _messages = messages
         _dateMatched = dateMatched
+        _disciplineImageName = getDisciplineIconForDiscipline(discipline: discipline)
     }
     
     var uid: String {
@@ -43,6 +46,12 @@ class Connection {
     var profileImageName: String {
         get {
             return _profileImageName
+        }
+    }
+    
+    var discipline: String {
+        get {
+            return _discipline
         }
     }
     

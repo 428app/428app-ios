@@ -84,7 +84,7 @@ extension ConnectionsController {
     }
     
     fileprivate func createLeoMessages() {
-        let leo = Connection(uid: "7", name: "Leonard", profileImageName: "leo-profile", disciplineImageName: "business")
+        let leo = Connection(uid: "7", name: "Leonard", profileImageName: "leo-profile", discipline: "Business")
         _ = self.createMessageForconnection(leo, text: "Hello, my name is Leonard. Nice to meet you!", minutesAgo: 200)
         _ = self.createMessageForconnection(leo, text: "What do you do?", minutesAgo: 198)
         _ = self.createMessageForconnection(leo, text: "Hi! My name is Yihang.", minutesAgo: 90, isSentByYou: true)
@@ -94,7 +94,7 @@ extension ConnectionsController {
     }
     
     fileprivate func createThomasMessages() {
-        let thomas = Connection(uid: "8", name: "Thomas", profileImageName: "thomas-profile", disciplineImageName: "electricengineering")
+        let thomas = Connection(uid: "8", name: "Thomas", profileImageName: "thomas-profile", discipline: "Electrical Engineering")
         _ = self.createMessageForconnection(thomas, text: "Let's engage in cooking and combine it with art! That way it's a lot more engaging. Don't you think we should do it immediately? Hurray!", minutesAgo: 60 * 24 * 1.7)
         _ = self.createMessageForconnection(thomas, text: "Hey, you haven't replied. You there?", minutesAgo: 60 * 24 * 1.6)
         _ = self.createMessageForconnection(thomas, text: "Anyway just thought of a new twist. Let's meet for a while.", minutesAgo: 60 * 24 * 1.5)
