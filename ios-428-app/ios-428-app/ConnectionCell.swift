@@ -174,6 +174,7 @@ class ConnectionCell: BaseCollectionCell {
         imageActivityIndicator.startAnimating()
         // Download profile image
         self.request?.cancel() // Cancel before making a new request
+        self.profileImageView.image = nil
         self.request = downloadImage(imageUrlString: self.message.connection.profileImageName, completed: { (isSuccess, image) in
             self.imageActivityIndicator.stopAnimating()
             if isSuccess && image != nil {

@@ -56,12 +56,12 @@ class DiscussController: UIViewController, UIGestureRecognizerDelegate, UITextVi
         super.viewWillAppear(animated)
         self.extendedLayoutIncludesOpaqueBars = true
         self.showViewsAfterTransitioning()
+        self.tabBarController?.tabBar.isHidden = true
         self.registerObservers()
     }
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-        self.tabBarController?.tabBar.isHidden = true
         animatePrompt()
     }
 

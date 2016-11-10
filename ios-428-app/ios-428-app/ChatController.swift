@@ -64,12 +64,8 @@ class ChatController: UIViewController, UICollectionViewDelegateFlowLayout, UITe
         self.extendedLayoutIncludesOpaqueBars = true
         self.navigationController?.navigationBar.isHidden = false
         self.collectionView.isHidden = false
-        self.registerObservers()
-    }
-    
-    override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(animated)
         self.tabBarController?.tabBar.isHidden = true
+        self.registerObservers()
     }
     
     override func viewWillDisappear(_ animated: Bool) {
@@ -114,7 +110,7 @@ class ChatController: UIViewController, UICollectionViewDelegateFlowLayout, UITe
     
     fileprivate lazy var emptyPlaceholderLabel: UILabel = {
        let label = UILabel()
-        label.font = FONT_MEDIUM_MID
+        label.font = FONT_MEDIUM_LARGE
         label.numberOfLines = 0
         
         // Attributed string to highlight discipline, and increase line spacing
@@ -146,6 +142,18 @@ class ChatController: UIViewController, UICollectionViewDelegateFlowLayout, UITe
             ref.removeObserver(withHandle: handle)
         }
         self.pullToRefreshIndicator.startAnimating()
+        
+        if !isReobserved {
+            self.activityIndicator.startAnimating()
+            // Small hack to make it not show up when the load time is less than 2 seconds
+            self.activityIndicator.isHidden = true
+            UIView.animate(withDuration: 2.0, animations: {}, completion: { (isSuccess) in
+                if self.activityIndicator.isAnimating {
+                    self.activityIndicator.isHidden = false
+                }
+            })
+        }
+        
         self.firebaseRefsAndHandles.append(DataService.ds.observeChatMessages(connection: self.connection, limit: self.numMessages, completed: { (isSuccess, updatedConnection) in
             self.activityIndicator.stopAnimating()
             self.pullToRefreshIndicator.stopAnimating()
@@ -167,15 +175,20 @@ class ChatController: UIViewController, UICollectionViewDelegateFlowLayout, UITe
             self.emptyPlaceholderView.isUserInteractionEnabled = false
             self.messages = updatedConnection!.messages
             self.organizeMessages()
-            self.collectionView.reloadData()
-            UIView.animate(withDuration: 0, animations: { 
-                self.collectionView.reloadData()
-                }, completion: { (isSuccess) in
-                    if !isReobserved {
+            
+            if !isReobserved {
+                // If first time entering this chat, scroll down to the bottom of the collection view
+                UIView.animate(withDuration: 0, animations: {
+                    // Collection view is hidden first so the scrolling is not visible to the user
+                    self.collectionView.isHidden = true
+                    self.collectionView.reloadData()
+                    }, completion: { (isSuccess) in
                         self.scrollToLastItemInCollectionView(animated: false)
-                    }
-            })
-
+                        self.collectionView.isHidden = false
+                })
+            } else {
+                self.collectionView.reloadData()
+            }
         }))
     }
     
@@ -207,7 +220,6 @@ class ChatController: UIViewController, UICollectionViewDelegateFlowLayout, UITe
         // Setup activity indicator for initial load
         self.collectionView.addSubview(activityIndicator)
         self.activityIndicator.center = CGPoint(x: self.view.center.x, y: self.view.center.y - 0.08 * self.view.frame.height)
-        self.activityIndicator.startAnimating()
         
         // Setup refresh control for pull-to-refresh
         self.refreshControl.addSubview(self.pullToRefreshIndicator)
@@ -519,9 +531,14 @@ class ChatController: UIViewController, UICollectionViewDelegateFlowLayout, UITe
                 }
                 self.organizeMessages()
                 self.resetInputContainer()
-                self.collectionView.reloadData()
-                self.collectionView.layoutIfNeeded()
-                self.scrollToLastItemInCollectionView()
+                
+                UIView.animate(withDuration: 0.0, animations: { 
+                    self.collectionView.reloadData()
+                    self.collectionView.layoutIfNeeded()
+                    }, completion: { (isSuccess) in
+                        self.scrollToLastItemInCollectionView()
+                })
+                
             })
         }
     }
@@ -625,11 +642,11 @@ class ChatController: UIViewController, UICollectionViewDelegateFlowLayout, UITe
         self.collectionView.addGestureRecognizer(panToKeepKeyboardRecognizer)
         
         // Scroll collection view to the bottom to most recent message upon first entering screen
-        UIView.animate(withDuration: 0, delay: 0, options: .curveEaseOut, animations: {
-            self.view.layoutIfNeeded()
-            }, completion: { (completed) in
-                self.scrollToLastItemInCollectionView(animated: false)
-        })
+//        UIView.animate(withDuration: 0, delay: 0, options: .curveEaseOut, animations: {
+//            self.view.layoutIfNeeded()
+//            }, completion: { (completed) in
+//                self.scrollToLastItemInCollectionView(animated: false)
+//        })
     }
     
     func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWith otherGestureRecognizer: UIGestureRecognizer) -> Bool {
