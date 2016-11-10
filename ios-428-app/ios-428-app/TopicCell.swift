@@ -107,7 +107,7 @@ class TopicCell: BaseTableViewCell {
         let formatedPrompt = NSMutableAttributedString(string: topic.prompt, attributes: [NSParagraphStyleAttributeName: paragraphStyle])
         promptLabel.attributedText = formatedPrompt
         
-        if topic.isSeen {
+        if topic.hasSeen {
             self.messageCountLabel.textColor = GREEN_UICOLOR
             self.iconImageView.tintColor = GREEN_UICOLOR
         } else {

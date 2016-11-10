@@ -14,18 +14,19 @@ class Connection {
     fileprivate var _name: String
     fileprivate var _profileImageName: String
     fileprivate var _discipline: String
-    
+    fileprivate var _hasNewMessages: Bool
     
     // NOTE: Most recent message is on top of messages
     fileprivate var _messages = [Message]() // Not loaded off the start, only loaded when user clicks on chat
     fileprivate var _dateMatched: String
     fileprivate var _disciplineImageName: String // Packaged in the app's assets
     
-    init(uid: String, name: String, profileImageName: String, discipline: String, messages: [Message] = [Message](), dateMatched: String = "") {
+    init(uid: String, name: String, profileImageName: String, discipline: String, messages: [Message] = [Message](), dateMatched: String = "", hasNewMessages: Bool = false) {
         _uid = uid
         _name = name
         _profileImageName = profileImageName
         _discipline = discipline
+        _hasNewMessages = hasNewMessages
         _messages = messages
         _dateMatched = dateMatched
         _disciplineImageName = getDisciplineIconForDiscipline(discipline: discipline)
@@ -58,6 +59,15 @@ class Connection {
     var disciplineImageName: String {
         get {
             return _disciplineImageName
+        }
+    }
+    
+    var hasNewMessages: Bool {
+        get {
+            return _hasNewMessages
+        }
+        set(hasNew) {
+            _hasNewMessages = hasNew
         }
     }
     

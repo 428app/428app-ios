@@ -170,15 +170,9 @@ class ConnectionCell: BaseCollectionCell {
         
         self.disciplineImageView.image = UIImage(named: self.message.connection.disciplineImageName)
         
-        // If empty message text, that means this is a new user
-        
-        
-        log.info("Configure cell called again for user: \(self.message.connection.name)")
         if isNewConnection {
-            log.info("Message text is empty")
             // New connection
             self.messageLabel.text = "New connection!"
-//            self.messageLabel.text = "Ask Tomas about \(self.message.connection.discipline)!"
             self.disciplineImageView.tintColor = RED_UICOLOR
         } else {
             self.messageLabel.text = self.message.text
@@ -202,12 +196,12 @@ class ConnectionCell: BaseCollectionCell {
             constraintsToDelete.append(contentsOf: containerView.addAndGetConstraintsWithFormat("H:|[v0]-12-|", views: messageLabel))
         }
         
-        if message.isSeen {
-            timeLabel.textColor = UIColor.lightGray
-            messageLabel.textColor = UIColor.lightGray
-        } else {
+        if message.connection.hasNewMessages {
             timeLabel.textColor = UIColor.black
             messageLabel.textColor = UIColor.black
+        } else {
+            timeLabel.textColor = UIColor.lightGray
+            messageLabel.textColor = UIColor.lightGray
         }
     }
 }

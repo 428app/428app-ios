@@ -223,6 +223,9 @@ class ConnectionsController: UICollectionViewController, UICollectionViewDelegat
     override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         collectionView.deselectItem(at: indexPath, animated: false)
         let controller = ChatController()
+        
+        // TODO: Update hasNewMessages for this connection
+        
         controller.connection = self.latestMessages[indexPath.item].connection
         navigationController?.pushViewController(controller, animated: true)
     }

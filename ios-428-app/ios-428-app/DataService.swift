@@ -287,7 +287,7 @@ class DataService {
                 return
             }
             
-            guard let dict = snapshot.value as? [String: Any], let mid = dict["mid"] as? String, let text = dict["lastMessage"] as? String, let timestamp = dict["timestamp"] as? Double, let poster = dict["poster"] as? String, let dateMatched = dict["dateMatched"] as? String else {
+            guard let dict = snapshot.value as? [String: Any], let mid = dict["mid"] as? String, let text = dict["lastMessage"] as? String, let timestamp = dict["timestamp"] as? Double, let poster = dict["poster"] as? String, let dateMatched = dict["dateMatched"] as? String, let hasNewMessages = dict["hasNew:\(uid)"] as? Bool else {
                 completed(false, nil)
                 return
             }
@@ -297,6 +297,7 @@ class DataService {
             let date: Date = Date(timeIntervalSince1970: timestamp)
             let isSentByYou: Bool = poster == uid
             
+            connection.hasNewMessages = hasNewMessages
             let msg = Message(mid: mid, text: text, connection: connection, date: date, isSentByYou: isSentByYou)
             
             connection.clearMessages()
@@ -312,6 +313,9 @@ class DataService {
         let uid = getStoredUid() == nil ? "" : getStoredUid()!
         let chatId: String = getChatId(uid1: uid, uid2: connection.uid)
         let ref: FIRDatabaseReference = REF_MESSAGES.child(chatId)
+        
+        // Remove hasNew of this chat if user is on the chat screen
+        self.seeConnectionMessages(connection: connection) { (isSuccess) in }
         
         let q = limit == 0 ? ref : ref.queryOrdered(byChild: "timestamp").queryLimited(toLast: limit)
         let handle = q.observe(.value, with: { snapshot in
@@ -343,7 +347,10 @@ class DataService {
     
     // Adds a chat message to the messages with a connection, used in ChatController
     func addChatMessage(connection: Connection, text: String, completed: @escaping (_ isSuccess: Bool, _ connection: Connection?) -> ()) {
-        let uid = getStoredUid() == nil ? "" : getStoredUid()!
+        guard let uid = getStoredUid() else {
+            completed(false, nil)
+            return
+        }
         let poster = uid
         let chatId: String = getChatId(uid1: uid, uid2: connection.uid)
         let timestamp = Date().timeIntervalSince1970
@@ -355,7 +362,7 @@ class DataService {
         let mid = messagesRef.key
         let newMessage: [String: Any] = ["message": text, "timestamp": timestamp, "poster": poster]
         
-        REF_BASE.updateChildValues(["messages/\(chatId)/\(mid)": newMessage, "chats/\(chatId)/mid": mid, "chats/\(chatId)/lastMessage": text, "chats/\(chatId)/timestamp": timestamp, "chats/\(chatId)/poster": poster]) { (err, ref) in
+        REF_BASE.updateChildValues(["messages/\(chatId)/\(mid)": newMessage, "chats/\(chatId)/mid": mid, "chats/\(chatId)/lastMessage": text, "chats/\(chatId)/timestamp": timestamp, "chats/\(chatId)/poster": poster, "chats/\(chatId)/hasNew:\(uid)": false, "chats/\(chatId)/hasNew:\(connection.uid)": true]) { (err, ref) in
             if (err != nil) {
                 completed(false, nil)
                 return
@@ -363,6 +370,19 @@ class DataService {
             let msg = Message(mid: mid, text: text, connection: connection, date: Date(timeIntervalSince1970: timestamp), isSentByYou: true)
             connection.addMessage(message: msg)
             completed(true, connection)
+        }
+    }
+    
+    // Called whenever a user clicks on a connection that is not previously seen to update the connection's
+    // message to seen. Used in ConnectionsController.
+    func seeConnectionMessages(connection: Connection, completed: @escaping (_ isSuccess: Bool) -> ()) {
+        guard let uid = getStoredUid() else {
+            completed(false)
+            return
+        }
+        let chatId: String = getChatId(uid1: uid, uid2: connection.uid)
+        REF_CHATS.child(chatId).updateChildValues(["hasNew:\(uid)": false]) { (err, ref) in
+            completed(err == nil)
         }
     }
 }
