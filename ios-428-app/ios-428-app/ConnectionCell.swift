@@ -71,6 +71,7 @@ class ConnectionCell: BaseCollectionCell {
         imageView.contentMode = .scaleAspectFill
         imageView.layer.cornerRadius = 34
         imageView.layer.masksToBounds = true
+        imageView.frame = CGRect(x: 0.0, y: 0.0, width: 68.0, height: 68.0)
         return imageView
     }()
     
@@ -141,6 +142,9 @@ class ConnectionCell: BaseCollectionCell {
         addConstraintsWithFormat("V:[v0(0.5)]|", views: dividerLineView)
         
         setupContainerView()
+        
+        self.profileImageView.addSubview(imageActivityIndicator)
+        
     }
     
     fileprivate func setupContainerView() {
@@ -156,13 +160,22 @@ class ConnectionCell: BaseCollectionCell {
     }
     
     fileprivate var constraintsToDelete = [NSLayoutConstraint]()
+    fileprivate var imageActivityIndicator: UIActivityIndicatorView = {
+        let indicator = UIActivityIndicatorView(activityIndicatorStyle: .gray)
+        indicator.isHidden = false
+        indicator.alpha = 1.0
+        indicator.center = CGPoint(x: 34.0, y: 34.0)
+        return indicator
+    }()
     
     func configureCell(messageObj: Message) {
         self.message = messageObj
         self.nameLabel.text = self.message.connection.name
-        
+        imageActivityIndicator.startAnimating()
         // Download profile image
+        self.request?.cancel() // Cancel before making a new request
         self.request = downloadImage(imageUrlString: self.message.connection.profileImageName, completed: { (isSuccess, image) in
+            self.imageActivityIndicator.stopAnimating()
             if isSuccess && image != nil {
                 self.profileImageView.image = image
             }
