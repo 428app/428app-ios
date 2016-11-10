@@ -45,6 +45,7 @@ class ProfileController: UIViewController, UITableViewDelegate, UITableViewDataS
         DataService.ds.getUserFields(uid: connection.uid) { (isSuccess, downloadedProfile) in
             if isSuccess && downloadedProfile != nil {
                 log.info("profile downloaded")
+                NotificationCenter.default.post(name: NOTIF_USERPROFILEDOWNLOADED, object: nil, userInfo: ["profile": downloadedProfile])
                 self.profile = downloadedProfile
             }
         }

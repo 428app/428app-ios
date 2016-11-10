@@ -1,14 +1,13 @@
 ==== BACKEND ====
 
 
-!CHAT!
+!TOPICS!
 GOALS OF TODAY:
-- Load profile
+- Bug: Black area at bottom because the tab bar was being kept
 - Plan topics
 
 
-!TOPICS!
-- Bug: Black area at bottom because the tab bar was being kept
+
 
 !SETTINGS!
 - Settings table
@@ -22,6 +21,9 @@ GOALS OF TODAY:
 !TEST, TEST, TEST!
 
 
+
+!OPTIMIZATION!
+- Store Firebase data in code so we don't have to keep hitting the Firebase server
 
 
 

@@ -193,7 +193,12 @@ class DataService {
             completed(false, nil)
             return
         }
-        self.REF_USERS.child(uid_).observeSingleEvent(of: .value, with: { snapshot in
+        
+        let ref = self.REF_USERS.child(uid_)
+        
+        ref.keepSynced(true)
+        
+        ref.observeSingleEvent(of: .value, with: { snapshot in
             if snapshot.exists() {
 
                 // Name, birthday, discipline, organization, profile photo, school are compulsory fields
@@ -217,6 +222,7 @@ class DataService {
                 if let c = userDict["coverPhoto"] as? String {
                     coverPhotoUrl = c
                 }
+
                 
                 // Convert birthday of "MM/DD/yyyy" to age integer
                 let age = convertBirthdayToAge(birthday: birthday)
@@ -254,6 +260,8 @@ class DataService {
         let uid = getStoredUid() == nil ? "" : getStoredUid()!
         let ref: FIRDatabaseReference = REF_USERS.child("\(uid)/connections")
         
+        ref.keepSynced(true)
+        
         // Observed on value as not childAdded, as profile pic can change
         let handle = ref.observe(.value, with: { snapshot in
             if !snapshot.exists() {
@@ -283,6 +291,9 @@ class DataService {
         let uid = getStoredUid() == nil ? "" : getStoredUid()!
         let chatId: String = getChatId(uid1: uid, uid2: connection.uid)
         let ref: FIRDatabaseReference = REF_CHATS.child(chatId)
+        
+        ref.keepSynced(true)
+        
         let handle = ref.observe(.value, with: { snapshot in
             if !snapshot.exists() {
                 completed(false, nil)
@@ -315,6 +326,8 @@ class DataService {
         let uid = getStoredUid() == nil ? "" : getStoredUid()!
         let chatId: String = getChatId(uid1: uid, uid2: connection.uid)
         let ref: FIRDatabaseReference = REF_MESSAGES.child(chatId)
+        
+        ref.keepSynced(true)
         
         // Remove hasNew of this chat if user is on the chat screen
         self.seeConnectionMessages(connection: connection) { (isSuccess) in }

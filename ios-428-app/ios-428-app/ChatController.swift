@@ -57,6 +57,7 @@ class ChatController: UIViewController, UICollectionViewDelegateFlowLayout, UITe
         self.setupNavigationBar()
         self.setupCollectionView()
         self.setupInputComponents()
+        NotificationCenter.default.addObserver(self, selector: #selector(setProfile), name: NOTIF_USERPROFILEDOWNLOADED, object: nil)
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -79,6 +80,7 @@ class ChatController: UIViewController, UICollectionViewDelegateFlowLayout, UITe
         for (ref, handle) in firebaseRefsAndHandles {
             ref.removeObserver(withHandle: handle)
         }
+        NotificationCenter.default.removeObserver(self, name: NOTIF_USERPROFILEDOWNLOADED, object: nil)
     }
     
     // MARK: Firebase
@@ -230,6 +232,12 @@ class ChatController: UIViewController, UICollectionViewDelegateFlowLayout, UITe
         collectionView.addSubview(self.refreshControl)
         
         self.reobserveMessages(isReobserved: false)
+    }
+    
+    func setProfile(notif: Notification) {
+        if let userInfo = notif.userInfo as? [String: Any], let profile_ = userInfo["profile"] as? Profile {
+            self.profile = profile_
+        }
     }
     
     // MARK: Process messages into buckets based on hourly time intervals
