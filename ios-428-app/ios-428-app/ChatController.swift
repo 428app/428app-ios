@@ -309,7 +309,9 @@ class ChatController: UIViewController, UICollectionViewDelegateFlowLayout, UITe
     func openProfile() {
         // TODO: Fetch profile from server based on this connection id
         let controller = ProfileController()
-        controller.profile = jennyprof
+        
+        controller.connection = connection
+//        controller.profile = jennyprof
         controller.modalTransitionStyle = .coverVertical
         self.navigationController?.navigationBar.isHidden = true
         self.collectionView.isHidden = true

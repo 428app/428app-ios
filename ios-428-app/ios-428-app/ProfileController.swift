@@ -12,6 +12,8 @@ import UIKit
 
 class ProfileController: UIViewController, UITableViewDelegate, UITableViewDataSource, UIScrollViewDelegate, UIGestureRecognizerDelegate {
     
+    var connection: Connection!
+    
     var profile: Profile! {
         didSet { // Set from ChatController's openProfile
             self.assembleCellData()
@@ -20,12 +22,13 @@ class ProfileController: UIViewController, UITableViewDelegate, UITableViewDataS
     
     fileprivate let CELL_ID = "profileCell"
     fileprivate var heightOfTableViewConstraint: NSLayoutConstraint! // Used to find dynamic height of UITableView
-    fileprivate var profileCellTitles = [String]()
-    fileprivate var profileCellContent = [String]()
+    fileprivate var profileCellTitles = ["Organization", "School", "Discipline"]
+    fileprivate var profileCellContent = ["-", "-", "-"]
     
     override func viewDidLoad() {
         super.viewDidLoad()
         self.view.backgroundColor = UIColor.white
+        self.downloadProfile()
         self.setupTableView()
         self.setupViews()
     }
@@ -34,33 +37,68 @@ class ProfileController: UIViewController, UITableViewDelegate, UITableViewDataS
         return true
     }
     
+    // MARK: Firebase
+    
+    fileprivate func downloadProfile() {
+        DataService.ds.getUserFields(uid: connection.uid) { (isSuccess, downloadedProfile) in
+            if isSuccess && downloadedProfile != nil {
+                log.info("profile downloaded")
+                self.profile = downloadedProfile
+            }
+        }
+    }
+    
+    fileprivate func assembleCellData() {
+        self.profileCellContent = [self.profile.org, self.profile.school, self.profile.discipline]
+        self.tableView.reloadData()
+        // Download images
+        if !profile.coverImageName.isEmpty {
+            _ = downloadImage(imageUrlString: profile.coverImageName, completed: { (isSuccess, coverImage) in
+                self.profileBgImageView.image = coverImage
+            })
+        }
+        _ = downloadImage(imageUrlString: profile.profileImageName, completed: { (isSuccess, profileImage) in
+            self.profileImageView.image = profileImage
+        })
+        
+        nameLbl.text = profile.name
+        disciplineImageView.image = UIImage(named: profile.disciplineIcon)
+        ageLocationLbl.text = "\(profile.age), \(profile.location)"
+        
+        // Taglines
+        
+        let paragraphStyle = NSMutableParagraphStyle()
+        paragraphStyle.lineSpacing = 6
+        let tagstr1 = NSMutableAttributedString(string: "I am working on", attributes: [NSForegroundColorAttributeName: GREEN_UICOLOR, NSFontAttributeName: FONT_HEAVY_MID, NSParagraphStyleAttributeName: paragraphStyle])
+        let tag1 = profile.tagline1.isEmpty ? "..." : profile.tagline1
+        let tagline1 = NSMutableAttributedString(string: " " + tag1, attributes: [NSParagraphStyleAttributeName: paragraphStyle])
+        tagstr1.append(tagline1)
+        tagline1Lbl.attributedText = tagstr1
+        
+        let tagstr2 = NSMutableAttributedString(string: "I want to eventually", attributes: [NSForegroundColorAttributeName: GREEN_UICOLOR, NSFontAttributeName: FONT_HEAVY_MID, NSParagraphStyleAttributeName: paragraphStyle])
+        let tag2 = profile.tagline2.isEmpty ? "..." : profile.tagline2
+        let tagline2 = NSMutableAttributedString(string: " " + tag2, attributes: [NSParagraphStyleAttributeName: paragraphStyle])
+        tagstr2.append(tagline2)
+        tagline2Lbl.attributedText = tagstr2
+    }
+    
     // MARK: Set up views
     
     func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWith otherGestureRecognizer: UIGestureRecognizer) -> Bool {
         return true
     }
     
-    func expandPic(sender: UITapGestureRecognizer) {
+    func expandPic() {
         let pictureModalController = PictureModalController()
-        if sender == self.bgTap {
-            pictureModalController.picture = self.profileBgImageView.image
-        } else {
-            pictureModalController.picture = self.profileImageView.image
-        }
+        pictureModalController.picture = self.profileImageView.image
         pictureModalController.modalPresentationStyle = .overFullScreen
         pictureModalController.modalTransitionStyle = .crossDissolve
         
         self.present(pictureModalController, animated: true, completion: nil)
     }
     
-    fileprivate lazy var bgTap: UITapGestureRecognizer = {
-        let tap = UITapGestureRecognizer(target: self, action: #selector(ProfileController.expandPic(sender:)))
-        tap.delegate = self
-        return tap
-    }()
-    
     fileprivate lazy var picTap: UITapGestureRecognizer = {
-        let tap = UITapGestureRecognizer(target: self, action: #selector(ProfileController.expandPic(sender:)))
+        let tap = UITapGestureRecognizer(target: self, action: #selector(ProfileController.expandPic))
         tap.delegate = self
         return tap
     }()
@@ -70,9 +108,7 @@ class ProfileController: UIViewController, UITableViewDelegate, UITableViewDataS
         imageView.contentMode = .scaleAspectFill
         imageView.autoresizesSubviews = true
         imageView.clipsToBounds = true
-        imageView.isUserInteractionEnabled = true
-        
-        imageView.addGestureRecognizer(self.bgTap)
+        imageView.image = UIImage(color: GRAY_UICOLOR)
         return imageView
     }()
     
@@ -104,6 +140,7 @@ class ProfileController: UIViewController, UITableViewDelegate, UITableViewDataS
         imageView.layer.shadowOffset = CGSize(width: 2.0, height: 2.0)
         imageView.isUserInteractionEnabled = true
         imageView.addGestureRecognizer(self.picTap)
+        imageView.image = UIImage(color: GRAY_UICOLOR)
         return imageView
     }()
     
@@ -203,25 +240,7 @@ class ProfileController: UIViewController, UITableViewDelegate, UITableViewDataS
         view.addConstraintsWithFormat("V:|-9-[v0(40)]", views: closeButton)
         closeButton.addTarget(self, action: #selector(closeProfile), for: .touchUpInside)
         
-        // Set values for elements in scroll view
-        profileBgImageView.image = UIImage(named: profile.coverImageName)
-        profileImageView.image = UIImage(named: profile.profileImageName)
-        nameLbl.text = profile.name
-        disciplineImageView.image = UIImage(named: profile.disciplineIcon)
-        ageLocationLbl.text = "\(profile.age), \(profile.location)"
-        
-        // Taglines
-        let paragraphStyle = NSMutableParagraphStyle()
-        paragraphStyle.lineSpacing = 6
-        let tagstr1 = NSMutableAttributedString(string: "I am working on", attributes: [NSForegroundColorAttributeName: GREEN_UICOLOR, NSFontAttributeName: FONT_HEAVY_MID, NSParagraphStyleAttributeName: paragraphStyle])
-        let tagline1 = NSMutableAttributedString(string: " " + profile.tagline1, attributes: [NSParagraphStyleAttributeName: paragraphStyle])
-        tagstr1.append(tagline1)
-        tagline1Lbl.attributedText = tagstr1
-        
-        let tagstr2 = NSMutableAttributedString(string: "I want to eventually", attributes: [NSForegroundColorAttributeName: GREEN_UICOLOR, NSFontAttributeName: FONT_HEAVY_MID, NSParagraphStyleAttributeName: paragraphStyle])
-        let tagline2 = NSMutableAttributedString(string: " " + profile.tagline2, attributes: [NSParagraphStyleAttributeName: paragraphStyle])
-        tagstr2.append(tagline2)
-        tagline2Lbl.attributedText = tagstr2
+
         
         // Add to subviews
         containerView.addSubview(profileBgImageView)
@@ -294,11 +313,6 @@ class ProfileController: UIViewController, UITableViewDelegate, UITableViewDataS
     
     func tableView(_ tableView: UITableView, estimatedHeightForRowAt indexPath: IndexPath) -> CGFloat {
         return UITableViewAutomaticDimension
-    }
-    
-    fileprivate func assembleCellData() {
-        self.profileCellTitles = ["Organization", "School", "Discipline"]
-        self.profileCellContent = [self.profile.org, self.profile.school, self.profile.discipline]
     }
     
     func numberOfSections(in tableView: UITableView) -> Int {

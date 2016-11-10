@@ -1,19 +1,14 @@
 ==== BACKEND ====
 
-!PROFILE!
 
 !CHAT!
-
 GOALS OF TODAY:
-
-
-
 - Load profile
 - Plan topics
 
 
 !TOPICS!
-
+- Bug: Black area at bottom because the tab bar was being kept
 
 !SETTINGS!
 - Settings table

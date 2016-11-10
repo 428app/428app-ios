@@ -187,7 +187,7 @@ class DataService {
         })
     }
     
-    // Retrive user's profile data based on input user id
+    // Retrive user's profile data based on input user id, used in both ChatController's openProfile and EditProfileController
     func getUserFields(uid: String?, completed: @escaping (_ isSuccess: Bool, _ user: Profile?) -> ()) {
         guard let uid_ = uid else {
             completed(false, nil)
@@ -195,8 +195,10 @@ class DataService {
         }
         self.REF_USERS.child(uid_).observeSingleEvent(of: .value, with: { snapshot in
             if snapshot.exists() {
+
                 // Name, birthday, discipline, organization, profile photo, school are compulsory fields
                 guard let userDict = snapshot.value as? [String: Any], let name = userDict["name"] as? String, let birthday = userDict["birthday"] as? String, let discipline = userDict["discipline"] as? String, let org = userDict["organization"] as? String, let profilePhotoUrl = userDict["profilePhoto"] as? String, let school = userDict["school"] as? String else {
+                    log.info("Returned from guard")
                     completed(false, nil)
                     return
                 }
@@ -216,6 +218,9 @@ class DataService {
                 if let c = userDict["coverPhoto"] as? String {
                     coverPhotoUrl = c
                 }
+                
+                log.info("Got this far")
+                
                 // Convert birthday of "MM/DD/yyyy" to age integer
                 let age = convertBirthdayToAge(birthday: birthday)
                 if location == "" {
