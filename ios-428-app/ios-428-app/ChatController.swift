@@ -214,6 +214,9 @@ class ChatController: UIViewController, UICollectionViewDelegateFlowLayout, UITe
     
     fileprivate func setupFirebase() {
         
+        // Prepare for potential next screen when user opens profile
+        self.downloadProfile()
+        
         // Setup empty placeholder view
         self.setupEmptyPlaceholder()
         
@@ -306,12 +309,22 @@ class ChatController: UIViewController, UICollectionViewDelegateFlowLayout, UITe
         return button
     }()
     
+    fileprivate var profile: Profile?
+    
+    fileprivate func downloadProfile() { // Profile is also downloaded here to prepare for potential next screen
+        DataService.ds.getUserFields(uid: connection.uid) { (isSuccess, downloadedProfile) in
+            if isSuccess && downloadedProfile != nil {
+                self.profile = downloadedProfile
+            }
+        }
+    }
+    
     func openProfile() {
-        // TODO: Fetch profile from server based on this connection id
         let controller = ProfileController()
-        
         controller.connection = connection
-//        controller.profile = jennyprof
+        if profile != nil {
+            controller.profile = profile
+        }
         controller.modalTransitionStyle = .coverVertical
         self.navigationController?.navigationBar.isHidden = true
         self.collectionView.isHidden = true

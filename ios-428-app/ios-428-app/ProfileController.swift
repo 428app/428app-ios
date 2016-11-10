@@ -28,7 +28,9 @@ class ProfileController: UIViewController, UITableViewDelegate, UITableViewDataS
     override func viewDidLoad() {
         super.viewDidLoad()
         self.view.backgroundColor = UIColor.white
-        self.downloadProfile()
+        if profile == nil {
+            self.downloadProfile()
+        }
         self.setupTableView()
         self.setupViews()
     }

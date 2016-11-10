@@ -198,7 +198,6 @@ class DataService {
 
                 // Name, birthday, discipline, organization, profile photo, school are compulsory fields
                 guard let userDict = snapshot.value as? [String: Any], let name = userDict["name"] as? String, let birthday = userDict["birthday"] as? String, let discipline = userDict["discipline"] as? String, let org = userDict["organization"] as? String, let profilePhotoUrl = userDict["profilePhoto"] as? String, let school = userDict["school"] as? String else {
-                    log.info("Returned from guard")
                     completed(false, nil)
                     return
                 }
@@ -218,8 +217,6 @@ class DataService {
                 if let c = userDict["coverPhoto"] as? String {
                     coverPhotoUrl = c
                 }
-                
-                log.info("Got this far")
                 
                 // Convert birthday of "MM/DD/yyyy" to age integer
                 let age = convertBirthdayToAge(birthday: birthday)
