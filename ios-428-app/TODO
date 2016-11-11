@@ -2,12 +2,12 @@
 
 
 BUGS
-- If received/last sent is on and new message received, bubble has to go down a bit more on the receiver end: 
+- Profile photo shifting down upon clicking for time
 
 
 
 Minor
-- Profile photo shifting down upon clicking for time
+
 - Settings: Unselect cell upon cancel
 
 Major

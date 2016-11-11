@@ -63,7 +63,7 @@ class ChatCell: BaseCollectionCell {
         addSubview(profileImageView)
         
         addConstraintsWithFormat("H:|-8-[v0(30)]", views: profileImageView)
-        addConstraintsWithFormat("V:[v0(30)]|", views: profileImageView)
+        addConstraintsWithFormat("V:|[v0(30)]", views: profileImageView)
         
         textBubbleView.addSubview(bubbleImageView)
         textBubbleView.addConstraintsWithFormat("H:|[v0]|", views: bubbleImageView)
