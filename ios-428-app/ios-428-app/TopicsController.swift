@@ -34,12 +34,14 @@ class TopicsController: UIViewController, UITableViewDelegate, UITableViewDataSo
         self.view.backgroundColor = GRAY_UICOLOR
         self.navigationItem.title = "Topics"
         self.automaticallyAdjustsScrollViewInsets = false
+        self.extendedLayoutIncludesOpaqueBars = true
         self.loadData()
         self.setupViews()
     }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+        
         self.tabBarController?.tabBar.isHidden = false
     }
     

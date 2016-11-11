@@ -275,6 +275,7 @@ class DataService {
             
             var connections: [Connection] = []
             
+            
             for snap in snaps {
                 if let dict = snap.value as? [String: Any], let discipline = dict["discipline"] as? String, let name = dict["name"] as? String, let photo = dict["profilePhoto"] as? String {
                     let conn: Connection = Connection(uid: snap.key, name: name, profileImageName: photo, discipline: discipline)
@@ -290,6 +291,7 @@ class DataService {
     func observeRecentChat(connection: Connection, completed: @escaping (_ isSuccess: Bool, _ connection: Connection?) -> ()) -> (FIRDatabaseReference, FIRDatabaseHandle) {
         let uid = getStoredUid() == nil ? "" : getStoredUid()!
         let chatId: String = getChatId(uid1: uid, uid2: connection.uid)
+        log.info(chatId)
         let ref: FIRDatabaseReference = REF_CHATS.child(chatId)
         
         ref.keepSynced(true)
@@ -321,43 +323,61 @@ class DataService {
         return (ref, handle)
     }
     
+    fileprivate func processChatSnapshot(snapshot: FIRDataSnapshot, connection: Connection, uid: String) -> Connection? {
+        if !snapshot.exists() {
+            return nil
+        }
+        
+        guard let snaps = snapshot.children.allObjects as? [FIRDataSnapshot] else {
+            return nil
+        }
+        connection.clearMessages()
+        for snap in snaps {
+            if let dict = snap.value as? [String: Any], let text = dict["message"] as? String, let timestamp = dict["timestamp"] as? Double, let poster = dict["poster"] as? String {
+                let mid: String = snap.key
+                let isSentByYou: Bool = poster == uid
+                let date = Date(timeIntervalSince1970: timestamp)
+                let msg = Message(mid: mid, text: text, connection: connection, date: date, isSentByYou: isSentByYou)
+                connection.addMessage(message: msg)
+            }
+        }
+        return connection
+    }
+    
     // Observes all chat messags of one connection, used in ChatController
-    func observeChatMessages(connection: Connection, limit: UInt = 0, completed: @escaping (_ isSuccess: Bool, _ connection: Connection?) -> ()) -> (FIRDatabaseReference, FIRDatabaseHandle) {
+    func reobserveChatMessages(limit: UInt, connection: Connection, completed: @escaping (_ isSuccess: Bool, _ connection: Connection?) -> ()) -> (FIRDatabaseQuery, FIRDatabaseHandle) {
+        
+        let uid = getStoredUid() == nil ? "" : getStoredUid()!
+        let chatId: String = getChatId(uid1: uid, uid2: connection.uid)
+        let ref: FIRDatabaseReference = REF_MESSAGES.child(chatId)
+        ref.keepSynced(true)
+        // Remove hasNew of this chat if user is on the chat screen
+        self.seeConnectionMessages(connection: connection) { (isSuccess) in }
+        
+        let q: FIRDatabaseQuery = ref.queryOrdered(byChild: "timestamp").queryLimited(toLast: limit)
+        q.keepSynced(true)
+        let handle = q.observe(.value, with: { snapshot in
+            let conn = self.processChatSnapshot(snapshot: snapshot, connection: connection, uid: uid)
+            completed(conn != nil, conn)
+        })
+        return (q, handle)
+    }
+    
+    // Observes all chat messags of one connection once, used when setting up ChatController
+    func observeChatMessagesOnce(connection: Connection, limit: UInt, completed: @escaping (_ isSuccess: Bool, _ connection: Connection?) -> ()) {
         let uid = getStoredUid() == nil ? "" : getStoredUid()!
         let chatId: String = getChatId(uid1: uid, uid2: connection.uid)
         let ref: FIRDatabaseReference = REF_MESSAGES.child(chatId)
         
-        ref.keepSynced(true)
-        
         // Remove hasNew of this chat if user is on the chat screen
         self.seeConnectionMessages(connection: connection) { (isSuccess) in }
         
-        let q = limit == 0 ? ref : ref.queryOrdered(byChild: "timestamp").queryLimited(toLast: limit)
-        let handle = q.observe(.value, with: { snapshot in
-            if !snapshot.exists() {
-                completed(false, nil)
-                return
-            }
-            
-            // TODO: Have to deal with the case of a fresh connection, with no messages
-            
-            guard let snaps = snapshot.children.allObjects as? [FIRDataSnapshot] else {
-                completed(false, nil)
-                return
-            }
-            connection.clearMessages()
-            for snap in snaps {
-                if let dict = snap.value as? [String: Any], let text = dict["message"] as? String, let timestamp = dict["timestamp"] as? Double, let poster = dict["poster"] as? String {
-                    let mid: String = snap.key
-                    let isSentByYou: Bool = poster == uid
-                    let date = Date(timeIntervalSince1970: timestamp)
-                    let msg = Message(mid: mid, text: text, connection: connection, date: date, isSentByYou: isSentByYou)
-                    connection.addMessage(message: msg)
-                }
-            }
-            completed(true, connection)
+        let q: FIRDatabaseQuery = ref.queryOrdered(byChild: "timestamp").queryLimited(toLast: limit)
+        q.observeSingleEvent(of: .value, with: { snapshot in
+            q.removeAllObservers()
+            let conn = self.processChatSnapshot(snapshot: snapshot, connection: connection, uid: uid)
+            completed(conn != nil, conn)
         })
-        return (ref, handle)
     }
     
     // Adds a chat message to the messages with a connection, used in ChatController
@@ -400,4 +420,19 @@ class DataService {
             completed(err == nil)
         }
     }
+    
+    
+    // Test function
+    func addConnection(uid2: String) {
+        guard let uid1 = getStoredUid() else {
+            return
+        }
+        REF_USERS.child("\(uid1)/connections/\(uid2)").setValue(["discipline": "Business", "name": "Leonard", "profilePhoto": "https://firebasestorage.googleapis.com/v0/b/app-abdf9.appspot.com/o/user%2F1250226885021203%2Fprofile_photo?alt=media&token=c684e1d1-2f6d-48ee-8905-77c90f67cc31"])
+        REF_USERS.child("\(uid2)/connections/\(uid1)").setValue(["discipline": "East Asian Studies", "name": "Test", "profilePhoto": "https://firebasestorage.googleapis.com/v0/b/app-abdf9.appspot.com/o/user%2F1250226885021203%2Fprofile_photo?alt=media&token=c684e1d1-2f6d-48ee-8905-77c90f67cc31"])
+        
+        
+        let chatId = getChatId(uid1: uid1, uid2: uid2)
+        REF_CHATS.child(chatId).setValue(["dateMatched": "11/10/2016", "hasNew:\(uid1)": true, "hasNew:\(uid2)": true, "lastMessage": "", "mid": "", "poster": "", "timestamp": Date().timeIntervalSince1970])
+    }
+    
 }

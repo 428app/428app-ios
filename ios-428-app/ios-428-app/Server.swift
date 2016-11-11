@@ -88,7 +88,7 @@ func downloadImage(imageUrlString: String, completed: @escaping (_ isSuccess: Bo
         return nil
     }
     let request = Alamofire.request(imageUrlString, method: .get, encoding: JSONEncoding.default).validate(contentType: ["image/*"]).responseImage { response in
-        log.info("\(response)")
+        //log.info("\(response)")
         if response.result.isFailure {
             completed(false, nil)
             return
@@ -106,4 +106,4 @@ func downloadImage(imageUrlString: String, completed: @escaping (_ isSuccess: Bo
 
 // MARK: Store message pull limits
 
-var connectionUidToMessageLimit: [String: UInt] = [:]
+//var connectionUidToMessageLimit: [String: UInt] = [:]

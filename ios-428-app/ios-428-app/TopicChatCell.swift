@@ -91,7 +91,7 @@ class TopicChatCell: BaseCollectionCell {
         self.messageTextView.text = self.message.text
         self.nameLabel.text = self.message.posterName
         
-        self.disciplineImageView.image = UIImage(named: self.message.postercoverImageName)
+        self.disciplineImageView.image = UIImage(named: self.message.posterDiscipline)
         
         let size = CGSize(width: 250, height: 1000)
         let options = NSStringDrawingOptions.usesFontLeading.union(.usesLineFragmentOrigin)

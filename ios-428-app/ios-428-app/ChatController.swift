@@ -16,10 +16,12 @@ import Firebase
 class ChatController: UIViewController, UICollectionViewDelegateFlowLayout, UITextViewDelegate, UICollectionViewDelegate, UICollectionViewDataSource, UIGestureRecognizerDelegate {
     
     /** FIREBASE **/
-    fileprivate var firebaseRefsAndHandles: [(FIRDatabaseReference, FIRDatabaseHandle)] = []
+//    fileprivate var firebaseRefsAndHandles: [(FIRDatabaseReference, FIRDatabaseHandle)] = []
+    fileprivate var queryAndHandle: (FIRDatabaseQuery, FIRDatabaseHandle)!
+    
+    
     fileprivate var numMessages: UInt = 50 // Increases as user scrolls to top of collection view
-    fileprivate let NUM_INCREMENT: UInt = 50 // Downloads 50 messages per scroll
-    fileprivate var countdownToAddLimitAfterAddingMessage: UInt = 10 // Reobserve on every 10 messages added
+    fileprivate let NUM_INCREMENT: UInt = 10 // Downloads 10 messages per scroll
     
     /** CONSTANTS **/
     fileprivate let CELL_ID = "chatCell"
@@ -38,17 +40,11 @@ class ChatController: UIViewController, UICollectionViewDelegateFlowLayout, UITe
     fileprivate var inputContainerHeightConstraint: NSLayoutConstraint!
     // Adjusted for keyboard
     fileprivate var bottomConstraintForInput: NSLayoutConstraint!
+    fileprivate var TOP_GAP: CGFloat = 0.0 // Default value of topConstraintForCollectionView, intially set in setupCollectionView
     fileprivate var topConstraintForCollectionView: NSLayoutConstraint!
     fileprivate var keyboardHeight: CGFloat = 216.0 // Default of 216.0, but reset the first time keyboard pops up
     
-    var connection: Connection! {
-        didSet {
-            let limit = connectionUidToMessageLimit[self.connection.uid]
-            if limit != nil {
-                self.numMessages = limit!
-            }
-        }
-    }
+    var connection: Connection!
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -57,12 +53,12 @@ class ChatController: UIViewController, UICollectionViewDelegateFlowLayout, UITe
         self.setupNavigationBar()
         self.setupCollectionView()
         self.setupInputComponents()
-        NotificationCenter.default.addObserver(self, selector: #selector(setProfile), name: NOTIF_USERPROFILEDOWNLOADED, object: nil)
+        self.extendedLayoutIncludesOpaqueBars = true
+
     }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        self.extendedLayoutIncludesOpaqueBars = true
         self.navigationController?.navigationBar.isHidden = false
         self.collectionView.isHidden = false
         self.tabBarController?.tabBar.isHidden = true
@@ -71,23 +67,17 @@ class ChatController: UIViewController, UICollectionViewDelegateFlowLayout, UITe
     
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
-        // Retain numMessages limit when user reopens this chat
-        connectionUidToMessageLimit[self.connection.uid] = self.numMessages
-        self.unregisterObservers()
-    }
-    
-    deinit {
-        for (ref, handle) in firebaseRefsAndHandles {
-            ref.removeObserver(withHandle: handle)
+        if self.queryAndHandle != nil {
+            self.queryAndHandle.0.removeAllObservers()
         }
-        NotificationCenter.default.removeObserver(self, name: NOTIF_USERPROFILEDOWNLOADED, object: nil)
+        self.unregisterObservers()
     }
     
     // MARK: Firebase
     
     func loadMoreMessages() {
-        numMessages += NUM_INCREMENT
-        self.reobserveMessages(isReobserved: true)
+        self.numMessages += NUM_INCREMENT
+        self.observeMore()
     }
     
     fileprivate lazy var emptyPlaceholderView: UIView = {
@@ -139,59 +129,154 @@ class ChatController: UIViewController, UICollectionViewDelegateFlowLayout, UITe
         self.emptyPlaceholderView.addConstraintsWithFormat("V:|-8-[v0(100)]-12-[v1]", views: self.emptyPlaceholderPictureView, self.emptyPlaceholderLabel)
     }
     
-    fileprivate func reobserveMessages(isReobserved: Bool) {
-        for (ref, handle) in firebaseRefsAndHandles {
-            ref.removeObserver(withHandle: handle)
+    fileprivate func observeMore() {
+        if self.queryAndHandle != nil {
+            self.queryAndHandle.0.removeObserver(withHandle: self.queryAndHandle.1)
         }
+        self.refreshControl.beginRefreshing()
         self.pullToRefreshIndicator.startAnimating()
         
-        if !isReobserved {
-            self.activityIndicator.startAnimating()
-            // Small hack to make it not show up when the load time is less than 2 seconds
-            self.activityIndicator.isHidden = true
-            UIView.animate(withDuration: 2.0, animations: {}, completion: { (isSuccess) in
-                if self.activityIndicator.isAnimating {
-                    self.activityIndicator.isHidden = false
-                }
+        DataService.ds.observeChatMessagesOnce(connection: self.connection, limit: self.numMessages, completed: { (isSuccess, updatedConnection) in
+            self.refreshControl.endRefreshing()
+            self.pullToRefreshIndicator.stopAnimating()
+            
+            if (!isSuccess || updatedConnection == nil) {
+                // No messages yet, display placeholder view in the middle to prompt user to interact with new connection
+                self.emptyPlaceholderView.isHidden = false
+                self.emptyPlaceholderView.isUserInteractionEnabled = true
+                log.info("No messages updated for connection")
+                self.reobserveMessages()
+                return
+            }
+            
+            log.info("Messages reloaded")
+            
+            // There are messages, hide and disable empty placeholder view
+            self.emptyPlaceholderView.isHidden = true
+            self.emptyPlaceholderView.isUserInteractionEnabled = false
+            
+            // Update connection and messages
+            self.connection = updatedConnection
+            
+            self.messages = updatedConnection!.messages
+            
+            self.organizeMessages()
+            
+            // Should scroll to previous location
+            self.collectionView.reloadData()
+            self.reobserveMessages()
+        })
+    }
+    
+    fileprivate func initMessages() {
+        if self.queryAndHandle != nil {
+            return
+        }
+        self.activityIndicator.startAnimating()
+        // Small hack to make it not show up when the load time is less than 2 seconds
+        self.activityIndicator.isHidden = true
+        UIView.animate(withDuration: 2.0, animations: {}, completion: { (isSuccess) in
+            if self.activityIndicator.isAnimating {
+                self.activityIndicator.isHidden = false
+            }
+        })
+        DataService.ds.observeChatMessagesOnce(connection: self.connection, limit: self.numMessages, completed: { (isSuccess, updatedConnection) in
+            self.activityIndicator.stopAnimating()
+            
+            if (!isSuccess || updatedConnection == nil) {
+                // No messages yet, display placeholder view in the middle to prompt user to interact with new connection
+                self.emptyPlaceholderView.isHidden = false
+                self.emptyPlaceholderView.isUserInteractionEnabled = true
+                log.info("No messages updated for connection")
+                self.reobserveMessages()
+                return
+            }
+            
+            log.info("Messages updated")
+            
+            // There are messages, hide and disable empty placeholder view
+            self.emptyPlaceholderView.isHidden = true
+            self.emptyPlaceholderView.isUserInteractionEnabled = false
+            
+            // Update connection and messages
+            self.connection = updatedConnection
+            self.messages = updatedConnection!.messages
+            
+            self.organizeMessages()
+            
+            // Simple hack to load the bottom of the collection view
+            UIView.animate(withDuration: 0, animations: {
+                // Collection view is hidden first so the scrolling is not visible to the user
+                self.collectionView.isHidden = true
+                self.collectionView.reloadData()
+                }, completion: { (isSuccess) in
+                    self.scrollToLastItemInCollectionView(animated: false)
+                    self.collectionView.isHidden = false
+                    self.reobserveMessages()
             })
+        })
+    }
+    
+    fileprivate func reobserveMessages() {
+
+        if self.queryAndHandle != nil {
+            queryAndHandle.0.removeObserver(withHandle: queryAndHandle.1)
         }
         
-        self.firebaseRefsAndHandles.append(DataService.ds.observeChatMessages(connection: self.connection, limit: self.numMessages, completed: { (isSuccess, updatedConnection) in
-            self.activityIndicator.stopAnimating()
-            self.pullToRefreshIndicator.stopAnimating()
-            self.refreshControl.endRefreshing()
+        queryAndHandle = DataService.ds.reobserveChatMessages(limit: self.numMessages, connection: self.connection) { (isSuccess, updatedConnection) in
+            log.info("\(self.numMessages) inside reobserved")
+
             if (!isSuccess || updatedConnection == nil) {
-                if (isReobserved) {
-                    // Rewind numMessages as download did not download anything / failed
+                
+                // Rewind increment of numMessages
+                if self.numMessages > self.NUM_INCREMENT {
                     self.numMessages -= self.NUM_INCREMENT
                 }
+                
                 // No messages yet, display placeholder view in the middle to prompt user to interact with new connection
                 self.emptyPlaceholderView.isHidden = false
                 self.emptyPlaceholderView.isUserInteractionEnabled = true
                 log.info("No messages updated for connection")
                 return
             }
-            log.info("Messages updated")
+            
             // There are messages, hide and disable empty placeholder view
             self.emptyPlaceholderView.isHidden = true
             self.emptyPlaceholderView.isUserInteractionEnabled = false
+            
+            log.info("Old: \(self.messages.count), New: \(updatedConnection!.messages.count)")
+            
+            // Check if messages are exactly the same, if yes, then no need to update
+            if self.messages.count == updatedConnection!.messages.count {
+                var areTheSame = true
+                let updatedMessages = updatedConnection!.messages.sorted(by: { (m1, m2) -> Bool in
+                    return m1.date.compare(m2.date) == .orderedAscending
+                })
+                let oldMessages = self.messages.sorted(by: { (m1, m2) -> Bool in
+                    return m1.date.compare(m2.date) == .orderedAscending
+                })
+                
+                for i in 0..<updatedMessages.count {
+                    if updatedMessages[i].mid != oldMessages[i].mid {
+                        areTheSame = false
+                        break
+                    }
+                }
+                if areTheSame {
+                    return
+                }
+            }
+            
+            self.connection = updatedConnection
             self.messages = updatedConnection!.messages
             self.organizeMessages()
             
-            if !isReobserved {
-                // If first time entering this chat, scroll down to the bottom of the collection view
-                UIView.animate(withDuration: 0, animations: {
-                    // Collection view is hidden first so the scrolling is not visible to the user
-                    self.collectionView.isHidden = true
-                    self.collectionView.reloadData()
-                    }, completion: { (isSuccess) in
-                        self.scrollToLastItemInCollectionView(animated: false)
-                        self.collectionView.isHidden = false
-                })
-            } else {
+            UIView.animate(withDuration: 0.0, animations: { 
                 self.collectionView.reloadData()
-            }
-        }))
+                }, completion: { (isSuccess) in
+                    self.scrollToLastItemInCollectionView(animated: false)
+            })
+        }
     }
     
     fileprivate lazy var pullToRefreshIndicator: CustomActivityIndicatorView = {
@@ -231,7 +316,7 @@ class ChatController: UIViewController, UICollectionViewDelegateFlowLayout, UITe
         self.pullToRefreshIndicator.center = CGPoint(x: self.view.center.x, y: self.refreshControl.center.y)
         collectionView.addSubview(self.refreshControl)
         
-        self.reobserveMessages(isReobserved: false)
+        self.initMessages()
     }
     
     func setProfile(notif: Notification) {
@@ -416,6 +501,7 @@ class ChatController: UIViewController, UICollectionViewDelegateFlowLayout, UITe
         self.textViewHeight = 0.0
         self.inputContainerHeightConstraint.constant = 45.0
         self.view.layoutIfNeeded()
+        self.topConstraintForCollectionView.constant = TOP_GAP
         self.sendButton.isEnabled = false
         inputTextView.text = nil
         self.placeholderLabel.isHidden = false
@@ -443,8 +529,6 @@ class ChatController: UIViewController, UICollectionViewDelegateFlowLayout, UITe
                 if (self.isCollectionViewBlockingInput() && diff > 0) || (diff < 0 && self.topConstraintForCollectionView.constant < 0) {
                     // Need to shift upwards if content is blocked (First conditional) OR
                     // Only shift downwards if previously shifted upwards (Second conditional)
-                    let frame = self.collectionView.contentInset
-                    self.collectionView.contentInset = UIEdgeInsets(top: frame.top + diff, left: frame.left, bottom: frame.bottom, right: frame.right)
                     self.topConstraintForCollectionView.constant -= diff
                 }
                 self.view.layoutIfNeeded()
@@ -533,35 +617,15 @@ class ChatController: UIViewController, UICollectionViewDelegateFlowLayout, UITe
         if let text = inputTextView.text {
             // Trim text before sending
             self.sendButton.isEnabled = false // Disable straight away to prevent double send
-            
-            // Reobserve every 10 messages
-            self.countdownToAddLimitAfterAddingMessage -= 1
-            if self.countdownToAddLimitAfterAddingMessage <= 0 {
-                self.countdownToAddLimitAfterAddingMessage = 10
-                self.numMessages += 10
-                self.reobserveMessages(isReobserved: true)
-            }
+            self.resetInputContainer()
             
             DataService.ds.addChatMessage(connection: connection, text: text.trim(), completed: { (isSuccess, updatedConnection) in
                 if !isSuccess || updatedConnection == nil {
                     // Reset countdown if failure to add
-                    self.countdownToAddLimitAfterAddingMessage += 1
-                    self.countdownToAddLimitAfterAddingMessage %= 10
-                    
                     log.error("[Error] Message failed to be posted")
                     showErrorAlert(vc: self, title: "Error", message: "Could not send message. Please try again.")
                     return
                 }
-                self.organizeMessages()
-                self.resetInputContainer()
-                
-                UIView.animate(withDuration: 0.0, animations: { 
-                    self.collectionView.reloadData()
-                    self.collectionView.layoutIfNeeded()
-                    }, completion: { (isSuccess) in
-                        self.scrollToLastItemInCollectionView()
-                })
-                
             })
         }
     }
@@ -569,6 +633,7 @@ class ChatController: UIViewController, UICollectionViewDelegateFlowLayout, UITe
     // MARK: Keyboard
     
     fileprivate func registerObservers() {
+        NotificationCenter.default.addObserver(self, selector: #selector(setProfile), name: NOTIF_USERPROFILEDOWNLOADED, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(handleKeyboardNotification), name: NSNotification.Name.UIKeyboardWillHide, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(handleKeyboardNotification), name: NSNotification.Name.UIKeyboardWillChangeFrame, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(expandCell), name: NOTIF_EXPANDCHATCELL, object: nil)
@@ -578,6 +643,7 @@ class ChatController: UIViewController, UICollectionViewDelegateFlowLayout, UITe
         NotificationCenter.default.removeObserver(self, name: NSNotification.Name.UIKeyboardWillHide, object: nil)
         NotificationCenter.default.removeObserver(self, name: NSNotification.Name.UIKeyboardWillChangeFrame, object: nil)
         NotificationCenter.default.removeObserver(self, name: NOTIF_EXPANDCHATCELL, object: nil)
+        NotificationCenter.default.removeObserver(self, name: NOTIF_USERPROFILEDOWNLOADED, object: nil)
     }
     
     fileprivate func isCollectionViewBlockingInput() -> Bool {
@@ -638,16 +704,18 @@ class ChatController: UIViewController, UICollectionViewDelegateFlowLayout, UITe
         return collectionView
     }()
     
+    
     private func setupCollectionView() {
         self.collectionView.delegate = self
         self.collectionView.dataSource = self
         self.collectionView.bounces = true
         self.collectionView.alwaysBounceVertical = true
+        self.TOP_GAP = self.navigationController!.navigationBar.frame.height + 0.7*SECTION_HEADER_HEIGHT
         let layout = UICollectionViewFlowLayout()
         layout.headerReferenceSize = CGSize(width: UIScreen.main.bounds.width, height: SECTION_HEADER_HEIGHT)
         self.collectionView.setCollectionViewLayout(layout, animated: false)
         self.automaticallyAdjustsScrollViewInsets = false
-        self.collectionView.contentInset = UIEdgeInsets(top: (self.navigationController?.navigationBar.frame.height)! + 0.7*SECTION_HEADER_HEIGHT, left: 0, bottom: 0.8*SECTION_HEADER_HEIGHT, right: 0) // Fix top and bottom padding since automaticallyAdjustScrollViewInsets set to false
+        self.collectionView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: 0.8*SECTION_HEADER_HEIGHT, right: 0) // Fix top and bottom padding since automaticallyAdjustScrollViewInsets set to false
         
         self.collectionView.register(ChatCell.self, forCellWithReuseIdentifier: CELL_ID)
         self.collectionView.register(ChatHeaderView.self, forSupplementaryViewOfKind: UICollectionElementKindSectionHeader, withReuseIdentifier: CELL_HEADER_ID)
@@ -656,20 +724,13 @@ class ChatController: UIViewController, UICollectionViewDelegateFlowLayout, UITe
         
         self.view.addConstraintsWithFormat("H:|[v0]|", views: collectionView)
         self.view.addConstraintsWithFormat("V:[v0]", views: collectionView)
-        self.topConstraintForCollectionView = NSLayoutConstraint(item: self.collectionView, attribute: .top, relatedBy: .equal, toItem: self.view, attribute: .top, multiplier: 1.0, constant: 0)
+        self.topConstraintForCollectionView = NSLayoutConstraint(item: self.collectionView, attribute: .top, relatedBy: .equal, toItem: self.view, attribute: .top, multiplier: 1.0, constant: TOP_GAP)
         self.view.addConstraint(self.topConstraintForCollectionView)
         
         // Panning on collection view keeps keyboard
         let panToKeepKeyboardRecognizer = UIPanGestureRecognizer(target: self, action: #selector(keepKeyboard))
         panToKeepKeyboardRecognizer.delegate = self
         self.collectionView.addGestureRecognizer(panToKeepKeyboardRecognizer)
-        
-        // Scroll collection view to the bottom to most recent message upon first entering screen
-//        UIView.animate(withDuration: 0, delay: 0, options: .curveEaseOut, animations: {
-//            self.view.layoutIfNeeded()
-//            }, completion: { (completed) in
-//                self.scrollToLastItemInCollectionView(animated: false)
-//        })
     }
     
     func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWith otherGestureRecognizer: UIGestureRecognizer) -> Bool {
@@ -677,6 +738,7 @@ class ChatController: UIViewController, UICollectionViewDelegateFlowLayout, UITe
     }
     
     func keepKeyboard(gestureRecognizer: UIPanGestureRecognizer) {
+        self.topConstraintForCollectionView.constant = TOP_GAP
         self.inputTextView.endEditing(true)
     }
     

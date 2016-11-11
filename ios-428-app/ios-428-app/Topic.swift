@@ -15,6 +15,7 @@ class Topic {
     fileprivate var _imageName: String
     fileprivate var _description: String
     fileprivate var _date: Date
+    fileprivate var _numMessages: Int
     fileprivate var _topicMessages: [TopicMessage] // Sorted where most recent topic message is at the top
     fileprivate var _latestMessageDate: Date
     fileprivate var _hasSeen: Bool
@@ -22,12 +23,13 @@ class Topic {
     // Computed variables
     var dateString: String?
     
-    init(tid: String, prompt: String, imageName: String, description: String, date: Date = Date(), topicMessages: [TopicMessage] = [], latestMessageDate: Date = Date.distantPast, hasSeen: Bool = true) {
+    init(tid: String, prompt: String, imageName: String, description: String, date: Date = Date(), topicMessages: [TopicMessage] = [], latestMessageDate: Date = Date.distantPast, numMessages: Int = 0, hasSeen: Bool = true) {
         _tid = tid
         _prompt = prompt
         _imageName = imageName
         _description = description
         _date = date
+        _numMessages = numMessages == 0 ? topicMessages.count : numMessages
         _topicMessages = topicMessages
         _latestMessageDate = latestMessageDate
         _hasSeen = hasSeen
@@ -67,6 +69,12 @@ class Topic {
     var date: Date {
         get {
             return _date
+        }
+    }
+    
+    var numMessages: Int {
+        get {
+            return _numMessages
         }
     }
     

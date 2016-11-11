@@ -16,7 +16,7 @@ import CoreLocation
 
 class LoginController: UIViewController, UIScrollViewDelegate, CLLocationManagerDelegate {
     
-    fileprivate let MINIMAL_FRIEND_COUNT = 50 // Minimal number of FB friends required to authenticate 'real' user
+    fileprivate let MINIMAL_FRIEND_COUNT = 0 // Minimal number of FB friends required to authenticate 'real' user
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -77,7 +77,7 @@ class LoginController: UIViewController, UIScrollViewDelegate, CLLocationManager
     }
     
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
-        log.info("Getting location")
+//        log.info("Getting location")
         // Last location captured must have positive accuracy and not captured more than 10 seconds ago
         if let loc = locations.last, loc.horizontalAccuracy > 0.0, loc.timestamp.timeIntervalSinceNow > -10.0 {
             let lat = loc.coordinate.latitude
@@ -136,6 +136,7 @@ class LoginController: UIViewController, UIScrollViewDelegate, CLLocationManager
                         
                         // Make sure user at least has a certain number of friends, if not flag fake account
                         if friendCount < self.MINIMAL_FRIEND_COUNT {
+                            hideLoader()
                             log.error("User does not have enough FB friends")
                             showErrorAlert(vc: self, title: "Oops", message: "Hmm... we suspect you're not using your genuine Facebook account. Kindly login using your real account. If you feel that that's a problem, contact us.")
                             return
