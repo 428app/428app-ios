@@ -2,15 +2,15 @@
 
 
 BUGS
+- If received/last sent is on and new message received, bubble has to go down a bit more on the receiver end: 
+
+
 
 Minor
 - Profile photo shifting down upon clicking for time
 - Settings: Unselect cell upon cancel
 
 Major
-- My messages sent out: previous messages being altered/hidden?
-- If received/last sent is on and new message received, bubble has to go down a bit more on the receiver end
-- Refreshing all chats with each chat
 - Cover photo doesn't upload: Remove save, and upload automatically
 - Setting new profile picture in user connections when another user changes
 - Set security/index rules to speed up chat updates

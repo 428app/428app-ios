@@ -16,9 +16,7 @@ import Firebase
 class ChatController: UIViewController, UICollectionViewDelegateFlowLayout, UITextViewDelegate, UICollectionViewDelegate, UICollectionViewDataSource, UIGestureRecognizerDelegate {
     
     /** FIREBASE **/
-//    fileprivate var firebaseRefsAndHandles: [(FIRDatabaseReference, FIRDatabaseHandle)] = []
     fileprivate var queryAndHandle: (FIRDatabaseQuery, FIRDatabaseHandle)!
-    
     
     fileprivate var numMessages: UInt = 50 // Increases as user scrolls to top of collection view
     fileprivate let NUM_INCREMENT: UInt = 10 // Downloads 10 messages per scroll
@@ -129,6 +127,63 @@ class ChatController: UIViewController, UICollectionViewDelegateFlowLayout, UITe
         self.emptyPlaceholderView.addConstraintsWithFormat("V:|-8-[v0(100)]-12-[v1]", views: self.emptyPlaceholderPictureView, self.emptyPlaceholderLabel)
     }
     
+    /**
+     Here's why we need 3 functions for observing chat from Firebase:
+     By default reobserveMessages() which loads on every new message being added will scroll the chat to the bottom 
+     of the screen. However, we don't want that on the two occasions when we first enter the screen and we pull to refresh. Hence,
+     1) initMessages is used to hide the messages first so I can scroll to the bottom before displaying them. This is a hack I invented to make a more natural transition from Connections to this page.
+     2) observeMore is used to change the limit of the query (pull to refresh), and at the same time NOT scroll to the bottom. By default, observeMore will scroll the table to the top. However, the ideal behavior is to remain fixed at the location BEFORE observeMore. However, that is very difficult to do given that messages are in different buckets. Hence, we leave that for a future enhancement.
+    **/
+    
+    fileprivate func initMessages() {
+        if self.queryAndHandle != nil {
+            return
+        }
+        self.activityIndicator.startAnimating()
+        // Small hack to make it not show up when the load time is less than 2 seconds
+        self.activityIndicator.isHidden = true
+        UIView.animate(withDuration: 2.0, animations: {}, completion: { (isSuccess) in
+            if self.activityIndicator.isAnimating {
+                self.activityIndicator.isHidden = false
+            }
+        })
+        DataService.ds.observeChatMessagesOnce(connection: self.connection, limit: self.numMessages, completed: { (isSuccess, updatedConnection) in
+            self.activityIndicator.stopAnimating()
+            
+            if (!isSuccess || updatedConnection == nil) {
+                // No messages yet, display placeholder view in the middle to prompt user to interact with new connection
+                self.emptyPlaceholderView.isHidden = false
+                self.emptyPlaceholderView.isUserInteractionEnabled = true
+                log.info("No messages updated for connection")
+                self.reobserveMessages()
+                return
+            }
+            
+            log.info("Messages updated")
+            
+            // There are messages, hide and disable empty placeholder view
+            self.emptyPlaceholderView.isHidden = true
+            self.emptyPlaceholderView.isUserInteractionEnabled = false
+            
+            // Update connection and messages
+            self.connection = updatedConnection
+            self.messages = updatedConnection!.messages
+            
+            self.organizeMessages()
+            
+            // Simple hack to load the bottom of the collection view without visually showing it
+            UIView.animate(withDuration: 0, animations: {
+                // Collection view is hidden first so the scrolling is not visible to the user
+                self.collectionView.isHidden = true
+                self.collectionView.reloadData()
+                }, completion: { (isSuccess) in
+                    self.scrollToLastItemInCollectionView(animated: false)
+                    self.collectionView.isHidden = false
+                    self.reobserveMessages()
+            })
+        })
+    }
+    
     fileprivate func observeMore() {
         if self.queryAndHandle != nil {
             self.queryAndHandle.0.removeObserver(withHandle: self.queryAndHandle.1)
@@ -168,64 +223,14 @@ class ChatController: UIViewController, UICollectionViewDelegateFlowLayout, UITe
         })
     }
     
-    fileprivate func initMessages() {
-        if self.queryAndHandle != nil {
-            return
-        }
-        self.activityIndicator.startAnimating()
-        // Small hack to make it not show up when the load time is less than 2 seconds
-        self.activityIndicator.isHidden = true
-        UIView.animate(withDuration: 2.0, animations: {}, completion: { (isSuccess) in
-            if self.activityIndicator.isAnimating {
-                self.activityIndicator.isHidden = false
-            }
-        })
-        DataService.ds.observeChatMessagesOnce(connection: self.connection, limit: self.numMessages, completed: { (isSuccess, updatedConnection) in
-            self.activityIndicator.stopAnimating()
-            
-            if (!isSuccess || updatedConnection == nil) {
-                // No messages yet, display placeholder view in the middle to prompt user to interact with new connection
-                self.emptyPlaceholderView.isHidden = false
-                self.emptyPlaceholderView.isUserInteractionEnabled = true
-                log.info("No messages updated for connection")
-                self.reobserveMessages()
-                return
-            }
-            
-            log.info("Messages updated")
-            
-            // There are messages, hide and disable empty placeholder view
-            self.emptyPlaceholderView.isHidden = true
-            self.emptyPlaceholderView.isUserInteractionEnabled = false
-            
-            // Update connection and messages
-            self.connection = updatedConnection
-            self.messages = updatedConnection!.messages
-            
-            self.organizeMessages()
-            
-            // Simple hack to load the bottom of the collection view
-            UIView.animate(withDuration: 0, animations: {
-                // Collection view is hidden first so the scrolling is not visible to the user
-                self.collectionView.isHidden = true
-                self.collectionView.reloadData()
-                }, completion: { (isSuccess) in
-                    self.scrollToLastItemInCollectionView(animated: false)
-                    self.collectionView.isHidden = false
-                    self.reobserveMessages()
-            })
-        })
-    }
-    
     fileprivate func reobserveMessages() {
-
+        
         if self.queryAndHandle != nil {
             queryAndHandle.0.removeObserver(withHandle: queryAndHandle.1)
         }
         
         queryAndHandle = DataService.ds.reobserveChatMessages(limit: self.numMessages, connection: self.connection) { (isSuccess, updatedConnection) in
-            log.info("\(self.numMessages) inside reobserved")
-
+            
             if (!isSuccess || updatedConnection == nil) {
                 
                 // Rewind increment of numMessages
@@ -244,8 +249,6 @@ class ChatController: UIViewController, UICollectionViewDelegateFlowLayout, UITe
             self.emptyPlaceholderView.isHidden = true
             self.emptyPlaceholderView.isUserInteractionEnabled = false
             
-            log.info("Old: \(self.messages.count), New: \(updatedConnection!.messages.count)")
-            
             // Check if messages are exactly the same, if yes, then no need to update
             if self.messages.count == updatedConnection!.messages.count {
                 var areTheSame = true
@@ -255,7 +258,6 @@ class ChatController: UIViewController, UICollectionViewDelegateFlowLayout, UITe
                 let oldMessages = self.messages.sorted(by: { (m1, m2) -> Bool in
                     return m1.date.compare(m2.date) == .orderedAscending
                 })
-                
                 for i in 0..<updatedMessages.count {
                     if updatedMessages[i].mid != oldMessages[i].mid {
                         areTheSame = false
@@ -271,11 +273,14 @@ class ChatController: UIViewController, UICollectionViewDelegateFlowLayout, UITe
             self.messages = updatedConnection!.messages
             self.organizeMessages()
             
-            UIView.animate(withDuration: 0.0, animations: { 
+            UIView.animate(withDuration: 0.0, animations: {
                 self.collectionView.reloadData()
                 }, completion: { (isSuccess) in
                     self.scrollToLastItemInCollectionView(animated: false)
             })
+            
+            // Also remove this time label from superview because it might cause weird UI issues
+            self.cellTimeLabel.removeFromSuperview()
         }
     }
     
@@ -780,7 +785,6 @@ class ChatController: UIViewController, UICollectionViewDelegateFlowLayout, UITe
         cell.configureCell(messageObj: message, viewWidth: view.frame.width, isLastInChain: isLastInChain)
         return cell
     }
-    
     
     private var cellTimeLabel = UILabel()
     private var tappedIndexPath: IndexPath?
