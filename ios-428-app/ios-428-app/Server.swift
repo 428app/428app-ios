@@ -43,7 +43,7 @@ func setHasToFillInfo(hasToFill: Bool) {
 }
 
 // Store profile photo or cover photo temporarily
-func setPhotoToUpload(data: Data?, isProfilePic: Bool = true) {
+func cachePhotoToUpload(data: Data?, isProfilePic: Bool = true) {
     let fileManager = FileManager.default
     let picPath = isProfilePic ? "profile_photo.jpg" : "cover_photo.jpg"
     let paths = (NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true)[0] as NSString).appendingPathComponent(picPath)

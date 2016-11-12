@@ -34,12 +34,6 @@ class SettingsController: UIViewController, UITableViewDelegate, UITableViewData
         self.navigationItem.title = "Settings"
         self.navigationItem.backBarButtonItem = UIBarButtonItem(title: " ", style: .plain, target: nil, action: nil)
         setupViews()
-        // This observer is not removed when view disappears, as it is required to be updated
-        NotificationCenter.default.addObserver(self, selector: #selector(loadImage), name: NOTIF_MYPROFILEDOWNLOADED, object: nil)
-    }
-    
-    deinit {
-        NotificationCenter.default.removeObserver(self, name: NOTIF_MYPROFILEDOWNLOADED, object: nil)
     }
     
     // MARK: Getting setting change and sending them to server
@@ -53,6 +47,8 @@ class SettingsController: UIViewController, UITableViewDelegate, UITableViewData
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+        // Always load image from MyProfile.swift upon entering because EditProfileController might have uploaded new image
+        loadImage()
         NotificationCenter.default.addObserver(self, selector: #selector(updateSettingsArr), name: NOTIF_CHANGESETTING, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(openEditProfile), name: NOTIF_EDITPROFILE, object: nil)
     }
@@ -118,7 +114,7 @@ class SettingsController: UIViewController, UITableViewDelegate, UITableViewData
                             if !isSuccess {
                                 log.error("Server unable to save profile pic")
                             } else {
-                                setPhotoToUpload(data: nil, isProfilePic: true)
+                                cachePhotoToUpload(data: nil, isProfilePic: true)
                             }
                         })
                     }
@@ -148,7 +144,7 @@ class SettingsController: UIViewController, UITableViewDelegate, UITableViewData
                             if !isSuccess {
                                 log.error("Server unable to save cover pic")
                             } else {
-                                setPhotoToUpload(data: nil, isProfilePic: false)
+                                cachePhotoToUpload(data: nil, isProfilePic: false)
                             }
                         })
                     }

@@ -47,9 +47,19 @@ class StorageService {
                     log.info("is profile pic: \(isProfilePic), and url: \(imageUrl)")
                     if isProfilePic {
                         DataService.ds.updateUserPhotos(profilePhotoUrl: imageUrl, completed: { (isSuccess) in
+                            // Also update the profile pic in all of user's connections' connections. This one need not be checked for completion.
                             completed(isSuccess)
                         })
+                        
+                        // This does not need to complete
+                        DataService.ds.updateCachedDetailsInConnections(profilePhoto: imageUrl, completed: { (isSuccess) in
+                            if !isSuccess {
+                                log.error("[Error] Failed to update cached details in all connections")
+                            }
+                        })
+                        
                     } else {
+                        // Cover photo is not cached in connections, so no need to update that
                         DataService.ds.updateUserPhotos(coverPhotoUrl: imageUrl, completed: { (isSuccess) in
                             completed(isSuccess)
                         })

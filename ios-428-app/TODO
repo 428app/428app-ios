@@ -2,7 +2,9 @@
 
 
 BUGS
-- Cover photo doesn't upload
+!EDIT PROFILE PHOTO UPLOAD!
+- Restructure code for better design
+- Remove save button, allow upload automatically
 
 
 Minor

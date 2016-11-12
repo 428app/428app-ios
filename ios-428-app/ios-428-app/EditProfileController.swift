@@ -192,9 +192,15 @@ class EditProfileController: UIViewController, UIScrollViewDelegate, UITableView
     }()
     
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
-        // Disable top bounce only, and not bottom bounce
-        if (scrollView.contentOffset.y <= 0) {
-            scrollView.setContentOffset(CGPoint(x: scrollView.contentOffset.x, y: 0), animated: false)
+        let offset = scrollView.contentOffset.y
+        if (offset <= 0) {
+            // Think about how to transform image here without showing white space behind
+            let ratio: CGFloat = -offset*1.0 / UIScreen.main.bounds.height
+            self.coverImageView.transform = CGAffineTransform(scaleX: 1.0 + ratio, y: 1.0 + ratio)
+            scrollView.bounces = false
+        }
+        else {
+            scrollView.bounces = true
         }
     }
     
@@ -229,13 +235,11 @@ class EditProfileController: UIViewController, UIScrollViewDelegate, UITableView
             // Save locally in file path so that when user closes app, we can retry upload when user logs in
             if isProfilePic {
                 myProfilePhoto = image
-                setPhotoToUpload(data: data, isProfilePic: true)
-                // Tell SettingsController that profile pic has changed
-//                NotificationCenter.default.post(name: NOTIF_MYPROFILEDOWNLOADED, object: nil)
-                NotificationCenter.default.post(name: NOTIF_MYPROFILEDOWNLOADED, object: nil, userInfo: ["doNotUpdateCover": true])
+                // Cache photo to upload first in case user closes the app at this point
+                cachePhotoToUpload(data: data, isProfilePic: true)
             } else {
                 myCoverPhoto = image
-                setPhotoToUpload(data: data, isProfilePic: false)
+                cachePhotoToUpload(data: data, isProfilePic: false)
             }
 
             StorageService.ss.uploadOwnPic(data: data, isProfilePic: isProfilePic, completed: { (isSuccess) in
@@ -244,7 +248,8 @@ class EditProfileController: UIViewController, UIScrollViewDelegate, UITableView
                     log.error("Server unable to save profile pic")
                     self.showErrorForImageUploadFail()
                 } else {
-                    setPhotoToUpload(data: nil, isProfilePic: isProfilePic)
+                    // Remove cached photo as upload is successful
+                    cachePhotoToUpload(data: nil, isProfilePic: isProfilePic)
                 }
             })
         } else {
@@ -459,6 +464,7 @@ class EditProfileController: UIViewController, UIScrollViewDelegate, UITableView
         // Set up scroll view, and close button on top of scroll view
         let views = setupScrollView()
         let scrollView = views[0] as! UIScrollView
+    
         let containerView = views[1]
         scrollView.delegate = self // Delegate so as to disable top bounce only
         

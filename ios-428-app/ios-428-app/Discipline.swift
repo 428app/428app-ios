@@ -17,5 +17,5 @@ func getDisciplineIconForDiscipline(discipline: String) -> String {
     if ind != nil && ind! > 0 && ind! < DISCIPLINE_ICONS.count {
         return DISCIPLINE_ICONS[ind!]
     }
-    return "business" // TODO: Set a default discipline here
+    return "business" // TODO: Set an error discipline here
 }

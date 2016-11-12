@@ -244,6 +244,45 @@ class DataService {
         })
     }
     
+    func updateCachedDetailsInConnections(profilePhoto: String? = nil, discipline: String? = nil, completed: @escaping (_ isSuccess: Bool) -> ()) {
+        guard let uid = getStoredUid() else {
+            completed(false)
+            return
+        }
+        REF_USERS.child("\(uid)/connections").observeSingleEvent(of: .value, with: { snapshot in
+            if !snapshot.exists() { // This user has no connections
+                completed(true)
+                return
+            }
+            guard let snaps = snapshot.children.allObjects as? [FIRDataSnapshot] else {
+                completed(false)
+                return
+            }
+            var snapsLeft = snaps.count
+            var hasError = false
+            for snap in snaps {
+                
+                // For each connection, edit your profile pic/discipline in their list of connections
+                let uid2 = snap.key
+                var updates: [String: Any] = [:]
+                if profilePhoto != nil {
+                   updates["profilePhoto"] = profilePhoto!
+                }
+                if discipline != nil {
+                    updates["discipline"] = discipline!
+                }
+                
+                self.REF_USERS.child("\(uid2)/connections/\(uid)").updateChildValues(updates, withCompletionBlock: { (err, ref) in
+                    snapsLeft -= 1
+                    hasError = err != nil
+                    if snapsLeft <= 0 {
+                        completed(hasError)
+                    }
+                })
+            }
+        })
+    }
+    
     // MARK: Chat
     
     // Private function to get chat id from two uids
