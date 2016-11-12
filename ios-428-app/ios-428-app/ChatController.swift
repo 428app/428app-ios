@@ -273,53 +273,8 @@ class ChatController: UIViewController, UICollectionViewDelegateFlowLayout, UITe
             self.messages = updatedConnection!.messages
             self.organizeMessages()
             
-            
-            UIView.animate(withDuration: 0, animations: {
-                
-//                self.view.layoutIfNeeded()
-                }, completion: { (isSuccess) in
-                    UIView.animate(withDuration: 0, animations: {
-                        
-                        
-                        // Have to deduct more than the max height
-                        log.info("text view height: \(self.textViewHeight)")
-                        
-                        
-                        // Add back the amount input container height has been expanded as this is no longer blocking
-//                        let diff = self.inputContainerHeightConstraint.constant - 45.0
-//                        log.info("diff: \(diff)")
-//                        self.topConstraintForCollectionView.constant += diff
-                        
-                        // Deduct the text view height: The amount the text shifts upwards after this
-//                        self.topConstraintForCollectionView.constant -= self.textViewHeight// 15.0 for margin
-                        
-                        self.topConstraintForCollectionView.constant = self.TOP_GAP
-                        self.inputContainerHeightConstraint.constant = 45.0
-                        //max(self.textViewHeight - 0.2 * UIScreen.main.bounds.height, 0.0)
-                        log.info("Top of collection view: \(self.topConstraintForCollectionView.constant)")
-                        self.textViewHeight = 0
-                        self.inputTextView.text = nil
-                        
-                        
-                        
-                        
-                        // Check blocking and set topConstraint to minus the difference
-                        
-                        
-                        self.view.layoutIfNeeded()
-                        
-                    }) { (isSuccess) in
-                        
-                        self.collectionView.reloadData()
-                        if self.timeBucketHeaders.count > 0 && self.messagesInTimeBuckets.count > 0 {
-                            let lastSection = self.timeBucketHeaders.count - 1
-                            let lastRow = self.messagesInTimeBuckets[lastSection].count - 1
-                            let indexPath = IndexPath(item: lastRow, section: lastSection)
-                            self.collectionView.scrollToItem(at: indexPath, at: .bottom, animated: false)
-                        }
-                    }
-            })
-            // Also remove this time label from superview because it might cause weird UI issues
+            self.collectionView.reloadData()
+            self.scrollToLastItemInCollectionView(animated: false)
             self.cellTimeLabel.removeFromSuperview()
         }
     }
@@ -543,17 +498,11 @@ class ChatController: UIViewController, UICollectionViewDelegateFlowLayout, UITe
     
     // This function is called to reset the input container after handleSend is successful
     fileprivate func resetInputContainer() {
-//        self.textViewHeight = 0.0
-
-//        UIView.animate(withDuration: 0.0, animations: {
-//            self.inputContainerHeightConstraint.constant = 45.0
-//            self.view.layoutIfNeeded()
-//            }) { (isSuccess) in
-//                self.topConstraintForCollectionView.constant = self.TOP_GAP
-//                self.view.layoutIfNeeded()
-//        }
+        self.textViewHeight = 0.0
+        self.inputContainerHeightConstraint.constant = 45.0
+        self.topConstraintForCollectionView.constant = TOP_GAP
         self.sendButton.isEnabled = false
-//        inputTextView.text = nil
+        inputTextView.text = nil
         self.placeholderLabel.isHidden = false
     }
     
@@ -572,18 +521,17 @@ class ChatController: UIViewController, UICollectionViewDelegateFlowLayout, UITe
         if self.textViewHeight != newHeight {
             // Change height of message input container only if container doesn't cover too much of screen
             let screenHeight = UIScreen.main.bounds.height
-            if newHeight < 0.2 * screenHeight {
+            let containerMaxHeight = 0.2 * screenHeight
+            if newHeight < containerMaxHeight {
                 self.inputContainerHeightConstraint.constant = newHeight + 9.5 // Expand input container
                 // Shift screen accordingly
                 let diff = newHeight - self.textViewHeight
-                log.info("New height:\(self.inputContainerHeightConstraint.constant)")
-                // TODO: If max height reached stop shifting!
                 
-                if (self.isCollectionViewBlockingInput()) && self.textViewHeight < 0.2 * screenHeight  {// && diff > 0) || (diff < 0 && self.topConstraintForCollectionView.constant < 0) {
-                    // Need to shift upwards if content is blocked (First conditional) OR
-                    // Only shift downwards if previously shifted upwards (Second conditional)
+                if (self.isCollectionViewBlockingInput()) && self.textViewHeight < containerMaxHeight  {
+                    // Need to shift only if collection view is blocking and text view is smaller than max height.
+                    // If text view is greater than max height the container is not expanding anyway, so no point 
+                    // shifting collection view upwards.
                     self.topConstraintForCollectionView.constant -= diff
-                    log.info("\(self.topConstraintForCollectionView.constant)")
                 }
                 self.view.layoutIfNeeded()
             } else {
@@ -669,9 +617,7 @@ class ChatController: UIViewController, UICollectionViewDelegateFlowLayout, UITe
     
     func handleSend() {
         if let text = inputTextView.text {
-            // Trim text before sending
             self.resetInputContainer()
-            
             DataService.ds.addChatMessage(connection: connection, text: text.trim(), completed: { (isSuccess, updatedConnection) in
                 if !isSuccess || updatedConnection == nil {
                     // Reset countdown if failure to add
@@ -727,10 +673,9 @@ class ChatController: UIViewController, UICollectionViewDelegateFlowLayout, UITe
             // TODO: Shift screen up by a bit, while keyboard all the way when keyboard only covers part of cells
 //            let distanceShifted = min(keyboardViewEndFrame.height, abs(bottomOfCollectionView - topOfInput + SECTION_HEADER_HEIGHT))
             
-            log.info("Keyboard show")
             if isKeyboardShowing {
+                // Have to set this such that if the keyboard was kept when it was expanded the top constraint for collection view is set to the right value
                 self.topConstraintForCollectionView.constant = self.TOP_GAP - (self.inputContainerHeightConstraint.constant - 45.0)
-//                self.scrollToLastItemInCollectionView()
                 UIView.animate(withDuration: animationDuration, animations: {
                     if self.isCollectionViewBlockingInput() {
                         self.view.frame.origin.y = -keyboardViewEndFrame.height
@@ -791,7 +736,7 @@ class ChatController: UIViewController, UICollectionViewDelegateFlowLayout, UITe
     }
     
     func keepKeyboard(gestureRecognizer: UIPanGestureRecognizer) {
-        self.topConstraintForCollectionView.constant = self.TOP_GAP
+        self.topConstraintForCollectionView.constant = TOP_GAP
         self.inputTextView.endEditing(true)
     }
     
@@ -800,11 +745,7 @@ class ChatController: UIViewController, UICollectionViewDelegateFlowLayout, UITe
             let lastSection = self.timeBucketHeaders.count - 1
             let lastRow = self.messagesInTimeBuckets[lastSection].count - 1
             let indexPath = IndexPath(item: lastRow, section: lastSection)
-            let frame = self.collectionView.contentInset
-            self.collectionView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: 15, right: 0)
             self.collectionView.scrollToItem(at: indexPath, at: .bottom, animated: animated)
-            self.collectionView.layoutIfNeeded()
-            self.collectionView.contentInset = frame
         }
     }
     
