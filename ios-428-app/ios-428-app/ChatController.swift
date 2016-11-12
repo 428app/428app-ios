@@ -132,7 +132,11 @@ class ChatController: UIViewController, UICollectionViewDelegateFlowLayout, UITe
      By default reobserveMessages() which loads on every new message being added will scroll the chat to the bottom 
      of the screen. However, we don't want that on the two occasions when we first enter the screen and we pull to refresh. Hence,
      1) initMessages is used to hide the messages first so I can scroll to the bottom before displaying them. This is a hack I invented to make a more natural transition from Connections to this page.
-     2) observeMore is used to change the limit of the query (pull to refresh), and at the same time NOT scroll to the bottom. By default, observeMore will scroll the table to the top. However, the ideal behavior is to remain fixed at the location BEFORE observeMore. However, that is very difficult to do given that messages are in different buckets. Hence, we leave that for a future enhancement.
+     2) observeMore is used to change the limit of the query (pull to refresh), and at the same time NOT scroll to the bottom. By default, observeMore will scroll the table to the top.
+     NOTE the following intended behavior:
+     - When a user receives/sends a message, the scroll view is scrolled to the bottom
+     - When a user opens the keyboard the scroll view remains at the same position
+     - When a user scrolls up to load more messages and leaves this chat screen, the next time the user is back the more messages will be gone
     **/
     
     fileprivate func initMessages() {
@@ -204,7 +208,7 @@ class ChatController: UIViewController, UICollectionViewDelegateFlowLayout, UITe
                 return
             }
             
-            log.info("Messages reloaded")
+            log.info("More messages pulled")
             
             // There are messages, hide and disable empty placeholder view
             self.emptyPlaceholderView.isHidden = true
@@ -213,12 +217,54 @@ class ChatController: UIViewController, UICollectionViewDelegateFlowLayout, UITe
             // Update connection and messages
             self.connection = updatedConnection
             
-            self.messages = updatedConnection!.messages
+            if self.messagesInTimeBuckets.count > 0 && self.messagesInTimeBuckets[0].count > 0 {
+                // Find the first message in the old message so we scroll to this one
+                let firstMsg = self.messagesInTimeBuckets[0][0]
+                self.messages = updatedConnection!.messages
+                self.organizeMessages()
+                // Find this first message in the new messages to find the new row and section to scroll to
+                var messageFound = false
+                for section in 0..<self.messagesInTimeBuckets.count {
+                    for row in 0..<self.messagesInTimeBuckets[section].count {
+                        if self.messagesInTimeBuckets[section][row].mid == firstMsg.mid {
+                            
+                            // Set content offset to 1 before this spot
+                            var before_section = 0
+                            var before_row = 0
+                            if row == 0 && section > 0 {
+                                before_section = section - 1
+                                before_row = self.messagesInTimeBuckets[before_section].count - 1
+                            } else if row > 0 {
+                                before_row = row - 1
+                                before_section = section
+                            } else {
+                                break
+                            }
+                            
+                            let indexPath = IndexPath(item: before_row, section: before_section)
+                            self.collectionView.reloadData()
+
+                            let offset: CGFloat = self.collectionView.layoutAttributesForItem(at: indexPath)!.frame.origin.y
+                            self.collectionView.setContentOffset(CGPoint(x: 0.0, y: offset), animated: false)
+                            messageFound = true
+                            break
+                        }
+                    }
+                }
+                // If not found, which is possibly a bug, just reload anyway
+                if !messageFound {
+                    self.collectionView.reloadData()
+                }
+            }
             
-            self.organizeMessages()
+            else {
+                // Previous messages are empty - this should very rarely happen, possibly only due to network connectivity issues
+                self.messages = updatedConnection!.messages
+                self.organizeMessages()
+                self.collectionView.reloadData()
+            }
             
-            // Should scroll to previous location
-            self.collectionView.reloadData()
+            // As the above is a single observe event, we need to restart the constant observer with a different numMessages set
             self.reobserveMessages()
         })
     }
@@ -272,7 +318,6 @@ class ChatController: UIViewController, UICollectionViewDelegateFlowLayout, UITe
             self.connection = updatedConnection
             self.messages = updatedConnection!.messages
             self.organizeMessages()
-            
             self.collectionView.reloadData()
             self.scrollToLastItemInCollectionView(animated: false)
             self.cellTimeLabel.removeFromSuperview()
