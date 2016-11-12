@@ -2,8 +2,7 @@
 
 
 BUGS
-- Profile photo shifting down upon clicking for time
-
+- Cover photo doesn't upload
 
 
 Minor
@@ -11,7 +10,8 @@ Minor
 - Settings: Unselect cell upon cancel
 
 Major
-- Cover photo doesn't upload: Remove save, and upload automatically
+
+- Remove save, and upload automatically when photo changed
 - Setting new profile picture in user connections when another user changes
 - Set security/index rules to speed up chat updates
 

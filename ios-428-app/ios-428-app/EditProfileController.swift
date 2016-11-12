@@ -55,9 +55,9 @@ class EditProfileController: UIViewController, UIScrollViewDelegate, UITableView
         if let notif_ = notif, let userInfo = notif_.userInfo, let _ = userInfo["doNotUpdateCover"] as? Bool {
             // Don't do anything
         } else {
+            coverImageView.isUserInteractionEnabled = true
+            editCoverImageButton.isEnabled = true
             if let coverImage = myCoverPhoto {
-                coverImageView.isUserInteractionEnabled = true
-                editCoverImageButton.isEnabled = true
                 coverImageView.image = coverImage
             }
         }
