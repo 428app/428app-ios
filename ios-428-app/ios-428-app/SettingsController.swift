@@ -100,7 +100,6 @@ class SettingsController: UIViewController, UITableViewDelegate, UITableViewData
         DataService.ds.getUserFields(uid: getStoredUid()) { (isSuccess, profile) in
             if isSuccess && profile != nil {
                 myProfile = profile
-                // Notify all edit profile controllers that myProfile variable has been set
                 NotificationCenter.default.post(name: NOTIF_MYPROFILEDOWNLOADED, object: nil)
                 
                 // Downloads profile photo, or get from uploaded pic that previously failed
@@ -114,22 +113,18 @@ class SettingsController: UIViewController, UITableViewDelegate, UITableViewData
                             if !isSuccess {
                                 log.error("Server unable to save profile pic")
                             } else {
+                                // Upload success, delete cached profile photo
                                 cachePhotoToUpload(data: nil, isProfilePic: true)
                             }
                         })
                     }
-                    NotificationCenter.default.post(name: NOTIF_MYPROFILEDOWNLOADED, object: nil)
                 } else {
                     // Download image
                     _ = downloadImage(imageUrlString: profile!.profileImageName, completed: { (isSuccess, image) in
                         if isSuccess && image != nil {
                             self.settings[1][0].image = image
                             self.tableView.reloadData()
-                            
-                            // Set profile photo here to profile photo to upload if it exists
                             myProfilePhoto = image!
-                            
-                            // Notify all edit profile controllers again that myProfile variable has been set
                             NotificationCenter.default.post(name: NOTIF_MYPROFILEDOWNLOADED, object: nil)
                         }
                     })
@@ -144,23 +139,24 @@ class SettingsController: UIViewController, UITableViewDelegate, UITableViewData
                             if !isSuccess {
                                 log.error("Server unable to save cover pic")
                             } else {
+                                // Upload success, delete cache
                                 cachePhotoToUpload(data: nil, isProfilePic: false)
                             }
                         })
                     }
-                    NotificationCenter.default.post(name: NOTIF_MYPROFILEDOWNLOADED, object: nil)
                 } else {
                     // Download image
                     _ = downloadImage(imageUrlString: profile!.coverImageName, completed: { (isSuccess, image) in
                         if isSuccess && image != nil {
                             myCoverPhoto = image!
-                            // Notify all edit profile controllers again that myProfile variable has been set
                             NotificationCenter.default.post(name: NOTIF_MYPROFILEDOWNLOADED, object: nil)
                         }
                     })
                 }
             }
         }
+        
+        // TODO: Have to pull settings chosen from server
         self.settingsChosen = ["Daily connection": true, "Daily topic": true, "New connections": true, "New topics": true, "Connection messages": true, "Topic messages": true, "In-app vibrations": true]
     }
     

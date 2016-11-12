@@ -14,22 +14,25 @@ class EditProfileController: UIViewController, UIScrollViewDelegate, UITableView
     
     fileprivate let CELL_ID = "editProfileCell"
     fileprivate var heightOfTableViewConstraint: NSLayoutConstraint! // Used to find dynamic height of UITableView
-    fileprivate var profileCellTitles = [String]()
-    fileprivate var profileCellContent = [String]()
+    // Cells for Organization,
+    fileprivate var profileCellTitles = ["Organization", "School", "Discipline"]
+    fileprivate var profileCellContent = ["-", "-", "-"]
     
     override func viewDidLoad() {
         super.viewDidLoad()
         self.navigationItem.title = "Edit Profile"
-        self.navigationItem.rightBarButtonItem = saveButton
         self.view.backgroundColor = UIColor.white
         self.setupViews()
-        self.setupTableView()
-        self.loadProfileData() // Note that this must come AFTER the above setup
-        // This observer is not removed when view disappears, as it is required to be updated
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        self.loadProfileData() // Note that this must come AFTER the viewDidLoad setup above
         NotificationCenter.default.addObserver(self, selector: #selector(loadProfileData), name: NOTIF_MYPROFILEDOWNLOADED, object: nil)
     }
     
-    deinit {
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
         NotificationCenter.default.removeObserver(self, name: NOTIF_MYPROFILEDOWNLOADED, object: nil)
     }
     
@@ -39,7 +42,7 @@ class EditProfileController: UIViewController, UIScrollViewDelegate, UITableView
     }
     
     // Called upon checking myProfile on viewDidLoad, or upon receiving Notification from SettingsController
-    func loadProfileData(notif: Notification? = nil) {
+    func loadProfileData() {
         guard let profile = myProfile else {
             return
         }
@@ -52,19 +55,19 @@ class EditProfileController: UIViewController, UIScrollViewDelegate, UITableView
         disciplineImageView.image = UIImage(named: profile.disciplineIcon)
         ageLocationLbl.text = "\(profile.age), \(profile.location)"
         
-        if let notif_ = notif, let userInfo = notif_.userInfo, let _ = userInfo["doNotUpdateCover"] as? Bool {
-            // Don't do anything
-        } else {
-            coverImageView.isUserInteractionEnabled = true
-            editCoverImageButton.isEnabled = true
-            if let coverImage = myCoverPhoto {
-                coverImageView.image = coverImage
-            }
+        // Disable edit if cover photo is still being downloaded
+        coverImageView.isUserInteractionEnabled = !(profile.coverImageName != "" && myCoverPhoto == nil)
+        editCoverImageButton.isEnabled = coverImageView.isUserInteractionEnabled
+
+        if let coverImage = myCoverPhoto {
+            coverImageView.image = coverImage
         }
         
+        // Disable edit if profile photo is still being downloaded
+        profileImageView.isUserInteractionEnabled = !(profile.profileImageName != "" && myProfilePhoto == nil)
+        editProfileImageButton.isEnabled = profileImageView.isUserInteractionEnabled
+        
         if let profileImage = myProfilePhoto {
-            profileImageView.isUserInteractionEnabled = true
-            editProfileImageButton.isEnabled = true
             profileImageView.image = profileImage
         }
         
@@ -86,7 +89,6 @@ class EditProfileController: UIViewController, UIScrollViewDelegate, UITableView
         let tagline2 = NSMutableAttributedString(string: " " + tag2, attributes: [NSParagraphStyleAttributeName: paragraphStyle])
         tagstr2.append(tagline2)
         tagline2Lbl.attributedText = tagstr2
-
     }
     
     // MARK: Profile views
@@ -103,6 +105,21 @@ class EditProfileController: UIViewController, UIScrollViewDelegate, UITableView
         imageView.isUserInteractionEnabled = true
         return imageView
     }()
+    
+    // Delegate function of scroll view
+    func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        // Prevents top bounce, and also slightly expands cover photo when scroll up
+        let offset = scrollView.contentOffset.y
+        if (offset <= 0) {
+            // Think about how to transform image here without showing white space behind
+            let ratio: CGFloat = -offset*1.0 / UIScreen.main.bounds.height
+            self.coverImageView.transform = CGAffineTransform(scaleX: 1.0 + ratio, y: 1.0 + ratio)
+            scrollView.bounces = false
+        }
+        else {
+            scrollView.bounces = true
+        }
+    }
     
     fileprivate lazy var profileImageView: UIImageView = {
         let imageView = UIImageView()
@@ -191,26 +208,7 @@ class EditProfileController: UIViewController, UIScrollViewDelegate, UITableView
         return label
     }()
     
-    func scrollViewDidScroll(_ scrollView: UIScrollView) {
-        let offset = scrollView.contentOffset.y
-        if (offset <= 0) {
-            // Think about how to transform image here without showing white space behind
-            let ratio: CGFloat = -offset*1.0 / UIScreen.main.bounds.height
-            self.coverImageView.transform = CGAffineTransform(scaleX: 1.0 + ratio, y: 1.0 + ratio)
-            scrollView.bounces = false
-        }
-        else {
-            scrollView.bounces = true
-        }
-    }
-    
-    // MARK: Edit views
-    
-    fileprivate lazy var saveButton: UIBarButtonItem = {
-        let saveButton = UIBarButtonItem(title: "Save", style: .done, target: self, action: #selector(sendEditsToServer))
-        saveButton.isEnabled = false
-        return saveButton
-    }()
+    // MARK: Firebase storage
     
     fileprivate func showErrorForImageUploadFail() {
         showErrorAlert(vc: self, title: "Failed to save image", message: "We apologize. It doesn't seem like we managed to save your picture. Please check your connection, and try again later.")
@@ -258,16 +256,6 @@ class EditProfileController: UIViewController, UIScrollViewDelegate, UITableView
         }
     }
     
-    func sendEditsToServer() {
-        if profileImageHasChanged {
-            uploadImageForImageView(isProfilePic: true)
-        }
-        if coverImageHasChanged {
-            uploadImageForImageView(isProfilePic: false)
-        }
-        saveButton.isEnabled = false // Disable to prevent repeated upload to server
-    }
-    
     // MARK: Edit photos
     
     fileprivate func editImageTemplateButton() -> UIButton {
@@ -296,32 +284,27 @@ class EditProfileController: UIViewController, UIScrollViewDelegate, UITableView
         return button
     }()
     
-    fileprivate lazy var picPicker: UIImagePickerController = {
+    fileprivate lazy var profilePhotoPicker: UIImagePickerController = {
        let picker = UIImagePickerController()
         picker.delegate = self
         return picker
     }()
     
-    fileprivate lazy var bgPicker: UIImagePickerController = {
+    fileprivate lazy var coverPhotoPicker: UIImagePickerController = {
         let picker = UIImagePickerController()
         picker.delegate = self
         return picker
     }()
-    
-    // Variables used to determine which to send to server
-    fileprivate var profileImageHasChanged = false
-    fileprivate var coverImageHasChanged = false
 
-    // Delegate function that assigns image after picked
+    // Delegate function that assigns image, and immediately uploads after picker is dismissed
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : Any]) {
         picker.dismiss(animated: true, completion: nil)
-        saveButton.isEnabled = true
-        if picker == picPicker {
-            profileImageHasChanged = true
+        if picker == profilePhotoPicker {
             profileImageView.image = info[UIImagePickerControllerOriginalImage] as? UIImage
+            self.uploadImageForImageView(isProfilePic: true)
         } else {
-            coverImageHasChanged = true
             coverImageView.image = info[UIImagePickerControllerOriginalImage] as? UIImage
+            self.uploadImageForImageView(isProfilePic: false)
         }
     }
     
@@ -335,22 +318,26 @@ class EditProfileController: UIViewController, UIScrollViewDelegate, UITableView
                // No camera
                 showErrorAlert(vc: self, title: "No camera", message: "Your device does not have a camera")
             } else {
-                self.picPicker.sourceType = .camera
-                self.present(self.picPicker, animated: true, completion: nil)
+                self.profilePhotoPicker.sourceType = .camera
+                self.present(self.profilePhotoPicker, animated: true, completion: nil)
             }
         }
         let uploadPhotoAction = UIAlertAction(title: "Upload a photo", style: .default) { (action) in
             // Upload a photo
-            self.picPicker.sourceType = .photoLibrary
-            self.present(self.picPicker, animated: true, completion: nil)
+            self.profilePhotoPicker.sourceType = .photoLibrary
+            self.present(self.profilePhotoPicker, animated: true, completion: nil)
         }
         let viewPhotoAction = UIAlertAction(title: "View profile photo", style: .default) { (action) in
-            // View profile photo
-            let pictureModalController = PictureModalController()
-            pictureModalController.modalPresentationStyle = .overFullScreen
-            pictureModalController.modalTransitionStyle = .crossDissolve
-            pictureModalController.picture = self.profileImageView.image
-            self.present(pictureModalController, animated: true, completion: nil)
+            if myProfilePhoto == nil {
+                showErrorAlert(vc: self, title: "Please upload a profile photo first.", message: "")
+            } else {
+                // View profile photo
+                let pictureModalController = PictureModalController()
+                pictureModalController.modalPresentationStyle = .overFullScreen
+                pictureModalController.modalTransitionStyle = .crossDissolve
+                pictureModalController.picture = self.profileImageView.image
+                self.present(pictureModalController, animated: true, completion: nil)
+            }
         }
         alertController.addAction(takePhotoAction)
         alertController.addAction(uploadPhotoAction)
@@ -369,22 +356,28 @@ class EditProfileController: UIViewController, UIScrollViewDelegate, UITableView
                 // No camera
                 showErrorAlert(vc: self, title: "No camera", message: "Your device does not have a camera")
             } else {
-                self.bgPicker.sourceType = .camera
-                self.present(self.bgPicker, animated: true, completion: nil)
+                self.coverPhotoPicker.sourceType = .camera
+                self.present(self.coverPhotoPicker, animated: true, completion: nil)
             }
         }
         let uploadPhotoAction = UIAlertAction(title: "Upload a photo", style: .default) { (action) in
             // Upload a photo
-            self.bgPicker.sourceType = .photoLibrary
-            self.present(self.bgPicker, animated: true, completion: nil)
+            self.coverPhotoPicker.sourceType = .photoLibrary
+            self.present(self.coverPhotoPicker, animated: true, completion: nil)
         }
+        
+        // Only allow view cover photo if there is a photo to view
         let viewPhotoAction = UIAlertAction(title: "View cover photo", style: .default) { (action) in
-            // View cover photo
-            let pictureModalController = PictureModalController()
-            pictureModalController.modalPresentationStyle = .overFullScreen
-            pictureModalController.modalTransitionStyle = .crossDissolve
-            pictureModalController.picture = self.coverImageView.image
-            self.present(pictureModalController, animated: true, completion: nil)
+            // View cover photo if there is one
+            if myCoverPhoto == nil {
+                showErrorAlert(vc: self, title: "Please upload a cover photo first.", message: "")
+            } else {
+                let pictureModalController = PictureModalController()
+                pictureModalController.modalPresentationStyle = .overFullScreen
+                pictureModalController.modalTransitionStyle = .crossDissolve
+                pictureModalController.picture = self.coverImageView.image
+                self.present(pictureModalController, animated: true, completion: nil)
+            }
         }
         alertController.addAction(takePhotoAction)
         alertController.addAction(uploadPhotoAction)
@@ -528,6 +521,7 @@ class EditProfileController: UIViewController, UIScrollViewDelegate, UITableView
         containerView.addConstraintsWithFormat("V:|-175-[v0(150)]-10-[v1]-6-[v2(20)]-8-[v3(0.5)]-10-[v4(40)]-5-[v5]-2-[v6(0.5)]-12-[v7(40)]-10-[v8]-20-[v9]-\(bottomMargin)-|", views: self.profileImageView, nameDisciplineContainer, self.ageLocationLbl, self.topDividerLineView, self.editProfessionalInfoButton, self.tableView, self.bottomDividerLineView, self.editTaglineButton, self.tagline1Lbl, self.tagline2Lbl)
         containerView.addConstraintsWithFormat("H:|[v0]|", views: self.tableView)
         
+        // Hack to get height of table view dynamically to display in constraint
         UIView.animate(withDuration: 0, animations: {
             self.tableView.layoutIfNeeded()
         }) { (complete) in
@@ -538,6 +532,8 @@ class EditProfileController: UIViewController, UIScrollViewDelegate, UITableView
             }
             self.heightOfTableViewConstraint.constant = heightOfTableView
         }
+        
+        self.setupTableView()
         
     }
     
@@ -551,12 +547,6 @@ class EditProfileController: UIViewController, UIScrollViewDelegate, UITableView
         tableView.allowsSelection = false
         tableView.estimatedRowHeight = 50.0
         tableView.rowHeight = UITableViewAutomaticDimension
-        self.assembleCellData()
-    }
-    
-    fileprivate func assembleCellData() {
-        self.profileCellTitles = ["Organization", "School", "Discipline"]
-        self.profileCellContent = ["-", "-", "-"]
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {

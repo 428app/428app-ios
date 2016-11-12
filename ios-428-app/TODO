@@ -3,8 +3,11 @@
 
 BUGS
 !EDIT PROFILE PHOTO UPLOAD!
-- Restructure code for better design
+
 - Remove save button, allow upload automatically
+- Remove notification for MyProfileDownloaded in all the screens
+
+
 
 
 Minor
