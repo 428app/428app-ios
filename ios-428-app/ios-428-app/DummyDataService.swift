@@ -21,6 +21,7 @@ func m(minutesAgo: Double) -> Date {
     return Date().addingTimeInterval(-minutesAgo * 60.0)
 }
 
+
 func loadTopicMessages() -> [TopicMessage] {
     let m1 = TopicMessage(tmid: "1", parentTid: "4", posterUid: "999", posterName: "Leonard", posterDiscipline: "business", text: "Creating a million jobs is not easy. Let's start with improving our own education system first.", date: m(minutesAgo: 200))
     let m2 = TopicMessage(tmid: "2", parentTid: "4", posterUid: "999", posterName: "Jenny", posterDiscipline: "biology", text: "Just open more restaurants so we get more jobs... and more food!", date: m(minutesAgo: 195))
@@ -46,3 +47,9 @@ func loadTopics() -> [Topic] {
     topics = [topic1, topic2, topic3, topic4, topic5, topic6, topic7, topic8]
     return topics
 }
+
+
+// Set up profiles
+let jennyprof = Profile(uid: "1", name: "Jenny", coverImageName: "jenny-bg", profileImageName: "jenny-profile", age: 22, location: "USA, MA, Cambridge", org: "Maxwell Dworkin Corp", school: "Harvard University of Wizardry, Angels and the Forbidden Arts", discipline: "Biology", tagline1: "understanding mutations in DNA and how they lead to cancer. I'm doing it because I've always enjoyed Biology. In middle school I dissected an animal's heart, and my interest just escalated from there!", tagline2: "make a breakthrough in cancer research and win a Nobel prize. That's a big statement I know, but gotta dream big right?")
+let yihangprof = Profile(uid: "99", name: "Yihang", coverImageName: "yihang-bg", profileImageName: "yihang-profile", age: 24, location: "USA, MA, Cambridge", org: "428", school: "Harvard University", discipline: "Business", tagline1: "an app that lets you easily meet people from different industries. There's LinkedIn, and we're LinkedOut. On the app, you get matched with a new connection and introduced to a new topic once a day, at 4:28pm.", tagline2: "make my mark on the world, and have a happy family.")
+
