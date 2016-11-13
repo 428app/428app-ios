@@ -826,6 +826,7 @@ class ChatController: UIViewController, UICollectionViewDelegateFlowLayout, UITe
     private var cellTimeLabel = UILabel()
     private var tappedIndexPath: IndexPath?
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+        
         let message = messagesInTimeBuckets[indexPath.section][indexPath.row]
         let messageText = message.text
         let messageDate = message.date
@@ -833,31 +834,37 @@ class ChatController: UIViewController, UICollectionViewDelegateFlowLayout, UITe
         let size = CGSize(width: 250, height: 1000)
         let options = NSStringDrawingOptions.usesFontLeading.union(.usesLineFragmentOrigin)
         let estimatedFrame = NSString(string: messageText).boundingRect(with: size, options: options, attributes: [NSFontAttributeName: UIFont.systemFont(ofSize: 16.0)], context: nil)
+        
+        let defaultHeight = estimatedFrame.height + 20.0
+        
         if let cell = self.collectionView.cellForItem(at: indexPath) as? ChatCell {
             
             if cell.shouldExpand {
+                // Insert timeLabel here
                 self.cellTimeLabel.removeFromSuperview()
                 let cellFrame = self.collectionView.convert(cell.frame, to: self.view)
                 var yi = cellFrame.origin.y + cellFrame.height
-                // Insert timeLabel here
-                yi += 10
+                yi += 2
                 if tappedIndexPath == nil {
+                    // Not tapped yet
                     tappedIndexPath = indexPath
                 }
                 else {
+                    // If tapping at an index below, need to change yi
                     if indexPath.section > tappedIndexPath!.section || (indexPath.section == tappedIndexPath!.section && indexPath.row > tappedIndexPath!.row) {
-                        yi -= 24
+                        yi -= 20
                     } else if indexPath.section == tappedIndexPath!.section && indexPath.row == tappedIndexPath!.row {
                         // Clicked to hide
                         self.tappedIndexPath = nil
                         cell.shouldExpand = false
                         // Return with no expansion
-                        return CGSize(width: view.frame.width, height: estimatedFrame.height + 16)
+                        return CGSize(width: view.frame.width, height: defaultHeight)
                     }
                     tappedIndexPath = indexPath
                 }
                 
-                let labelFrameInView = CGRect(x: 50, y: yi, width: self.view.frame.width - 80, height: 15)
+                let xi: CGFloat = message.isSentByYou ? 55.0 : 45.0
+                let labelFrameInView = CGRect(x: xi, y: yi, width: self.view.frame.width - 80, height: 15)
                 let labelFrame = self.view.convert(labelFrameInView, to: self.collectionView)
                 cellTimeLabel = UILabel(frame: labelFrame)
                 
@@ -873,6 +880,7 @@ class ChatController: UIViewController, UICollectionViewDelegateFlowLayout, UITe
                 cellTimeLabel.font = UIFont.systemFont(ofSize: 12.0)
                 cellTimeLabel.textColor = UIColor.lightGray
                 
+                // Add time label at the spot
                 self.collectionView.addSubview(cellTimeLabel)
                 cell.shouldExpand = false
                 // Return with expansion
@@ -880,7 +888,7 @@ class ChatController: UIViewController, UICollectionViewDelegateFlowLayout, UITe
             }
         }
         // Return with no expansion
-        return CGSize(width: view.frame.width, height: estimatedFrame.height + 16)
+        return CGSize(width: view.frame.width, height: defaultHeight)
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {

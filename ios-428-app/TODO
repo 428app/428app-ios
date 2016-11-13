@@ -4,7 +4,9 @@
 BUGS
 !EDIT PROFILE PHOTO UPLOAD!
 
-- Fix disk persistence causing image download to download wrong
+- Test with many connections
+- Test the no connection case (timer working)
+- Only allow copy of whole ChatCell
 
 
 Minor
