@@ -4,17 +4,13 @@
 BUGS
 !EDIT PROFILE PHOTO UPLOAD!
 
-
+- Fix disk persistence causing image download to download wrong
 
 
 Minor
-
 - Settings: Unselect cell upon cancel
 
 Major
-
-- Remove save, and upload automatically when photo changed
-- Setting new profile picture in user connections when another user changes
 - Set security/index rules to speed up chat updates
 
 
@@ -39,7 +35,7 @@ Major
 - Mute, etc.
 
 
-!SECURITY and INDEXp SETTINGS!
+!SECURITY and INDEX SETTINGS!
 
 
 
@@ -61,11 +57,5 @@ TO NOTE:
 - For login, set default cover photo and fb photo as profile pic, also pull name and age from FB
 - Empty placeholder for no messages in DiscussController and ChatController (done after server)
 - Read in location while reading FB info
-
-
-Known issues in descending urgency:
-1) When shifting up screen in EditProfessionalController and EditTaglineController as keyboard pops up, a bit of black background is seen (because self.view is shifted up, and reveals the black underneath)
-2) For chat that is not fully blocked by keyboard, should only scroll by diff and not whole height of keyboard: ChatController: handleKeyboardNotification()
-3) ChatController taking a long time to open
 
 

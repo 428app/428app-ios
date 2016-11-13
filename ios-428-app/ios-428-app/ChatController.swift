@@ -690,22 +690,24 @@ class ChatController: UIViewController, UICollectionViewDelegateFlowLayout, UITe
         NotificationCenter.default.removeObserver(self, name: NOTIF_USERPROFILEDOWNLOADED, object: nil)
     }
     
-    fileprivate func isCollectionViewBlockingInput() -> Bool {
-        // Find bottom of collection view
+    fileprivate func bottomOfCollectionView() -> CGFloat {
         let lastSection = self.timeBucketHeaders.count - 1
         if lastSection < 0 || lastSection >= self.messagesInTimeBuckets.count {
-            return false
+            return 0.0
         }
         let lastRow = self.messagesInTimeBuckets[lastSection].count - 1
         let indexPath = IndexPath(item: lastRow, section: lastSection)
         let attributes = self.collectionView.layoutAttributesForItem(at: indexPath)!
         let frame: CGRect = self.collectionView.convert(attributes.frame, to: self.view)
-        let bottomOfCollectionView = frame.maxY
-        
-        // Compare it with top of input container
-        let topOfInput = self.view.bounds.maxY - keyboardHeight - self.messageInputContainerView.bounds.height
-        
-        return bottomOfCollectionView >= topOfInput
+        return frame.maxY
+    }
+    
+    fileprivate func topOfInput() -> CGFloat {
+        return self.view.bounds.maxY - keyboardHeight - self.messageInputContainerView.bounds.height
+    }
+    
+    fileprivate func isCollectionViewBlockingInput() -> Bool {
+        return bottomOfCollectionView() >= topOfInput()
     }
     
     func handleKeyboardNotification(_ notification: Notification) {
@@ -714,16 +716,17 @@ class ChatController: UIViewController, UICollectionViewDelegateFlowLayout, UITe
             let isKeyboardShowing = notification.name != Notification.Name.UIKeyboardWillHide
             let keyboardViewEndFrame = view.convert(keyboardFrame, from: view.window)
             self.keyboardHeight = keyboardViewEndFrame.height
-            
-            // TODO: Shift screen up by a bit, while keyboard all the way when keyboard only covers part of cells
-//            let distanceShifted = min(keyboardViewEndFrame.height, abs(bottomOfCollectionView - topOfInput + SECTION_HEADER_HEIGHT))
+
+            let distanceShifted = min(keyboardViewEndFrame.height, abs(bottomOfCollectionView() - topOfInput() + SECTION_HEADER_HEIGHT))
             
             if isKeyboardShowing {
                 // Have to set this such that if the keyboard was kept when it was expanded the top constraint for collection view is set to the right value
                 self.topConstraintForCollectionView.constant = self.TOP_GAP - (self.inputContainerHeightConstraint.constant - 45.0)
                 UIView.animate(withDuration: animationDuration, animations: {
                     if self.isCollectionViewBlockingInput() {
-                        self.view.frame.origin.y = -keyboardViewEndFrame.height
+                        self.view.frame.origin.y = -distanceShifted
+                        // Keyboard is shifted less because view already shifts by distance
+                        self.bottomConstraintForInput.constant = -keyboardViewEndFrame.height + distanceShifted
                     } else {
                         self.bottomConstraintForInput.constant = -keyboardViewEndFrame.height
                     }
