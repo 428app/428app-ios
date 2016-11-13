@@ -22,7 +22,6 @@ class ConnectionCell: BaseCollectionCell {
         }
     }
     fileprivate var isNewConnection: Bool = false
-    open var request: Request?
     
     override var isHighlighted: Bool {
         didSet {
@@ -142,8 +141,6 @@ class ConnectionCell: BaseCollectionCell {
         addConstraintsWithFormat("V:[v0(0.5)]|", views: dividerLineView)
         
         setupContainerView()
-        
-        self.profileImageView.addSubview(imageActivityIndicator)
     }
     
     fileprivate func setupContainerView() {
@@ -166,34 +163,22 @@ class ConnectionCell: BaseCollectionCell {
         indicator.center = CGPoint(x: 34.0, y: 34.0)
         return indicator
     }()
-    
-    fileprivate func resetImage() {
-        self.profileImageView.image = nil
-        self.request?.cancel()
-    }
-    
+
     fileprivate func loadImage() {
+//        self.profileImageView.image = nil
         let imageUrlString = self.message.connection.profileImageName
-        // In a dynamic scenario, want to check for cache over here
-        if let image = imageCache.image(withIdentifier: imageUrlString) {
-            populateCellWithImage(image: image)
+        self.profileImageView.af_cancelImageRequest()
+        guard let imageUrl = URL(string: imageUrlString) else {
+            self.profileImageView.image = #imageLiteral(resourceName: "placeholder-user")
             return
         }
-        // Not in cache, so we have to download the image
-        self.imageActivityIndicator.startAnimating()
-        self.request = downloadImageWithoutCache(imageUrlString: imageUrlString, completed: { (image) in
-            self.populateCellWithImage(image: image)
+        self.profileImageView.af_setImage(withURL: imageUrl, placeholderImage: #imageLiteral(resourceName: "placeholder-user"), filter: nil, progress: nil, imageTransition: .crossDissolve(0.5), runImageTransitionIfCached: false, completion: { image in
+            // Image finished downloading
         })
-    }
-    
-    fileprivate func populateCellWithImage(image: UIImage?) {
-        self.imageActivityIndicator.stopAnimating()
-        self.profileImageView.image = image
     }
     
     func configureCell(messageObj: Message) {
         self.message = messageObj
-        self.resetImage()
         self.loadImage()
         
         self.nameLabel.text = self.message.connection.name
