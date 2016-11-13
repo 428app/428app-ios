@@ -4,9 +4,12 @@
 BUGS
 !EDIT PROFILE PHOTO UPLOAD!
 
+- Only allow copy of whole ChatCell
+- Profile scroll down to keep
+
+
 - Test with many connections
 - Test the no connection case (timer working)
-- Only allow copy of whole ChatCell
 
 
 Minor

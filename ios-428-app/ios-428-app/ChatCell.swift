@@ -10,15 +10,57 @@ import Foundation
 import UIKit
 import Alamofire
 
-class ChatCell: BaseCollectionCell {
+class CustomTextView: UITextView {
+    
+    // Override the touches because I don't want any funky behavior from them
+    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+        log.info("Touches began")
+    }
+    
+    override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?) {
+        log.info("Touches moved")
+    }
+    
+    override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
+        log.info("Touches ended")
+    }
+
+    override var canBecomeFirstResponder: Bool {
+        return true
+    }
+    
+    override func canPerformAction(_ action: Selector, withSender sender: Any?) -> Bool {
+        if action == #selector(copyAll(_:)) {
+            return true
+        }
+        return false
+    }
+    
+    // Function called by selector in the superclass
+    func showMenu(location: CGPoint) {
+        self.becomeFirstResponder()
+        let menuController = UIMenuController.shared
+        let copyItem = UIMenuItem(title: "Copy", action: #selector(CustomTextView.copyAll(_:)))
+        menuController.menuItems = [copyItem]
+        let rect = CGRect(x: location.x - 35, y: self.frame.origin.y, width: 50, height: self.frame.height)
+        menuController.setTargetRect(rect, in: self)
+        menuController.setMenuVisible(true, animated: true)
+    }
+    
+    func copyAll(_ sender: Any?) {
+        UIPasteboard.general.string = self.text
+    }
+}
+
+class ChatCell: BaseCollectionCell, UITextViewDelegate {
     
     fileprivate var message: Message!
     open var shouldExpand = false
     fileprivate let TEXT_VIEW_FONT = UIFont.systemFont(ofSize: 16.0)
     open var request: Request?
     
-    fileprivate let messageTextView: UITextView = {
-        var textView = UITextView()
+    fileprivate lazy var messageTextView: CustomTextView = {
+        var textView = CustomTextView()
         textView.backgroundColor = UIColor.clear
         textView.showsHorizontalScrollIndicator = false
         textView.showsVerticalScrollIndicator = false
@@ -27,9 +69,26 @@ class ChatCell: BaseCollectionCell {
         textView.tintColor = RED_UICOLOR
         textView.dataDetectorTypes = .all
         textView.isUserInteractionEnabled = true
+        textView.delegate = self
+        let longPress = UILongPressGestureRecognizer(target: self, action: #selector(selectAllOfTextView))
+        textView.addGestureRecognizer(longPress)
+        let tap = UITapGestureRecognizer(target: self, action: #selector(notifyControllerToExpand))
+        textView.addGestureRecognizer(tap)
         return textView
     }()
     
+    func textViewDidChangeSelection(_ textView: UITextView) {
+        // TODO: How to disable magnifying glass?
+        if !NSEqualRanges(textView.selectedRange, NSMakeRange(0, 0)) {
+            textView.selectedRange = NSMakeRange(0, 0);
+        }
+    }
+    
+    func selectAllOfTextView(recognizer: UIGestureRecognizer) {
+        let loc = recognizer.location(in: self.messageTextView)
+        self.messageTextView.showMenu(location: loc)
+    }
+
     fileprivate let textBubbleView: UIView = {
         let view = UIView()
         view.layer.cornerRadius = 15
@@ -68,9 +127,6 @@ class ChatCell: BaseCollectionCell {
         textBubbleView.addSubview(bubbleImageView)
         textBubbleView.addConstraintsWithFormat("H:|[v0]|", views: bubbleImageView)
         textBubbleView.addConstraintsWithFormat("V:|[v0]|", views: bubbleImageView)
-        
-        let tapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(notifyControllerToExpand))
-        messageTextView.addGestureRecognizer(tapGestureRecognizer)
         
     }
     
