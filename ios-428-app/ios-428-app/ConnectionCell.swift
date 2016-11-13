@@ -168,19 +168,37 @@ class ConnectionCell: BaseCollectionCell {
         return indicator
     }()
     
+    fileprivate func resetImage() {
+        self.profileImageView.image = nil
+        self.request?.cancel()
+    }
+    
+    fileprivate func loadImage() {
+        let imageUrlString = self.message.connection.profileImageName
+        // In a dynamic scenario, want to check for cache over here
+        if let image = imageCache.image(withIdentifier: imageUrlString) {
+            populateCellWithImage(image: image)
+            return
+        }
+        // Not in cache, so we have to download the image
+        self.imageActivityIndicator.startAnimating()
+        self.request = downloadImageWithoutCache(imageUrlString: imageUrlString, completed: { (image) in
+            self.populateCellWithImage(image: image)
+        })
+    }
+    
+    fileprivate func populateCellWithImage(image: UIImage?) {
+        self.imageActivityIndicator.stopAnimating()
+        self.profileImageView.image = image
+    }
+    
     func configureCell(messageObj: Message) {
+        
         self.message = messageObj
         self.nameLabel.text = self.message.connection.name
-        imageActivityIndicator.startAnimating()
-        // Download profile image
-        self.request?.cancel() // Cancel before making a new request
-        self.profileImageView.image = nil
-        self.request = downloadImage(imageUrlString: self.message.connection.profileImageName, completed: { (isSuccess, image) in
-            self.imageActivityIndicator.stopAnimating()
-            if isSuccess && image != nil {
-                self.profileImageView.image = image
-            }
-        })
+        
+        self.resetImage()
+        self.loadImage()
         
         self.disciplineImageView.image = UIImage(named: self.message.connection.disciplineImageName)
         

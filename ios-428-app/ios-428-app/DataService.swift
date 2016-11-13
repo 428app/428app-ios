@@ -276,7 +276,7 @@ class DataService {
                     snapsLeft -= 1
                     hasError = err != nil
                     if snapsLeft <= 0 {
-                        completed(hasError)
+                        completed(!hasError)
                     }
                 })
             }

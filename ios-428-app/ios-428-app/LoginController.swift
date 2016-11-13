@@ -73,7 +73,7 @@ class LoginController: UIViewController, UIScrollViewDelegate, CLLocationManager
     
     func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
         locationManager.stopUpdatingLocation()
-        log.error(error)
+        log.error("[Error] Location retrieval failed with error: \(error)")
     }
     
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
@@ -84,14 +84,14 @@ class LoginController: UIViewController, UIScrollViewDelegate, CLLocationManager
             let lon = loc.coordinate.longitude
             // Update user's location, and stops location manager
             if getStoredUid() == nil {
-                log.error("Stored uid not set yet")
+                log.error("[Error] Stored uid not set yet")
                 return
             }
             DataService.ds.updateUserLocation(lat: lat, lon: lon, completed: { (isSuccess) in
                 if isSuccess {
                     self.locationManager.stopUpdatingLocation()
                 } else {
-                    log.error("There was an error in getting user's location")
+                    log.error("[Error] There was an error in updating user's location to our server")
                 }
             })
         }
@@ -106,7 +106,7 @@ class LoginController: UIViewController, UIScrollViewDelegate, CLLocationManager
         facebookLogin.logIn(withReadPermissions: ["public_profile", "user_friends", "user_birthday"], from: self) { (facebookResult, facebookError) in
             
             if facebookError != nil || facebookResult == nil {
-                log.error("Facebook login failed. Error \(facebookError)")
+                log.error("[Error] Facebook login failed. Error \(facebookError)")
                 return
             } else if facebookResult!.isCancelled {
                 log.warning("Facebook login was cancelled.")
@@ -121,7 +121,7 @@ class LoginController: UIViewController, UIScrollViewDelegate, CLLocationManager
                 connection.add(fbRequest, completionHandler: { (conn, fbResult, error) in
                     
                     if error != nil || fbResult == nil {
-                        log.error("Could not fetch user details from FB graph")
+                        log.error("[Error] Could not fetch user details from FB graph")
                         showErrorAlert(vc: self, title: "Could not sign in", message: "There was a problem syncing with Facebook. Please check back again later.")
                         hideLoader()
                         return
@@ -129,7 +129,7 @@ class LoginController: UIViewController, UIScrollViewDelegate, CLLocationManager
                         
                         // Chaining to get friend count, picture url and birthday from graph request result
                         guard let result = fbResult as? [String: Any], let friendCount = (result as NSDictionary).value(forKeyPath: "friends.summary.total_count") as? Int, let pictureUrl = (result as NSDictionary).value(forKeyPath: "picture.data.url") as? String, let birthdayString = result["birthday"] as? String else {
-                            log.error("Could not fetch user details from FB graph")
+                            log.error("[Error] Could not fetch user details from FB graph")
                             showErrorAlert(vc: self, title: "Could not sign in", message: "There was a problem syncing with Facebook. Please check back again later.")
                             return
                         }
@@ -137,7 +137,7 @@ class LoginController: UIViewController, UIScrollViewDelegate, CLLocationManager
                         // Make sure user at least has a certain number of friends, if not flag fake account
                         if friendCount < self.MINIMAL_FRIEND_COUNT {
                             hideLoader()
-                            log.error("User does not have enough FB friends")
+                            log.info("User does not have enough FB friends")
                             showErrorAlert(vc: self, title: "Oops", message: "Hmm... we suspect you're not using your genuine Facebook account. Kindly login using your real account. If you feel that that's a problem, contact us.")
                             return
                         }
@@ -158,7 +158,7 @@ class LoginController: UIViewController, UIScrollViewDelegate, CLLocationManager
         FIRAuth.auth()?.signIn(with: credential, completion: { (user, error) in
             
             if error != nil || user == nil || user!.providerData[0].displayName == nil {
-                log.error("Auth with Firebase failed")
+                log.error("[Error] Auth with Firebase failed")
                 showErrorAlert(vc: self, title: "Could not sign in", message: "There was a problem signing in. We apologize. Please try again later.")
                 hideLoader()
                 return
@@ -179,7 +179,7 @@ class LoginController: UIViewController, UIScrollViewDelegate, CLLocationManager
             DataService.ds.loginFirebaseUser(name: displayName, birthday: birthdayString, pictureUrl: pictureUrl, timezone: timezone, completed: { (isSuccess, isFirstTimeUser) in
                 hideLoader()
                 if !isSuccess {
-                    log.error("Login to Firebase failed")
+                    log.error("[Error] Login to Firebase failed")
                     showErrorAlert(vc: self, title: "Could not sign in", message: "There was a problem signing in. We apologize. Please try again later.")
                     return
                 }

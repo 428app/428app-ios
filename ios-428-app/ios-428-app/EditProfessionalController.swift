@@ -45,11 +45,24 @@ class EditProfessionalController: UIViewController, UITextFieldDelegate, UIPicke
         // Gesture recognizer to keep keyboard
         let tapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(keepKeyboard))
         self.view.addGestureRecognizer(tapGestureRecognizer)
-        
         self.setupViews()
-        self.loadProfileData()
     }
     
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        self.extendedLayoutIncludesOpaqueBars = true
+        self.loadProfileData()
+        self.registerObservers()
+    }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        // Only send to server if fields have changed so as not to overload server with requests
+        if hasFieldsChanged {
+            saveEdits() // Save edits on pressing back button
+        }
+        self.unregisterObservers()
+    }
     
     func loadProfileData() {
         guard let profile = myProfile else {
@@ -63,31 +76,31 @@ class EditProfessionalController: UIViewController, UITextFieldDelegate, UIPicke
     
     func saveEdits() {
         if let orgSaved = orgTextField.text?.trim(), let schoolSaved = schoolTextField.text?.trim(), let disciplineSaved = disciplineTextField.text?.trim() {
+            
             hasFieldsChanged = false
+            
+            // Set myProfile and notify other controllers of change
+            myProfile?.org = orgSaved
+            myProfile?.school = schoolSaved
+            
+            // If discipline has changed, update it in cached details of connections
+            if myProfile?.discipline != disciplineSaved {
+                DataService.ds.updateCachedDetailsInConnections(discipline: disciplineSaved, completed: { (isSuccess) in
+                    if !isSuccess {
+                        log.error("[Error] Updating discipline in cached details of connections failed")
+                    }
+                })
+            }
+            
+            myProfile?.discipline = disciplineSaved
+            NotificationCenter.default.post(name: NOTIF_MYPROFILEDOWNLOADED, object: nil)
+            
             DataService.ds.updateUserFields(organization: orgSaved, school: schoolSaved, discipline: disciplineSaved, completed: { (isSuccess) in
                 if !isSuccess {
-                    log.error("Professional fields fail to be updated")
+                    log.error("[Error] Professional fields failed to be updated")
                 }
-                // Set myProfile and notify other controllers of change
-                myProfile?.org = orgSaved
-                myProfile?.school = schoolSaved
-                myProfile?.discipline = disciplineSaved
-                NotificationCenter.default.post(name: NOTIF_MYPROFILEDOWNLOADED, object: nil)
             })
         }
-    }
-    
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-        self.registerObservers()
-    }
-    
-    override func viewWillDisappear(_ animated: Bool) {
-        super.viewWillDisappear(animated)
-        if hasFieldsChanged {
-            saveEdits() // Save edits on pressing back button
-        }
-        self.unregisterObservers()
     }
     
     // MARK: Views
@@ -245,13 +258,13 @@ class EditProfessionalController: UIViewController, UITextFieldDelegate, UIPicke
     fileprivate func registerObservers() {
         NotificationCenter.default.addObserver(self, selector: #selector(handleKeyboardNotification), name: NSNotification.Name.UIKeyboardWillHide, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(handleKeyboardNotification), name: NSNotification.Name.UIKeyboardWillChangeFrame, object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(loadProfileData), name: NOTIF_MYPROFILEDOWNLOADED, object: nil)
+//        NotificationCenter.default.addObserver(self, selector: #selector(loadProfileData), name: NOTIF_MYPROFILEDOWNLOADED, object: nil)
     }
     
     fileprivate func unregisterObservers() {
         NotificationCenter.default.removeObserver(self, name: NSNotification.Name.UIKeyboardWillHide, object: nil)
         NotificationCenter.default.removeObserver(self, name: NSNotification.Name.UIKeyboardWillChangeFrame, object: nil)
-        NotificationCenter.default.removeObserver(self, name: NOTIF_MYPROFILEDOWNLOADED, object: nil)
+//        NotificationCenter.default.removeObserver(self, name: NOTIF_MYPROFILEDOWNLOADED, object: nil)
     }
     
     fileprivate func getActiveTextfield() -> UITextField? {

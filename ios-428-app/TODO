@@ -4,9 +4,8 @@
 BUGS
 !EDIT PROFILE PHOTO UPLOAD!
 
-- Remove save button, allow upload automatically
-- Remove notification for MyProfileDownloaded in all the screens
-
+- Setup testing workflow where each new user adds all other users in the chat
+- Figure out push notifications
 
 
 

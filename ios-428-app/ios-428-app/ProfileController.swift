@@ -56,11 +56,11 @@ class ProfileController: UIViewController, UITableViewDelegate, UITableViewDataS
         self.tableView.reloadData()
         // Download images
         if !profile.coverImageName.isEmpty {
-            _ = downloadImage(imageUrlString: profile.coverImageName, completed: { (isSuccess, coverImage) in
+            _ = downloadImage(imageUrlString: profile.coverImageName, completed: { (coverImage) in
                 self.profileBgImageView.image = coverImage
             })
         }
-        _ = downloadImage(imageUrlString: profile.profileImageName, completed: { (isSuccess, profileImage) in
+        _ = downloadImage(imageUrlString: profile.profileImageName, completed: { (profileImage) in
             self.profileImageView.image = profileImage
         })
         

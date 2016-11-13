@@ -1,5 +1,5 @@
 //
-//  Environment.swift
+//  Switches.swift
 //  ios-428-app
 //
 //  NOTE: This is an important file containing all the switches that manipulate app state.

@@ -63,7 +63,7 @@ class ChatCell: BaseCollectionCell {
         addSubview(profileImageView)
         
         addConstraintsWithFormat("H:|-8-[v0(30)]", views: profileImageView)
-        addConstraintsWithFormat("V:|[v0(30)]", views: profileImageView)
+        addConstraintsWithFormat("V:|-3-[v0(30)]", views: profileImageView)
         
         textBubbleView.addSubview(bubbleImageView)
         textBubbleView.addConstraintsWithFormat("H:|[v0]|", views: bubbleImageView)
@@ -74,6 +74,10 @@ class ChatCell: BaseCollectionCell {
         
     }
     
+    fileprivate func populateCellWithImage(image: UIImage?) {
+        self.profileImageView.image = image
+    }
+    
     func configureCell(messageObj: Message, viewWidth: CGFloat, isLastInChain: Bool) {
         self.message = messageObj
         let messageText = self.message.text
@@ -81,10 +85,8 @@ class ChatCell: BaseCollectionCell {
         self.messageTextView.text = self.message?.text
 
         // Download profile image
-        self.request = downloadImage(imageUrlString: self.message.connection.profileImageName, completed: { (isSuccess, image) in
-            if isSuccess && image != nil {
-                self.profileImageView.image = image
-            }
+        self.request = downloadImage(imageUrlString: self.message.connection.profileImageName, completed: { (image) in
+            self.populateCellWithImage(image: image)
         })
         
         let size = CGSize(width: 250, height: 1000)

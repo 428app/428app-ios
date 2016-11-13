@@ -41,7 +41,7 @@ class StorageService {
         metadata.contentType = "image/jpeg"
         _REF_USER.child("\(uid)/\(filePath)").put(data, metadata: metadata) { (metadata, error) in
             if error != nil || metadata == nil {
-                log.error("Fail to store image in cloud storage")
+                log.error("[Error] Fail to store image in cloud storage")
             } else {
                  if let imageUrl = metadata?.downloadURL()?.absoluteString {
                     log.info("is profile pic: \(isProfilePic), and url: \(imageUrl)")
@@ -66,7 +66,7 @@ class StorageService {
                     }
                  } else {
                     completed(false)
-                    log.error("Fail to retrieve image url from cloud storage")
+                    log.error("[Error] Fail to retrieve image url from cloud storage")
                 }
             }
         }

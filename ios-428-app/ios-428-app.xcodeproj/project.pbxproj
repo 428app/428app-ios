@@ -7,7 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		4020CE151DBB569000461181 /* Environment.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4020CE141DBB569000461181 /* Environment.swift */; };
+		4000C37A1DD81227009C10E5 /* Download.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4000C3791DD81227009C10E5 /* Download.swift */; };
+		4020CE151DBB569000461181 /* Switches.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4020CE141DBB569000461181 /* Switches.swift */; };
 		4020CE171DBCA1E900461181 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 4020CE161DBCA1E900461181 /* GoogleService-Info.plist */; };
 		4020CE191DBCA67A00461181 /* DataService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4020CE181DBCA67A00461181 /* DataService.swift */; };
 		4020CE1E1DBCA84C00461181 /* Bolts.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4020CE1A1DBCA84C00461181 /* Bolts.framework */; };
@@ -26,7 +27,7 @@
 		4024F2351DBB2155007819F7 /* IntroController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4024F2341DBB2155007819F7 /* IntroController.swift */; };
 		4031FB9A1DC04B490066E6B6 /* MyProfile.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4031FB991DC04B490066E6B6 /* MyProfile.swift */; };
 		4031FB9C1DC0691C0066E6B6 /* StorageService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4031FB9B1DC0691C0066E6B6 /* StorageService.swift */; };
-		404C22FA1DBDB86D0054FE19 /* Server.swift in Sources */ = {isa = PBXBuildFile; fileRef = 404C22F91DBDB86D0054FE19 /* Server.swift */; };
+		404C22FA1DBDB86D0054FE19 /* UserDefaults.swift in Sources */ = {isa = PBXBuildFile; fileRef = 404C22F91DBDB86D0054FE19 /* UserDefaults.swift */; };
 		4064A1B61DAC381300071383 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4064A1B51DAC381300071383 /* AppDelegate.swift */; };
 		4064A1B81DAC381300071383 /* ConnectionsController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4064A1B71DAC381300071383 /* ConnectionsController.swift */; };
 		4064A1C01DAC381300071383 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 4064A1BF1DAC381300071383 /* Assets.xcassets */; };
@@ -61,6 +62,7 @@
 		4064A2521DB346A800071383 /* Profile.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4064A2511DB346A800071383 /* Profile.swift */; };
 		4064A2541DB34E4D00071383 /* ProfileController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4064A2531DB34E4D00071383 /* ProfileController.swift */; };
 		4064A2561DB3E5E800071383 /* ProfileCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4064A2551DB3E5E800071383 /* ProfileCell.swift */; };
+		409F05F21DD81E1D001B673F /* Upload.swift in Sources */ = {isa = PBXBuildFile; fileRef = 409F05F11DD81E1D001B673F /* Upload.swift */; };
 		40AB7FF81DB59C9600492788 /* SettingsController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 40AB7FF71DB59C9600492788 /* SettingsController.swift */; };
 		40AB7FFA1DB5B06A00492788 /* SettingCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 40AB7FF91DB5B06A00492788 /* SettingCell.swift */; };
 		40AB7FFC1DB5B09700492788 /* BaseTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 40AB7FFB1DB5B09700492788 /* BaseTableViewCell.swift */; };
@@ -78,7 +80,8 @@
 		04E3B82C0B8AC7357CE89687 /* Pods-ios-428-app.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ios-428-app.debug.xcconfig"; path = "Pods/Target Support Files/Pods-ios-428-app/Pods-ios-428-app.debug.xcconfig"; sourceTree = "<group>"; };
 		0D2BDEFFA9091FABC468335E /* Pods-ios-428-app.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ios-428-app.release.xcconfig"; path = "Pods/Target Support Files/Pods-ios-428-app/Pods-ios-428-app.release.xcconfig"; sourceTree = "<group>"; };
 		1B0A78A64649B55915C0C572 /* Pods_ios_428_app.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_ios_428_app.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		4020CE141DBB569000461181 /* Environment.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Environment.swift; sourceTree = "<group>"; };
+		4000C3791DD81227009C10E5 /* Download.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Download.swift; sourceTree = "<group>"; };
+		4020CE141DBB569000461181 /* Switches.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Switches.swift; sourceTree = "<group>"; };
 		4020CE161DBCA1E900461181 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		4020CE181DBCA67A00461181 /* DataService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DataService.swift; sourceTree = "<group>"; };
 		4020CE1A1DBCA84C00461181 /* Bolts.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Bolts.framework; sourceTree = "<group>"; };
@@ -98,7 +101,7 @@
 		4024F2341DBB2155007819F7 /* IntroController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IntroController.swift; sourceTree = "<group>"; };
 		4031FB991DC04B490066E6B6 /* MyProfile.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MyProfile.swift; sourceTree = "<group>"; };
 		4031FB9B1DC0691C0066E6B6 /* StorageService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StorageService.swift; sourceTree = "<group>"; };
-		404C22F91DBDB86D0054FE19 /* Server.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Server.swift; sourceTree = "<group>"; };
+		404C22F91DBDB86D0054FE19 /* UserDefaults.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserDefaults.swift; sourceTree = "<group>"; };
 		4064A1B21DAC381300071383 /* ios-428-app.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "ios-428-app.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		4064A1B51DAC381300071383 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		4064A1B71DAC381300071383 /* ConnectionsController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectionsController.swift; sourceTree = "<group>"; };
@@ -135,6 +138,7 @@
 		4064A2511DB346A800071383 /* Profile.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Profile.swift; sourceTree = "<group>"; };
 		4064A2531DB34E4D00071383 /* ProfileController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProfileController.swift; sourceTree = "<group>"; };
 		4064A2551DB3E5E800071383 /* ProfileCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProfileCell.swift; sourceTree = "<group>"; };
+		409F05F11DD81E1D001B673F /* Upload.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Upload.swift; sourceTree = "<group>"; };
 		40AB7FF71DB59C9600492788 /* SettingsController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingsController.swift; sourceTree = "<group>"; };
 		40AB7FF91DB5B06A00492788 /* SettingCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingCell.swift; sourceTree = "<group>"; };
 		40AB7FFB1DB5B09700492788 /* BaseTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BaseTableViewCell.swift; sourceTree = "<group>"; };
@@ -177,7 +181,7 @@
 			isa = PBXGroup;
 			children = (
 				40E2E13F1DD26B8200469B4D /* Discipline.swift */,
-				4020CE141DBB569000461181 /* Environment.swift */,
+				4020CE141DBB569000461181 /* Switches.swift */,
 				4064A1EA1DAC80F100071383 /* Constants.swift */,
 				4064A2151DACBCDC00071383 /* Extensions.swift */,
 				4064A21E1DAD72DF00071383 /* Functions.swift */,
@@ -189,7 +193,9 @@
 			isa = PBXGroup;
 			children = (
 				4031FB991DC04B490066E6B6 /* MyProfile.swift */,
-				404C22F91DBDB86D0054FE19 /* Server.swift */,
+				409F05F11DD81E1D001B673F /* Upload.swift */,
+				4000C3791DD81227009C10E5 /* Download.swift */,
+				404C22F91DBDB86D0054FE19 /* UserDefaults.swift */,
 			);
 			name = Backend;
 			sourceTree = "<group>";
@@ -516,7 +522,8 @@
 				4031FB9A1DC04B490066E6B6 /* MyProfile.swift in Sources */,
 				4064A1E41DAC590900071383 /* ChatController.swift in Sources */,
 				4064A2541DB34E4D00071383 /* ProfileController.swift in Sources */,
-				4020CE151DBB569000461181 /* Environment.swift in Sources */,
+				4020CE151DBB569000461181 /* Switches.swift in Sources */,
+				4000C37A1DD81227009C10E5 /* Download.swift in Sources */,
 				40AB7FF81DB59C9600492788 /* SettingsController.swift in Sources */,
 				40AB7FFA1DB5B06A00492788 /* SettingCell.swift in Sources */,
 				4064A1EB1DAC80F100071383 /* Constants.swift in Sources */,
@@ -533,6 +540,7 @@
 				4064A2271DB13FBD00071383 /* Debug.swift in Sources */,
 				4064A2211DADE67E00071383 /* ChatHeaderView.swift in Sources */,
 				40AB7FFE1DB5B89C00492788 /* Setting.swift in Sources */,
+				409F05F21DD81E1D001B673F /* Upload.swift in Sources */,
 				4064A1B81DAC381300071383 /* ConnectionsController.swift in Sources */,
 				40AB80001DB5FDB100492788 /* EditProfileController.swift in Sources */,
 				4064A21F1DAD72DF00071383 /* Functions.swift in Sources */,
@@ -541,7 +549,7 @@
 				4031FB9C1DC0691C0066E6B6 /* StorageService.swift in Sources */,
 				4064A1B61DAC381300071383 /* AppDelegate.swift in Sources */,
 				4064A1CB1DAC495D00071383 /* DummyDataService.swift in Sources */,
-				404C22FA1DBDB86D0054FE19 /* Server.swift in Sources */,
+				404C22FA1DBDB86D0054FE19 /* UserDefaults.swift in Sources */,
 				4064A2291DB2B0B500071383 /* Message.swift in Sources */,
 				4024F22B1DB85C0E007819F7 /* PaddingLabel.swift in Sources */,
 				40AB7FFC1DB5B09700492788 /* BaseTableViewCell.swift in Sources */,

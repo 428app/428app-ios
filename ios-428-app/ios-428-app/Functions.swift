@@ -2,6 +2,8 @@
 //  Functions.swift
 //  ios-428-app
 //
+//  Common functions used in multiple classes
+//
 //  Created by Leonard Loo on 10/11/16.
 //  Copyright © 2016 428. All rights reserved.
 //

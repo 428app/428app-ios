@@ -111,7 +111,7 @@ class SettingsController: UIViewController, UITableViewDelegate, UITableViewData
                     if let imageData = UIImageJPEGRepresentation(myProfilePhoto!, 1.0) {
                         StorageService.ss.uploadOwnPic(data: imageData, isProfilePic: true, completed: { (isSuccess) in
                             if !isSuccess {
-                                log.error("Server unable to save profile pic")
+                                log.error("[Error] Unable to upload profile pic to storage")
                             } else {
                                 // Upload success, delete cached profile photo
                                 cachePhotoToUpload(data: nil, isProfilePic: true)
@@ -120,8 +120,8 @@ class SettingsController: UIViewController, UITableViewDelegate, UITableViewData
                     }
                 } else {
                     // Download image
-                    _ = downloadImage(imageUrlString: profile!.profileImageName, completed: { (isSuccess, image) in
-                        if isSuccess && image != nil {
+                    _ = downloadImage(imageUrlString: profile!.profileImageName, completed: { (image) in
+                        if image != nil {
                             self.settings[1][0].image = image
                             self.tableView.reloadData()
                             myProfilePhoto = image!
@@ -137,7 +137,7 @@ class SettingsController: UIViewController, UITableViewDelegate, UITableViewData
                     if let imageData = UIImageJPEGRepresentation(myCoverPhoto!, 1.0) {
                         StorageService.ss.uploadOwnPic(data: imageData, isProfilePic: false, completed: { (isSuccess) in
                             if !isSuccess {
-                                log.error("Server unable to save cover pic")
+                                log.error("[Error] Unable to upload cover pic to storage")
                             } else {
                                 // Upload success, delete cache
                                 cachePhotoToUpload(data: nil, isProfilePic: false)
@@ -146,8 +146,8 @@ class SettingsController: UIViewController, UITableViewDelegate, UITableViewData
                     }
                 } else {
                     // Download image
-                    _ = downloadImage(imageUrlString: profile!.coverImageName, completed: { (isSuccess, image) in
-                        if isSuccess && image != nil {
+                    _ = downloadImage(imageUrlString: profile!.coverImageName, completed: { (image) in
+                        if image != nil {
                             myCoverPhoto = image!
                             NotificationCenter.default.post(name: NOTIF_MYPROFILEDOWNLOADED, object: nil)
                         }
@@ -232,7 +232,7 @@ class SettingsController: UIViewController, UITableViewDelegate, UITableViewData
                 if isSuccess {
                     self.dismiss(animated: true, completion: nil)
                 } else {
-                    log.error("Could not log user out")
+                    log.error("[Error] Could not log user out")
                     showErrorAlert(vc: self, title: "Could not log out", message: "We apologize. We could not log you out for now. Please try again later.")
                 }
             })

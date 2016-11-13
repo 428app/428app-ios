@@ -51,13 +51,12 @@ class ChatController: UIViewController, UICollectionViewDelegateFlowLayout, UITe
         self.setupNavigationBar()
         self.setupCollectionView()
         self.setupInputComponents()
-        self.extendedLayoutIncludesOpaqueBars = true
-
     }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         self.navigationController?.navigationBar.isHidden = false
+        self.extendedLayoutIncludesOpaqueBars = true
         self.collectionView.isHidden = false
         self.tabBarController?.tabBar.isHidden = true
         self.registerObservers()
@@ -92,7 +91,8 @@ class ChatController: UIViewController, UICollectionViewDelegateFlowLayout, UITe
         imageView.contentMode = .scaleAspectFill
         imageView.layer.cornerRadius = 50
         imageView.layer.masksToBounds = true
-        _ = downloadImage(imageUrlString: self.connection.profileImageName, completed: { (isSuccess, image) in
+        _ = downloadImage(imageUrlString: self.connection.profileImageName, completed: { (image) in
+            // Can just directly reference image in callback because there is only one image here, and is not dynamic like in a cell
             imageView.image = image
         })
         return imageView

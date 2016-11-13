@@ -219,7 +219,7 @@ class EditProfileController: UIViewController, UIScrollViewDelegate, UITableView
         let imageView = isProfilePic ? profileImageView : coverImageView
         
         guard let image = imageView.image, let testData = UIImageJPEGRepresentation(image, 1.0) else {
-            log.error("Unable to convert image to data")
+            log.error("[Error] Unable to convert image to data")
             self.showErrorForImageUploadFail()
             return
         }
@@ -243,7 +243,7 @@ class EditProfileController: UIViewController, UIScrollViewDelegate, UITableView
             StorageService.ss.uploadOwnPic(data: data, isProfilePic: isProfilePic, completed: { (isSuccess) in
                 if !isSuccess {
                     // NOTE: This does not revert back to previous photo. Meaning if the user closes the app and comes back, his photo will be reverted.
-                    log.error("Server unable to save profile pic")
+                    log.error("[Error] Server unable to save profile pic")
                     self.showErrorForImageUploadFail()
                 } else {
                     // Remove cached photo as upload is successful
@@ -251,7 +251,7 @@ class EditProfileController: UIViewController, UIScrollViewDelegate, UITableView
                 }
             })
         } else {
-            log.error("Profile image unable to be converted to data")
+            log.error("[Error] Profile image unable to be converted to data")
             showErrorForImageUploadFail()
         }
     }

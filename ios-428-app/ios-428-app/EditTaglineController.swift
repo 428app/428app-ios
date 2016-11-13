@@ -37,17 +37,18 @@ class EditTaglineController: UIViewController, UITextViewDelegate {
     }()
     
     func saveEdits() {
-        log.info("Save tagline edits to server")
         let tagline1Saved = tagline1TextView.text.trim().lowercaseFirstLetter()
         let tagline2Saved = tagline2TextView.text.trim().lowercaseFirstLetter()
+        if myProfile != nil {
+            myProfile!.tagline1 = tagline1Saved
+            myProfile!.tagline2 = tagline2Saved
+            NotificationCenter.default.post(name: NOTIF_MYPROFILEDOWNLOADED, object: nil)
+        }
+        
         DataService.ds.updateUserFields(tagline1: tagline1Saved, tagline2: tagline2Saved) { (isSuccess) in
             if !isSuccess {
-                log.error("Professional fields fail to be updated")
+                log.error("[Error] Taglines failed to be updated")
             }
-            // Set myProfile and notify other controllers of change
-            myProfile?.tagline1 = tagline1Saved
-            myProfile?.tagline2 = tagline2Saved
-            NotificationCenter.default.post(name: NOTIF_MYPROFILEDOWNLOADED, object: nil)
         }
         _ = self.navigationController?.popViewController(animated: true)
     }
@@ -69,6 +70,7 @@ class EditTaglineController: UIViewController, UITextViewDelegate {
     }
     
     override func viewWillAppear(_ animated: Bool) {
+        self.extendedLayoutIncludesOpaqueBars = true
         super.viewWillAppear(animated)
         self.registerObservers()
     }
@@ -117,6 +119,7 @@ class EditTaglineController: UIViewController, UITextViewDelegate {
         textView.backgroundColor = UIColor.white
         textView.delegate = self
         textView.textAlignment = .left
+        textView.textContainerInset = UIEdgeInsetsMake(5.0, 5.0, 5.0, 5.0)
         textView.tintColor = GREEN_UICOLOR
         return textView
     }
@@ -194,8 +197,8 @@ class EditTaglineController: UIViewController, UITextViewDelegate {
         view.addConstraintsWithFormat("V:[v0(20)]-8-[v1(\(textviewHeight))][v2(20)]-20-[v3(20)]-8-[v4(\(textviewHeight))][v5(20)]", views: tagline1Label, tagline1TextView, tagline1CountLabel, tagline2Label, tagline2TextView, tagline2CountLabel)
         
         // Align placeholders to text views
-        view.addConstraintsWithFormat("H:|-18-[v0]-13-|", views: tagline1Placeholder)
-        view.addConstraintsWithFormat("H:|-18-[v0]-13-|", views: tagline2Placeholder)
+        view.addConstraintsWithFormat("H:|-23-[v0]-13-|", views: tagline1Placeholder)
+        view.addConstraintsWithFormat("H:|-23-[v0]-13-|", views: tagline2Placeholder)
         view.addConstraintsWithFormat("V:[v0(100)]", views: tagline1Placeholder)
         view.addConstraintsWithFormat("V:[v0(100)]", views: tagline2Placeholder)
         

@@ -57,7 +57,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // Might consider removing this if it is hitting the database too much
         DataService.ds.updateUserLastSeen{ (isSuccess) in
             if !isSuccess {
-                log.error("Failed to set user last seen")
+                log.error("[Error] Failed to set user last seen")
             }
         }
     }
