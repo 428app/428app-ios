@@ -25,6 +25,31 @@ func saveUid(uid: String) {
     DEFAULTS.synchronize()
 }
 
+let KEY_DISCIPLINE = "discipline"
+func getStoredDiscipline() -> String? {
+    if let storedDiscipline = DEFAULTS.object(forKey: KEY_DISCIPLINE) as? String {
+        return storedDiscipline
+    }
+    return nil
+}
+func saveDiscipline(discipline: String) {
+    DEFAULTS.set(discipline, forKey: KEY_DISCIPLINE)
+    DEFAULTS.synchronize()
+}
+
+let KEY_NAME = "name"
+func getStoredName() -> String? {
+    if let storedName = DEFAULTS.object(forKey: KEY_NAME) as? String {
+        return storedName
+    }
+    return nil
+}
+func saveName(name: String) {
+    DEFAULTS.set(name, forKey: KEY_NAME)
+    DEFAULTS.synchronize()
+}
+
+
 // Stored true if user still has yet to fill in profile in intro
 // Used this to safeguard against users who login, not fill in intro, and close the app
 let KEY_HASTOFILL = "hasToFill"

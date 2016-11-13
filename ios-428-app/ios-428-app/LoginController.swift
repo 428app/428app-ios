@@ -35,9 +35,12 @@ class LoginController: UIViewController, UIScrollViewDelegate, CLLocationManager
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         // These have to be in viewDidAppear, or they will not work
-        if let _ = FBSDKAccessToken.current(), let user = FIRAuth.auth()?.currentUser {
-            saveUid(uid: user.providerData[0].uid) // Saving here is not really necessary, but just a safeguard
+        if FIRAuth.auth()?.currentUser != nil && FBSDKAccessToken.current() != nil {
+            if getStoredUid() == nil {
+                return
+            }
             self.startLocationManager() // Update user location and timeSeen
+            log.info("Bypass here because hasToFill: \(hasToFill())")
             let controller = hasToFill() ? IntroController() : CustomTabBarController()
             controller.modalTransitionStyle = .coverVertical
             self.present(controller, animated: true, completion: nil)
@@ -164,6 +167,7 @@ class LoginController: UIViewController, UIScrollViewDelegate, CLLocationManager
                 return
             }
             
+            let authuid = user!.uid
             let fbid = user!.providerData[0].uid // Use FBID as the key for users
             
             // Grab only the first part of the display name
@@ -176,16 +180,18 @@ class LoginController: UIViewController, UIScrollViewDelegate, CLLocationManager
             let timezone: Double = secondsFromGMT*1.0 / (60.0*60.0)
             
             // Create/Update Firebase user with details
-            DataService.ds.loginFirebaseUser(name: displayName, birthday: birthdayString, pictureUrl: pictureUrl, timezone: timezone, completed: { (isSuccess, isFirstTimeUser) in
+            DataService.ds.loginFirebaseUser(authuid: authuid, name: displayName, birthday: birthdayString, pictureUrl: pictureUrl, timezone: timezone, completed: { (isSuccess, isFirstTimeUser) in
                 hideLoader()
                 if !isSuccess {
                     log.error("[Error] Login to Firebase failed")
                     showErrorAlert(vc: self, title: "Could not sign in", message: "There was a problem signing in. We apologize. Please try again later.")
                     return
                 }
+                
                 if isFirstTimeUser {
                     setHasToFillInfo(hasToFill: true)
                 }
+                
                 // Successfully updated user info in DB, get user's location, and log user in!
                 self.startLocationManager()
                 let controller = isFirstTimeUser ? IntroController() : CustomTabBarController()

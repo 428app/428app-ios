@@ -144,7 +144,6 @@ class ConnectionCell: BaseCollectionCell {
         setupContainerView()
         
         self.profileImageView.addSubview(imageActivityIndicator)
-        
     }
     
     fileprivate func setupContainerView() {
@@ -193,13 +192,11 @@ class ConnectionCell: BaseCollectionCell {
     }
     
     func configureCell(messageObj: Message) {
-        
         self.message = messageObj
-        self.nameLabel.text = self.message.connection.name
-        
         self.resetImage()
         self.loadImage()
         
+        self.nameLabel.text = self.message.connection.name
         self.disciplineImageView.image = UIImage(named: self.message.connection.disciplineImageName)
         
         if isNewConnection {

@@ -21,7 +21,6 @@ func m(minutesAgo: Double) -> Date {
     return Date().addingTimeInterval(-minutesAgo * 60.0)
 }
 
-
 func loadTopicMessages() -> [TopicMessage] {
     let m1 = TopicMessage(tmid: "1", parentTid: "4", posterUid: "999", posterName: "Leonard", posterDiscipline: "business", text: "Creating a million jobs is not easy. Let's start with improving our own education system first.", date: m(minutesAgo: 200))
     let m2 = TopicMessage(tmid: "2", parentTid: "4", posterUid: "999", posterName: "Jenny", posterDiscipline: "biology", text: "Just open more restaurants so we get more jobs... and more food!", date: m(minutesAgo: 195))
@@ -46,77 +45,4 @@ func loadTopics() -> [Topic] {
     let topic8 = Topic(tid: "8", prompt: "There are lots of cheap, proven ways to save and improve people’s lives. They should be reaching everyone.", imageName: "topic-nonprofits", description: "Why do so many people in the developing world still suffer for lack of simple things like bednets, vaccines, and iodized salt? Part of the problem is money, and we’re interested in new ways to get people to give. Part of it is execution, and we’d love to see nonprofits that are truly data-literate and metrics-driven closing these gaps. Organizations like GiveWell have large amounts of funding at the ready for provably effective global health interventions.", date: t(daysAgo: 8))
     topics = [topic1, topic2, topic3, topic4, topic5, topic6, topic7, topic8]
     return topics
-}
-
-
-// Set up profiles
-let jennyprof = Profile(uid: "1", name: "Jenny", coverImageName: "jenny-bg", profileImageName: "jenny-profile", age: 22, location: "USA, MA, Cambridge", org: "Maxwell Dworkin Corp", school: "Harvard University of Wizardry, Angels and the Forbidden Arts", discipline: "Biology", tagline1: "understanding mutations in DNA and how they lead to cancer. I'm doing it because I've always enjoyed Biology. In middle school I dissected an animal's heart, and my interest just escalated from there!", tagline2: "make a breakthrough in cancer research and win a Nobel prize. That's a big statement I know, but gotta dream big right?")
-let yihangprof = Profile(uid: "99", name: "Yihang", coverImageName: "yihang-bg", profileImageName: "yihang-profile", age: 24, location: "USA, MA, Cambridge", org: "428", school: "Harvard University", discipline: "Business", tagline1: "an app that lets you easily meet people from different industries. There's LinkedIn, and we're LinkedOut. On the app, you get matched with a new connection and introduced to a new topic once a day, at 4:28pm.", tagline2: "make my mark on the world, and have a happy family.")
-
-
-// Set up messages
-extension ConnectionsController {
-
-    func setupData() {
-//        // Create messages
-//        let jenny = Connection(uid: "1", name: "Jenny", profileImageName: "jenny-profile", coverImageName: "biology")
-//        let spandan = Connection(uid: "2", name: "Spandan", profileImageName: "spandan-profile", coverImageName: "computer")
-//        let tomas = Connection(uid: "3", name: "Tomas", profileImageName: "tomas-profile", coverImageName: "computer")
-//        let kyooeun = Connection(uid: "4", name: "Kyooeun", profileImageName: "kyooeun-profile", coverImageName: "eastasian")
-//        let emil = Connection(uid: "5", name: "Emil", profileImageName: "emil-profile", coverImageName: "physics")
-//        let kezi = Connection(uid: "6", name: "Kezi", profileImageName: "kezi-profile", coverImageName: "physics")
-//        
-//        _ = self.createMessageForconnection(tomas, text: "Programming assignments take up so much time. But they are worthwhile.", minutesAgo: 60 * 24 * 3, isSentByYou: true)
-//        _ = self.createMessageForconnection(kyooeun, text: "China is a wonderland. I frequent Beijing whenever I go back to do research.", minutesAgo: 60 * 24, hasSeen: false)
-//        _ = self.createMessageForconnection(emil, text: "Quantum mechanics is my true love. You should go check it out.", minutesAgo: 25, hasSeen: false)
-//        _ = self.createMessageForconnection(kezi, text: "What are your views about time travel? Is it PHYSICALLY possible?", minutesAgo: 29, isSentByYou: true)
-//
-//        createLeoMessages()
-//        createThomasMessages()
-//        _ = self.createMessageForconnection(jenny, text: "I want to eat food now! Give me food or else!!", minutesAgo: 60 * 24 * 400)
-//        _ = self.createMessageForconnection(spandan, text: "I love computer vision! Let's hack something cool together.", minutesAgo: 60 * 24 * 10)
-//        
-//        // Set messages
-//        self.latestMessages = connectionToLatestMessage.flatMap { (_: String, v: Message) -> Message? in
-//            return v
-//        }
-//        self.latestMessages = self.latestMessages.sorted{($0.date.timeIntervalSince1970) > ($1.date.timeIntervalSince1970)}
-    }
-    
-    fileprivate func createLeoMessages() {
-        let leo = Connection(uid: "7", name: "Leonard", profileImageName: "leo-profile", discipline: "Business")
-        _ = self.createMessageForconnection(leo, text: "Hello, my name is Leonard. Nice to meet you!", minutesAgo: 200)
-        _ = self.createMessageForconnection(leo, text: "What do you do?", minutesAgo: 198)
-        _ = self.createMessageForconnection(leo, text: "Hi! My name is Yihang.", minutesAgo: 90, isSentByYou: true)
-        _ = self.createMessageForconnection(leo, text: "I'm currently pursuing a Masters in Computational Science & Engineering.", minutesAgo: 89, isSentByYou: true)
-        _ = self.createMessageForconnection(leo, text: "That's cool! Okay I'll brb and talk to you later all right?", minutesAgo: 20)
-        _ = self.createMessageForconnection(leo, text: "Data science is every where these days. Do you think you want to be involved in that?", minutesAgo: 15, isSentByYou: true)
-    }
-    
-    fileprivate func createThomasMessages() {
-        let thomas = Connection(uid: "8", name: "Thomas", profileImageName: "thomas-profile", discipline: "Electrical Engineering")
-        _ = self.createMessageForconnection(thomas, text: "Let's engage in cooking and combine it with art! That way it's a lot more engaging. Don't you think we should do it immediately? Hurray!", minutesAgo: 60 * 24 * 1.7)
-        _ = self.createMessageForconnection(thomas, text: "Hey, you haven't replied. You there?", minutesAgo: 60 * 24 * 1.6)
-        _ = self.createMessageForconnection(thomas, text: "Anyway just thought of a new twist. Let's meet for a while.", minutesAgo: 60 * 24 * 1.5)
-        
-        // Response message
-        _ = self.createMessageForconnection(thomas, text: "Okay, okay I'm finally replying now! Hi!", minutesAgo: 60 * 24 * 1.4, isSentByYou: true)
-        _ = self.createMessageForconnection(thomas, text: "Ok great. Are you free anytime soon to discuss some of my ideas? We can play ping pong too if you want.", minutesAgo: 60 * 24 * 1.3)
-        _ = self.createMessageForconnection(thomas, text: "Sure. How about 6pm tomorrow at Richard's Basement?", minutesAgo: 60 * 24 * 1.25, isSentByYou: true)
-        _ = self.createMessageForconnection(thomas, text: "Also I'm not so sure how free I am from tomorrow onwards. I'm going to be coding 428 non stop until I finally finish implementing it! This is a product that has real value for people - Imagine you having connections from multiple different disciplines! And all those disciplines are already right here at Harvard, but unfortunately with no easy way to connect them... until now!!", minutesAgo: 60 * 24 * 1.2, isSentByYou: true)
-        _ = self.createMessageForconnection(thomas, text: "OK good luck with your crazy ideas then! I hope you do well in that.", minutesAgo: 60 * 24 * 1.19)
-        _ = self.createMessageForconnection(thomas, text: "Whoever said it is the end of Moore's law is kidding!", minutesAgo: 60 * 24 * 1.1)
-    }
-
-    fileprivate func createMessageForconnection(_ connection: Connection, text: String, minutesAgo: Double, isSentByYou: Bool = false) -> Message {
-        let message = Message(mid: "\(midAutoId)", text: text, connection: connection, date: Date().addingTimeInterval(-minutesAgo * 60), isSentByYou: isSentByYou)
-        midAutoId += 1
-        connection.addMessage(message: message) // connection has all their own messages
-        let uid = connection.uid
-        if connectionToMinutesAgo[uid] == nil || connectionToMinutesAgo[uid]! > minutesAgo {
-            connectionToMinutesAgo[uid] = minutesAgo
-            connectionToLatestMessage[uid] = message
-        }
-        return message
-    }
 }

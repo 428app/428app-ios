@@ -24,7 +24,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         UINavigationBar.appearance().isTranslucent = true
         FIRApp.configure()
         FIRDatabase.database().persistenceEnabled = true
-//        DataService.ds.addConnection(uid2: "1250226885021203")
         
         
         let notificationTypes: UIUserNotificationType = [.alert, .badge, .sound]

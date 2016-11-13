@@ -67,13 +67,17 @@ class DataService {
     }
     
     // Called in LoginController to create new user or log existing user in
-    func loginFirebaseUser(name: String, birthday: String, pictureUrl: String, timezone: Double, completed: @escaping (_ isSuccess: Bool, _ isFirstTimeUser: Bool) -> ()) {
+    func loginFirebaseUser(authuid: String, name: String, birthday: String, pictureUrl: String, timezone: Double, completed: @escaping (_ isSuccess: Bool, _ isFirstTimeUser: Bool) -> ()) {
         guard let uid = getStoredUid() else {
             completed(false, true)
             return
         }
+        
+        // Update name locally
+        saveName(name: name)
+        
         let timeNow = Date().timeIntervalSince1970
-        let user: [String: Any] = ["name": name, "birthday": birthday, "profilePhoto": pictureUrl, "timezone": timezone, "lastSeen": timeNow]
+        let user: [String: Any] = ["authuid": authuid, "name": name, "birthday": birthday, "profilePhoto": pictureUrl, "timezone": timezone, "lastSeen": timeNow]
         self.REF_USERS.child(uid).observeSingleEvent(of: .value, with: { snapshot in
             if snapshot.exists() {
                 // Check if user has already filled in at least org, school and discipline, if not label first time user
@@ -150,6 +154,12 @@ class DataService {
         if tagline2 != nil {
             userFields["tagline2"] = tagline2!.lowercaseFirstLetter()
         }
+        
+        // Update discipline locally
+        if discipline != nil {
+            saveDiscipline(discipline: discipline!)
+        }
+        
         self.REF_USERS.child(uid).observeSingleEvent(of: .value, with: { snapshot in
             if snapshot.exists() {
                 self.REF_USERS.child(uid).updateChildValues(userFields, withCompletionBlock: { (error, ref) in
@@ -460,12 +470,48 @@ class DataService {
         }
     }
     
-    
-    // Test function
-    func addConnection(uid2: String) {
+    func connectWithAll() {
+        // Get all uids first
         guard let uid1 = getStoredUid() else {
             return
         }
+        REF_USERS.observeSingleEvent(of: .value, with: { snapshot in
+            let snaps = snapshot.children.allObjects as! [FIRDataSnapshot]
+            let uids = snaps.map({ (snap) -> String in
+                return snap.key
+            })
+            // Get uid1 details
+            self.REF_USERS.child(uid1).observeSingleEvent(of: .value, with: { snapshot2 in
+                let dict = snapshot2.value as! [String: Any]
+                let myDiscipline = dict["discipline"] as! String
+                let myName = dict["name"] as! String
+                let myProfilePhoto = dict["profilePhoto"] as! String
+                for uid2 in uids {
+                    // Grab their info
+                    if uid2 == uid1 { continue }
+                    self.REF_USERS.child(uid2).observeSingleEvent(of: .value, with: { snapshot3 in
+                        let otherDict = snapshot3.value as! [String: Any]
+                        let otherDiscipline = otherDict["discipline"] as! String
+                        let otherName = otherDict["name"] as! String
+                        let otherProfilePhoto = otherDict["profilePhoto"] as! String
+                        self.REF_USERS.child("\(uid1)/connections/\(uid2)").setValue(["discipline": otherDiscipline, "name": otherName, "profilePhoto": otherProfilePhoto])
+                        self.REF_USERS.child("\(uid2)/connections/\(uid1)").setValue(["discipline": myDiscipline, "name": myName, "profilePhoto": myProfilePhoto])
+                        let chatId = self.getChatId(uid1: uid1, uid2: uid2)
+                        self.REF_CHATS.child(chatId).setValue(["dateMatched": "11/10/2016", "hasNew:\(uid1)": true, "hasNew:\(uid2)": true, "lastMessage": "", "mid": "", "poster": "", "timestamp": Date().timeIntervalSince1970])
+                    
+                    })
+                    
+                    
+                    
+                }
+                
+            })
+        })
+    }
+    
+    // Test function
+    func addConnection(uid1: String, uid2: String) {
+        // Get uid1 and uid2 details
         REF_USERS.child("\(uid1)/connections/\(uid2)").setValue(["discipline": "Business", "name": "Leonard", "profilePhoto": "https://firebasestorage.googleapis.com/v0/b/app-abdf9.appspot.com/o/user%2F1250226885021203%2Fprofile_photo?alt=media&token=c684e1d1-2f6d-48ee-8905-77c90f67cc31"])
         REF_USERS.child("\(uid2)/connections/\(uid1)").setValue(["discipline": "East Asian Studies", "name": "Test", "profilePhoto": "https://firebasestorage.googleapis.com/v0/b/app-abdf9.appspot.com/o/user%2F1250226885021203%2Fprofile_photo?alt=media&token=c684e1d1-2f6d-48ee-8905-77c90f67cc31"])
         
