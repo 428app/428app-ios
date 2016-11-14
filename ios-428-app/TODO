@@ -4,19 +4,10 @@
 BUGS
 !EDIT PROFILE PHOTO UPLOAD!
 
-- Only allow copy of whole ChatCell: Wait for reply on stack overflow
-- Profile scroll down to keep
-
-
 - Test with many connections
 - Test the no connection case (timer working)
 
-
-Minor
-- Settings: Unselect cell upon cancel
-
-Major
-- Set security/index rules to speed up chat updates
+- Only allow copy of whole ChatCell: Wait for reply on stack overflow
 
 
 !TOPICS!
@@ -30,13 +21,9 @@ Major
 - addTopicMessage(msg, uid, name, discipline, timestamp)
 
 
-
-
-
-
-
 !SETTINGS!
 - Settings table
+- Settings: Unselect cell upon cancel
 - Mute, etc.
 
 
@@ -47,20 +34,10 @@ Major
 !TEST, TEST, TEST!
 
 
-
-!OPTIMIZATION!
-- Store Firebase data in code so we don't have to keep hitting the Firebase server
-
-
-
-
-
-
-
 ==== FRONTEND ====
-TO NOTE:
-- For login, set default cover photo and fb photo as profile pic, also pull name and age from FB
-- Empty placeholder for no messages in DiscussController and ChatController (done after server)
-- Read in location while reading FB info
+USER COMMENTS:
+- Organization for students?
+- I want to eventually sounds kinda weird
+
 
 

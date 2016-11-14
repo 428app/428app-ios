@@ -21,6 +21,9 @@ class ConnectionsController: UICollectionViewController, UICollectionViewDelegat
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        self.loadFromFirebase()
+        
         self.extendedLayoutIncludesOpaqueBars = true
         self.setupViews()
         navigationItem.title = "Connections"
@@ -29,17 +32,22 @@ class ConnectionsController: UICollectionViewController, UICollectionViewDelegat
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        self.loadFromFirebase()
+        
         tabBarController?.tabBar.isHidden = false
     }
     
-    override func viewWillDisappear(_ animated: Bool) {
-        super.viewWillDisappear(animated)
+    deinit {
         for (ref, handle) in recentMessageRefsAndHandles {
             ref.removeObserver(withHandle: handle)
         }
         connectionsRefAndHandle.0.removeObserver(withHandle: connectionsRefAndHandle.1)
         self.countdownTimer.invalidate()
+    }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+
+        
     }
     
     // MARK: Firebase

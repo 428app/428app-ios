@@ -755,6 +755,7 @@ class ChatController: UIViewController, UICollectionViewDelegateFlowLayout, UITe
         self.collectionView.dataSource = self
         self.collectionView.bounces = true
         self.collectionView.alwaysBounceVertical = true
+        self.collectionView.scrollsToTop = false
         self.TOP_GAP = self.navigationController!.navigationBar.frame.height + 0.7*SECTION_HEADER_HEIGHT
         let layout = UICollectionViewFlowLayout()
         layout.headerReferenceSize = CGSize(width: UIScreen.main.bounds.width, height: SECTION_HEADER_HEIGHT)

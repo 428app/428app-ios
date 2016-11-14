@@ -53,6 +53,8 @@ class ProfileController: UIViewController, UITableViewDelegate, UITableViewDataS
         self.profileCellContent = [self.profile.org, self.profile.school, self.profile.discipline]
         self.tableView.reloadData()
         // Download images
+        log.info("Cover image name: \(self.profile.coverImageName)")
+        
         if !profile.coverImageName.isEmpty {
             _ = downloadImage(imageUrlString: profile.coverImageName, completed: { (coverImage) in
                 self.coverImageView.image = coverImage
@@ -243,8 +245,6 @@ class ProfileController: UIViewController, UITableViewDelegate, UITableViewDataS
         view.addConstraintsWithFormat("H:|-10-[v0(40)]", views: closeButton)
         view.addConstraintsWithFormat("V:|-20-[v0(40)]", views: closeButton)
         closeButton.addTarget(self, action: #selector(closeProfile), for: .touchUpInside)
-        
-
         
         // Add to subviews
         containerView.addSubview(coverImageView)

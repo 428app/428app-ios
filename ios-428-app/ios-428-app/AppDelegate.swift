@@ -11,9 +11,10 @@ import Firebase
 import FBSDKCoreKit
 import FBSDKLoginKit
 import FirebaseMessaging
+import UserNotifications
 
 @UIApplicationMain
-class AppDelegate: UIResponder, UIApplicationDelegate {
+class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterDelegate {
 
     var window: UIWindow?
 
@@ -24,16 +25,23 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         UINavigationBar.appearance().isTranslucent = true
         FIRApp.configure()
         FIRDatabase.database().persistenceEnabled = true
-        
-        
-        let notificationTypes: UIUserNotificationType = [.alert, .badge, .sound]
-        let notificationSettings = UIUserNotificationSettings(types: notificationTypes, categories: nil)
-        application.registerForRemoteNotifications()
-        application.registerUserNotificationSettings(notificationSettings)
-        
-        
+
+        setupRemoteNotifications(application: application)
+
         return FBSDKApplicationDelegate.sharedInstance()
             .application(application, didFinishLaunchingWithOptions: launchOptions)
+    }
+    
+    fileprivate func setupRemoteNotifications(application: UIApplication) {
+        let center = UNUserNotificationCenter.current()
+        center.requestAuthorization(options:[.badge, .alert, .sound]) { (granted, error) in
+            // Enable or disable features based on authorization.
+            if granted {
+                // TODO: Update server with this refreshed token
+                log.info("Refreshed token: \(FIRInstanceID.instanceID().token())")
+            }
+        }
+        application.registerForRemoteNotifications()
     }
 
     func applicationWillResignActive(_ application: UIApplication) {
@@ -70,13 +78,19 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         return FBSDKApplicationDelegate.sharedInstance().application(application, open: url, sourceApplication: sourceApplication, annotation: annotation)
     }
     
+    // MARK: Remote notifications
+    
     func application(_ application: UIApplication, didReceiveRemoteNotification userInfo: [AnyHashable : Any]) {
-        log.info("MessageID: \(userInfo["gcm_message_id"]!)")
         log.info(userInfo)
     }
     
     func application(_ application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data) {
-        log.info("Hey")
-//        log.info(deviceToken.)
+        let deviceTokenString = deviceToken.reduce("", {$0 + String(format: "%02X", $1)})
+        log.info("Old Device token here")
     }
+    
+    func application(_ application: UIApplication, didFailToRegisterForRemoteNotificationsWithError error: Error) {
+        log.error("[Error] Fail to register for remote notifications with error: \(error)")
+    }
+
 }
