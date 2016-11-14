@@ -4,7 +4,7 @@
 BUGS
 !EDIT PROFILE PHOTO UPLOAD!
 
-- Only allow copy of whole ChatCell
+- Only allow copy of whole ChatCell: Wait for reply on stack overflow
 - Profile scroll down to keep
 
 

@@ -44,8 +44,6 @@ class ProfileController: UIViewController, UITableViewDelegate, UITableViewDataS
     fileprivate func downloadProfile() {
         DataService.ds.getUserFields(uid: connection.uid) { (isSuccess, downloadedProfile) in
             if isSuccess && downloadedProfile != nil {
-                log.info("profile downloaded")
-                NotificationCenter.default.post(name: NOTIF_USERPROFILEDOWNLOADED, object: nil, userInfo: ["profile": downloadedProfile])
                 self.profile = downloadedProfile
             }
         }
@@ -57,7 +55,7 @@ class ProfileController: UIViewController, UITableViewDelegate, UITableViewDataS
         // Download images
         if !profile.coverImageName.isEmpty {
             _ = downloadImage(imageUrlString: profile.coverImageName, completed: { (coverImage) in
-                self.profileBgImageView.image = coverImage
+                self.coverImageView.image = coverImage
             })
         }
         _ = downloadImage(imageUrlString: profile.profileImageName, completed: { (profileImage) in
@@ -106,12 +104,15 @@ class ProfileController: UIViewController, UITableViewDelegate, UITableViewDataS
         return tap
     }()
     
-    fileprivate lazy var profileBgImageView: UIImageView = {
+    fileprivate lazy var coverImageView: UIImageView = {
         let imageView = UIImageView()
         imageView.contentMode = .scaleAspectFill
         imageView.autoresizesSubviews = true
         imageView.clipsToBounds = true
         imageView.image = UIImage(color: GRAY_UICOLOR)
+        imageView.isUserInteractionEnabled = true
+        let pan = UIPanGestureRecognizer(target: self, action: #selector(coverImageDrag(sender:)))
+        imageView.addGestureRecognizer(pan)
         return imageView
     }()
     
@@ -226,7 +227,7 @@ class ProfileController: UIViewController, UITableViewDelegate, UITableViewDataS
             scrollView.setContentOffset(CGPoint(x: scrollView.contentOffset.x, y: 0), animated: false)
         }
     }
-
+    
     fileprivate func setupViews() {
         // Set up scroll view, and close button on top of scroll view
         let views = setupScrollView()
@@ -238,15 +239,15 @@ class ProfileController: UIViewController, UITableViewDelegate, UITableViewDataS
         view.addSubview(closeButtonBg)
         view.addSubview(closeButton)
         view.addConstraintsWithFormat("H:|-15-[v0(30)]", views: closeButtonBg)
-        view.addConstraintsWithFormat("V:|-15-[v0(30)]", views: closeButtonBg)
+        view.addConstraintsWithFormat("V:|-25-[v0(30)]", views: closeButtonBg)
         view.addConstraintsWithFormat("H:|-10-[v0(40)]", views: closeButton)
-        view.addConstraintsWithFormat("V:|-9-[v0(40)]", views: closeButton)
+        view.addConstraintsWithFormat("V:|-20-[v0(40)]", views: closeButton)
         closeButton.addTarget(self, action: #selector(closeProfile), for: .touchUpInside)
         
 
         
         // Add to subviews
-        containerView.addSubview(profileBgImageView)
+        containerView.addSubview(coverImageView)
         containerView.addSubview(profileImageView)
         
         // Centered discipline icon and name label
@@ -269,8 +270,8 @@ class ProfileController: UIViewController, UITableViewDelegate, UITableViewDataS
         
         // Define constraints
         
-        containerView.addConstraintsWithFormat("H:|[v0]|", views: profileBgImageView)
-        containerView.addConstraintsWithFormat("V:|[v0(250)]", views: profileBgImageView)
+        containerView.addConstraintsWithFormat("H:|[v0]|", views: coverImageView)
+        containerView.addConstraintsWithFormat("V:|[v0(250)]", views: coverImageView)
         
         
         containerView.addConstraintsWithFormat("H:[v0(150)]", views: profileImageView)
@@ -304,8 +305,48 @@ class ProfileController: UIViewController, UITableViewDelegate, UITableViewDataS
         
     }
     
+    // MARK: Close profile
+    
     func closeProfile(button: UIButton) {
         self.dismiss(animated: true, completion: nil)
+    }
+    
+    // Interactor to dismiss modal by dragging cover photo down
+    var interactor: Interactor? = nil
+    func coverImageDrag(sender: UIPanGestureRecognizer) {
+        let percentThreshold: CGFloat = 0.3
+        let translation = sender.translation(in: view)
+        let verticalMovement = translation.y / view.bounds.height
+        let downwardMovement = fmaxf(Float(verticalMovement), 0.0)
+        let downwardMovementPercent = fminf(downwardMovement, 1.0)
+        let progress = CGFloat(downwardMovementPercent)
+        self.view.transform = CGAffineTransform(translationX: 0.0, y: progress * UIScreen.main.bounds.height)
+        guard let interactor = interactor else { return }
+        
+        switch sender.state {
+        case .began:
+            interactor.hasStarted = true
+        case .changed:
+            interactor.shouldFinish = progress > percentThreshold
+            interactor.update(progress)
+        case .cancelled:
+            interactor.hasStarted = false
+            interactor.cancel()
+        case .ended:
+            if progress > percentThreshold {
+                dismiss(animated: true, completion: nil)
+            } else {
+                UIView.animate(withDuration: 0.2, animations: {
+                    self.view.transform = CGAffineTransform(translationX: 0.0, y: 0.0)
+                })
+            }
+            interactor.hasStarted = false
+            interactor.shouldFinish
+                ? interactor.finish()
+                : interactor.cancel()
+        default:
+            break
+        }
     }
     
     // MARK: Table view

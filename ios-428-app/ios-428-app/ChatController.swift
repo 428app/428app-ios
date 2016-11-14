@@ -42,6 +42,7 @@ class ChatController: UIViewController, UICollectionViewDelegateFlowLayout, UITe
     fileprivate var topConstraintForCollectionView: NSLayoutConstraint!
     fileprivate var keyboardHeight: CGFloat = 216.0 // Default of 216.0, but reset the first time keyboard pops up
     
+    let interactor = Interactor() // Used for transitioning to and from ProfileController
     var connection: Connection!
     
     override func viewDidLoad() {
@@ -364,12 +365,6 @@ class ChatController: UIViewController, UICollectionViewDelegateFlowLayout, UITe
         self.initMessages()
     }
     
-    func setProfile(notif: Notification) {
-        if let userInfo = notif.userInfo as? [String: Any], let profile_ = userInfo["profile"] as? Profile {
-            self.profile = profile_
-        }
-    }
-    
     // MARK: Process messages into buckets based on hourly time intervals
     
     fileprivate func organizeMessages() {
@@ -460,12 +455,18 @@ class ChatController: UIViewController, UICollectionViewDelegateFlowLayout, UITe
     func openProfile() {
         let controller = ProfileController()
         controller.connection = connection
+
+        controller.transitioningDelegate = self
+        
+        controller.interactor = interactor
+        
         if profile != nil {
             controller.profile = profile
         }
         controller.modalTransitionStyle = .coverVertical
-        self.navigationController?.navigationBar.isHidden = true
-        self.collectionView.isHidden = true
+        controller.modalPresentationStyle = .overFullScreen
+//        self.navigationController?.navigationBar.isHidden = true
+//        self.collectionView.isHidden = true
         self.present(controller, animated: true, completion: nil)
     }
     
@@ -677,7 +678,6 @@ class ChatController: UIViewController, UICollectionViewDelegateFlowLayout, UITe
     // MARK: Keyboard
     
     fileprivate func registerObservers() {
-        NotificationCenter.default.addObserver(self, selector: #selector(setProfile), name: NOTIF_USERPROFILEDOWNLOADED, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(handleKeyboardNotification), name: NSNotification.Name.UIKeyboardWillHide, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(handleKeyboardNotification), name: NSNotification.Name.UIKeyboardWillChangeFrame, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(expandCell), name: NOTIF_EXPANDCHATCELL, object: nil)
@@ -687,7 +687,6 @@ class ChatController: UIViewController, UICollectionViewDelegateFlowLayout, UITe
         NotificationCenter.default.removeObserver(self, name: NSNotification.Name.UIKeyboardWillHide, object: nil)
         NotificationCenter.default.removeObserver(self, name: NSNotification.Name.UIKeyboardWillChangeFrame, object: nil)
         NotificationCenter.default.removeObserver(self, name: NOTIF_EXPANDCHATCELL, object: nil)
-        NotificationCenter.default.removeObserver(self, name: NOTIF_USERPROFILEDOWNLOADED, object: nil)
     }
     
     fileprivate func bottomOfCollectionView() -> CGFloat {
