@@ -13,7 +13,7 @@ class ConnectionsController: UICollectionViewController, UICollectionViewDelegat
     
     fileprivate let CELL_ID = "connectionCell"
     
-    open var latestMessages: [Message] = [Message]() // Non-private so DataService can access
+    open var latestMessages: [ConnectionMessage] = [ConnectionMessage]() // Non-private so DataService can access
     
     fileprivate var connectionsRefAndHandle: (FIRDatabaseReference, FIRDatabaseHandle)!
     fileprivate var recentMessageRefsAndHandles: [(FIRDatabaseReference, FIRDatabaseHandle)] = []

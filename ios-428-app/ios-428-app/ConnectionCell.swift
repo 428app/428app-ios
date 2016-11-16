@@ -16,7 +16,7 @@ class ConnectionCell: BaseCollectionCell {
     // NOTE: If message has an empty text, it means this is a new connection because we disallow empty 
     // messages from being sent to the server
     
-    fileprivate var message: Message! {
+    fileprivate var message: ConnectionMessage! {
         didSet {
             self.isNewConnection = self.message.text.isEmpty
         }
@@ -177,7 +177,7 @@ class ConnectionCell: BaseCollectionCell {
         })
     }
     
-    func configureCell(messageObj: Message) {
+    func configureCell(messageObj: ConnectionMessage) {
         self.message = messageObj
         self.loadImage()
         

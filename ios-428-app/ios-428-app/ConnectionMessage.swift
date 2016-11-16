@@ -1,5 +1,5 @@
 //
-//  Message.swift
+//  ConnectionMessage.swift
 //  ios-428-app
 //
 //  Created by Leonard Loo on 10/15/16.
@@ -8,7 +8,7 @@
 
 import Foundation
 
-class Message {
+class ConnectionMessage {
 
     fileprivate var _mid: String
     fileprivate var _text: String

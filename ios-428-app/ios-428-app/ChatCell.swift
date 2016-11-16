@@ -54,7 +54,7 @@ class CustomTextView: UITextView {
 
 class ChatCell: BaseCollectionCell, UITextViewDelegate {
     
-    fileprivate var message: Message!
+    fileprivate var message: ConnectionMessage!
     open var shouldExpand = false
     fileprivate let TEXT_VIEW_FONT = UIFont.systemFont(ofSize: 16.0)
     open var request: Request?
@@ -134,7 +134,7 @@ class ChatCell: BaseCollectionCell, UITextViewDelegate {
         self.profileImageView.image = image
     }
     
-    func configureCell(messageObj: Message, viewWidth: CGFloat, isLastInChain: Bool) {
+    func configureCell(messageObj: ConnectionMessage, viewWidth: CGFloat, isLastInChain: Bool) {
         self.message = messageObj
         let messageText = self.message.text
         self.messageTextView.isScrollEnabled = true
@@ -148,32 +148,45 @@ class ChatCell: BaseCollectionCell, UITextViewDelegate {
         let size = CGSize(width: 250, height: 1000)
         let options = NSStringDrawingOptions.usesFontLeading.union(.usesLineFragmentOrigin)
         let estimatedFrame = NSString(string: messageText).boundingRect(with: size, options: options, attributes: [NSFontAttributeName: TEXT_VIEW_FONT], context: nil)
+        
+        // Bunch of math going here: No need to tune these numbers, they look fine on all screens
+        
         if !self.message.isSentByYou {
-            self.messageTextView.frame = CGRect(x: 45 + 8, y: 0, width: estimatedFrame.width + 14, height: estimatedFrame.height + 16)
+            
+            // Message on right side 
+            
             self.profileImageView.isHidden = false
             self.messageTextView.textColor = UIColor.black
             
             if isLastInChain {
-                self.textBubbleView.frame = CGRect(x: 45 - 8, y: 0, width: estimatedFrame.width + 20 + 8 + 8, height: estimatedFrame.height + 16 + 3)
+                // Apply tail
+                self.messageTextView.frame = CGRect(x: 45 + 8, y: 3, width: estimatedFrame.width + 14, height: estimatedFrame.height + 16)
+                self.textBubbleView.frame = CGRect(x: 45 - 8, y: 0, width: estimatedFrame.width + 20 + 8 + 8, height: estimatedFrame.height + 16 + 8)
                 self.bubbleImageView.backgroundColor = UIColor.clear
                 self.bubbleImageView.image = BUBBLE_RECIPIENT_IMAGE
                 self.bubbleImageView.tintColor = UIColor(white: 0.95, alpha: 1)
             } else {
+                self.messageTextView.frame = CGRect(x: 45 + 8, y: 0, width: estimatedFrame.width + 14, height: estimatedFrame.height + 16)
                 self.bubbleImageView.image = nil
                 self.textBubbleView.frame = CGRect(x: 45, y: 2, width: estimatedFrame.width + 20 + 8, height: estimatedFrame.height + 16)
                 self.bubbleImageView.backgroundColor = UIColor(white: 0.95, alpha: 1)
             }
         } else {
-            self.messageTextView.frame = CGRect(x: viewWidth - estimatedFrame.width - 16 - 16 - 8, y: 0, width: estimatedFrame.width + 16, height: estimatedFrame.height + 16)
+            
+            // Message on left side
+            
             self.profileImageView.isHidden = true
             self.messageTextView.textColor = UIColor.white
             
             if isLastInChain {
+                // Apply tail
+                self.messageTextView.frame = CGRect(x: viewWidth - estimatedFrame.width - 16 - 16 - 8, y: 3, width: estimatedFrame.width + 16, height: estimatedFrame.height + 16)
                 self.bubbleImageView.backgroundColor = UIColor.clear
-                self.textBubbleView.frame = CGRect(x: viewWidth - estimatedFrame.width - 16 - 8 - 16 - 8, y: -1, width: estimatedFrame.width + 20 + 8 + 8, height: estimatedFrame.height + 16 + 4)
+                self.textBubbleView.frame = CGRect(x: viewWidth - estimatedFrame.width - 16 - 8 - 16 - 8, y: -1, width: estimatedFrame.width + 20 + 8 + 8, height: estimatedFrame.height + 16 + 8)
                 self.bubbleImageView.image = BUBBLE_ME_IMAGE
                 self.bubbleImageView.tintColor = GREEN_UICOLOR
             } else {
+                self.messageTextView.frame = CGRect(x: viewWidth - estimatedFrame.width - 16 - 16 - 8, y: 0, width: estimatedFrame.width + 16, height: estimatedFrame.height + 16)
                 self.bubbleImageView.image = nil
                 self.textBubbleView.frame = CGRect(x: viewWidth - estimatedFrame.width - 16 - 8 - 16 - 8, y: 0, width: estimatedFrame.width + 20 + 8, height: estimatedFrame.height + 16)
                 self.bubbleImageView.backgroundColor = GREEN_UICOLOR

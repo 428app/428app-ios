@@ -27,8 +27,8 @@ class ChatController: UIViewController, UICollectionViewDelegateFlowLayout, UITe
     fileprivate let SECTION_HEADER_HEIGHT: CGFloat = 30.0
     
     /** DATA **/
-    fileprivate var messages: [Message] = [Message]() // All messages
-    fileprivate var messagesInTimeBuckets: [[Message]] = [[Message]]() // Messages separated into buckets of time (at least 1 hour apart)
+    fileprivate var messages: [ConnectionMessage] = [ConnectionMessage]() // All messages
+    fileprivate var messagesInTimeBuckets: [[ConnectionMessage]] = [[ConnectionMessage]]() // Messages separated into buckets of time (at least 1 hour apart)
     fileprivate var messageIsLastInChain: [[Bool]] = [[Bool]]() // If true, that means message is the last message sent in chain of messages by one user, so bubble will be attached
     fileprivate var timeBucketHeaders: [Date] = [Date]() // Headers of time buckets, must have same length as messagesInTimeBuckets
 
@@ -378,10 +378,10 @@ class ChatController: UIViewController, UICollectionViewDelegateFlowLayout, UITe
         }
         // Sort messages such that earliest messages come first
         self.messages = self.messages.sorted{($0.date.timeIntervalSince1970) < ($1.date.timeIntervalSince1970)}
-        self.messagesInTimeBuckets = [[Message]]()
+        self.messagesInTimeBuckets = [[ConnectionMessage]]()
         self.timeBucketHeaders = [Date]()
         var currentBucketTime: Date? = nil
-        var currentBucketMessages: [Message] = [Message]()
+        var currentBucketMessages: [ConnectionMessage] = [ConnectionMessage]()
         
         for i in 0...self.messages.count - 1 {
             let message = self.messages[i]
@@ -413,7 +413,7 @@ class ChatController: UIViewController, UICollectionViewDelegateFlowLayout, UITe
         }
         self.messageIsLastInChain = [[Bool]]()
         for i in 0...self.messagesInTimeBuckets.count - 1 {
-            let section: [Message] = self.messagesInTimeBuckets[i]
+            let section: [ConnectionMessage] = self.messagesInTimeBuckets[i]
             var chains = [Bool]()
             if section.count == 0 {
                 log.error("[Error] No messages in bucket")
@@ -422,8 +422,8 @@ class ChatController: UIViewController, UICollectionViewDelegateFlowLayout, UITe
             }
             if section.count >= 2 {
                 for j in 0...section.count - 2 {
-                    let m0: Message = section[j]
-                    let m1: Message = section[j+1]
+                    let m0: ConnectionMessage = section[j]
+                    let m1: ConnectionMessage = section[j+1]
                     // Last in chain if next one is different from current
                     chains.append(!((m0.isSentByYou && m1.isSentByYou) || (!m0.isSentByYou && !m1.isSentByYou)))
                 }

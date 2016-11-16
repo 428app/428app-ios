@@ -57,7 +57,7 @@
 		4064A21F1DAD72DF00071383 /* Functions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4064A21E1DAD72DF00071383 /* Functions.swift */; };
 		4064A2211DADE67E00071383 /* ChatHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4064A2201DADE67E00071383 /* ChatHeaderView.swift */; };
 		4064A2271DB13FBD00071383 /* Debug.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4064A2261DB13FBD00071383 /* Debug.swift */; };
-		4064A2291DB2B0B500071383 /* Message.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4064A2281DB2B0B500071383 /* Message.swift */; };
+		4064A2291DB2B0B500071383 /* ConnectionMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4064A2281DB2B0B500071383 /* ConnectionMessage.swift */; };
 		4064A22B1DB2B27F00071383 /* Connection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4064A22A1DB2B27F00071383 /* Connection.swift */; };
 		4064A2521DB346A800071383 /* Profile.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4064A2511DB346A800071383 /* Profile.swift */; };
 		4064A2541DB34E4D00071383 /* ProfileController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4064A2531DB34E4D00071383 /* ProfileController.swift */; };
@@ -133,7 +133,7 @@
 		4064A21E1DAD72DF00071383 /* Functions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Functions.swift; sourceTree = "<group>"; };
 		4064A2201DADE67E00071383 /* ChatHeaderView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChatHeaderView.swift; sourceTree = "<group>"; };
 		4064A2261DB13FBD00071383 /* Debug.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Debug.swift; sourceTree = "<group>"; };
-		4064A2281DB2B0B500071383 /* Message.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Message.swift; sourceTree = "<group>"; };
+		4064A2281DB2B0B500071383 /* ConnectionMessage.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConnectionMessage.swift; sourceTree = "<group>"; };
 		4064A22A1DB2B27F00071383 /* Connection.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Connection.swift; sourceTree = "<group>"; };
 		4064A2511DB346A800071383 /* Profile.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Profile.swift; sourceTree = "<group>"; };
 		4064A2531DB34E4D00071383 /* ProfileController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProfileController.swift; sourceTree = "<group>"; };
@@ -277,7 +277,7 @@
 		4064A2101DACBB1800071383 /* Model */ = {
 			isa = PBXGroup;
 			children = (
-				4064A2281DB2B0B500071383 /* Message.swift */,
+				4064A2281DB2B0B500071383 /* ConnectionMessage.swift */,
 				4064A22A1DB2B27F00071383 /* Connection.swift */,
 				4064A2511DB346A800071383 /* Profile.swift */,
 				40AB7FFD1DB5B89C00492788 /* Setting.swift */,
@@ -550,7 +550,7 @@
 				4064A1B61DAC381300071383 /* AppDelegate.swift in Sources */,
 				4064A1CB1DAC495D00071383 /* DummyDataService.swift in Sources */,
 				404C22FA1DBDB86D0054FE19 /* UserDefaults.swift in Sources */,
-				4064A2291DB2B0B500071383 /* Message.swift in Sources */,
+				4064A2291DB2B0B500071383 /* ConnectionMessage.swift in Sources */,
 				4024F22B1DB85C0E007819F7 /* PaddingLabel.swift in Sources */,
 				40AB7FFC1DB5B09700492788 /* BaseTableViewCell.swift in Sources */,
 				40E2E1401DD26B8200469B4D /* Discipline.swift in Sources */,
@@ -686,7 +686,7 @@
 					"$(PROJECT_DIR)",
 				);
 				INFOPLIST_FILE = "ios-428-app/Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "com.428app.ios-428-app";
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -706,7 +706,7 @@
 					"$(PROJECT_DIR)",
 				);
 				INFOPLIST_FILE = "ios-428-app/Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "com.428app.ios-428-app";
 				PRODUCT_NAME = "$(TARGET_NAME)";

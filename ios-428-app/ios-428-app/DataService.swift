@@ -362,7 +362,7 @@ class DataService {
             let isSentByYou: Bool = poster == uid
             
             connection.hasNewMessages = hasNewMessages
-            let msg = Message(mid: mid, text: text, connection: connection, date: date, isSentByYou: isSentByYou)
+            let msg = ConnectionMessage(mid: mid, text: text, connection: connection, date: date, isSentByYou: isSentByYou)
             
             connection.clearMessages()
             connection.addMessage(message: msg)
@@ -386,7 +386,7 @@ class DataService {
                 let mid: String = snap.key
                 let isSentByYou: Bool = poster == uid
                 let date = Date(timeIntervalSince1970: timestamp)
-                let msg = Message(mid: mid, text: text, connection: connection, date: date, isSentByYou: isSentByYou)
+                let msg = ConnectionMessage(mid: mid, text: text, connection: connection, date: date, isSentByYou: isSentByYou)
                 connection.addMessage(message: msg)
             }
         }
@@ -451,7 +451,7 @@ class DataService {
                 completed(false, nil)
                 return
             }
-            let msg = Message(mid: mid, text: text, connection: connection, date: Date(timeIntervalSince1970: timestamp), isSentByYou: true)
+            let msg = ConnectionMessage(mid: mid, text: text, connection: connection, date: Date(timeIntervalSince1970: timestamp), isSentByYou: true)
             connection.addMessage(message: msg)
             completed(true, connection)
         }
