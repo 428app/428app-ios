@@ -71,6 +71,15 @@
 		40AB80031DB6FAA200492788 /* PictureModalController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 40AB80021DB6FAA200492788 /* PictureModalController.swift */; };
 		40AB80051DB7094700492788 /* EditProfessionalController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 40AB80041DB7094700492788 /* EditProfessionalController.swift */; };
 		40AB80071DB7095200492788 /* EditTaglineController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 40AB80061DB7095200492788 /* EditTaglineController.swift */; };
+		40ADEED91DDD12D000CE529A /* Config.swift in Sources */ = {isa = PBXBuildFile; fileRef = 40ADEECF1DDD12D000CE529A /* Config.swift */; };
+		40ADEEDA1DDD12D000CE529A /* ColorList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 40ADEED11DDD12D000CE529A /* ColorList.swift */; };
+		40ADEEDB1DDD12D000CE529A /* FontList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 40ADEED21DDD12D000CE529A /* FontList.swift */; };
+		40ADEEDC1DDD12D000CE529A /* Message.swift in Sources */ = {isa = PBXBuildFile; fileRef = 40ADEED31DDD12D000CE529A /* Message.swift */; };
+		40ADEEDD1DDD12D000CE529A /* ShoutFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 40ADEED41DDD12D000CE529A /* ShoutFactory.swift */; };
+		40ADEEDE1DDD12D000CE529A /* Showing.swift in Sources */ = {isa = PBXBuildFile; fileRef = 40ADEED51DDD12D000CE529A /* Showing.swift */; };
+		40ADEEDF1DDD12D000CE529A /* WhisperFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 40ADEED61DDD12D000CE529A /* WhisperFactory.swift */; };
+		40ADEEE01DDD12D000CE529A /* WhisperView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 40ADEED71DDD12D000CE529A /* WhisperView.swift */; };
+		40ADEEE11DDD12D000CE529A /* WhistleFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 40ADEED81DDD12D000CE529A /* WhistleFactory.swift */; };
 		40E2E1401DD26B8200469B4D /* Discipline.swift in Sources */ = {isa = PBXBuildFile; fileRef = 40E2E13F1DD26B8200469B4D /* Discipline.swift */; };
 		40E2E1421DD3788300469B4D /* CustomActivityIndicatorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 40E2E1411DD3788300469B4D /* CustomActivityIndicatorView.swift */; };
 		FED3D2F8E9831031BBFFDBEB /* Pods_ios_428_app.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1B0A78A64649B55915C0C572 /* Pods_ios_428_app.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
@@ -147,6 +156,15 @@
 		40AB80021DB6FAA200492788 /* PictureModalController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PictureModalController.swift; sourceTree = "<group>"; };
 		40AB80041DB7094700492788 /* EditProfessionalController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EditProfessionalController.swift; sourceTree = "<group>"; };
 		40AB80061DB7095200492788 /* EditTaglineController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EditTaglineController.swift; sourceTree = "<group>"; };
+		40ADEECF1DDD12D000CE529A /* Config.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Config.swift; sourceTree = "<group>"; };
+		40ADEED11DDD12D000CE529A /* ColorList.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ColorList.swift; sourceTree = "<group>"; };
+		40ADEED21DDD12D000CE529A /* FontList.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FontList.swift; sourceTree = "<group>"; };
+		40ADEED31DDD12D000CE529A /* Message.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Message.swift; sourceTree = "<group>"; };
+		40ADEED41DDD12D000CE529A /* ShoutFactory.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ShoutFactory.swift; sourceTree = "<group>"; };
+		40ADEED51DDD12D000CE529A /* Showing.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Showing.swift; sourceTree = "<group>"; };
+		40ADEED61DDD12D000CE529A /* WhisperFactory.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WhisperFactory.swift; sourceTree = "<group>"; };
+		40ADEED71DDD12D000CE529A /* WhisperView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WhisperView.swift; sourceTree = "<group>"; };
+		40ADEED81DDD12D000CE529A /* WhistleFactory.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WhistleFactory.swift; sourceTree = "<group>"; };
 		40E2E13F1DD26B8200469B4D /* Discipline.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Discipline.swift; sourceTree = "<group>"; };
 		40E2E1411DD3788300469B4D /* CustomActivityIndicatorView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CustomActivityIndicatorView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -180,6 +198,7 @@
 		404C22F71DBDB8580054FE19 /* Frontend */ = {
 			isa = PBXGroup;
 			children = (
+				40ADEECE1DDD12D000CE529A /* Whisper */,
 				40E2E13F1DD26B8200469B4D /* Discipline.swift */,
 				4020CE141DBB569000461181 /* Switches.swift */,
 				4064A1EA1DAC80F100071383 /* Constants.swift */,
@@ -342,6 +361,30 @@
 				40AB80061DB7095200492788 /* EditTaglineController.swift */,
 			);
 			name = EditProfile;
+			sourceTree = "<group>";
+		};
+		40ADEECE1DDD12D000CE529A /* Whisper */ = {
+			isa = PBXGroup;
+			children = (
+				40ADEECF1DDD12D000CE529A /* Config.swift */,
+				40ADEED01DDD12D000CE529A /* Configuration */,
+				40ADEED31DDD12D000CE529A /* Message.swift */,
+				40ADEED41DDD12D000CE529A /* ShoutFactory.swift */,
+				40ADEED51DDD12D000CE529A /* Showing.swift */,
+				40ADEED61DDD12D000CE529A /* WhisperFactory.swift */,
+				40ADEED71DDD12D000CE529A /* WhisperView.swift */,
+				40ADEED81DDD12D000CE529A /* WhistleFactory.swift */,
+			);
+			path = Whisper;
+			sourceTree = "<group>";
+		};
+		40ADEED01DDD12D000CE529A /* Configuration */ = {
+			isa = PBXGroup;
+			children = (
+				40ADEED11DDD12D000CE529A /* ColorList.swift */,
+				40ADEED21DDD12D000CE529A /* FontList.swift */,
+			);
+			path = Configuration;
 			sourceTree = "<group>";
 		};
 		544111236D68C499E17F0C04 /* Pods */ = {
@@ -518,13 +561,16 @@
 				4064A2051DAC868E00071383 /* CustomNavigationController.swift in Sources */,
 				4024F2351DBB2155007819F7 /* IntroController.swift in Sources */,
 				4024F2231DB7F664007819F7 /* Topic.swift in Sources */,
+				40ADEEDB1DDD12D000CE529A /* FontList.swift in Sources */,
 				40E2E1421DD3788300469B4D /* CustomActivityIndicatorView.swift in Sources */,
 				4031FB9A1DC04B490066E6B6 /* MyProfile.swift in Sources */,
+				40ADEEDC1DDD12D000CE529A /* Message.swift in Sources */,
 				4064A1E41DAC590900071383 /* ChatController.swift in Sources */,
 				4064A2541DB34E4D00071383 /* ProfileController.swift in Sources */,
 				4020CE151DBB569000461181 /* Switches.swift in Sources */,
 				4000C37A1DD81227009C10E5 /* Download.swift in Sources */,
 				40AB7FF81DB59C9600492788 /* SettingsController.swift in Sources */,
+				40ADEEE01DDD12D000CE529A /* WhisperView.swift in Sources */,
 				40AB7FFA1DB5B06A00492788 /* SettingCell.swift in Sources */,
 				4064A1EB1DAC80F100071383 /* Constants.swift in Sources */,
 				4064A2141DACBCAA00071383 /* BaseCollectionCell.swift in Sources */,
@@ -535,6 +581,7 @@
 				4064A1E61DAC7DA600071383 /* CustomTabBarController.swift in Sources */,
 				4064A2521DB346A800071383 /* Profile.swift in Sources */,
 				4064A2561DB3E5E800071383 /* ProfileCell.swift in Sources */,
+				40ADEEDA1DDD12D000CE529A /* ColorList.swift in Sources */,
 				4024F2251DB7F83F007819F7 /* TopicMessage.swift in Sources */,
 				40AB80071DB7095200492788 /* EditTaglineController.swift in Sources */,
 				4064A2271DB13FBD00071383 /* Debug.swift in Sources */,
@@ -542,13 +589,18 @@
 				40AB7FFE1DB5B89C00492788 /* Setting.swift in Sources */,
 				409F05F21DD81E1D001B673F /* Upload.swift in Sources */,
 				4064A1B81DAC381300071383 /* ConnectionsController.swift in Sources */,
+				40ADEEDD1DDD12D000CE529A /* ShoutFactory.swift in Sources */,
 				40AB80001DB5FDB100492788 /* EditProfileController.swift in Sources */,
 				4064A21F1DAD72DF00071383 /* Functions.swift in Sources */,
 				4064A22B1DB2B27F00071383 /* Connection.swift in Sources */,
+				40ADEEDE1DDD12D000CE529A /* Showing.swift in Sources */,
 				4020CE191DBCA67A00461181 /* DataService.swift in Sources */,
 				4031FB9C1DC0691C0066E6B6 /* StorageService.swift in Sources */,
+				40ADEEDF1DDD12D000CE529A /* WhisperFactory.swift in Sources */,
+				40ADEEE11DDD12D000CE529A /* WhistleFactory.swift in Sources */,
 				4064A1B61DAC381300071383 /* AppDelegate.swift in Sources */,
 				4064A1CB1DAC495D00071383 /* DummyDataService.swift in Sources */,
+				40ADEED91DDD12D000CE529A /* Config.swift in Sources */,
 				404C22FA1DBDB86D0054FE19 /* UserDefaults.swift in Sources */,
 				4064A2291DB2B0B500071383 /* ConnectionMessage.swift in Sources */,
 				4024F22B1DB85C0E007819F7 /* PaddingLabel.swift in Sources */,

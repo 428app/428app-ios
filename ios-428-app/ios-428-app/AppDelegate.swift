@@ -14,8 +14,6 @@ import FBSDKCoreKit
 import FBSDKLoginKit
 import FirebaseMessaging
 import FirebaseInstanceID
-import Whisper
-
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
@@ -105,7 +103,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     fileprivate func handleRemoteNotificationsThatLaunchApp(launchOptions: [UIApplicationLaunchOptionsKey: Any]?) {
         // Grab push notifications from launch options if it is there
         if let userInfo = launchOptions?[UIApplicationLaunchOptionsKey.remoteNotification] as? [String: AnyObject] {
-            transitionWithRemote(userInfo: userInfo)
+            handleRemote(userInfo: userInfo)
         }
     }
     
@@ -138,50 +136,168 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
     
     // Used to transition to the right page given valid userInfo dictionary from remote notification payload
-    open func transitionWithRemote(userInfo: [AnyHashable: Any], isForeground: Bool = false) {
+    open func handleRemote(userInfo: [AnyHashable: Any], isForeground: Bool = false) {
         /**
+         type: topic|connection|settings,
+         image: "",
+         uid: "",
+         tid: "",
          aps: {
             alert = {
-                body = ""; title = "";
+                body = ""; title = ""
             },
             badge = 1;
             sound = default;
          }
          **/
-        if let aps = userInfo["aps"] as? [String: Any], let alert = aps["alert"] as? [String: String], let badge = aps["badge"] as? Int {
-            // TODO: If is foreground, show a display banner
-            // Post a notif to all view controllers, which will have that observer
-            
-            log.info("\(alert)")
+        guard let aps = userInfo["aps"] as? [String: Any], let alert = aps["alert"] as? [String: String], let badge = aps["badge"] as? Int else {
+            return
         }
         
+        guard let title = alert["title"], let body = alert["body"], let type = userInfo["type"] as? String, let uid = userInfo["uid"] as? String, let tid = userInfo["tid"] as? String, let imageUrlString = userInfo["image"] as? String else {
+            return
+        }
         
+        if isForeground {
+            // Download image, then show popup after complete
+            _ = downloadImage(imageUrlString: imageUrlString, completed: { (image) in
+                self.showPopup(title: title, subtitle: body, image: image, uid: uid, tid: tid, type: type)
+            })
+        } else {
+            // In background, set the right page to transition to based on type, and uid/tid
+        }
     }
     
-    // Received in foreground
+    // Get visible view controller to show the remote notification popup on
+    fileprivate func getVisibleViewController(_ rootViewController: UIViewController?) -> UIViewController? {
+        
+        var rootVC = rootViewController
+        if rootVC == nil {
+            rootVC = UIApplication.shared.keyWindow?.rootViewController
+        }
+        
+        if rootVC?.presentedViewController == nil {
+            return rootVC
+        }
+        
+        if let presented = rootVC?.presentedViewController {
+            if presented.isKind(of: UINavigationController.self) {
+                let navigationController = presented as! UINavigationController
+                return navigationController.viewControllers.last!
+            }
+            
+            if presented.isKind(of: UITabBarController.self) {
+                let tabBarController = presented as! UITabBarController
+                return tabBarController.selectedViewController!
+            }
+            
+            return getVisibleViewController(presented)
+        }
+        return nil
+    }
+    
+    // Used to show popup in the right view controller
+    fileprivate func showPopup(title: String, subtitle: String, image: UIImage?, uid: String, tid: String, type: String) {
+        // Note that image can be nil
+        let announcement = Announcement(title: title, subtitle: subtitle, image: image, duration: 2.0, action: nil)
+        guard let vc = self.getVisibleViewController(self.window?.rootViewController), let nvc = vc as? CustomNavigationController else { // Check for custom navigation controller is crucial, if not popup will show up even on LoginScreen
+            return
+        }
+        
+        // Do not show popup in the follow screens:
+        if let _ = nvc.visibleViewController as? ProfileController {
+            return
+        }
+        if let _ = nvc.visibleViewController as? PictureModalController {
+            return
+        }
+        if let _ = nvc.visibleViewController as? IntroController {
+            return
+        }
+        if let _ = nvc.visibleViewController as? DiscussModalController {
+            return
+        }
+        
+        if let chatVC = nvc.visibleViewController as? ChatController {
+            // Only show popup if the chatVC uid is different from the uid in payload
+            if chatVC.connection.uid != uid {
+                show(shout: announcement, to: vc, completion: {
+                    // This callback is reached when user taps, so we transition to the right page based on type, and uid/tid
+                    self.transitionToRightScreenBasedOnType(type: type, tid: tid, uid: uid)
+                })
+            }
+        } else {
+            // Show for all other screens
+            show(shout: announcement, to: vc, completion: {
+                self.transitionToRightScreenBasedOnType(type: type, tid: tid, uid: uid)
+            })
+        }
+
+    }
+    
+    fileprivate func transitionToRightScreenBasedOnType(type: String, tid: String, uid: String) {
+        
+        guard let tabBarController = self.window?.rootViewController?.presentedViewController as? CustomTabBarController, let vcs = tabBarController.viewControllers else {
+            return
+        }
+        
+        if type == "connection" {
+            // Open the correct connection that matches uid
+            guard let connectionsNVC = vcs[0] as? CustomNavigationController, let connectionsVC = connectionsNVC.viewControllers.first as? ConnectionsController else {
+                return
+            }
+            
+            if connectionsNVC.viewControllers.count > 1 {
+                // Currently in a chat screen or profile screen, etc., need to dismiss back to ConnectionsController before pushing ChatController
+                connectionsNVC.popToRootViewController(animated: false)
+            }
+            
+            // Look for the correct connection in latest messages
+            let correctMessage = connectionsVC.latestMessages.filter() {$0.connection.uid == uid}
+            if correctMessage.count != 1 {
+                log.error("[Error] Uid could not be found in connections / too many of the same uid")
+                return
+            }
+            let chatVC: ChatController = ChatController()
+            chatVC.connection = correctMessage[0].connection
+            connectionsNVC.pushViewController(chatVC, animated: false)
+            tabBarController.selectedIndex = 0
+
+        } else if type == "topic" {
+            // Open the correct topic that matches tid
+            guard let topicsNVC = vcs[1] as? CustomNavigationController, let topicsVC = topicsNVC.viewControllers.first as? TopicsController else {
+                return
+            }
+            if topicsNVC.viewControllers.count > 1 {
+                // Currently in a discuss screen or profile screen, etc., need to dismiss back to TopicsController before pushing DiscussController
+                topicsNVC.popToRootViewController(animated: false)
+            }
+            // Look for the correct topic in all topics
+            let correctTopic = topicsVC.topics.filter() {$0.tid == tid}
+            if correctTopic.count != 1 {
+                log.error("[Error] Tid could not be found in topics / too many of the same tid")
+                return
+            }
+            let discussVC: DiscussController = DiscussController()
+            discussVC.topic = correctTopic[0]
+            topicsNVC.pushViewController(discussVC, animated: false)
+            tabBarController.selectedIndex = 1
+        }
+    }
+    
+    // Received in foreground (iOS 9)
     func application(_ application: UIApplication, didReceiveRemoteNotification userInfo: [AnyHashable : Any], fetchCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void) {
-        transitionWithRemote(userInfo: userInfo, isForeground: true)
+        handleRemote(userInfo: userInfo, isForeground: true)
     }
     
-    // Launched from background
+    // Launched from background (iOS 9)
     func application(_ application: UIApplication, didReceiveRemoteNotification userInfo: [AnyHashable : Any]) {
-        transitionWithRemote(userInfo: userInfo)
-        
-//        Message(title: "Enter your message here.", backgroundColor: UIColor.redColor())
+        handleRemote(userInfo: userInfo)
     }
 
 }
 
-
-extension UIViewController {
-    
-    func showRemoteNotificationPopup() {
-        
-    }
-    
-}
-
-// Handling of iOS 10 
+// Handling of iOS 10
 // These are launched instead of the the iOS 9 default remote notifications functions when iOS 10
 
 @available(iOS 10, *)
@@ -192,7 +308,7 @@ extension AppDelegate : UNUserNotificationCenterDelegate {
                                 willPresent notification: UNNotification,
                                 withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void) {
         let userInfo = notification.request.content.userInfo
-        transitionWithRemote(userInfo: userInfo, isForeground: true)
+        handleRemote(userInfo: userInfo, isForeground: true)
     }
     
     // Launched from background
@@ -200,8 +316,7 @@ extension AppDelegate : UNUserNotificationCenterDelegate {
                                 didReceive response: UNNotificationResponse,
                                 withCompletionHandler completionHandler: @escaping () -> Void) {
         let userInfo = response.notification.request.content.userInfo
-        log.info("In didreceive")
-        transitionWithRemote(userInfo: userInfo)
+        handleRemote(userInfo: userInfo)
     }
 }
 

@@ -2,10 +2,7 @@
 
 
 BUGS
-!EDIT PROFILE PHOTO UPLOAD!
-
-- Test with many connections
-- Test the no connection case (timer working)
+- Major: Once logout, cannot log back in?
 
 - Only allow copy of whole ChatCell: Wait for reply on stack overflow
 

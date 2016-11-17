@@ -26,7 +26,10 @@ func downloadImage(imageUrlString: String, completed: @escaping (_ image: UIImag
     }
     return Alamofire.request(imageUrlString, method: .get, encoding: JSONEncoding.default).validate(contentType:
         ["image/*"]).responseImage { response in
-            guard let image = response.result.value else { return }
+            guard let image = response.result.value else {
+                completed(nil)
+                return
+            }
             completed(image)
             imageCache.add(image, withIdentifier: imageUrlString)
     }

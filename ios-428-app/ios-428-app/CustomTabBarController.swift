@@ -9,6 +9,8 @@
 import Foundation
 import UIKit
 
+// NOTE: Please DO NOT change this file
+
 class CustomTabBarController: UITabBarController {
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -37,6 +39,7 @@ class CustomTabBarController: UITabBarController {
         settingsNavController.tabBarItem.image = #imageLiteral(resourceName: "settings-U")
         settingsNavController.tabBarItem.selectedImage = #imageLiteral(resourceName: "settings-F")
         
+        // NOTE: Changing this order will break the remote notification logic in AppDelegate
         viewControllers = [connectionsNavController, topicsNavController, settingsNavController]
     }
     

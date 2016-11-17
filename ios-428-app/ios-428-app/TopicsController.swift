@@ -16,7 +16,7 @@ class TopicsController: UIViewController, UITableViewDelegate, UITableViewDataSo
     
     fileprivate let CELL_ID = "topicCell"
     
-    fileprivate var topics = [Topic]()
+    open var topics = [Topic]()
     fileprivate lazy var tableView: UITableView = {
        let tableView = UITableView()
         tableView.delegate = self

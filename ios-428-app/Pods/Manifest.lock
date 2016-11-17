@@ -54,7 +54,6 @@ PODS:
   - GoogleUtilities (1.3.2):
     - GoogleSymbolUtilities (~> 1.1)
   - SwiftSpinner (1.0.2)
-  - Whisper (4.0.0)
   - XCGLogger (4.0.0):
     - XCGLogger/Core (= 4.0.0)
   - XCGLogger/Core (4.0.0)
@@ -69,7 +68,6 @@ DEPENDENCIES:
   - Firebase/Messaging
   - Firebase/Storage
   - SwiftSpinner
-  - Whisper
   - XCGLogger (~> 4.0.0)
 
 SPEC CHECKSUMS:
@@ -89,9 +87,8 @@ SPEC CHECKSUMS:
   GoogleSymbolUtilities: 631ee17048aa5e9ab133470d768ea997a5ef9b96
   GoogleUtilities: 8bbc733218aad26306f9d4a253823986110e3358
   SwiftSpinner: 1c80ff6ea1c47e2faa1dfce0fcd5e6b39a47fd51
-  Whisper: 08be92623311f8e53201e62e17f6d7b9599a4714
   XCGLogger: 38063ea89b4c8b23232d18efd2e12eb0005f3ea4
 
-PODFILE CHECKSUM: ca8ee1a27a3c2070039ffc0ae752b1138b1ad88f
+PODFILE CHECKSUM: f74a1d3ecec56d978dee5d4bcdde0139b5ff866b
 
 COCOAPODS: 1.1.1

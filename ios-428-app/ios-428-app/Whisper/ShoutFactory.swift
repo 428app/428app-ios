@@ -15,7 +15,8 @@ open class ShoutView: UIView {
 
   open fileprivate(set) lazy var backgroundView: UIView = {
     let view = UIView()
-    view.backgroundColor = ColorList.Shout.background
+//    view.backgroundColor = ColorList.Shout.background
+    view.backgroundColor = GREEN_UICOLOR
     view.alpha = 0.98
     view.clipsToBounds = true
 
@@ -49,8 +50,8 @@ open class ShoutView: UIView {
 
   open fileprivate(set) lazy var titleLabel: UILabel = {
     let label = UILabel()
-    label.font = FontList.Shout.title
-    label.textColor = ColorList.Shout.title
+    label.font = FONT_HEAVY_MID
+    label.textColor = UIColor.white
     label.numberOfLines = 2
 
     return label
@@ -58,8 +59,8 @@ open class ShoutView: UIView {
 
   open fileprivate(set) lazy var subtitleLabel: UILabel = {
     let label = UILabel()
-    label.font = FontList.Shout.subtitle
-    label.textColor = ColorList.Shout.subtitle
+    label.font = FONT_MEDIUM_MID
+    label.textColor = UIColor.white
     label.numberOfLines = 2
 
     return label
@@ -183,25 +184,12 @@ open class ShoutView: UIView {
 
     let textOffsetY = imageView.image != nil ? imageView.frame.origin.x + 3 : textOffsetX + 5
 
-    titleLabel.frame.origin = CGPoint(x: textOffsetX, y: textOffsetY)
+    titleLabel.frame.origin = CGPoint(x: textOffsetX, y: textOffsetY + 6.0)
     subtitleLabel.frame.origin = CGPoint(x: textOffsetX, y: titleLabel.frame.maxY + 2.5)
 
     if subtitleLabel.text?.isEmpty ?? true {
       titleLabel.center.y = imageView.center.y - 2.5
     }
-  }
-
-  // MARK: - Actions
-
-  open func silent() {
-    UIView.animate(withDuration: 0.35, animations: {
-      self.frame.size.height = 0
-      self.backgroundView.frame.size.height = self.frame.height
-      }, completion: { finished in
-        self.completion?()
-        self.displayTimer.invalidate()
-        self.removeFromSuperview()
-    })
   }
 
   // MARK: - Timer methods
@@ -210,7 +198,14 @@ open class ShoutView: UIView {
     shouldSilent = true
 
     if panGestureActive { return }
-    silent()
+    UIView.animate(withDuration: 0.35, animations: {
+        self.frame.size.height = 0
+        self.backgroundView.frame.size.height = self.frame.height
+    }, completion: { finished in
+        self.displayTimer.invalidate()
+        self.removeFromSuperview()
+    })
+    
   }
 
   // MARK: - Gesture methods
@@ -218,7 +213,15 @@ open class ShoutView: UIView {
   @objc fileprivate func handleTapGestureRecognizer() {
     guard let announcement = announcement else { return }
     announcement.action?()
-    silent()
+    UIView.animate(withDuration: 0.35, animations: {
+        self.frame.size.height = 0
+        self.backgroundView.frame.size.height = self.frame.height
+    }, completion: { finished in
+        // Fires completion so that upon tap I can go to the right chat/topic
+        self.completion?()
+        self.displayTimer.invalidate()
+        self.removeFromSuperview()
+    })
   }
   
   @objc private func handlePanGestureRecognizer() {
@@ -249,7 +252,8 @@ open class ShoutView: UIView {
       
       UIView.animate(withDuration: duration, animations: {
         self.frame.size.height = height
-        }, completion: { _ in if translation.y < -5 { self.completion?(); self.removeFromSuperview() }})
+        }, completion: { _ in if translation.y < -5 {
+            self.removeFromSuperview() }})
     }
 
     UIView.animate(withDuration: duration, animations: {
