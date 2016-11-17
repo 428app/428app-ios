@@ -27,8 +27,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         UINavigationBar.appearance().isTranslucent = true
         FIRApp.configure()
         FIRDatabase.database().persistenceEnabled = true
-        
-        log.info("UserDefaults class: \(UserDefaults.standard.value(forKey: "test"))")
  
         // Note that if a remote notification launches the app, we will NOT support directing it to the right page because the data has likely not been loaded and it can very tricky to wait for data to load before pushing the right page (even worse under bad network conditions!)
         setupRemoteNotifications(application: application)
@@ -79,6 +77,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     
     fileprivate func setupRemoteNotifications(application: UIApplication) {
         
+        // Check for push token, if it is still in UserDefaults, update it
+        DataService.ds.updateUserPushToken()
+        
         if #available(iOS 10.0, *) {
             let authOptions: UNAuthorizationOptions = [.alert, .badge, .sound]
             
@@ -106,10 +107,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     // This is only called whenever the user gets a new token, and is triggered by the observer
     func tokenRefreshNotification(_ notification: Notification) {
         if let refreshedToken = FIRInstanceID.instanceID().token() {
-            print("InstanceID token: \(refreshedToken)")
-            // TODO: Store this token in server
+            log.info("User push token: \(refreshedToken)")
+            savePushToken(token: refreshedToken)
+            DataService.ds.updateUserPushToken()
         }
-        
         // Connect to FCM since connection may have failed when attempted before having a token
         connectToFcm()
     }
@@ -117,7 +118,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     fileprivate func connectToFcm() {
         FIRMessaging.messaging().connect { (error) in
             if error != nil {
-                log.error("[Error] Unable to connect with FCM. \(error)")
+                log.warning("Unable to connect with FCM. \(error)")
             } else {
                 log.info("Connected to FCM.")
             }

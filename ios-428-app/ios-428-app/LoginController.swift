@@ -173,6 +173,7 @@ class LoginController: UIViewController, UIScrollViewDelegate, CLLocationManager
             let fullDisplayName = user!.providerData[0].displayName!
             let displayName = fullDisplayName.components(separatedBy: " ")[0]
             saveUid(uid: fbid) // Saving uid here is crucial for the rest of the app to function right
+            DataService.ds.updateUserPushToken() // Update push token again here because uid is now saved
             
             // Get timezone
             let secondsFromGMT: Double = Double(NSTimeZone.local.secondsFromGMT())

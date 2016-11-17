@@ -165,15 +165,18 @@ class ConnectionCell: BaseCollectionCell {
     }()
 
     fileprivate func loadImage() {
-//        self.profileImageView.image = nil
         let imageUrlString = self.message.connection.profileImageName
         self.profileImageView.af_cancelImageRequest()
         guard let imageUrl = URL(string: imageUrlString) else {
             self.profileImageView.image = #imageLiteral(resourceName: "placeholder-user")
             return
         }
-        self.profileImageView.af_setImage(withURL: imageUrl, placeholderImage: #imageLiteral(resourceName: "placeholder-user"), filter: nil, progress: nil, imageTransition: .crossDissolve(0.5), runImageTransitionIfCached: false, completion: { image in
-            // Image finished downloading
+        
+        self.profileImageView.af_setImage(withURL: imageUrl, placeholderImage: #imageLiteral(resourceName: "placeholder-user"), filter: nil, progress: nil, imageTransition: .crossDissolve(0.5), runImageTransitionIfCached: false, completion: { imageResponse in
+            // Image finished downloading, so cache it - this is mostly for push notifications, as internally af_setImage already has its own cache
+            if let imageData = imageResponse.data, let image = UIImage(data: imageData) {
+                imageCache.add(image, withIdentifier: imageUrl.absoluteString)
+            }
         })
     }
     

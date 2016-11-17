@@ -24,6 +24,10 @@ BUGS
 - Mute, etc.
 
 
+!PROFILE!
+- Pre-load profile in ChatController and pass it on
+- Load in profile and pass it back to ChatController
+
 !SECURITY and INDEX SETTINGS!
 
 

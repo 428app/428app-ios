@@ -114,9 +114,24 @@ class DataService {
         })
     }
     
+    // Updates the user push token: Used in two places - one in LoginController and one in AppDelegate
+    func updateUserPushToken() {
+        guard let uid = getStoredUid(), let token = getPushToken() else {
+            return
+        }
+        // set savePushToken(nil) here
+        REF_USERS.child("\(uid)/pushToken").setValue(token, withCompletionBlock: { (err, ref) in
+            if err == nil {
+                // No need to save push token anymore
+                savePushToken(token: nil)
+            }
+        })
+    }
+    
     // Updates own last seen in AppDelegate's applicationDidBecomeActive
     func updateUserLastSeen(completed: @escaping (_ isSuccess: Bool) -> ()) {
         guard let uid = getStoredUid() else {
+            completed(false)
             return
         }
         let timeNow = Date().timeIntervalSince1970
@@ -340,7 +355,6 @@ class DataService {
     func observeRecentChat(connection: Connection, completed: @escaping (_ isSuccess: Bool, _ connection: Connection?) -> ()) -> (FIRDatabaseReference, FIRDatabaseHandle) {
         let uid = getStoredUid() == nil ? "" : getStoredUid()!
         let chatId: String = getChatId(uid1: uid, uid2: connection.uid)
-        log.info(chatId)
         let ref: FIRDatabaseReference = REF_CHATS.child(chatId)
         
         ref.keepSynced(true)

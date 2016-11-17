@@ -11,6 +11,23 @@ import UIKit
 
 let DEFAULTS = UserDefaults.standard
 
+// Store user push token
+let KEY_TOKEN = "pushtoken"
+func getPushToken() -> String? {
+    if let storedToken = DEFAULTS.object(forKey: KEY_TOKEN) as? String {
+        return storedToken
+    }
+    return nil
+}
+func savePushToken(token: String?) {
+    if token == nil {
+        DEFAULTS.removeObject(forKey: KEY_TOKEN)
+    } else {
+        DEFAULTS.set(token!, forKey: KEY_TOKEN)
+    }
+    DEFAULTS.synchronize()
+}
+
 // Stored uid that is used by almost all DataService functions
 let KEY_UID = "uid"
 func getStoredUid() -> String? {
