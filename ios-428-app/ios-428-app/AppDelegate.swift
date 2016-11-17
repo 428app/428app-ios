@@ -133,6 +133,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     
     // Used to transition to the right page given valid userInfo dictionary from remote notification payload
     open func handleRemote(userInfo: [AnyHashable: Any], isForeground: Bool = false) {
+        log.info("\(userInfo)")
         /**
          type: topic|connection|settings,
          image: "",
@@ -150,7 +151,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             return
         }
         
-        guard let title = alert["title"], let body = alert["body"], let type = userInfo["type"] as? String, let uid = userInfo["uid"] as? String, let tid = userInfo["tid"] as? String, let imageUrlString = userInfo["image"] as? String else {
+        guard let title = alert["title"], let body = alert["body"], let typeString = userInfo["type"] as? String, let type = TokenType(rawValue: typeString), let uid = userInfo["uid"] as? String, let tid = userInfo["tid"] as? String, let imageUrlString = userInfo["image"] as? String else {
             return
         }
         
@@ -194,7 +195,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
     
     // Used to show popup in the right view controller
-    fileprivate func showPopup(title: String, subtitle: String, image: UIImage?, uid: String, tid: String, type: String) {
+    fileprivate func showPopup(title: String, subtitle: String, image: UIImage?, uid: String, tid: String, type: TokenType) {
         // Note that image can be nil
         let announcement = Announcement(title: title, subtitle: subtitle, image: image, duration: 2.0, action: nil)
         guard let vc = self.getVisibleViewController(self.window?.rootViewController), let nvc = vc as? CustomNavigationController else { // Check for custom navigation controller is crucial, if not popup will show up even on LoginScreen
@@ -231,7 +232,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         }
     }
     
-    fileprivate func transitionToRightScreenBasedOnType(type: String, uid: String, tid: String) {
+    fileprivate func transitionToRightScreenBasedOnType(type: TokenType, uid: String, tid: String) {
         
         guard let rootVC = self.window?.rootViewController as? LoginController else {
             return
@@ -241,9 +242,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             return
         }
         
-        if type == "connection" {
+        if type == .CONNECTION {
             self.findAndTransitionToConnection(uid: uid, tabBarController: tabBarController)
-        } else if type == "topic" {
+        } else if type == .TOPIC {
             self.findAndTransitionToTopic(tid: tid, tabBarController: tabBarController)
         }
     }

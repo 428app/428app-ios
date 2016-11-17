@@ -70,6 +70,9 @@ class ChatCell: BaseCollectionCell, UITextViewDelegate {
         textView.dataDetectorTypes = .all
         textView.isUserInteractionEnabled = true
         textView.delegate = self
+        textView.isScrollEnabled = false
+        
+        textView.font = self.TEXT_VIEW_FONT
         let longPress = UILongPressGestureRecognizer(target: self, action: #selector(selectAllOfTextView))
         textView.addGestureRecognizer(longPress)
         let tap = UITapGestureRecognizer(target: self, action: #selector(notifyControllerToExpand))
@@ -116,7 +119,6 @@ class ChatCell: BaseCollectionCell, UITextViewDelegate {
     
     override func setupViews() {
         super.setupViews()
-        self.messageTextView.font = TEXT_VIEW_FONT
         addSubview(textBubbleView)
         addSubview(messageTextView)
         addSubview(profileImageView)
@@ -134,6 +136,32 @@ class ChatCell: BaseCollectionCell, UITextViewDelegate {
         self.profileImageView.image = image
     }
     
+    func isAllEmoji(aString: String) -> Bool {
+        for scalar in aString.unicodeScalars {
+            switch scalar.value {
+            case 0x1F600...0x1F64F, // Emoticons
+            0x1F300...0x1F5FF, // Misc Symbols and Pictographs
+            0x1F680...0x1F6FF, // Transport and Map
+            0x2600...0x26FF,   // Misc symbols
+            0x2700...0x27BF,   // Dingbats
+            0xFE00...0xFE0F,   // Variation Selectors
+            0x0030...0x0039,
+            0x00A9...0x00AE,
+            0x203C...0x2049,
+            0x2122...0x3299,
+            0x1F004...0x1F251,
+            0x1F910...0x1F990:
+                break
+            default:
+                return false
+            }
+        }
+        return true
+    }
+    
+    
+
+    
     func configureCell(messageObj: ConnectionMessage, viewWidth: CGFloat, isLastInChain: Bool) {
         self.message = messageObj
         let messageText = self.message.text
@@ -145,10 +173,27 @@ class ChatCell: BaseCollectionCell, UITextViewDelegate {
             self.populateCellWithImage(image: image)
         })
         
-        let size = CGSize(width: 250, height: 1000)
+        let size = CGSize(width: 250.0, height: CGFloat.greatestFiniteMagnitude)
         let options = NSStringDrawingOptions.usesFontLeading.union(.usesLineFragmentOrigin)
-        let estimatedFrame = NSString(string: messageText).boundingRect(with: size, options: options, attributes: [NSFontAttributeName: TEXT_VIEW_FONT], context: nil)
         
+        let sizeFit = messageTextView.sizeThatFits(size)
+        
+        var estimatedFrame: CGRect!
+        
+        estimatedFrame = CGRect(x: 0.0, y: 0.0, width: sizeFit.width, height: sizeFit.height)
+        
+        if isAllEmoji(aString: messageText) {
+            // TODO: Fix the emoji
+            
+            
+            estimatedFrame = NSString(string: messageText).boundingRect(with: size, options: options, attributes: [NSFontAttributeName: TEXT_VIEW_FONT], context: nil)
+            log.info("emoji text: \(messageText) and frame: \(estimatedFrame)")
+        } else {
+            estimatedFrame = NSString(string: messageText).boundingRect(with: size, options: options, attributes: [NSFontAttributeName: TEXT_VIEW_FONT], context: nil)
+            log.info("normal text: \(messageText) and frame: \(estimatedFrame)")
+            
+        }
+
         // Bunch of math going here: No need to tune these numbers, they look fine on all screens
         
         if !self.message.isSentByYou {

@@ -21,6 +21,7 @@ class DataService {
     fileprivate var _REF_USERS = FIRDatabase.database().reference().child("/users")
     fileprivate var _REF_CHATS = FIRDatabase.database().reference().child("/chats")
     fileprivate var _REF_MESSAGES = FIRDatabase.database().reference().child("/messages")
+    fileprivate var _REF_QUEUE = FIRDatabase.database().reference().child("/queue/tasks") // Queue for notifications to be sent out
     
     var REF_BASE: FIRDatabaseReference {
         get {
@@ -46,12 +47,19 @@ class DataService {
         }
     }
     
+    var REF_QUEUE: FIRDatabaseReference {
+        get {
+            return _REF_QUEUE
+        }
+    }
+    
     // To be called whenever user logs out
     func removeAllObservers() {
         _REF_BASE.removeAllObservers()
         _REF_USERS.removeAllObservers()
         _REF_CHATS.removeAllObservers()
         _REF_MESSAGES.removeAllObservers()
+        _REF_QUEUE.removeAllObservers()
     }
     
     // MARK: User
@@ -465,6 +473,11 @@ class DataService {
                 completed(false, nil)
                 return
             }
+            // Add to notification queue
+            self.addToNotificationQueue(type: TokenType.CONNECTION, posterUid: uid, recipientUid: connection.uid, tid: "", title: "Connection", body: text)
+            
+            // TODO: Increment badgeCount of the other person if his hasNew is false before setting
+            
             let msg = ConnectionMessage(mid: mid, text: text, connection: connection, date: Date(timeIntervalSince1970: timestamp), isSentByYou: true)
             connection.addMessage(message: msg)
             completed(true, connection)
@@ -483,6 +496,17 @@ class DataService {
             completed(err == nil)
         }
     }
+    
+    // MARK: Remote notifications Queue
+    
+    // Upon sending a message in topic or chat, add a notification to the Queue for server workers to process
+    func addToNotificationQueue(type: TokenType, posterUid: String, recipientUid: String, tid: String, title: String, body: String) {
+        // No need to async callback because notifications are not guaranteed anyway
+        let dict = ["type": type.rawValue, "posterUid": posterUid, "recipientUid": recipientUid, "tid": tid, "title": title, "body": body]
+        REF_QUEUE.childByAutoId().setValue(dict)
+    }
+    
+    // MARK: Test functions
     
     func connectWithAll() {
         // Get all uids first
@@ -523,24 +547,18 @@ class DataService {
         })
     }
     
-    // Test function
-    
     func addConnectionsTest() {
         let uid1 = getStoredUid()!
         for i in 19...36 {
             let uid2 = "2011800203281" + String(i)
             addConnection(uid1: uid1, uid2: uid2)
         }
-        
-//        201180020328119 to 201180020328136
     }
     
     func addConnection(uid1: String, uid2: String) {
         // Get uid1 and uid2 details
 //        REF_USERS.child("\(uid1)/connections/\(uid2)").setValue(["discipline": "Business", "name": "Leonard", "profilePhoto": "https://firebasestorage.googleapis.com/v0/b/app-abdf9.appspot.com/o/user%2F1250226885021203%2Fprofile_photo?alt=media&token=c684e1d1-2f6d-48ee-8905-77c90f67cc31"])
 //        REF_USERS.child("\(uid2)/connections/\(uid1)").setValue(["discipline": "East Asian Studies", "name": "Test", "profilePhoto": "https://firebasestorage.googleapis.com/v0/b/app-abdf9.appspot.com/o/user%2F1250226885021203%2Fprofile_photo?alt=media&token=c684e1d1-2f6d-48ee-8905-77c90f67cc31"])
-        
-        
         let chatId = getChatId(uid1: uid1, uid2: uid2)
         REF_CHATS.child(chatId).setValue(["dateMatched": "11/10/2016", "hasNew:\(uid1)": true, "hasNew:\(uid2)": true, "lastMessage": "", "mid": "", "poster": "", "timestamp": Date().timeIntervalSince1970])
     }

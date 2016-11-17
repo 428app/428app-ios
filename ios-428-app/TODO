@@ -27,6 +27,7 @@ BUGS
 !PROFILE!
 - Pre-load profile in ChatController and pass it on
 - Load in profile and pass it back to ChatController
+- Chat message sanitization on server
 
 !SECURITY and INDEX SETTINGS!
 

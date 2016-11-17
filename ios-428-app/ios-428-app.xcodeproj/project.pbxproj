@@ -80,6 +80,7 @@
 		40ADEEDF1DDD12D000CE529A /* WhisperFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 40ADEED61DDD12D000CE529A /* WhisperFactory.swift */; };
 		40ADEEE01DDD12D000CE529A /* WhisperView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 40ADEED71DDD12D000CE529A /* WhisperView.swift */; };
 		40ADEEE11DDD12D000CE529A /* WhistleFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 40ADEED81DDD12D000CE529A /* WhistleFactory.swift */; };
+		40ADEEE31DDD82E300CE529A /* Enums.swift in Sources */ = {isa = PBXBuildFile; fileRef = 40ADEEE21DDD82E300CE529A /* Enums.swift */; };
 		40E2E1401DD26B8200469B4D /* Discipline.swift in Sources */ = {isa = PBXBuildFile; fileRef = 40E2E13F1DD26B8200469B4D /* Discipline.swift */; };
 		40E2E1421DD3788300469B4D /* CustomActivityIndicatorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 40E2E1411DD3788300469B4D /* CustomActivityIndicatorView.swift */; };
 		FED3D2F8E9831031BBFFDBEB /* Pods_ios_428_app.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1B0A78A64649B55915C0C572 /* Pods_ios_428_app.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
@@ -165,6 +166,7 @@
 		40ADEED61DDD12D000CE529A /* WhisperFactory.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WhisperFactory.swift; sourceTree = "<group>"; };
 		40ADEED71DDD12D000CE529A /* WhisperView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WhisperView.swift; sourceTree = "<group>"; };
 		40ADEED81DDD12D000CE529A /* WhistleFactory.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WhistleFactory.swift; sourceTree = "<group>"; };
+		40ADEEE21DDD82E300CE529A /* Enums.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Enums.swift; sourceTree = "<group>"; };
 		40E2E13F1DD26B8200469B4D /* Discipline.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Discipline.swift; sourceTree = "<group>"; };
 		40E2E1411DD3788300469B4D /* CustomActivityIndicatorView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CustomActivityIndicatorView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -215,6 +217,7 @@
 				409F05F11DD81E1D001B673F /* Upload.swift */,
 				4000C3791DD81227009C10E5 /* Download.swift */,
 				404C22F91DBDB86D0054FE19 /* UserDefaults.swift */,
+				40ADEEE21DDD82E300CE529A /* Enums.swift */,
 			);
 			name = Backend;
 			sourceTree = "<group>";
@@ -603,6 +606,7 @@
 				40ADEED91DDD12D000CE529A /* Config.swift in Sources */,
 				404C22FA1DBDB86D0054FE19 /* UserDefaults.swift in Sources */,
 				4064A2291DB2B0B500071383 /* ConnectionMessage.swift in Sources */,
+				40ADEEE31DDD82E300CE529A /* Enums.swift in Sources */,
 				4024F22B1DB85C0E007819F7 /* PaddingLabel.swift in Sources */,
 				40AB7FFC1DB5B09700492788 /* BaseTableViewCell.swift in Sources */,
 				40E2E1401DD26B8200469B4D /* Discipline.swift in Sources */,
