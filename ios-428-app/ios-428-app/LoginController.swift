@@ -40,7 +40,6 @@ class LoginController: UIViewController, UIScrollViewDelegate, CLLocationManager
                 return
             }
             self.startLocationManager() // Update user location and timeSeen
-            log.info("Bypass here because hasToFill: \(hasToFill())")
             let controller = hasToFill() ? IntroController() : CustomTabBarController()
             controller.modalTransitionStyle = .coverVertical
             self.present(controller, animated: true, completion: nil)

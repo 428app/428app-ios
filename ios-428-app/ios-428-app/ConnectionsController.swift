@@ -21,9 +21,7 @@ class ConnectionsController: UICollectionViewController, UICollectionViewDelegat
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
         self.loadFromFirebase()
-        
         self.extendedLayoutIncludesOpaqueBars = true
         self.setupViews()
         navigationItem.title = "Connections"

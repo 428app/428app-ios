@@ -27,8 +27,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         UINavigationBar.appearance().isTranslucent = true
         FIRApp.configure()
         FIRDatabase.database().persistenceEnabled = true
+        
+        log.info("UserDefaults class: \(UserDefaults.standard.value(forKey: "test"))")
  
-        handleRemoteNotificationsThatLaunchApp(launchOptions: launchOptions)
+        // Note that if a remote notification launches the app, we will NOT support directing it to the right page because the data has likely not been loaded and it can very tricky to wait for data to load before pushing the right page (even worse under bad network conditions!)
         setupRemoteNotifications(application: application)
 
         return FBSDKApplicationDelegate.sharedInstance()
@@ -43,8 +45,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func applicationDidEnterBackground(_ application: UIApplication) {
         // Use this method to release shared resources, save user data, invalidate timers, and store enough application state information to restore your application to its current state in case it is terminated later.
         // If your application supports background execution, this method is called instead of applicationWillTerminate: when the user quits.
-        // TODO:
         FIRMessaging.messaging().disconnect()
+        // TODO: Set badge number correctly
         UIApplication.shared.applicationIconBadgeNumber = 2
     }
 
@@ -97,18 +99,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         // Add observer for callback to receive refreshed token
         // Note that this is only called when the token is new, so we don't have to keep updating our server's token for this user
+        // Note that this observer is never removed, because through the app's usage we want to monitor token refresh, and re-setup the token
         NotificationCenter.default.addObserver(self, selector: #selector(self.tokenRefreshNotification), name: .firInstanceIDTokenRefresh, object: nil)
     }
     
-    fileprivate func handleRemoteNotificationsThatLaunchApp(launchOptions: [UIApplicationLaunchOptionsKey: Any]?) {
-        // Grab push notifications from launch options if it is there
-        if let userInfo = launchOptions?[UIApplicationLaunchOptionsKey.remoteNotification] as? [String: AnyObject] {
-            handleRemote(userInfo: userInfo)
-        }
-    }
-    
-    // This is called when app is in background
-    
+    // This is only called whenever the user gets a new token, and is triggered by the observer
     func tokenRefreshNotification(_ notification: Notification) {
         if let refreshedToken = FIRInstanceID.instanceID().token() {
             print("InstanceID token: \(refreshedToken)")
@@ -165,6 +160,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             })
         } else {
             // In background, set the right page to transition to based on type, and uid/tid
+            self.transitionToRightScreenBasedOnType(type: type, uid: uid, tid: tid)
         }
     }
     
@@ -204,7 +200,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             return
         }
         
-        // Do not show popup in the follow screens:
+        // Do not show popup in these screens:
         if let _ = nvc.visibleViewController as? ProfileController {
             return
         }
@@ -223,66 +219,81 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             if chatVC.connection.uid != uid {
                 show(shout: announcement, to: vc, completion: {
                     // This callback is reached when user taps, so we transition to the right page based on type, and uid/tid
-                    self.transitionToRightScreenBasedOnType(type: type, tid: tid, uid: uid)
+                    self.transitionToRightScreenBasedOnType(type: type, uid: uid, tid: tid)
                 })
             }
         } else {
             // Show for all other screens
             show(shout: announcement, to: vc, completion: {
-                self.transitionToRightScreenBasedOnType(type: type, tid: tid, uid: uid)
+                self.transitionToRightScreenBasedOnType(type: type, uid: uid, tid: tid)
             })
         }
-
     }
     
-    fileprivate func transitionToRightScreenBasedOnType(type: String, tid: String, uid: String) {
+    fileprivate func transitionToRightScreenBasedOnType(type: String, uid: String, tid: String) {
         
-        guard let tabBarController = self.window?.rootViewController?.presentedViewController as? CustomTabBarController, let vcs = tabBarController.viewControllers else {
+        guard let rootVC = self.window?.rootViewController as? LoginController else {
+            return
+        }
+        
+        guard let tabBarController = rootVC.presentedViewController as? CustomTabBarController else {
             return
         }
         
         if type == "connection" {
-            // Open the correct connection that matches uid
-            guard let connectionsNVC = vcs[0] as? CustomNavigationController, let connectionsVC = connectionsNVC.viewControllers.first as? ConnectionsController else {
-                return
-            }
-            
-            if connectionsNVC.viewControllers.count > 1 {
-                // Currently in a chat screen or profile screen, etc., need to dismiss back to ConnectionsController before pushing ChatController
-                connectionsNVC.popToRootViewController(animated: false)
-            }
-            
-            // Look for the correct connection in latest messages
-            let correctMessage = connectionsVC.latestMessages.filter() {$0.connection.uid == uid}
-            if correctMessage.count != 1 {
-                log.error("[Error] Uid could not be found in connections / too many of the same uid")
-                return
-            }
-            let chatVC: ChatController = ChatController()
-            chatVC.connection = correctMessage[0].connection
-            connectionsNVC.pushViewController(chatVC, animated: false)
-            tabBarController.selectedIndex = 0
-
+            self.findAndTransitionToConnection(uid: uid, tabBarController: tabBarController)
         } else if type == "topic" {
-            // Open the correct topic that matches tid
-            guard let topicsNVC = vcs[1] as? CustomNavigationController, let topicsVC = topicsNVC.viewControllers.first as? TopicsController else {
-                return
-            }
-            if topicsNVC.viewControllers.count > 1 {
-                // Currently in a discuss screen or profile screen, etc., need to dismiss back to TopicsController before pushing DiscussController
-                topicsNVC.popToRootViewController(animated: false)
-            }
-            // Look for the correct topic in all topics
-            let correctTopic = topicsVC.topics.filter() {$0.tid == tid}
-            if correctTopic.count != 1 {
-                log.error("[Error] Tid could not be found in topics / too many of the same tid")
-                return
-            }
-            let discussVC: DiscussController = DiscussController()
-            discussVC.topic = correctTopic[0]
-            topicsNVC.pushViewController(discussVC, animated: false)
-            tabBarController.selectedIndex = 1
+            self.findAndTransitionToTopic(tid: tid, tabBarController: tabBarController)
         }
+    }
+    
+    // Open the correct connection that matches uid
+    fileprivate func findAndTransitionToConnection(uid: String, tabBarController: CustomTabBarController) {
+        
+        guard let vcs = tabBarController.viewControllers, let connectionsNVC = vcs[0] as? CustomNavigationController, let connectionsVC = connectionsNVC.viewControllers.first as? ConnectionsController else {
+            return
+        }
+        
+        if connectionsNVC.viewControllers.count > 1 {
+            // Currently in a chat screen or profile screen, etc., need to dismiss back to ConnectionsController before pushing ChatController
+            connectionsNVC.popToRootViewController(animated: false)
+        }
+        
+        // Look for the correct connection in latest messages
+        let correctMessage = connectionsVC.latestMessages.filter() {$0.connection.uid == uid}
+        if correctMessage.count != 1 {
+            log.warning("Uid could not be found in connections / too many of the same uid")
+            return
+        }
+        
+        let chatVC: ChatController = ChatController()
+        chatVC.connection = correctMessage[0].connection
+        connectionsNVC.pushViewController(chatVC, animated: false)
+        tabBarController.selectedIndex = 0
+    }
+    
+    // Open the correct topic that matches tid
+    fileprivate func findAndTransitionToTopic(tid: String, tabBarController: CustomTabBarController) {
+        
+        guard let vcs = tabBarController.viewControllers, let topicsNVC = vcs[1] as? CustomNavigationController, let topicsVC = topicsNVC.viewControllers.first as? TopicsController else {
+            return
+        }
+        if topicsNVC.viewControllers.count > 1 {
+            // Currently in a discuss screen or profile screen, etc., need to dismiss back to TopicsController before pushing DiscussController
+            topicsNVC.popToRootViewController(animated: false)
+        }
+        // Look for the correct topic in all topics
+        // Note: Because TopicVC is not loaded by default, the topics array might still be empty until the user clicks on the Topics tab. In that case, we just change the tab index instead of going into the individual topic.
+        let correctTopic = topicsVC.topics.filter() {$0.tid == tid}
+        if correctTopic.count != 1 {
+            tabBarController.selectedIndex = 1
+            log.warning("Tid could not be found in topics / too many of the same tid, OR page not loaded yet")
+            return
+        }
+        let discussVC: DiscussController = DiscussController()
+        discussVC.topic = correctTopic[0]
+        topicsNVC.pushViewController(discussVC, animated: false)
+        tabBarController.selectedIndex = 1
     }
     
     // Received in foreground (iOS 9)

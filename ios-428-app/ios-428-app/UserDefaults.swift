@@ -9,10 +9,9 @@
 import Foundation
 import UIKit
 
-// MARK: UserDefaults
+let DEFAULTS = UserDefaults.standard
 
 // Stored uid that is used by almost all DataService functions
-let DEFAULTS = UserDefaults.standard
 let KEY_UID = "uid"
 func getStoredUid() -> String? {
     if let storedUid = DEFAULTS.object(forKey: KEY_UID) as? String {
