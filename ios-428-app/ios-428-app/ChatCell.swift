@@ -14,15 +14,15 @@ class CustomTextView: UITextView {
     
     // Override the touches because I don't want any funky behavior from them
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
-        log.info("Touches began")
+//        log.info("Touches began")
     }
     
     override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?) {
-        log.info("Touches moved")
+//        log.info("Touches moved")
     }
     
     override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
-        log.info("Touches ended")
+//        log.info("Touches ended")
     }
 
     override var canBecomeFirstResponder: Bool {
@@ -107,7 +107,6 @@ class ChatCell: BaseCollectionCell, UITextViewDelegate {
         imageView.layer.masksToBounds = true
         return imageView
     }()
-
     
     fileprivate let BUBBLE_RECIPIENT_IMAGE = UIImage(named: "bubble_recipient")?.resizableImage(withCapInsets: UIEdgeInsets(top: 22, left: 26, bottom: 22, right: 26))
     fileprivate let BUBBLE_ME_IMAGE = UIImage(named: "bubble_me")?.resizableImage(withCapInsets: UIEdgeInsets(top: 22, left: 26, bottom: 22, right: 26))
@@ -129,45 +128,19 @@ class ChatCell: BaseCollectionCell, UITextViewDelegate {
         textBubbleView.addSubview(bubbleImageView)
         textBubbleView.addConstraintsWithFormat("H:|[v0]|", views: bubbleImageView)
         textBubbleView.addConstraintsWithFormat("V:|[v0]|", views: bubbleImageView)
-        
     }
     
     fileprivate func populateCellWithImage(image: UIImage?) {
         self.profileImageView.image = image
     }
     
-    func isAllEmoji(aString: String) -> Bool {
-        for scalar in aString.unicodeScalars {
-            switch scalar.value {
-            case 0x1F600...0x1F64F, // Emoticons
-            0x1F300...0x1F5FF, // Misc Symbols and Pictographs
-            0x1F680...0x1F6FF, // Transport and Map
-            0x2600...0x26FF,   // Misc symbols
-            0x2700...0x27BF,   // Dingbats
-            0xFE00...0xFE0F,   // Variation Selectors
-            0x0030...0x0039,
-            0x00A9...0x00AE,
-            0x203C...0x2049,
-            0x2122...0x3299,
-            0x1F004...0x1F251,
-            0x1F910...0x1F990:
-                break
-            default:
-                return false
-            }
-        }
-        return true
-    }
-    
-    
-
-    
     func configureCell(messageObj: ConnectionMessage, viewWidth: CGFloat, isLastInChain: Bool) {
         self.message = messageObj
         let messageText = self.message.text
-        self.messageTextView.isScrollEnabled = true
-        self.messageTextView.text = self.message?.text
 
+        // Attributed text is crucial, normal text will screw up if emoji is sent
+        self.messageTextView.attributedText = NSAttributedString(string: self.message!.text, attributes: [NSFontAttributeName: TEXT_VIEW_FONT])
+        
         // Download profile image
         self.request = downloadImage(imageUrlString: self.message.connection.profileImageName, completed: { (image) in
             self.populateCellWithImage(image: image)
@@ -175,69 +148,56 @@ class ChatCell: BaseCollectionCell, UITextViewDelegate {
         
         let size = CGSize(width: 250.0, height: CGFloat.greatestFiniteMagnitude)
         let options = NSStringDrawingOptions.usesFontLeading.union(.usesLineFragmentOrigin)
+        let estimatedFrame: CGRect = NSString(string: messageText).boundingRect(with: size, options: options, attributes: [NSFontAttributeName: TEXT_VIEW_FONT], context: nil)
         
-        let sizeFit = messageTextView.sizeThatFits(size)
-        
-        var estimatedFrame: CGRect!
-        
-        estimatedFrame = CGRect(x: 0.0, y: 0.0, width: sizeFit.width, height: sizeFit.height)
-        
-        if isAllEmoji(aString: messageText) {
-            // TODO: Fix the emoji
-            
-            
-            estimatedFrame = NSString(string: messageText).boundingRect(with: size, options: options, attributes: [NSFontAttributeName: TEXT_VIEW_FONT], context: nil)
-            log.info("emoji text: \(messageText) and frame: \(estimatedFrame)")
-        } else {
-            estimatedFrame = NSString(string: messageText).boundingRect(with: size, options: options, attributes: [NSFontAttributeName: TEXT_VIEW_FONT], context: nil)
-            log.info("normal text: \(messageText) and frame: \(estimatedFrame)")
-            
-        }
-
         // Bunch of math going here: No need to tune these numbers, they look fine on all screens
+        let textBubbleWidth: CGFloat = estimatedFrame.width + 20 + 8
+        let textBubbleHeight: CGFloat = estimatedFrame.height + 16
+        let messageTextWidth: CGFloat = estimatedFrame.width + 16
+        let messageTextHeight: CGFloat = estimatedFrame.height + 16
         
-        if !self.message.isSentByYou {
+        if self.message.isSentByYou {
             
-            // Message on right side 
+            // Message on right side
             
+            self.profileImageView.isHidden = true
+            self.messageTextView.textColor = UIColor.white
+
+            if isLastInChain {
+                // Apply tail
+                self.messageTextView.frame = CGRect(x: viewWidth - estimatedFrame.width - 16 - 16 - 8, y: 2, width: messageTextWidth, height: messageTextHeight)
+                self.textBubbleView.frame = CGRect(x: viewWidth - estimatedFrame.width - 16 - 8 - 16 - 8, y: -1, width: textBubbleWidth + 8, height: textBubbleHeight + 6)
+                self.bubbleImageView.backgroundColor = UIColor.clear
+                self.bubbleImageView.image = BUBBLE_ME_IMAGE
+                self.bubbleImageView.tintColor = GREEN_UICOLOR
+            } else {
+                self.messageTextView.frame = CGRect(x: viewWidth - estimatedFrame.width - 16 - 16 - 8, y: 0, width: messageTextWidth, height: messageTextHeight)
+                self.textBubbleView.frame = CGRect(x: viewWidth - estimatedFrame.width - 16 - 8 - 16 - 8, y: 0, width: textBubbleWidth, height: textBubbleHeight)
+                self.bubbleImageView.image = nil
+                self.bubbleImageView.backgroundColor = GREEN_UICOLOR
+            }
+
+        } else {
+    
+            // Message on left side
+    
             self.profileImageView.isHidden = false
             self.messageTextView.textColor = UIColor.black
             
             if isLastInChain {
                 // Apply tail
-                self.messageTextView.frame = CGRect(x: 45 + 8, y: 3, width: estimatedFrame.width + 14, height: estimatedFrame.height + 16)
-                self.textBubbleView.frame = CGRect(x: 45 - 8, y: 0, width: estimatedFrame.width + 20 + 8 + 8, height: estimatedFrame.height + 16 + 8)
+                self.messageTextView.frame = CGRect(x: 45 + 8, y: 2, width: messageTextWidth, height: messageTextHeight)
+                self.textBubbleView.frame = CGRect(x: 45 - 8, y: -1, width: textBubbleWidth + 8, height: textBubbleHeight + 6)
                 self.bubbleImageView.backgroundColor = UIColor.clear
                 self.bubbleImageView.image = BUBBLE_RECIPIENT_IMAGE
                 self.bubbleImageView.tintColor = UIColor(white: 0.95, alpha: 1)
             } else {
-                self.messageTextView.frame = CGRect(x: 45 + 8, y: 0, width: estimatedFrame.width + 14, height: estimatedFrame.height + 16)
+                self.messageTextView.frame = CGRect(x: 45 + 8, y: 0, width: messageTextWidth, height: messageTextHeight)
+                self.textBubbleView.frame = CGRect(x: 45, y: 0, width: textBubbleWidth, height: textBubbleHeight)
                 self.bubbleImageView.image = nil
-                self.textBubbleView.frame = CGRect(x: 45, y: 2, width: estimatedFrame.width + 20 + 8, height: estimatedFrame.height + 16)
                 self.bubbleImageView.backgroundColor = UIColor(white: 0.95, alpha: 1)
             }
-        } else {
-            
-            // Message on left side
-            
-            self.profileImageView.isHidden = true
-            self.messageTextView.textColor = UIColor.white
-            
-            if isLastInChain {
-                // Apply tail
-                self.messageTextView.frame = CGRect(x: viewWidth - estimatedFrame.width - 16 - 16 - 8, y: 3, width: estimatedFrame.width + 16, height: estimatedFrame.height + 16)
-                self.bubbleImageView.backgroundColor = UIColor.clear
-                self.textBubbleView.frame = CGRect(x: viewWidth - estimatedFrame.width - 16 - 8 - 16 - 8, y: -1, width: estimatedFrame.width + 20 + 8 + 8, height: estimatedFrame.height + 16 + 8)
-                self.bubbleImageView.image = BUBBLE_ME_IMAGE
-                self.bubbleImageView.tintColor = GREEN_UICOLOR
-            } else {
-                self.messageTextView.frame = CGRect(x: viewWidth - estimatedFrame.width - 16 - 16 - 8, y: 0, width: estimatedFrame.width + 16, height: estimatedFrame.height + 16)
-                self.bubbleImageView.image = nil
-                self.textBubbleView.frame = CGRect(x: viewWidth - estimatedFrame.width - 16 - 8 - 16 - 8, y: 0, width: estimatedFrame.width + 20 + 8, height: estimatedFrame.height + 16)
-                self.bubbleImageView.backgroundColor = GREEN_UICOLOR
-            }
         }
-        self.messageTextView.isScrollEnabled = false
     }
     
     func notifyControllerToExpand(tap: UITapGestureRecognizer) {
