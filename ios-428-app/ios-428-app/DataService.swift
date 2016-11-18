@@ -85,7 +85,7 @@ class DataService {
         saveName(name: name)
         
         let timeNow = Date().timeIntervalSince1970
-        let user: [String: Any] = ["authuid": authuid, "name": name, "birthday": birthday, "profilePhoto": pictureUrl, "timezone": timezone, "lastSeen": timeNow]
+        var user: [String: Any] = ["authuid": authuid, "name": name, "birthday": birthday, "profilePhoto": pictureUrl, "timezone": timezone, "lastSeen": timeNow]
         self.REF_USERS.child(uid).observeSingleEvent(of: .value, with: { snapshot in
             if snapshot.exists() {
                 // Check if user has already filled in at least org, school and discipline, if not label first time user
@@ -99,6 +99,7 @@ class DataService {
                 })
             } else {
                 // Create new user
+                user["badgeCount"] = 0
                 self.REF_USERS.child(uid).setValue(user, withCompletionBlock: { (error, ref) in
                     completed(error == nil, true)
                 })
@@ -463,27 +464,63 @@ class DataService {
         let poster = uid
         let chatId: String = getChatId(uid1: uid, uid2: connection.uid)
         let timestamp = Date().timeIntervalSince1970
-        
-        // Creates new message in two places: Messages and Chats (lastMessage)
-        // Do a multipath update to preserve atomicity, even for offline updates
-        
         let messagesRef: FIRDatabaseReference = REF_MESSAGES.child(chatId).childByAutoId()
         let mid = messagesRef.key
         let newMessage: [String: Any] = ["message": text, "timestamp": timestamp, "poster": poster]
         
-        REF_BASE.updateChildValues(["messages/\(chatId)/\(mid)": newMessage, "chats/\(chatId)/mid": mid, "chats/\(chatId)/lastMessage": text, "chats/\(chatId)/timestamp": timestamp, "chats/\(chatId)/poster": poster, "chats/\(chatId)/hasNew:\(uid)": false, "chats/\(chatId)/hasNew:\(connection.uid)": true]) { (err, ref) in
+        // Creates new message in two places: Messages and Chats (lastMessage)
+        // Do a multipath update to preserve atomicity, even for offline updates
+        REF_BASE.updateChildValues(["messages/\(chatId)/\(mid)": newMessage, "chats/\(chatId)/mid": mid, "chats/\(chatId)/lastMessage": text, "chats/\(chatId)/timestamp": timestamp, "chats/\(chatId)/poster": poster, "chats/\(chatId)/hasNew:\(uid)": false]) { (err, ref) in
             if (err != nil) {
                 completed(false, nil)
                 return
             }
-            // Add to notification queue
-            self.addToNotificationQueue(type: TokenType.CONNECTION, posterUid: uid, recipientUid: connection.uid, tid: "", title: "Connection", body: text)
             
-            // TODO: Increment badgeCount of the other person if his hasNew is false before setting
-            
+            // Populate front end with chat message - this is done before push notification logic because this has to be done fast!
             let msg = ConnectionMessage(mid: mid, text: text, connection: connection, date: Date(timeIntervalSince1970: timestamp), isSentByYou: true)
             connection.addMessage(message: msg)
             completed(true, connection)
+            
+            // Do push notification stuff here without a completion callback - Push notifications are not guaranteed to be delivered anyway
+            // If recipient's hasNew is true, don't increment badge count, because the recipient already has a badge for this chat
+            self.REF_CHATS.child(chatId).observeSingleEvent(of: .value, with: { chatSnap in
+                if !chatSnap.exists() {
+                    return
+                }
+                guard let chatDict = chatSnap.value as? [String: Any], let hasNew = chatDict["hasNew:\(connection.uid)"] as? Bool else {
+                    return
+                }
+                if hasNew {
+                    // There are already new messages from this chat for this user, just send a notification without updating badge
+                    self.addToNotificationQueue(type: TokenType.CONNECTION, posterUid: uid, recipientUid: connection.uid, tid: "", title: "Connection", body: text)
+                    return
+                }
+                // No new messages for this user, set hasNew to true, and increment badge count for this user in Users table
+                self.REF_CHATS.child("\(chatId)/hasNew:\(connection.uid)").setValue(true)
+                // Transaction to get current badge and update
+                self.incrementBadgeCount(uid: connection.uid, completed: { (isSuccess) in
+                    // After badge count is incremented, then push notification
+                    self.addToNotificationQueue(type: TokenType.CONNECTION, posterUid: uid, recipientUid: connection.uid, tid: "", title: "Connection", body: text)
+                })
+            })
+        }
+    }
+    
+    // Increments badge count of user to display the right number for push notifications
+    fileprivate func incrementBadgeCount(uid: String, completed: @escaping (_ isSuccess: Bool) -> ()) {
+        self.REF_USERS.child(uid).runTransactionBlock({ (currentData) -> FIRTransactionResult in
+            guard var user = currentData.value as? [String: Any] else {
+                return FIRTransactionResult.abort()
+            }
+            if let currentBadgeCount = user["badgeCount"] as? Int {
+                user["badgeCount"] = currentBadgeCount + 1
+            } else {
+                user["badgeCount"] = 1
+            }
+            currentData.value = user
+            return FIRTransactionResult.success(withValue: currentData)
+        }) { (error, committed, snapshot) in
+            completed(error == nil)
         }
     }
     

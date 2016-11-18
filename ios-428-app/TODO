@@ -1,9 +1,15 @@
 ==== BACKEND ====
 
 
-BUGS
-- Major: Once logout, cannot log back in?
+MAJOR BUGS
+- Once logout, cannot log back in? (Unable to replicate)
+- iOS 9: Chat screen keyboard blocking
+
+
+MINOR BUGS
 - Only allow copy of whole ChatCell: Wait for reply on stack overflow
+
+
 
 
 !TOPICS!

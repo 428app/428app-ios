@@ -62,12 +62,13 @@ func convertBirthdayToAge(birthday: String) -> Int {
 // Converts <lat>, <lon> String to <Country>, <City> String
 func convertLocationToCityAndCountry(location: String, completed: @escaping (_ cityCountry: String) -> ()) {
     let latlon = location.components(separatedBy: ",")
+    let errorLocation: String = "Location Unknown"
     if latlon.count != 2 {
-        completed("")
+        completed(errorLocation)
         return
     }
     guard let lat = Double(latlon[0].trim()), let lon = Double(latlon[1].trim()) else {
-        completed("")
+        completed(errorLocation)
         return
     }
     let geocoder = CLGeocoder()
@@ -75,12 +76,12 @@ func convertLocationToCityAndCountry(location: String, completed: @escaping (_ c
     
     geocoder.reverseGeocodeLocation(loc) { (placemarks, error) in
         if error != nil || placemarks == nil || placemarks!.count == 0 {
-            completed("")
+            completed(errorLocation)
             return
         }
         let place: CLPlacemark = placemarks![0]
         guard let address = place.addressDictionary else {
-            completed("")
+            completed(errorLocation)
             return
         }
         // Outputs <City>, <State>, <Country> provided city =/= state =/= country
