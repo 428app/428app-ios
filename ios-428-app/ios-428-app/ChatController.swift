@@ -835,7 +835,7 @@ class ChatController: UIViewController, UICollectionViewDelegateFlowLayout, UITe
         let options = NSStringDrawingOptions.usesFontLeading.union(.usesLineFragmentOrigin)
         let estimatedFrame = NSString(string: messageText).boundingRect(with: size, options: options, attributes: [NSFontAttributeName: UIFont.systemFont(ofSize: 16.0)], context: nil)
         
-        let defaultHeight = estimatedFrame.height + 20.0
+        let defaultHeight = estimatedFrame.height + 12
         
         if let cell = self.collectionView.cellForItem(at: indexPath) as? ChatCell {
             
@@ -844,7 +844,7 @@ class ChatController: UIViewController, UICollectionViewDelegateFlowLayout, UITe
                 self.cellTimeLabel.removeFromSuperview()
                 let cellFrame = self.collectionView.convert(cell.frame, to: self.view)
                 var yi = cellFrame.origin.y + cellFrame.height
-                yi += 2
+                yi += 6
                 if tappedIndexPath == nil {
                     // Not tapped yet
                     tappedIndexPath = indexPath
@@ -852,7 +852,7 @@ class ChatController: UIViewController, UICollectionViewDelegateFlowLayout, UITe
                 else {
                     // If tapping at an index below, need to change yi
                     if indexPath.section > tappedIndexPath!.section || (indexPath.section == tappedIndexPath!.section && indexPath.row > tappedIndexPath!.row) {
-                        yi -= 20
+                        yi -= 18
                     } else if indexPath.section == tappedIndexPath!.section && indexPath.row == tappedIndexPath!.row {
                         // Clicked to hide
                         self.tappedIndexPath = nil
@@ -884,7 +884,7 @@ class ChatController: UIViewController, UICollectionViewDelegateFlowLayout, UITe
                 self.collectionView.addSubview(cellTimeLabel)
                 cell.shouldExpand = false
                 // Return with expansion
-                return CGSize(width: view.frame.width, height: estimatedFrame.height + 40)
+                return CGSize(width: view.frame.width, height: defaultHeight + 20)
             }
         }
         // Return with no expansion
@@ -893,12 +893,12 @@ class ChatController: UIViewController, UICollectionViewDelegateFlowLayout, UITe
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
         // Padding around section headers
-        return UIEdgeInsets(top: 4, left: 0, bottom: 4, right: 0)
+        return UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
     }
     
     func expandCell(notif: Notification) {
         // Called by ChatCell's messageTextView to invalidate layout
-        UIView.animate(withDuration: 0.3) {
+        UIView.performWithoutAnimation {
             self.collectionView.collectionViewLayout.invalidateLayout()
         }
     }

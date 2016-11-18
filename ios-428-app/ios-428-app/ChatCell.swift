@@ -108,8 +108,8 @@ class ChatCell: BaseCollectionCell, UITextViewDelegate {
         return imageView
     }()
     
-    fileprivate let BUBBLE_RECIPIENT_IMAGE = UIImage(named: "bubble_recipient")?.resizableImage(withCapInsets: UIEdgeInsets(top: 22, left: 26, bottom: 22, right: 26))
-    fileprivate let BUBBLE_ME_IMAGE = UIImage(named: "bubble_me")?.resizableImage(withCapInsets: UIEdgeInsets(top: 22, left: 26, bottom: 22, right: 26))
+    fileprivate let BUBBLE_RECIPIENT_IMAGE = UIImage(named: "bubble_recipient")?.resizableImage(withCapInsets: UIEdgeInsets(top: 23, left: 26, bottom: 23, right: 26))
+    fileprivate let BUBBLE_ME_IMAGE = UIImage(named: "bubble_me")?.resizableImage(withCapInsets: UIEdgeInsets(top: 23, left: 26, bottom: 23, right: 26))
     
     fileprivate let bubbleImageView: UIImageView = {
         let imageView = UIImageView()
@@ -165,8 +165,8 @@ class ChatCell: BaseCollectionCell, UITextViewDelegate {
 
             if isLastInChain {
                 // Apply tail
-                self.messageTextView.frame = CGRect(x: viewWidth - estimatedFrame.width - 16 - 16 - 8, y: 2, width: messageTextWidth, height: messageTextHeight)
-                self.textBubbleView.frame = CGRect(x: viewWidth - estimatedFrame.width - 16 - 8 - 16 - 8, y: -1, width: textBubbleWidth + 8, height: textBubbleHeight + 6)
+                self.messageTextView.frame = CGRect(x: viewWidth - estimatedFrame.width - 16 - 16 - 8, y: -2, width: messageTextWidth, height: messageTextHeight + 3)
+                self.textBubbleView.frame = CGRect(x: viewWidth - estimatedFrame.width - 16 - 8 - 16 - 12, y: -3, width: textBubbleWidth + 16, height: textBubbleHeight + 3)
                 self.bubbleImageView.backgroundColor = UIColor.clear
                 self.bubbleImageView.image = BUBBLE_ME_IMAGE
                 self.bubbleImageView.tintColor = GREEN_UICOLOR
@@ -186,8 +186,8 @@ class ChatCell: BaseCollectionCell, UITextViewDelegate {
             
             if isLastInChain {
                 // Apply tail
-                self.messageTextView.frame = CGRect(x: 45 + 8, y: 2, width: messageTextWidth, height: messageTextHeight)
-                self.textBubbleView.frame = CGRect(x: 45 - 8, y: -1, width: textBubbleWidth + 8, height: textBubbleHeight + 6)
+                self.messageTextView.frame = CGRect(x: 45 + 8, y: -2, width: messageTextWidth, height: messageTextHeight + 3)
+                self.textBubbleView.frame = CGRect(x: 45 - 8, y: -3, width: textBubbleWidth + 8, height: textBubbleHeight + 3)
                 self.bubbleImageView.backgroundColor = UIColor.clear
                 self.bubbleImageView.image = BUBBLE_RECIPIENT_IMAGE
                 self.bubbleImageView.tintColor = UIColor(white: 0.95, alpha: 1)
