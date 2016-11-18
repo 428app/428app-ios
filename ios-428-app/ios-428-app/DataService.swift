@@ -461,6 +461,7 @@ class DataService {
     }
     
     // Adds a chat message to the messages with a connection, used in ChatController
+    // It's a long function mainly because we have to decide whether to push this user a notification and update the badge count
     func addChatMessage(connection: Connection, text: String, completed: @escaping (_ isSuccess: Bool, _ connection: Connection?) -> ()) {
         guard let uid = getStoredUid() else {
             completed(false, nil)
@@ -487,25 +488,43 @@ class DataService {
             completed(true, connection)
             
             // Do push notification stuff here without a completion callback - Push notifications are not guaranteed to be delivered anyway
-            // If recipient's hasNew is true, don't increment badge count, because the recipient already has a badge for this chat
-            self.REF_CHATS.child(chatId).observeSingleEvent(of: .value, with: { chatSnap in
-                if !chatSnap.exists() {
-                    return
+            
+            // First check if the recipient has UserSettings - connectionMessages set to true. If not, don't bother queuing a push notification.
+            self.REF_USERSETTINGS.child("\(connection.uid)/connectionMessages").observeSingleEvent(of: .value, with: { settingsSnap in
+                // If the connection messages setting exists, and is set to False, then terminate here
+                if settingsSnap.exists() {
+                    if let allowsMessagePush = settingsSnap.value as? Bool {
+                        if !allowsMessagePush {
+                            // Set the right hasNew, then terminate
+                            // NOTE: There is a small but unnoticeable bug here. Since we set the hasNew to true (so as to display the bold font in ChatController), when the user enables connection messages before reading the chats that were sent when it was turned off, the user will NOT receive push notifications
+                            self.REF_CHATS.child("\(chatId)/hasNew:\(connection.uid)").setValue(true)
+                            return
+                        }
+                    }
                 }
-                guard let chatDict = chatSnap.value as? [String: Any], let hasNew = chatDict["hasNew:\(connection.uid)"] as? Bool else {
-                    return
-                }
-                if hasNew {
-                    // There are already new messages from this chat for this user, just send a notification without updating badge
-                    self.addToNotificationQueue(type: TokenType.CONNECTION, posterUid: uid, recipientUid: connection.uid, tid: "", title: "Connection", body: text)
-                    return
-                }
-                // No new messages for this user, set hasNew to true, and increment badge count for this user in Users table
-                self.REF_CHATS.child("\(chatId)/hasNew:\(connection.uid)").setValue(true)
-                // Transaction to get current badge and update
-                self.adjustBadgeCount(isIncrement: true, uid: connection.uid, completed: { (isSuccess) in
-                    // After badge count is incremented, then push notification
-                    self.addToNotificationQueue(type: TokenType.CONNECTION, posterUid: uid, recipientUid: connection.uid, tid: "", title: "Connection", body: text)
+                
+                // Else, settings enabled, carry on to manage badge count and push notification
+                
+                // If recipient's hasNew is true, don't increment badge count, because the recipient already has a badge for this chat
+                self.REF_CHATS.child(chatId).observeSingleEvent(of: .value, with: { chatSnap in
+                    if !chatSnap.exists() {
+                        return
+                    }
+                    guard let chatDict = chatSnap.value as? [String: Any], let hasNew = chatDict["hasNew:\(connection.uid)"] as? Bool else {
+                        return
+                    }
+                    if hasNew {
+                        // There are already new messages from this chat for this user, just send a notification without updating badge
+                        self.addToNotificationQueue(type: TokenType.CONNECTION, posterUid: uid, recipientUid: connection.uid, tid: "", title: "Connection", body: text)
+                        return
+                    }
+                    // No new messages for this user, set hasNew to true, and increment badge count for this user in Users table
+                    self.REF_CHATS.child("\(chatId)/hasNew:\(connection.uid)").setValue(true)
+                    // Transaction to get current badge and update
+                    self.adjustBadgeCount(isIncrement: true, uid: connection.uid, completed: { (isSuccess) in
+                        // After badge count is incremented, then push notification
+                        self.addToNotificationQueue(type: TokenType.CONNECTION, posterUid: uid, recipientUid: connection.uid, tid: "", title: "Connection", body: text)
+                    })
                 })
             })
         }
@@ -603,7 +622,7 @@ class DataService {
             return
         }
         // Replace all existing settings
-        let settings: [String: Bool] = ["newConnections": newConnections, "newTopics": newTopics, "dailyAlert": dailyAlert, "connectionMessages": connectionMessages, "topicMessages": topicMessages]
+        let settings: [String: Bool] = ["newConnections": newConnections, "newTopics": newTopics, "dailyAlert": dailyAlert, "connectionMessages": connectionMessages, "topicMessages": topicMessages, "inAppNotifications": inAppNotifications]
         REF_USERSETTINGS.child(uid).setValue(settings, withCompletionBlock: { (err, ref) in
             completed(err == nil)
         })
