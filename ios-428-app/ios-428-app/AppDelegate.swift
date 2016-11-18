@@ -151,7 +151,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             sound = default;
          }
          **/
-        guard let aps = userInfo["aps"] as? [String: Any], let alert = aps["alert"] as? [String: String], let badge = aps["badge"] as? Int else {
+        guard let aps = userInfo["aps"] as? [String: Any], let alert = aps["alert"] as? [String: String], let _ = aps["badge"] as? Int else {
             return
         }
         
@@ -160,6 +160,15 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         }
         
         if isForeground {
+            
+            // First check if inApp setting is enabled or disabled
+            if let canShowInApp = userInfo["inApp"] as? String {
+                // False string is used here because we can't just case String to Bool from payload
+                if canShowInApp == "false" {
+                    return
+                }
+            }
+            
             // Download image, then show popup after complete
             _ = downloadImage(imageUrlString: imageUrlString, completed: { (image) in
                 self.showPopup(title: title, subtitle: body, image: image, uid: uid, tid: tid, type: type)

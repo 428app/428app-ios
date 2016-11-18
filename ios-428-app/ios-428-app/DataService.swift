@@ -649,7 +649,6 @@ class DataService {
         })
     }
     
-    
     // MARK: Test functions
     
     func connectWithAll() {
