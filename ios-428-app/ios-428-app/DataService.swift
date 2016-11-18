@@ -502,24 +502,6 @@ class DataService {
         }
     }
     
-    // Increments badge count of user to display the right number for push notifications
-    fileprivate func adjustBadgeCount(isIncrement: Bool, uid: String, completed: @escaping (_ isSuccess: Bool) -> ()) {
-        self.REF_USERS.child(uid).runTransactionBlock({ (currentData) -> FIRTransactionResult in
-            guard var user = currentData.value as? [String: Any] else {
-                return FIRTransactionResult.abort()
-            }
-            if let currentBadgeCount = user["badgeCount"] as? Int {
-                user["badgeCount"] = isIncrement ? currentBadgeCount + 1 : currentBadgeCount - 1
-            } else {
-                user["badgeCount"] = isIncrement ? 1 : 0
-            }
-            currentData.value = user
-            return FIRTransactionResult.success(withValue: currentData)
-        }) { (error, committed, snapshot) in
-            completed(error == nil)
-        }
-    }
-    
     // Called whenever a user clicks on a connection that is not previously seen to update the connection's
     // message to seen. Also decrements badge count. Used in ConnectionsController.
     func seeConnectionMessages(connection: Connection, completed: @escaping (_ isSuccess: Bool) -> ()) {
@@ -539,13 +521,50 @@ class DataService {
         }
     }
     
-    // MARK: Remote notifications Queue
+    // MARK: Remote notifications
     
     // Upon sending a message in topic or chat, add a notification to the Queue for server workers to process
     func addToNotificationQueue(type: TokenType, posterUid: String, recipientUid: String, tid: String, title: String, body: String) {
         // No need to async callback because notifications are not guaranteed anyway
         let dict = ["type": type.rawValue, "posterUid": posterUid, "recipientUid": recipientUid, "tid": tid, "title": title, "body": body]
         REF_QUEUE.childByAutoId().setValue(dict)
+    }
+    
+    // Increments badge count of user to display the right number for push notifications
+    fileprivate func adjustBadgeCount(isIncrement: Bool, uid: String, completed: @escaping (_ isSuccess: Bool) -> ()) {
+        self.REF_USERS.child(uid).runTransactionBlock({ (currentData) -> FIRTransactionResult in
+            guard var user = currentData.value as? [String: Any] else {
+                return FIRTransactionResult.abort()
+            }
+            if let currentBadgeCount = user["badgeCount"] as? Int {
+                user["badgeCount"] = isIncrement ? currentBadgeCount + 1 : currentBadgeCount - 1
+            } else {
+                user["badgeCount"] = isIncrement ? 1 : 0
+            }
+            currentData.value = user
+            return FIRTransactionResult.success(withValue: currentData)
+        }) { (error, committed, snapshot) in
+            completed(error == nil)
+        }
+    }
+    
+    // Get badge count used in AppDelegate before user goes to background
+    func getBadgeCount(completed: @escaping (_ isSuccess: Bool, _ count: Int) -> ()) {
+        guard let uid = getStoredUid() else {
+            completed(false, -1)
+            return
+        }
+        REF_USERS.child("\(uid)/badgeCount").observe(.value, with: { snapshot in
+            if !snapshot.exists() {
+                completed(true, 0)
+                return
+            }
+            guard let count = snapshot.value as? Int else {
+                completed(true, 0)
+                return
+            }
+            completed(true, count)
+        })
     }
     
     // MARK: Test functions

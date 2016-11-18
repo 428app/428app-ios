@@ -1,6 +1,10 @@
 ==== BACKEND ====
 
 
+- Update data model
+- Consider changing primary user key to auth_uid instead of fbid
+
+
 MAJOR BUGS
 - Once logout, cannot log back in? (Unable to replicate)
 - iOS 9: Chat screen keyboard blocking
