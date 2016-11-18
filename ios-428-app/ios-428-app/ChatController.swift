@@ -190,6 +190,9 @@ class ChatController: UIViewController, UICollectionViewDelegateFlowLayout, UITe
     }
     
     fileprivate func observeMore() {
+        
+        self.removeTimeLabel()
+        
         if self.queryAndHandle != nil {
             self.queryAndHandle.0.removeObserver(withHandle: self.queryAndHandle.1)
         }
@@ -321,7 +324,8 @@ class ChatController: UIViewController, UICollectionViewDelegateFlowLayout, UITe
             self.organizeMessages()
             self.collectionView.reloadData()
             self.scrollToLastItemInCollectionView(animated: false)
-            self.cellTimeLabel.removeFromSuperview()
+            self.removeTimeLabel()
+            
         }
     }
     
@@ -835,7 +839,7 @@ class ChatController: UIViewController, UICollectionViewDelegateFlowLayout, UITe
         let options = NSStringDrawingOptions.usesFontLeading.union(.usesLineFragmentOrigin)
         let estimatedFrame = NSString(string: messageText).boundingRect(with: size, options: options, attributes: [NSFontAttributeName: UIFont.systemFont(ofSize: 16.0)], context: nil)
         
-        let defaultHeight = estimatedFrame.height + 12
+        let defaultHeight = estimatedFrame.height + 17
         
         if let cell = self.collectionView.cellForItem(at: indexPath) as? ChatCell {
             
@@ -893,13 +897,25 @@ class ChatController: UIViewController, UICollectionViewDelegateFlowLayout, UITe
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
         // Padding around section headers
-        return UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
+        return UIEdgeInsets(top: 4, left: 0, bottom: 4, right: 0)
     }
     
     func expandCell(notif: Notification) {
         // Called by ChatCell's messageTextView to invalidate layout
         UIView.performWithoutAnimation {
             self.collectionView.collectionViewLayout.invalidateLayout()
+        }
+    }
+    
+    // Remove time label is called upon observing more messages (pull up) and reobserve (new messages coming in)
+    fileprivate func removeTimeLabel() {
+        self.cellTimeLabel.removeFromSuperview()
+        // Find index path and set unchecked
+        if tappedIndexPath != nil {
+            if let cell = collectionView(self.collectionView, cellForItemAt: tappedIndexPath!) as? ChatCell {
+                self.tappedIndexPath = nil
+                cell.shouldExpand = false
+            }
         }
     }
 }

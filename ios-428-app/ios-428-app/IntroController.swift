@@ -10,7 +10,7 @@
 import Foundation
 import UIKit
 
-class IntroController: UIViewController, UIScrollViewDelegate, UITextFieldDelegate, UIPickerViewDelegate, UIPickerViewDataSource, UITextViewDelegate {
+class IntroController: UIViewController, UIScrollViewDelegate, UITextFieldDelegate, UIPickerViewDelegate, UIPickerViewDataSource, UITextViewDelegate, UIGestureRecognizerDelegate {
     
     fileprivate let MAX_TEXTFIELD_CHARACTERS = 40
     fileprivate let MAX_TEXTVIEW_CHARACTERS = 400
@@ -231,8 +231,20 @@ class IntroController: UIViewController, UIScrollViewDelegate, UITextFieldDelega
         let picker = UIPickerView()
         picker.delegate = self
         picker.tintColor = GREEN_UICOLOR
+        picker.isUserInteractionEnabled = true
+        let tap = UITapGestureRecognizer(target: self, action: #selector(keepPickerView))
+        tap.delegate = self
+        picker.addGestureRecognizer(tap)
         return picker
     }()
+    
+    func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWith otherGestureRecognizer: UIGestureRecognizer) -> Bool {
+        return true
+    }
+    
+    func keepPickerView() {
+        self.view.endEditing(true)
+    }
     
     func numberOfComponents(in pickerView: UIPickerView) -> Int {
         return 1
@@ -250,6 +262,7 @@ class IntroController: UIViewController, UIScrollViewDelegate, UITextFieldDelega
         disciplineTextField.text = DISCIPLINE_OPTIONS[row]
         enableGo(yes: orgTextField.text!.characters.count > 0 && schoolTextField.text!.characters.count > 0)
         editDisciplineIconInTextField(imageString: DISCIPLINE_ICONS[row])
+//        self.view.endEditing(true)
     }
     
     fileprivate func setupSlider1() {
@@ -271,7 +284,7 @@ class IntroController: UIViewController, UIScrollViewDelegate, UITextFieldDelega
         slider1View.addConstraintsWithFormat("H:|-15-[v0]-15-|", views: disciplineTextField)
         slider1View.addConstraintsWithFormat("H:|-15-[v0]-15-|", views: slider1FillInNow)
         
-        let margin: CGFloat = (scrollView.frame.height - 390) / 2.0
+        let margin: CGFloat = max((UIScreen.main.bounds.height - 450) / 2.0, 0.0)
         
         slider1View.addConstraintsWithFormat("V:|-\(margin)-[v0(40)]-15-[v1(20)]-5-[v2(45)]-25-[v3(20)]-5-[v4(45)]-25-[v5(20)]-5-[v6(45)]-10-[v7(20)]", views: firstTellUsLabel, orgTitleLabel, orgTextField, schoolTitleLabel, schoolTextField, disciplineTitleLabel, disciplineTextField, slider1FillInNow)
     }
@@ -365,7 +378,7 @@ class IntroController: UIViewController, UIScrollViewDelegate, UITextFieldDelega
         slider2View.addConstraintsWithFormat("H:|-8-[v0]-8-|", views: tagline1CountLabel)
         slider2View.addConstraintsWithFormat("H:|-8-[v0]-8-|", views: tagline1FillInLater)
         
-        let margin: CGFloat = (scrollView.frame.height - 300) / 2.0
+        let margin: CGFloat = max((UIScreen.main.bounds.height - 350) / 2.0, 0.0)
         
         // Each text view is 0.3 * screenSize
         let textviewHeight = 0.28 * UIScreen.main.bounds.height
@@ -419,7 +432,7 @@ class IntroController: UIViewController, UIScrollViewDelegate, UITextFieldDelega
         slider3View.addConstraintsWithFormat("H:|-8-[v0]-8-|", views: tagline2CountLabel)
         slider3View.addConstraintsWithFormat("H:|-8-[v0]-8-|", views: tagline2FillInLater)
         
-        let margin: CGFloat = (scrollView.frame.height - 300) / 2.0
+        let margin: CGFloat = max((UIScreen.main.bounds.height - 350) / 2.0, 0.0)
         
         // Each text view is 0.3 * screenSize
         let textviewHeight = 0.28 * UIScreen.main.bounds.height
@@ -494,6 +507,7 @@ class IntroController: UIViewController, UIScrollViewDelegate, UITextFieldDelega
                 showErrorAlert(vc: self, title: "Unable to proceed", message: "We apologize. We seem to be unable to log you in at this time. Please try again later.")
             } else {
                 justFinishedIntro = true
+                // TODO: This has to be removed on production
                 DataService.ds.connectWithAll()
                 setHasToFillInfo(hasToFill: false)
                 self.dismiss(animated: true, completion: nil)
@@ -512,7 +526,7 @@ class IntroController: UIViewController, UIScrollViewDelegate, UITextFieldDelega
         slider4View.addConstraintsWithFormat("H:|-15-[v0]-15-|", views: goButton)
         slider4View.addConstraintsWithFormat("H:|-15-[v0]-15-|", views: cautionText)
         
-        let margin: CGFloat = (scrollView.frame.height - 200) / 2.0
+        let margin: CGFloat = max((UIScreen.main.bounds.height - 300) / 2.0, 0.0)
         slider4View.addConstraintsWithFormat("V:|-\(margin)-[v0(60)]-8-[v1(40)]-8-[v2(40)]-8-[v3(30)]", views: descriptionLabel, _428Label, goButton, cautionText)
     }
     

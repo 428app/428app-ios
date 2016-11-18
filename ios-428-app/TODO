@@ -3,7 +3,6 @@
 
 BUGS
 - Major: Once logout, cannot log back in?
-
 - Only allow copy of whole ChatCell: Wait for reply on stack overflow
 
 
@@ -27,7 +26,6 @@ BUGS
 !PROFILE!
 - Pre-load profile in ChatController and pass it on
 - Load in profile and pass it back to ChatController
-- Chat message sanitization on server
 
 !SECURITY and INDEX SETTINGS!
 

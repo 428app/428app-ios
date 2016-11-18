@@ -9,9 +9,9 @@
 import Foundation
 
 // TODO: Add in the full list of disciplines here
-let DISCIPLINE_OPTIONS = ["Business", "Computer Science", "Biology", "East Asian Studies", "Physics", "Electrical Engineering"]
+let DISCIPLINE_OPTIONS = ["", "Business", "Computer Science", "Biology", "East Asian Studies", "Physics", "Electrical Engineering"]
 // Maps in sorted order
-let DISCIPLINE_ICONS = ["business", "computer", "biology", "eastasian", "physics", "electricengineering"]
+let DISCIPLINE_ICONS = ["", "business", "computer", "biology", "eastasian", "physics", "electricengineering"]
 func getDisciplineIconForDiscipline(discipline: String) -> String {
     let ind = DISCIPLINE_OPTIONS.index(of: discipline)
     if ind != nil && ind! > 0 && ind! < DISCIPLINE_ICONS.count {

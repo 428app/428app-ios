@@ -89,11 +89,14 @@ class DataService {
         self.REF_USERS.child(uid).observeSingleEvent(of: .value, with: { snapshot in
             if snapshot.exists() {
                 // Check if user has already filled in at least org, school and discipline, if not label first time user
-                guard let userDict = snapshot.value as? [String: Any], let _ = userDict["organization"] as? String, let _ = userDict["school"] as? String, let _ = userDict["discipline"] as? String else {
-                    completed(true, true)
-                    return
+                var isFirstTimeUser = true
+                if let userDict = snapshot.value as? [String: Any], let _ = userDict["organization"] as? String, let _ = userDict["school"] as? String, let _ = userDict["discipline"] as? String {
+                    isFirstTimeUser = false
                 }
-                completed(true, false)
+                // Update user info
+                self.REF_USERS.child(uid).updateChildValues(user, withCompletionBlock: { (err, ref) in
+                    completed(err == nil, isFirstTimeUser)
+                })
             } else {
                 // Create new user
                 self.REF_USERS.child(uid).setValue(user, withCompletionBlock: { (error, ref) in

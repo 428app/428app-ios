@@ -9,7 +9,7 @@
 import Foundation
 import UIKit
 
-class EditProfessionalController: UIViewController, UITextFieldDelegate, UIPickerViewDelegate, UIPickerViewDataSource {
+class EditProfessionalController: UIViewController, UITextFieldDelegate, UIPickerViewDelegate, UIPickerViewDataSource, UIGestureRecognizerDelegate {
     
     fileprivate let MAX_CHARACTERS = 40
     fileprivate var hasFieldsChanged = false // Used to prevent unnecessary updating of server when user presses back
@@ -232,8 +232,19 @@ class EditProfessionalController: UIViewController, UITextFieldDelegate, UIPicke
        let picker = UIPickerView()
         picker.delegate = self
         picker.tintColor = GREEN_UICOLOR
+        let tap = UITapGestureRecognizer(target: self, action: #selector(keepPickerView))
+        tap.delegate = self
+        picker.addGestureRecognizer(tap)
         return picker
     }()
+    
+    func keepPickerView() {
+        self.view.endEditing(true)
+    }
+    
+    func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWith otherGestureRecognizer: UIGestureRecognizer) -> Bool {
+        return true
+    }
     
     func numberOfComponents(in pickerView: UIPickerView) -> Int {
         return 1

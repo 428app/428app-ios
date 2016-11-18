@@ -191,7 +191,7 @@ class LoginController: UIViewController, UIScrollViewDelegate, CLLocationManager
                 if isFirstTimeUser {
                     setHasToFillInfo(hasToFill: true)
                 }
-                
+
                 // Successfully updated user info in DB, get user's location, and log user in!
                 self.startLocationManager()
                 let controller = isFirstTimeUser ? IntroController() : CustomTabBarController()
