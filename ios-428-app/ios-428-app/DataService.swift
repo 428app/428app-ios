@@ -22,6 +22,7 @@ class DataService {
     fileprivate var _REF_CHATS = FIRDatabase.database().reference().child("/chats")
     fileprivate var _REF_MESSAGES = FIRDatabase.database().reference().child("/messages")
     fileprivate var _REF_QUEUE = FIRDatabase.database().reference().child("/queue/tasks") // Queue for notifications to be sent out
+    fileprivate var _REF_USERSETTINGS = FIRDatabase.database().reference().child("/userSettings")
     
     var REF_BASE: FIRDatabaseReference {
         get {
@@ -53,6 +54,12 @@ class DataService {
         }
     }
     
+    var REF_USERSETTINGS: FIRDatabaseReference {
+        get {
+            return _REF_USERSETTINGS
+        }
+    }
+    
     // To be called whenever user logs out
     func removeAllObservers() {
         _REF_BASE.removeAllObservers()
@@ -60,6 +67,7 @@ class DataService {
         _REF_CHATS.removeAllObservers()
         _REF_MESSAGES.removeAllObservers()
         _REF_QUEUE.removeAllObservers()
+        _REF_USERSETTINGS.removeAllObservers()
     }
     
     // MARK: User
@@ -99,10 +107,13 @@ class DataService {
                 })
             } else {
                 // Create new user
+                // TODO: Test creation of new user
                 user["badgeCount"] = 0
-                self.REF_USERS.child(uid).setValue(user, withCompletionBlock: { (error, ref) in
-                    completed(error == nil, true)
+                let userSettings = ["newConnections": true, "newTopics": true, "dailyAlert": true, "connectionMessages": true, "topicMessages": true, "inAppNotifications": true]
+                self.REF_BASE.updateChildValues(["/users/\(uid)": user, "/userSettings/\(uid)": userSettings], withCompletionBlock: { (err, ref) in
+                    completed(err == nil, true)
                 })
+                
             }
         })
     }
@@ -553,7 +564,7 @@ class DataService {
                 return FIRTransactionResult.abort()
             }
             if let currentBadgeCount = user["badgeCount"] as? Int {
-                user["badgeCount"] = isIncrement ? currentBadgeCount + 1 : currentBadgeCount - 1
+                user["badgeCount"] = max(isIncrement ? currentBadgeCount + 1 : currentBadgeCount - 1, 0)
             } else {
                 user["badgeCount"] = isIncrement ? 1 : 0
             }
@@ -582,6 +593,43 @@ class DataService {
             completed(true, count)
         })
     }
+    
+    // MARK: User settings
+    
+    // Used in SettingsController to update user settings
+    func updateUserSettings(newConnections: Bool, newTopics: Bool, dailyAlert: Bool, connectionMessages: Bool, topicMessages: Bool, inAppNotifications: Bool, completed: @escaping (_ isSuccess: Bool) -> ()) {
+        guard let uid = getStoredUid() else {
+            completed(false)
+            return
+        }
+        // Replace all existing settings
+        let settings: [String: Bool] = ["newConnections": newConnections, "newTopics": newTopics, "dailyAlert": dailyAlert, "connectionMessages": connectionMessages, "topicMessages": topicMessages]
+        REF_USERSETTINGS.child(uid).setValue(settings, withCompletionBlock: { (err, ref) in
+            completed(err == nil)
+        })
+    }
+    
+    // Used in SettingsController to get user settings
+    func getUserSettings(completed: @escaping (_ settings: [String: Bool]?) -> ()) {
+        guard let uid = getStoredUid() else {
+            completed(nil)
+            return
+        }
+        REF_USERSETTINGS.child(uid).observeSingleEvent(of: .value, with: { snapshot in
+            if !snapshot.exists() {
+                completed(nil)
+                return
+            }
+            guard let dict = snapshot.value as? [String: Bool], let newConnections = dict["newConnections"], let newTopics = dict["newTopics"], let dailyAlert = dict["dailyAlert"], let connectionMessages = dict["connectionMessages"], let topicMessages = dict["topicMessages"], let inAppNotifications = dict["inAppNotifications"] else {
+                completed(nil)
+                return
+            }
+            // These are settings are values mapped directly to the keys that will be displayed on the frontend
+            let settings = ["New connections": newConnections, "New topics": newTopics, "Daily alert": dailyAlert, "Connection messages": connectionMessages, "Topic messages": topicMessages, "In-app notifications": inAppNotifications]
+            completed(settings)
+        })
+    }
+    
     
     // MARK: Test functions
     

@@ -164,6 +164,10 @@ class SettingCell: BaseTableViewCell {
             
             // Handle toggle by appending switch
             
+            if setting.isOn != nil {
+                optionSwitch.isOn = setting.isOn!
+            }
+            
             addSubview(optionSwitch)
             viewsToRemove.append(optionSwitch)
             constraintsToDelete.append(contentsOf: addAndGetConstraintsWithFormat("H:|-16-[v0]", views: settingLabel))

@@ -19,14 +19,16 @@ class Setting {
     
     fileprivate var _text: String // Can be text or url for profilepic
     fileprivate var _type: Setting.TYPE
+    fileprivate var _isOn: Bool? // Used only by toggle type, otherwise nil
     fileprivate var _isLastCell: Bool
     fileprivate var _image: UIImage?
     
-    init(text: String, type: Setting.TYPE, image: UIImage? = nil, isLastCell: Bool = false) {
+    init(text: String, type: Setting.TYPE, image: UIImage? = nil, isLastCell: Bool = false, isOn: Bool? = nil) {
         _text = text
         _type = type
         _image = image
         _isLastCell = isLastCell
+        _isOn = isOn
     }
     
     var text: String {
@@ -53,6 +55,15 @@ class Setting {
     var isLastCell: Bool {
         get {
             return _isLastCell
+        }
+    }
+    
+    var isOn: Bool? {
+        get {
+            return _isOn
+        }
+        set(on) {
+            _isOn = on
         }
     }
 }

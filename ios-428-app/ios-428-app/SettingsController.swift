@@ -25,7 +25,43 @@ class SettingsController: UIViewController, UITableViewDelegate, UITableViewData
         tableView.register(SettingCell.self, forCellReuseIdentifier: self.CELL_ID)
         return tableView
     }()
-    fileprivate var settingsChosen = [String: Bool]()
+    
+    
+    fileprivate func setSettingTableBasedOnText(option: String, isOn: Bool) {
+        switch option {
+        case "New connections":
+            self.settings[2][0].isOn = isOn
+        case "New topics":
+            self.settings[2][1].isOn = isOn
+        case "Daily alert":
+            self.settings[3][0].isOn = isOn
+        case "Connection messages":
+            self.settings[3][1].isOn = isOn
+        case "Topic messages":
+            self.settings[3][2].isOn = isOn
+        case "In-app notifications":
+            self.settings[3][3].isOn = isOn
+        default:
+            return
+        }
+    }
+    
+    fileprivate var settingsChosen: [String: Bool]! {
+        didSet {
+            // Once set, reload table
+            for (option, isOn) in settingsChosen {
+                setSettingTableBasedOnText(option: option, isOn: isOn)
+            }
+            
+//            self.settings[2][0].isOn = self.settingsChosen["New connections"]
+//            self.settings[2][1].isOn = self.settingsChosen["New topics"]
+//            self.settings[3][0].isOn = self.settingsChosen["Daily alert"]
+//            self.settings[3][1].isOn = self.settingsChosen["Connection messages"]
+//            self.settings[3][2].isOn = self.settingsChosen["Topic messages"]
+//            self.settings[3][3].isOn = self.settingsChosen["In-app notifications"]
+            self.tableView.reloadData()
+        }
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -34,15 +70,6 @@ class SettingsController: UIViewController, UITableViewDelegate, UITableViewData
         self.navigationItem.title = "Settings"
         self.navigationItem.backBarButtonItem = UIBarButtonItem(title: " ", style: .plain, target: nil, action: nil)
         setupViews()
-    }
-    
-    // MARK: Getting setting change and sending them to server
-    
-    func saveSettings() {
-        // TODO: Send settings to server upon view disappearing
-        for (k, v) in settingsChosen {
-//            log.info("\(k): \(v)")
-        }
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -69,12 +96,23 @@ class SettingsController: UIViewController, UITableViewDelegate, UITableViewData
         timerForCountdown.invalidate()
         NotificationCenter.default.removeObserver(self, name: NOTIF_CHANGESETTING, object: nil)
         NotificationCenter.default.removeObserver(self, name: NOTIF_EDITPROFILE, object: nil)
-        self.saveSettings()
     }
     
+    
+    // Settings are updated to server upon every toggle
     func updateSettingsArr(notif: Notification) {
         if let userInfo = notif.userInfo as? [String: AnyObject], let option = userInfo["option"] as? String, let isOn = userInfo["isOn"] as? Bool {
-            settingsChosen[option] = isOn
+            self.settingsChosen[option] = isOn
+            
+            DataService.ds.updateUserSettings(newConnections: settingsChosen["New connections"]!, newTopics: settingsChosen["New topics"]!, dailyAlert: settingsChosen["Daily alert"]!, connectionMessages: settingsChosen["Connection messages"]!, topicMessages: settingsChosen["Topic messages"]!, inAppNotifications: settingsChosen["In-app notifications"]!, completed: { (isSuccess) in
+                if !isSuccess {
+                    log.error("[Error] Error updating user settings")
+                    // Revert settings chosen
+                    self.settingsChosen[option] = !isOn
+                    self.setSettingTableBasedOnText(option: option, isOn: !isOn)
+                    self.tableView.reloadData()
+                }
+            })
         }
     }
     
@@ -156,8 +194,14 @@ class SettingsController: UIViewController, UITableViewDelegate, UITableViewData
             }
         }
         
-        // TODO: Have to pull settings chosen from server
-        self.settingsChosen = ["Daily connection": true, "Daily topic": true, "New connections": true, "New topics": true, "Connection messages": true, "Topic messages": true, "In-app vibrations": true]
+        // Load default settings first - All enabled
+        self.settingsChosen = ["New connections": true, "New topics": true, "Daily alert": true, "Connection messages": true, "Topic messages": true, "In-app notifications": true]
+        
+        DataService.ds.getUserSettings(completed: { (settings) in
+            if settings != nil {
+                self.settingsChosen = settings!
+            }
+        })
     }
     
     fileprivate func setupViews() {
@@ -174,8 +218,8 @@ class SettingsController: UIViewController, UITableViewDelegate, UITableViewData
     fileprivate var settings: [[Setting]] = [
         [Setting(text: "", type: .timer)],
         [Setting(text: "", type: .profilepic, image: UIImage(color: UIColor.white))],
-        [Setting(text: "Daily connection", type: .toggle), Setting(text: "Daily topic", type: .toggle, isLastCell: true)],
-        [Setting(text: "New connections", type: .toggle), Setting(text: "New topics", type: .toggle), Setting(text: "Connection messages", type: .toggle), Setting(text: "Topic messages", type: .toggle), Setting(text: "In-app vibrations", type: .toggle, isLastCell: true)],
+        [Setting(text: "New connections", type: .toggle, isOn: true), Setting(text: "New topics", type: .toggle, isLastCell: true, isOn: true)],
+        [Setting(text: "Daily alert", type: .toggle, isOn: true),  Setting(text: "Connection messages", type: .toggle, isOn: true), Setting(text: "Topic messages", type: .toggle, isOn: true), Setting(text: "In-app notifications", type: .toggle, isLastCell: true, isOn: true)],
         [Setting(text: "Help and Support", type: .link), Setting(text: "Rate us", type: .link), Setting(text: "Share 428", type: .link, isLastCell: true)],
         [Setting(text: "Privacy Policy", type: .link), Setting(text: "Terms", type: .link, isLastCell: true)],
         [Setting(text: "Log out", type: .center, isLastCell: true)],
