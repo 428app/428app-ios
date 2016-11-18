@@ -426,8 +426,6 @@ class DataService {
         let chatId: String = getChatId(uid1: uid, uid2: connection.uid)
         let ref: FIRDatabaseReference = REF_MESSAGES.child(chatId)
         ref.keepSynced(true)
-        // Remove hasNew of this chat if user is on the chat screen
-        self.seeConnectionMessages(connection: connection) { (isSuccess) in }
         
         let q: FIRDatabaseQuery = ref.queryOrdered(byChild: "timestamp").queryLimited(toLast: limit)
         q.keepSynced(true)
@@ -510,15 +508,33 @@ class DataService {
             return
         }
         let chatId: String = getChatId(uid1: uid, uid2: connection.uid)
-        REF_CHATS.child(chatId).updateChildValues(["hasNew:\(uid)": false]) { (err, ref) in
-            if err != nil {
+        
+        // Get hasNew value, if it is not hasNew: false already then do not adjust badge count
+        REF_CHATS.child("\(chatId)/hasNew:\(uid)").observeSingleEvent(of: .value, with: { snapshot in
+            if !snapshot.exists() {
                 completed(false)
                 return
             }
-            self.adjustBadgeCount(isIncrement: false, uid: uid, completed: { (isSuccess) in
-                completed(isSuccess)
-            })
-        }
+            guard let hasNew = snapshot.value as? Bool else {
+                completed(false)
+                return
+            }
+            if !hasNew {
+                // There is already no hasNew for this user for this chat, so no need to decrement badge count
+                completed(true)
+                return
+            }
+            // Set hasNew to false and decrement badge count
+            self.REF_CHATS.child("\(chatId)/hasNew:\(uid)").setValue(false) { (err, ref) in
+                if err != nil {
+                    completed(false)
+                    return
+                }
+                self.adjustBadgeCount(isIncrement: false, uid: uid, completed: { (isSuccess) in
+                    completed(isSuccess)
+                })
+            }
+        })
     }
     
     // MARK: Remote notifications

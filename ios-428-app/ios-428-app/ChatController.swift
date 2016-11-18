@@ -295,6 +295,9 @@ class ChatController: UIViewController, UICollectionViewDelegateFlowLayout, UITe
                 return
             }
             
+            // Messages seen
+            DataService.ds.seeConnectionMessages(connection: self.connection) { (isSuccess) in }
+            
             // There are messages, hide and disable empty placeholder view
             self.emptyPlaceholderView.isHidden = true
             self.emptyPlaceholderView.isUserInteractionEnabled = false
