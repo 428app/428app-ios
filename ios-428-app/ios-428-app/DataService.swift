@@ -443,10 +443,6 @@ class DataService {
         let uid = getStoredUid() == nil ? "" : getStoredUid()!
         let chatId: String = getChatId(uid1: uid, uid2: connection.uid)
         let ref: FIRDatabaseReference = REF_MESSAGES.child(chatId)
-        
-        // Remove hasNew of this chat if user is on the chat screen
-        self.seeConnectionMessages(connection: connection) { (isSuccess) in }
-        
         let q: FIRDatabaseQuery = ref.queryOrdered(byChild: "timestamp").queryLimited(toLast: limit)
         q.observeSingleEvent(of: .value, with: { snapshot in
             q.removeAllObservers()
@@ -498,7 +494,7 @@ class DataService {
                 // No new messages for this user, set hasNew to true, and increment badge count for this user in Users table
                 self.REF_CHATS.child("\(chatId)/hasNew:\(connection.uid)").setValue(true)
                 // Transaction to get current badge and update
-                self.incrementBadgeCount(uid: connection.uid, completed: { (isSuccess) in
+                self.adjustBadgeCount(isIncrement: true, uid: connection.uid, completed: { (isSuccess) in
                     // After badge count is incremented, then push notification
                     self.addToNotificationQueue(type: TokenType.CONNECTION, posterUid: uid, recipientUid: connection.uid, tid: "", title: "Connection", body: text)
                 })
@@ -507,15 +503,15 @@ class DataService {
     }
     
     // Increments badge count of user to display the right number for push notifications
-    fileprivate func incrementBadgeCount(uid: String, completed: @escaping (_ isSuccess: Bool) -> ()) {
+    fileprivate func adjustBadgeCount(isIncrement: Bool, uid: String, completed: @escaping (_ isSuccess: Bool) -> ()) {
         self.REF_USERS.child(uid).runTransactionBlock({ (currentData) -> FIRTransactionResult in
             guard var user = currentData.value as? [String: Any] else {
                 return FIRTransactionResult.abort()
             }
             if let currentBadgeCount = user["badgeCount"] as? Int {
-                user["badgeCount"] = currentBadgeCount + 1
+                user["badgeCount"] = isIncrement ? currentBadgeCount + 1 : currentBadgeCount - 1
             } else {
-                user["badgeCount"] = 1
+                user["badgeCount"] = isIncrement ? 1 : 0
             }
             currentData.value = user
             return FIRTransactionResult.success(withValue: currentData)
@@ -525,7 +521,7 @@ class DataService {
     }
     
     // Called whenever a user clicks on a connection that is not previously seen to update the connection's
-    // message to seen. Used in ConnectionsController.
+    // message to seen. Also decrements badge count. Used in ConnectionsController.
     func seeConnectionMessages(connection: Connection, completed: @escaping (_ isSuccess: Bool) -> ()) {
         guard let uid = getStoredUid() else {
             completed(false)
@@ -533,7 +529,13 @@ class DataService {
         }
         let chatId: String = getChatId(uid1: uid, uid2: connection.uid)
         REF_CHATS.child(chatId).updateChildValues(["hasNew:\(uid)": false]) { (err, ref) in
-            completed(err == nil)
+            if err != nil {
+                completed(false)
+                return
+            }
+            self.adjustBadgeCount(isIncrement: false, uid: uid, completed: { (isSuccess) in
+                completed(isSuccess)
+            })
         }
     }
     
