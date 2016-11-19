@@ -14,8 +14,6 @@ MINOR BUGS
 - Only allow copy of whole ChatCell: Wait for reply on stack overflow
 
 
-
-
 !TOPICS!
 - Store name and discipline in NSUSerDefaults - store this during sign up
 - getUserFields upon opening app, and already set profileImage on coverImage etc. from Settings. After getting, reupdate name and discipline in NSUserDefaults

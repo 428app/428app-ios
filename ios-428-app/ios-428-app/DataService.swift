@@ -17,6 +17,7 @@ import FBSDKLoginKit
 class DataService {
     
     static let ds = DataService()
+    
     fileprivate var _REF_BASE = FIRDatabase.database().reference()
     fileprivate var _REF_USERS = FIRDatabase.database().reference().child("/users")
     fileprivate var _REF_CHATS = FIRDatabase.database().reference().child("/chats")
@@ -107,13 +108,12 @@ class DataService {
                 })
             } else {
                 // Create new user
-                // TODO: Test creation of new user
+                // TODO: Test creation of new user to see if badge count actually gets set
                 user["badgeCount"] = 0
                 let userSettings = ["newConnections": true, "newTopics": true, "dailyAlert": true, "connectionMessages": true, "topicMessages": true, "inAppNotifications": true]
                 self.REF_BASE.updateChildValues(["/users/\(uid)": user, "/userSettings/\(uid)": userSettings], withCompletionBlock: { (err, ref) in
                     completed(err == nil, true)
                 })
-                
             }
         })
     }
@@ -243,7 +243,6 @@ class DataService {
         }
         
         let ref = self.REF_USERS.child(uid_)
-        
         ref.keepSynced(true)
         
         ref.observeSingleEvent(of: .value, with: { snapshot in
@@ -489,30 +488,37 @@ class DataService {
             
             // Do push notification stuff here without a completion callback - Push notifications are not guaranteed to be delivered anyway
             
-            // First check if the recipient has UserSettings - connectionMessages set to true. If not, don't bother queuing a push notification.
-            self.REF_USERSETTINGS.child("\(connection.uid)/connectionMessages").observeSingleEvent(of: .value, with: { settingsSnap in
-                // If the connection messages setting exists, and is set to False, then terminate here
-                if settingsSnap.exists() {
-                    if let allowsMessagePush = settingsSnap.value as? Bool {
-                        if !allowsMessagePush {
-                            // Set the right hasNew, then terminate
-                            // NOTE: There is a small but unnoticeable bug here. Since we set the hasNew to true (so as to display the bold font in ChatController), when the user enables connection messages before reading the chats that were sent when it was turned off, the user will NOT receive push notifications
-                            self.REF_CHATS.child("\(chatId)/hasNew:\(connection.uid)").setValue(true)
-                            return
+            self.REF_CHATS.child(chatId).observeSingleEvent(of: .value, with: { chatSnap in
+                if !chatSnap.exists() {
+                    return
+                }
+                guard let chatDict = chatSnap.value as? [String: Any], let hasNew = chatDict["hasNew:\(connection.uid)"] as? Bool else {
+                    return
+                }
+                    
+                // First check if the recipient has UserSettings - connectionMessages set to true. If not, don't bother queuing a push notification.
+                let settingsRef = self.REF_USERSETTINGS.child("\(connection.uid)/connectionMessages")
+                
+                settingsRef.keepSynced(true) // Syncing settings is important
+                
+                settingsRef.observeSingleEvent(of: .value, with: { settingsSnap in
+                    // If the connection messages setting exists, and is set to False, then terminate here
+                    if settingsSnap.exists() {
+                        if let allowsMessagePush = settingsSnap.value as? Bool {
+                            if !allowsMessagePush {
+                                // Not allowed to push messages. Increment badge count if necessary, then return
+                                if !hasNew {
+                                    log.info("Increase badge count inside settings snap")
+                                    self.adjustBadgeCount(isIncrement: true, uid: connection.uid, completed: { (isSuccess) in })
+                                }
+                                self.REF_CHATS.child("\(chatId)/hasNew:\(connection.uid)").setValue(true)
+                                return
+                            }
                         }
                     }
-                }
-                
-                // Else, settings enabled, carry on to manage badge count and push notification
-                
-                // If recipient's hasNew is true, don't increment badge count, because the recipient already has a badge for this chat
-                self.REF_CHATS.child(chatId).observeSingleEvent(of: .value, with: { chatSnap in
-                    if !chatSnap.exists() {
-                        return
-                    }
-                    guard let chatDict = chatSnap.value as? [String: Any], let hasNew = chatDict["hasNew:\(connection.uid)"] as? Bool else {
-                        return
-                    }
+                    
+                    // Allowed to send push notifications
+                    
                     if hasNew {
                         // There are already new messages from this chat for this user, just send a notification without updating badge
                         self.addToNotificationQueue(type: TokenType.CONNECTION, posterUid: uid, recipientUid: connection.uid, tid: "", title: "Connection", body: text)
@@ -520,9 +526,8 @@ class DataService {
                     }
                     // No new messages for this user, set hasNew to true, and increment badge count for this user in Users table
                     self.REF_CHATS.child("\(chatId)/hasNew:\(connection.uid)").setValue(true)
-                    // Transaction to get current badge and update
                     self.adjustBadgeCount(isIncrement: true, uid: connection.uid, completed: { (isSuccess) in
-                        // After badge count is incremented, then push notification
+                        // After badge count is incremented, then push notification. This is crucial because push notificatin reads off the badge count in the users table.
                         self.addToNotificationQueue(type: TokenType.CONNECTION, posterUid: uid, recipientUid: connection.uid, tid: "", title: "Connection", body: text)
                     })
                 })
@@ -540,7 +545,12 @@ class DataService {
         let chatId: String = getChatId(uid1: uid, uid2: connection.uid)
         
         // Get hasNew value, if it is not hasNew: false already then do not adjust badge count
-        REF_CHATS.child("\(chatId)/hasNew:\(uid)").observeSingleEvent(of: .value, with: { snapshot in
+        
+        let ref = REF_CHATS.child("\(chatId)/hasNew:\(uid)")
+        ref.keepSynced(true)
+        
+        // Don't need a transaction here because you are the only updating this table for "seeing"
+        ref.observeSingleEvent(of: .value, with: { snapshot in
             if !snapshot.exists() {
                 completed(false)
                 return
@@ -555,7 +565,7 @@ class DataService {
                 return
             }
             // Set hasNew to false and decrement badge count
-            self.REF_CHATS.child("\(chatId)/hasNew:\(uid)").setValue(false) { (err, ref) in
+            ref.setValue(false) { (err, ref) in
                 if err != nil {
                     completed(false)
                     return
@@ -623,6 +633,7 @@ class DataService {
         }
         // Replace all existing settings
         let settings: [String: Bool] = ["newConnections": newConnections, "newTopics": newTopics, "dailyAlert": dailyAlert, "connectionMessages": connectionMessages, "topicMessages": topicMessages, "inAppNotifications": inAppNotifications]
+        
         REF_USERSETTINGS.child(uid).setValue(settings, withCompletionBlock: { (err, ref) in
             completed(err == nil)
         })
@@ -634,7 +645,11 @@ class DataService {
             completed(nil)
             return
         }
-        REF_USERSETTINGS.child(uid).observeSingleEvent(of: .value, with: { snapshot in
+        
+        let ref = REF_USERSETTINGS.child(uid)
+        ref.keepSynced(true)
+        
+        ref.observeSingleEvent(of: .value, with: { snapshot in
             if !snapshot.exists() {
                 completed(nil)
                 return
