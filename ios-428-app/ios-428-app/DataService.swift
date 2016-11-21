@@ -623,6 +623,54 @@ class DataService {
         })
     }
     
+    fileprivate func setBadgeCount(uid: String, badgeCount: Int, completed: @escaping (_ isSuccess: Bool) -> ()) {
+        REF_USERS.child("\(uid)/badgeCount").setValue(badgeCount, withCompletionBlock: { (err, ref) in
+            completed(err == nil)
+        })
+    }
+    
+    // Called whenever a user launches app to make sure state is consistent (Don't want to keep calling as can be intensive)
+    func updateBadgeCount(completed: @escaping (_ isSuccess: Bool) -> ()) {
+        guard let uid = getStoredUid() else {
+            completed(false)
+            return
+        }
+        // Look for all this user's connections, look at all the Chats and see how many hasNew, then update badgeCount, and return
+        REF_USERS.child("\(uid)/connections").observeSingleEvent(of: .value, with: { connectionsSnap in
+            if !connectionsSnap.exists() {
+                completed(true)
+                return
+            }
+            guard let connSnaps = connectionsSnap.children.allObjects as? [FIRDataSnapshot] else {
+                completed(true)
+                return
+            }
+            var connectionsNum = connSnaps.count
+            var badgeCount = 0
+            for connSnap in connSnaps {
+                let uid2 = connSnap.key
+                let chatId = self.getChatId(uid1: uid, uid2: uid2)
+                self.REF_CHATS.child("\(chatId)/hasNew:\(uid)").observeSingleEvent(of: .value, with: { chatSnap in
+                    if chatSnap.exists() {
+                        if let hasNew = chatSnap.value as? Bool {
+                            if hasNew {
+                                badgeCount += 1
+                            }
+                        }
+                    }
+                    connectionsNum -= 1
+                    if connectionsNum == 0 { // Done with looking at all connections
+                        // Update badge count in user table and return the updated badge count
+                        self.setBadgeCount(uid: uid, badgeCount: badgeCount, completed: { (isSuccess) in
+                            completed(isSuccess)
+                        })
+                    }
+                })
+            }
+        })
+        
+    }
+    
     // MARK: User settings
     
     // Used in SettingsController to update user settings

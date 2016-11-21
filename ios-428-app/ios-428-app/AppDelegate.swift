@@ -30,6 +30,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
  
         // Note that if a remote notification launches the app, we will NOT support directing it to the right page because the data has likely not been loaded and it can very tricky to wait for data to load before pushing the right page (even worse under bad network conditions!)
         setupRemoteNotifications(application: application)
+        DataService.ds.updateBadgeCount { (isSuccess) in
+            if !isSuccess {
+                log.warning("Badge count failed to be updated")
+            }
+        }
 
         return FBSDKApplicationDelegate.sharedInstance()
             .application(application, didFinishLaunchingWithOptions: launchOptions)
