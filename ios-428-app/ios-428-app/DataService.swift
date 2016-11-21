@@ -11,6 +11,7 @@ import Foundation
 import Firebase
 import FirebaseDatabase
 import FirebaseAuth
+import FirebaseMessaging
 import FBSDKCoreKit
 import FBSDKLoginKit
 
@@ -73,14 +74,29 @@ class DataService {
     
     // MARK: User
     
-    func logout(completed: (_ isSuccess: Bool) -> ()) {
+    func logout(completed: @escaping (_ isSuccess: Bool) -> ()) {
         if let auth = FIRAuth.auth(), let _ = try? auth.signOut() {
             self.removeAllObservers()
+            log.info("User logged out")
+            FIRMessaging.messaging().disconnect()
             FBSDKLoginManager().logOut()
-            completed(true)
+            setIsLoggedIn(isLoggedIn: false, completed: { (isSuccess) in
+                completed(isSuccess)
+            })
             return
         }
         completed(false)
+    }
+    
+    // Maintaining user's logged in state allows us to deliver our remote notifications correctly
+    fileprivate func setIsLoggedIn(isLoggedIn: Bool, completed: @escaping (_ isSuccess: Bool) -> ()) {
+        guard let uid = getStoredUid() else {
+            completed(false)
+            return
+        }
+        REF_USERSETTINGS.child("\(uid)/isLoggedIn").setValue(isLoggedIn, withCompletionBlock: { (err, ref) in
+            completed(err == nil)
+        })
     }
     
     // Called in LoginController to create new user or log existing user in
@@ -106,11 +122,14 @@ class DataService {
                 self.REF_USERS.child(uid).updateChildValues(user, withCompletionBlock: { (err, ref) in
                     completed(err == nil, isFirstTimeUser)
                 })
+                // Update isLoggedIn in user settings
+                self.setIsLoggedIn(isLoggedIn: true, completed: { (loginSuccess) in })
+                
             } else {
                 // Create new user
                 // TODO: Test creation of new user to see if badge count actually gets set
                 user["badgeCount"] = 0
-                let userSettings = ["newConnections": true, "newTopics": true, "dailyAlert": true, "connectionMessages": true, "topicMessages": true, "inAppNotifications": true]
+                let userSettings = ["newConnections": true, "newTopics": true, "dailyAlert": true, "connectionMessages": true, "topicMessages": true, "inAppNotifications": true, "isLoggedIn": true]
                 self.REF_BASE.updateChildValues(["/users/\(uid)": user, "/userSettings/\(uid)": userSettings], withCompletionBlock: { (err, ref) in
                     completed(err == nil, true)
                 })
@@ -269,7 +288,6 @@ class DataService {
                 if let c = userDict["coverPhoto"] as? String {
                     coverPhotoUrl = c
                 }
-
                 
                 // Convert birthday of "MM/DD/yyyy" to age integer
                 let age = convertBirthdayToAge(birthday: birthday)
@@ -496,16 +514,20 @@ class DataService {
                     return
                 }
                     
-                // First check if the recipient has UserSettings - connectionMessages set to true. If not, don't bother queuing a push notification.
-                let settingsRef = self.REF_USERSETTINGS.child("\(connection.uid)/connectionMessages")
+                // First check if the recipient has UserSettings - connectionMessages set to true AND user is logged in. If not, don't bother queuing a push notification.
+                let settingsRef = self.REF_USERSETTINGS.child(connection.uid)
                 
                 settingsRef.keepSynced(true) // Syncing settings is important
                 
                 settingsRef.observeSingleEvent(of: .value, with: { settingsSnap in
                     // If the connection messages setting exists, and is set to False, then terminate here
                     if settingsSnap.exists() {
-                        if let allowsMessagePush = settingsSnap.value as? Bool {
-                            if !allowsMessagePush {
+                        log.info(settingsSnap.value as! [String: Bool])
+                        // Check if /connectionMessages and /isLoggedIn are both true
+                        if let settingDict = settingsSnap.value as? [String: Bool], let connMsg = settingDict["connectionMessages"], let isLoggedIn = settingDict["isLoggedIn"] {
+                            log.info("Connection messages: \(connMsg)")
+                            if !connMsg || !isLoggedIn {
+                                log.info("Not allowed to push messages")
                                 // Not allowed to push messages. Increment badge count if necessary, then return
                                 if !hasNew {
                                     log.info("Increase badge count inside settings snap")
@@ -682,7 +704,7 @@ class DataService {
         // Replace all existing settings
         let settings: [String: Bool] = ["newConnections": newConnections, "newTopics": newTopics, "dailyAlert": dailyAlert, "connectionMessages": connectionMessages, "topicMessages": topicMessages, "inAppNotifications": inAppNotifications]
         
-        REF_USERSETTINGS.child(uid).setValue(settings, withCompletionBlock: { (err, ref) in
+        REF_USERSETTINGS.child(uid).updateChildValues(settings, withCompletionBlock: { (err, ref) in
             completed(err == nil)
         })
     }

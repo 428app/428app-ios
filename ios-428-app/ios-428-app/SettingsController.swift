@@ -272,7 +272,9 @@ class SettingsController: UIViewController, UITableViewDelegate, UITableViewData
         alertController.view.tintColor = GREEN_UICOLOR
         let cancelAction = UIAlertAction(title: "Cancel", style: .cancel, handler: nil)
         let logoutAction = UIAlertAction(title: "Log out", style: .default) { (action) in
+            showLoader(message: "Logging you out...")
             DataService.ds.logout(completed: { (isSuccess) in
+                hideLoader()
                 if isSuccess {
                     self.dismiss(animated: true, completion: nil)
                 } else {

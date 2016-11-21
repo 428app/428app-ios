@@ -37,7 +37,8 @@ MINOR BUGS
 
 !SECURITY and INDEX SETTINGS!
 
-
+!MODULARIZE CODE!
+- Break down DataService into multiple services, delete DummyDataService
 
 !TEST, TEST, TEST!
 

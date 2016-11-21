@@ -68,7 +68,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // Might consider removing this if it is hitting the database too much
         DataService.ds.updateUserLastSeen{ (isSuccess) in
             if !isSuccess {
-                log.error("[Error] Failed to set user last seen")
+                log.warning("Unable to set user last seen")
             }
         }
     }
@@ -351,6 +351,8 @@ extension AppDelegate : UNUserNotificationCenterDelegate {
                                 didReceive response: UNNotificationResponse,
                                 withCompletionHandler completionHandler: @escaping () -> Void) {
         let userInfo = response.notification.request.content.userInfo
+//        let test: String? = nil
+//        log.info(test!)
         handleRemote(userInfo: userInfo)
     }
 }
