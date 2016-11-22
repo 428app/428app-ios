@@ -47,6 +47,7 @@ class ChatController: UIViewController, UICollectionViewDelegateFlowLayout, UITe
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        self.extendedLayoutIncludesOpaqueBars = true
         self.setupFirebase()
         self.view.backgroundColor = UIColor.white
         self.setupNavigationBar()
@@ -56,8 +57,8 @@ class ChatController: UIViewController, UICollectionViewDelegateFlowLayout, UITe
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+        
         self.navigationController?.navigationBar.isHidden = false
-        self.extendedLayoutIncludesOpaqueBars = true
         self.collectionView.isHidden = false
         self.tabBarController?.tabBar.isHidden = true
         self.registerObservers()
@@ -535,13 +536,13 @@ class ChatController: UIViewController, UICollectionViewDelegateFlowLayout, UITe
         let alertController = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
         alertController.view.tintColor = GREEN_UICOLOR
         let cancelAction = UIAlertAction(title: "Cancel", style: .cancel, handler: nil)
-        let muteAction = UIAlertAction(title: "Mute Notifications", style: .default) { (action) in
-            // TODO: Mute user's notifications
+        let rateAction = UIAlertAction(title: "Rate \(self.connection.name)", style: .default) { (action) in
+            // TODO: Rate user
         }
         let reportAction = UIAlertAction(title: "Report \(self.connection.name)", style: .default) { (action) in
-            // Report user
+            // TODO: Report user
         }
-        alertController.addAction(muteAction)
+        alertController.addAction(rateAction)
         alertController.addAction(reportAction)
         alertController.addAction(cancelAction)
         self.present(alertController, animated: true, completion: nil)
@@ -725,22 +726,42 @@ class ChatController: UIViewController, UICollectionViewDelegateFlowLayout, UITe
 
             let distanceShifted = min(keyboardViewEndFrame.height, abs(bottomOfCollectionView() - topOfInput() + SECTION_HEADER_HEIGHT))
             
+            let isBlocking: Bool = self.isCollectionViewBlockingInput()
+            
             if isKeyboardShowing {
-                // Have to set this such that if the keyboard was kept when it was expanded the top constraint for collection view is set to the right value
-                self.topConstraintForCollectionView.constant = self.TOP_GAP - (self.inputContainerHeightConstraint.constant - 45.0)
-                UIView.animate(withDuration: animationDuration, animations: {
-                    if self.isCollectionViewBlockingInput() {
+
+                // Bottom constraint for input need not be moved for the full keyboard view if it is blocked because the view will already be shifted up a certain amount
+                let bottomMovedTo: CGFloat = isBlocking ? -keyboardViewEndFrame.height + distanceShifted : -keyboardViewEndFrame.height
+                
+                UIView.animate(withDuration: 0, animations: {
+                    // Have to set this such that if the keyboard was kept when it was expanded the top constraint for collection view is set to the right value
+                    self.topConstraintForCollectionView.constant = self.TOP_GAP - (self.inputContainerHeightConstraint.constant - 45.0)
+                    self.bottomConstraintForInput.constant = bottomMovedTo
+
+                }, completion: { (completion) in
+                    
+                    // Get animation duration based on how much has to be moved
+                    let viewAnimationDuration: Double = Double(distanceShifted/keyboardViewEndFrame.height) * animationDuration
+                    let constraintAnimationDuration: Double = Double(bottomMovedTo/keyboardViewEndFrame.height) * animationDuration
+                    
+                    UIView.animate(withDuration: viewAnimationDuration, animations: {
                         self.view.frame.origin.y = -distanceShifted
-                        // Keyboard is shifted less because view already shifts by distance
-                        self.bottomConstraintForInput.constant = -keyboardViewEndFrame.height + distanceShifted
-                    } else {
-                        self.bottomConstraintForInput.constant = -keyboardViewEndFrame.height
-                    }
+                    })
+                    
+                    UIView.animate(withDuration: constraintAnimationDuration, animations: { 
+                        self.view.layoutIfNeeded()
+                    })
                 })
+                
             } else {
-                UIView.animate(withDuration: animationDuration, animations: {
-                    self.view.frame.origin.y = 0
+                // Keep keyboard
+                UIView.animate(withDuration: 0, animations: {
                     self.bottomConstraintForInput.constant = 0
+                }, completion: { (completion) in
+                    UIView.animate(withDuration: animationDuration, animations: {
+                        self.view.frame.origin.y = 0
+                        self.view.layoutIfNeeded()
+                    })
                 })
             }
         }

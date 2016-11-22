@@ -522,15 +522,11 @@ class DataService {
                 settingsRef.observeSingleEvent(of: .value, with: { settingsSnap in
                     // If the connection messages setting exists, and is set to False, then terminate here
                     if settingsSnap.exists() {
-                        log.info(settingsSnap.value as! [String: Bool])
                         // Check if /connectionMessages and /isLoggedIn are both true
                         if let settingDict = settingsSnap.value as? [String: Bool], let connMsg = settingDict["connectionMessages"], let isLoggedIn = settingDict["isLoggedIn"] {
-                            log.info("Connection messages: \(connMsg)")
                             if !connMsg || !isLoggedIn {
-                                log.info("Not allowed to push messages")
                                 // Not allowed to push messages. Increment badge count if necessary, then return
                                 if !hasNew {
-                                    log.info("Increase badge count inside settings snap")
                                     self.adjustBadgeCount(isIncrement: true, uid: connection.uid, completed: { (isSuccess) in })
                                 }
                                 self.REF_CHATS.child("\(chatId)/hasNew:\(connection.uid)").setValue(true)

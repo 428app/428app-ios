@@ -1,14 +1,11 @@
 ==== BACKEND ====
 
-
-- Update data model
 - Consider changing primary user key to auth_uid instead of fbid
 
 
 MAJOR BUGS
 - Once logout, cannot log back in? (Unable to replicate)
-- iOS 9: Chat screen keyboard blocking
-
+- iOS 9: Chat screen keyboard blocking on first load before collection view scroll: Try to figure out issue when coding TopicsController
 
 MINOR BUGS
 - Only allow copy of whole ChatCell: Wait for reply on stack overflow
