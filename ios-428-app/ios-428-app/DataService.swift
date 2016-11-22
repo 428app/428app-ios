@@ -100,7 +100,7 @@ class DataService {
     }
     
     // Called in LoginController to create new user or log existing user in
-    func loginFirebaseUser(authuid: String, name: String, birthday: String, pictureUrl: String, timezone: Double, completed: @escaping (_ isSuccess: Bool, _ isFirstTimeUser: Bool) -> ()) {
+    func loginFirebaseUser(fbid: String, name: String, birthday: String, pictureUrl: String, timezone: Double, completed: @escaping (_ isSuccess: Bool, _ isFirstTimeUser: Bool) -> ()) {
         guard let uid = getStoredUid() else {
             completed(false, true)
             return
@@ -110,7 +110,7 @@ class DataService {
         saveName(name: name)
         
         let timeNow = Date().timeIntervalSince1970
-        var user: [String: Any] = ["authuid": authuid, "name": name, "birthday": birthday, "profilePhoto": pictureUrl, "timezone": timezone, "lastSeen": timeNow]
+        var user: [String: Any] = ["fbid": fbid, "name": name, "birthday": birthday, "profilePhoto": pictureUrl, "timezone": timezone, "lastSeen": timeNow]
         self.REF_USERS.child(uid).observeSingleEvent(of: .value, with: { snapshot in
             if snapshot.exists() {
                 // Check if user has already filled in at least org, school and discipline, if not label first time user
@@ -127,7 +127,6 @@ class DataService {
                 
             } else {
                 // Create new user
-                // TODO: Test creation of new user to see if badge count actually gets set
                 user["badgeCount"] = 0
                 let userSettings = ["newConnections": true, "newTopics": true, "dailyAlert": true, "connectionMessages": true, "topicMessages": true, "inAppNotifications": true, "isLoggedIn": true]
                 self.REF_BASE.updateChildValues(["/users/\(uid)": user, "/userSettings/\(uid)": userSettings], withCompletionBlock: { (err, ref) in

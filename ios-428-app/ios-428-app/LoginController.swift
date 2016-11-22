@@ -79,7 +79,6 @@ class LoginController: UIViewController, UIScrollViewDelegate, CLLocationManager
     }
     
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
-//        log.info("Getting location")
         // Last location captured must have positive accuracy and not captured more than 10 seconds ago
         if let loc = locations.last, loc.horizontalAccuracy > 0.0, loc.timestamp.timeIntervalSinceNow > -10.0 {
             let lat = loc.coordinate.latitude
@@ -172,7 +171,7 @@ class LoginController: UIViewController, UIScrollViewDelegate, CLLocationManager
             // Grab only the first part of the display name
             let fullDisplayName = user!.providerData[0].displayName!
             let displayName = fullDisplayName.components(separatedBy: " ")[0]
-            saveUid(uid: fbid) // Saving uid here is crucial for the rest of the app to function right
+            saveUid(uid: authuid) // Saving uid here is crucial for the rest of the app to function right
             DataService.ds.updateUserPushToken() // Update push token again here because uid is now saved
             
             // Get timezone
@@ -180,7 +179,7 @@ class LoginController: UIViewController, UIScrollViewDelegate, CLLocationManager
             let timezone: Double = secondsFromGMT*1.0 / (60.0*60.0)
             
             // Create/Update Firebase user with details
-            DataService.ds.loginFirebaseUser(authuid: authuid, name: displayName, birthday: birthdayString, pictureUrl: pictureUrl, timezone: timezone, completed: { (isSuccess, isFirstTimeUser) in
+            DataService.ds.loginFirebaseUser(fbid: fbid, name: displayName, birthday: birthdayString, pictureUrl: pictureUrl, timezone: timezone, completed: { (isSuccess, isFirstTimeUser) in
                 hideLoader()
                 if !isSuccess {
                     log.error("[Error] Login to Firebase failed")

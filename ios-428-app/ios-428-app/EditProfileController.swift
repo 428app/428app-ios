@@ -108,17 +108,9 @@ class EditProfileController: UIViewController, UIScrollViewDelegate, UITableView
     
     // Delegate function of scroll view
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
-        // Prevents top bounce, and also slightly expands cover photo when scroll up
+        // Prevents top bounce
         let offset = scrollView.contentOffset.y
-        if (offset <= 0) {
-            // Think about how to transform image here without showing white space behind
-            let ratio: CGFloat = -offset*1.0 / UIScreen.main.bounds.height
-            self.coverImageView.transform = CGAffineTransform(scaleX: 1.0 + ratio, y: 1.0 + ratio)
-            scrollView.bounces = false
-        }
-        else {
-            scrollView.bounces = true
-        }
+        scrollView.bounces = offset > 0
     }
     
     fileprivate lazy var profileImageView: UIImageView = {

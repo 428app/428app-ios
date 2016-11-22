@@ -733,7 +733,7 @@ class ChatController: UIViewController, UICollectionViewDelegateFlowLayout, UITe
                 // Bottom constraint for input need not be moved for the full keyboard view if it is blocked because the view will already be shifted up a certain amount
                 let bottomMovedTo: CGFloat = isBlocking ? -keyboardViewEndFrame.height + distanceShifted : -keyboardViewEndFrame.height
                 
-                UIView.animate(withDuration: 0, animations: {
+                UIView.animate(withDuration: 0.0, animations: {
                     // Have to set this such that if the keyboard was kept when it was expanded the top constraint for collection view is set to the right value
                     self.topConstraintForCollectionView.constant = self.TOP_GAP - (self.inputContainerHeightConstraint.constant - 45.0)
                     self.bottomConstraintForInput.constant = bottomMovedTo
@@ -744,13 +744,18 @@ class ChatController: UIViewController, UICollectionViewDelegateFlowLayout, UITe
                     let viewAnimationDuration: Double = Double(distanceShifted/keyboardViewEndFrame.height) * animationDuration
                     let constraintAnimationDuration: Double = Double(bottomMovedTo/keyboardViewEndFrame.height) * animationDuration
                     
-                    UIView.animate(withDuration: viewAnimationDuration, animations: {
-                        self.view.frame.origin.y = -distanceShifted
-                    })
-                    
-                    UIView.animate(withDuration: constraintAnimationDuration, animations: { 
-                        self.view.layoutIfNeeded()
-                    })
+                    if isBlocking {
+                        UIView.animate(withDuration: viewAnimationDuration, animations: {
+                            self.view.frame.origin.y = -distanceShifted
+                        })
+                        UIView.animate(withDuration: constraintAnimationDuration, animations: {
+                            self.view.layoutIfNeeded()
+                        })
+                    } else {
+                        UIView.animate(withDuration: constraintAnimationDuration, animations: {
+                            self.view.layoutIfNeeded()
+                        })
+                    }
                 })
                 
             } else {
