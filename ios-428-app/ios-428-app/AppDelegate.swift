@@ -30,11 +30,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
  
         // Note that if a remote notification launches the app, we will NOT support directing it to the right page because the data has likely not been loaded and it can very tricky to wait for data to load before pushing the right page (even worse under bad network conditions!)
         setupRemoteNotifications(application: application)
-        DataService.ds.updateBadgeCount { (isSuccess) in
-            if !isSuccess {
-                log.warning("Badge count failed to be updated")
-            }
-        }
 
         return FBSDKApplicationDelegate.sharedInstance()
             .application(application, didFinishLaunchingWithOptions: launchOptions)
@@ -43,18 +38,20 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func applicationWillResignActive(_ application: UIApplication) {
         // Sent when the application is about to move from active to inactive state. This can occur for certain types of temporary interruptions (such as an incoming phone call or SMS message) or when the user quits the application and it begins the transition to the background state.
         // Use this method to pause ongoing tasks, disable timers, and invalidate graphics rendering callbacks. Games should use this method to pause the game.
+        
+        // Get badge count from server and set it before entering background
+        DataService.ds.updateBadgeCount { (isSuccess, badgeCount) in
+            if isSuccess {
+                UIApplication.shared.applicationIconBadgeNumber = badgeCount
+            }
+        }
+        
     }
 
     func applicationDidEnterBackground(_ application: UIApplication) {
         // Use this method to release shared resources, save user data, invalidate timers, and store enough application state information to restore your application to its current state in case it is terminated later.
         // If your application supports background execution, this method is called instead of applicationWillTerminate: when the user quits.
-        FIRMessaging.messaging().disconnect()
-        // Get badge count from server and set it before entering background
-        DataService.ds.getBadgeCount { (isSuccess, badgeCount) in
-            if isSuccess {
-                UIApplication.shared.applicationIconBadgeNumber = badgeCount
-            }
-        }
+        FIRMessaging.messaging().disconnect()   
     }
 
     func applicationWillEnterForeground(_ application: UIApplication) {
@@ -351,8 +348,6 @@ extension AppDelegate : UNUserNotificationCenterDelegate {
                                 didReceive response: UNNotificationResponse,
                                 withCompletionHandler completionHandler: @escaping () -> Void) {
         let userInfo = response.notification.request.content.userInfo
-//        let test: String? = nil
-//        log.info(test!)
         handleRemote(userInfo: userInfo)
     }
 }

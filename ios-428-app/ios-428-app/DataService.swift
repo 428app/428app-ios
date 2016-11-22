@@ -610,7 +610,9 @@ class DataService {
     
     // Increments badge count of user to display the right number for push notifications
     fileprivate func adjustBadgeCount(isIncrement: Bool, uid: String, completed: @escaping (_ isSuccess: Bool) -> ()) {
+        // Note: Transaction blocks only work when persistence is set to True
         self.REF_USERS.child(uid).runTransactionBlock({ (currentData) -> FIRTransactionResult in
+            
             guard var user = currentData.value as? [String: Any] else {
                 return FIRTransactionResult.abort()
             }
@@ -626,45 +628,27 @@ class DataService {
         }
     }
     
-    // Get badge count used in AppDelegate before user goes to background
-    func getBadgeCount(completed: @escaping (_ isSuccess: Bool, _ count: Int) -> ()) {
-        guard let uid = getStoredUid() else {
-            completed(false, -1)
-            return
-        }
-        REF_USERS.child("\(uid)/badgeCount").observe(.value, with: { snapshot in
-            if !snapshot.exists() {
-                completed(true, 0)
-                return
-            }
-            guard let count = snapshot.value as? Int else {
-                completed(true, 0)
-                return
-            }
-            completed(true, count)
-        })
-    }
-    
+    // Used by update badge count to set badge count number for user
     fileprivate func setBadgeCount(uid: String, badgeCount: Int, completed: @escaping (_ isSuccess: Bool) -> ()) {
         REF_USERS.child("\(uid)/badgeCount").setValue(badgeCount, withCompletionBlock: { (err, ref) in
             completed(err == nil)
         })
     }
     
-    // Called whenever a user launches app to make sure state is consistent (Don't want to keep calling as can be intensive)
-    func updateBadgeCount(completed: @escaping (_ isSuccess: Bool) -> ()) {
+    // Called in AppDelegate whenever a user leaves the app to go to the background to update badge count (keeping the state consistent as a fail safe)
+    func updateBadgeCount(completed: @escaping (_ isSuccess: Bool, _ badgeCount: Int) -> ()) {
         guard let uid = getStoredUid() else {
-            completed(false)
+            completed(false, -1)
             return
         }
         // Look for all this user's connections, look at all the Chats and see how many hasNew, then update badgeCount, and return
         REF_USERS.child("\(uid)/connections").observeSingleEvent(of: .value, with: { connectionsSnap in
             if !connectionsSnap.exists() {
-                completed(true)
+                completed(true, 0)
                 return
             }
             guard let connSnaps = connectionsSnap.children.allObjects as? [FIRDataSnapshot] else {
-                completed(true)
+                completed(true, 0)
                 return
             }
             var connectionsNum = connSnaps.count
@@ -672,7 +656,9 @@ class DataService {
             for connSnap in connSnaps {
                 let uid2 = connSnap.key
                 let chatId = self.getChatId(uid1: uid, uid2: uid2)
-                self.REF_CHATS.child("\(chatId)/hasNew:\(uid)").observeSingleEvent(of: .value, with: { chatSnap in
+                let ref = self.REF_CHATS.child("\(chatId)/hasNew:\(uid)")
+                ref.keepSynced(true)
+                ref.observeSingleEvent(of: .value, with: { chatSnap in
                     if chatSnap.exists() {
                         if let hasNew = chatSnap.value as? Bool {
                             if hasNew {
@@ -684,13 +670,12 @@ class DataService {
                     if connectionsNum == 0 { // Done with looking at all connections
                         // Update badge count in user table and return the updated badge count
                         self.setBadgeCount(uid: uid, badgeCount: badgeCount, completed: { (isSuccess) in
-                            completed(isSuccess)
+                            completed(isSuccess, badgeCount)
                         })
                     }
                 })
             }
         })
-        
     }
     
     // MARK: User settings
