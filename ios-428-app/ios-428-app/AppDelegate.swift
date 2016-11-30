@@ -25,7 +25,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         window?.backgroundColor = UIColor.white
         window?.makeKeyAndVisible()
         window?.rootViewController = LoginController()
-        UINavigationBar.appearance().isTranslucent = true
+//        UINavigationBar.appearance().isTranslucent = false
+        UINavigationBar.appearance().isOpaque = true
         FIRApp.configure()
         FIRDatabase.database().persistenceEnabled = true
  

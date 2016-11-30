@@ -15,16 +15,19 @@ import FirebaseMessaging
 import FBSDKCoreKit
 import FBSDKLoginKit
 
+// Root of DB: Either real_db or test_db
+private let DB_ROOT = "real_db"
+
 class DataService {
     
     static let ds = DataService()
     
-    fileprivate var _REF_BASE = FIRDatabase.database().reference()
-    fileprivate var _REF_USERS = FIRDatabase.database().reference().child("/users")
-    fileprivate var _REF_CHATS = FIRDatabase.database().reference().child("/chats")
-    fileprivate var _REF_MESSAGES = FIRDatabase.database().reference().child("/messages")
-    fileprivate var _REF_QUEUE = FIRDatabase.database().reference().child("/queue/tasks") // Queue for notifications to be sent out
-    fileprivate var _REF_USERSETTINGS = FIRDatabase.database().reference().child("/userSettings")
+    fileprivate var _REF_BASE = FIRDatabase.database().reference().child(DB_ROOT)
+    fileprivate var _REF_USERS = FIRDatabase.database().reference().child("\(DB_ROOT)/users")
+    fileprivate var _REF_CHATS = FIRDatabase.database().reference().child("\(DB_ROOT)/chats")
+    fileprivate var _REF_MESSAGES = FIRDatabase.database().reference().child("\(DB_ROOT)/messages")
+    fileprivate var _REF_QUEUE = FIRDatabase.database().reference().child("\(DB_ROOT)/queue/tasks") // Queue for notifications to be sent out
+    fileprivate var _REF_USERSETTINGS = FIRDatabase.database().reference().child("\(DB_ROOT)/userSettings")
     
     var REF_BASE: FIRDatabaseReference {
         get {

@@ -32,7 +32,7 @@ class TopicsController: UIViewController, UITableViewDelegate, UITableViewDataSo
     override func viewDidLoad() {
         super.viewDidLoad() 
         self.view.backgroundColor = GRAY_UICOLOR
-        self.navigationItem.title = "Topics"
+        self.navigationItem.title = "Classrooms"
         self.automaticallyAdjustsScrollViewInsets = false
         self.extendedLayoutIncludesOpaqueBars = true
         self.loadData()
