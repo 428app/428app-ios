@@ -14,9 +14,9 @@ class DiscussModalController: UIViewController {
     var topic: Topic? {
         didSet {
             // Set modal info
-            self.topicImageView.image = UIImage(named: topic!.imageName)
-            self.topicPromptLabel.text = topic!.prompt
-            self.descriptionTextView.text = topic!.description
+            self.topicImageView.image = #imageLiteral(resourceName: "classroom-fertility") //UIImage(named: topic!.imageName)
+            self.topicPromptLabel.text = "Question 1"//topic!.prompt
+            self.descriptionTextView.text = "What happens when sperm travels at the speed of light?"//topic!.description
         }
     }
     
@@ -36,7 +36,7 @@ class DiscussModalController: UIViewController {
     fileprivate let topicPromptLabel: UILabel = {
         let label = UILabel()
         label.font = FONT_HEAVY_MID
-        label.textColor = RED_UICOLOR
+        label.textColor = GREEN_UICOLOR
         label.textAlignment = .left
         label.numberOfLines = 0
         return label
@@ -80,7 +80,7 @@ class DiscussModalController: UIViewController {
         
         view.addSubview(containerView)
         view.addConstraintsWithFormat("H:|-25-[v0]-25-|", views: containerView)
-        view.addConstraintsWithFormat("V:|-90-[v0]-90-|", views: containerView)
+        view.addConstraintsWithFormat("V:|-160-[v0]-160-|", views: containerView)
         
         containerView.addSubview(topicImageView)
         containerView.addSubview(topicPromptLabel)
@@ -96,7 +96,7 @@ class DiscussModalController: UIViewController {
             promptHeight = promptHeight_
         }
         
-        containerView.addConstraintsWithFormat("V:|[v0(250)]-12-[v1(\(promptHeight))]-6-[v2]-12-|", views: topicImageView, topicPromptLabel, descriptionTextView)
+        containerView.addConstraintsWithFormat("V:|[v0(250)]-12-[v1(20)]-6-[v2]-|", views: topicImageView, topicPromptLabel, descriptionTextView)
         containerView.addConstraintsWithFormat("H:|-12-[v0]-12-|", views: topicPromptLabel)
         containerView.addConstraintsWithFormat("H:|-8-[v0]-8-|", views: descriptionTextView)
     }

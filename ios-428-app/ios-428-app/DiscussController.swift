@@ -34,7 +34,7 @@ class DiscussController: UIViewController, UIGestureRecognizerDelegate, UITextVi
     var topic: Topic! {
         didSet {
             if let dateString = topic.dateString {
-                self.navigationItem.title = dateString
+                self.navigationItem.title = "Physics I"
                 self.messages = topic.topicMessages
                 self.bucketMessagesIntoTime()
                 self.assembleMessageIsLastInChain()
@@ -125,14 +125,13 @@ class DiscussController: UIViewController, UIGestureRecognizerDelegate, UITextVi
         return true
     }
     
-    fileprivate lazy var promptLabel: PaddingLabel = {
-        let label = PaddingLabel()
-        label.rightInset = 40.0
-        label.backgroundColor = RED_UICOLOR
-        label.font = FONT_HEAVY_MID
-        label.textColor = UIColor.white
-        label.textAlignment = .left
-        label.numberOfLines = 2
+    fileprivate lazy var promptLabel: UILabel = {
+        let label = UILabel()
+        label.backgroundColor = GRAY_UICOLOR
+        label.font = FONT_HEAVY_SMALL
+        label.textColor = UIColor.black
+        label.textAlignment = .center
+        label.numberOfLines = 1
         let tapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(openDescription))
         tapGestureRecognizer.delegate = self
         label.isUserInteractionEnabled = true
@@ -159,23 +158,24 @@ class DiscussController: UIViewController, UIGestureRecognizerDelegate, UITextVi
         let paragraphStyle = NSMutableParagraphStyle()
         paragraphStyle.lineSpacing = 6
         paragraphStyle.lineBreakMode = .byTruncatingTail
-        promptLabel.attributedText = NSMutableAttributedString(string: topic.prompt, attributes: [NSParagraphStyleAttributeName: paragraphStyle])
+        promptLabel.text = "Read Question 1 here"
+//        promptLabel.attributedText = NSMutableAttributedString(string: topic.prompt, attributes: [NSParagraphStyleAttributeName: paragraphStyle])
         
         view.addSubview(promptLabel)
-        view.addSubview(promptExpandIcon)
+//        view.addSubview(promptExpandIcon)
         view.addConstraintsWithFormat("H:|[v0]|", views: promptLabel)
-        view.addConstraintsWithFormat("H:[v0(20)]-8-|", views: promptExpandIcon)
+//        view.addConstraintsWithFormat("H:[v0(20)]-8-|", views: promptExpandIcon)
         
         
         if let navHeight = navigationController?.navigationBar.frame.height {
-           view.addConstraintsWithFormat("V:|-\(navHeight * 1.45)-[v0(60)]", views: promptLabel)
+           view.addConstraintsWithFormat("V:|-\(navHeight * 1.45)-[v0(40)]", views: promptLabel)
         } else {
             view.addConstraint(NSLayoutConstraint(item: promptLabel, attribute: .top, relatedBy: .equal, toItem: topLayoutGuide, attribute: .bottom, multiplier: 1.0, constant: 0.0))
            view.addConstraintsWithFormat("V:[v0(60)]", views: promptLabel)
 
         }
-        view.addConstraint(NSLayoutConstraint(item: promptExpandIcon, attribute: .centerY, relatedBy: .equal, toItem: promptLabel, attribute: .centerY, multiplier: 1.0, constant: 0.0))
-        view.addConstraintsWithFormat("V:[v0(20)]", views: promptExpandIcon)
+//        view.addConstraint(NSLayoutConstraint(item: promptExpandIcon, attribute: .centerY, relatedBy: .equal, toItem: promptLabel, attribute: .centerY, multiplier: 1.0, constant: 0.0))
+//        view.addConstraintsWithFormat("V:|-[v0(20)]", views: promptLabel)
         
     }
     

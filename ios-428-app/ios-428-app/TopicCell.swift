@@ -17,7 +17,7 @@ class TopicCell: BaseTableViewCell {
     fileprivate let dateLabel: UILabel = {
        let label = UILabel()
         label.font = FONT_HEAVY_MID
-        label.textColor = GREEN_UICOLOR
+        label.textColor = UIColor.darkGray
         label.textAlignment = .left
         return label
     }()
@@ -32,7 +32,7 @@ class TopicCell: BaseTableViewCell {
     fileprivate let messageCountLabel: UILabel = {
         let label = UILabel()
         label.font = FONT_HEAVY_MID
-        label.textColor = GREEN_UICOLOR
+        label.textColor = UIColor.darkGray
         label.textAlignment = .right
         return label
     }()
@@ -47,10 +47,11 @@ class TopicCell: BaseTableViewCell {
     
     fileprivate let promptLabel: UILabel = {
        let label = UILabel()
-        label.font = FONT_MEDIUM_MID
-        label.textColor = UIColor.darkGray
-        label.textAlignment = .left
-        label.numberOfLines = 99
+        label.font = FONT_MEDIUM_XLARGE
+        label.textColor = UIColor.white
+//        label.textAlignment = .left
+        label.textAlignment = .center
+        label.numberOfLines = 2
         return label
     }()
     
@@ -74,45 +75,55 @@ class TopicCell: BaseTableViewCell {
         contentView.addConstraintsWithFormat("H:|-8-[v0]-8-|", views: containerView)
         contentView.addConstraintsWithFormat("V:|-8-[v0]-8-|", views: containerView)
         
-        containerView.addSubview(dateLabel)
-        containerView.addSubview(iconImageView)
-        containerView.addSubview(messageCountLabel)
+//        containerView.addSubview(dateLabel)
+//        containerView.addSubview(iconImageView)
+//        containerView.addSubview(messageCountLabel)
         containerView.addSubview(topicImageView)
         containerView.addSubview(promptLabel)
         
-        containerView.addConstraintsWithFormat("V:|-8-[v0(25)]-8-[v1(175)]-12-[v2]-12-|", views: dateLabel, topicImageView, promptLabel)
-        containerView.addConstraintsWithFormat("H:|-8-[v0]-8-[v1(60)]-3-[v2(16)]-8-|", views: dateLabel, messageCountLabel, iconImageView)
-        containerView.addConstraintsWithFormat("V:[v0(16)]", views: iconImageView)
-        containerView.addConstraintsWithFormat("V:[v0(20)]", views: messageCountLabel)
-        containerView.addConstraint(NSLayoutConstraint(item: iconImageView, attribute: .centerY, relatedBy: .equal, toItem: dateLabel, attribute: .centerY, multiplier: 1.0, constant: -2.0))
-        containerView.addConstraint(NSLayoutConstraint(item: messageCountLabel, attribute: .centerY, relatedBy: .equal, toItem: dateLabel, attribute: .centerY, multiplier: 1.0, constant: 0))
+        containerView.addConstraintsWithFormat("V:|[v0(175)]-12-[v1]-12-|", views: topicImageView, promptLabel)
+//        containerView.addConstraintsWithFormat("H:|-8-[v0]-8-[v1(60)]-3-[v2(16)]-8-|", views: dateLabel, messageCountLabel, iconImageView)
+//        containerView.addConstraintsWithFormat("V:[v0(16)]", views: iconImageView)
+//        containerView.addConstraintsWithFormat("V:[v0(20)]", views: messageCountLabel)
+//        containerView.addConstraint(NSLayoutConstraint(item: iconImageView, attribute: .centerY, relatedBy: .equal, toItem: dateLabel, attribute: .centerY, multiplier: 1.0, constant: -2.0))
+//        containerView.addConstraint(NSLayoutConstraint(item: messageCountLabel, attribute: .centerY, relatedBy: .equal, toItem: dateLabel, attribute: .centerY, multiplier: 1.0, constant: 0))
         containerView.addConstraintsWithFormat("H:|[v0]|", views: topicImageView)
         containerView.addConstraintsWithFormat("H:|-8-[v0]-8-|", views: promptLabel)
     }
     
     func configureCell(topic: Topic) {
         self.topic = topic
-        let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = "d MMM yyyy"
-        dateLabel.text = ""
-        if let dateString = topic.dateString {
-            dateLabel.text = dateString
-        }
-        messageCountLabel.text = "\(topic.topicMessages.count)"
+        dateLabel.text = "Question 1"
+        messageCountLabel.text = "4"
+        promptLabel.text = "Physics I ClassroomPhysics I ClassroomPhysics I ClassroomPhysics I ClassroomPhysics I "
+        let components = topic.prompt.components(separatedBy: ",")
+//        if components.count == 3 {
+//            promptLabel.text = components[0]
+//            dateLabel.text = components[1]
+//            messageCountLabel.text = components[2]
+//        }
+        
+//        let dateFormatter = DateFormatter()
+//        dateFormatter.dateFormat = "d MMM yyyy"
+//        dateLabel.text = ""
+//        if let dateString = topic.dateString {
+//            dateLabel.text = dateString
+//        }
+        
         topicImageView.image = UIImage(named: topic.imageName)
         
         
-        let paragraphStyle = NSMutableParagraphStyle()
-        paragraphStyle.lineSpacing = 6
-        let formatedPrompt = NSMutableAttributedString(string: topic.prompt, attributes: [NSParagraphStyleAttributeName: paragraphStyle])
-        promptLabel.attributedText = formatedPrompt
+//        let paragraphStyle = NSMutableParagraphStyle()
+//        paragraphStyle.lineSpacing = 6
+//        let formatedPrompt = NSMutableAttributedString(string: topic.prompt, attributes: [NSParagraphStyleAttributeName: paragraphStyle])
+//        promptLabel.attributedText = formatedPrompt
         
         if topic.hasSeen {
+            self.messageCountLabel.textColor = UIColor.darkGray
+            self.iconImageView.tintColor = UIColor.darkGray
+        } else {
             self.messageCountLabel.textColor = GREEN_UICOLOR
             self.iconImageView.tintColor = GREEN_UICOLOR
-        } else {
-            self.messageCountLabel.textColor = RED_UICOLOR
-            self.iconImageView.tintColor = RED_UICOLOR
         }
     }
     

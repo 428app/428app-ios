@@ -48,6 +48,8 @@ class TopicChatCell: BaseCollectionCell {
         let imageView = UIImageView()
         imageView.contentMode = .scaleAspectFit
         imageView.tintColor = GREEN_UICOLOR
+        imageView.layer.cornerRadius = 15
+        imageView.layer.masksToBounds = true
         let tapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(self.openProfile))
         imageView.isUserInteractionEnabled = true
         imageView.addGestureRecognizer(tapGestureRecognizer)
@@ -73,8 +75,8 @@ class TopicChatCell: BaseCollectionCell {
         addSubview(messageTextView)
         addSubview(disciplineImageView)
         
-        addConstraintsWithFormat("H:|-9-[v0(23)]", views: disciplineImageView)
-        addConstraintsWithFormat("V:[v0(23)]|", views: disciplineImageView)
+        addConstraintsWithFormat("H:|-9-[v0(30)]", views: disciplineImageView)
+        addConstraintsWithFormat("V:[v0(30)]|", views: disciplineImageView)
         
         textBubbleView.addSubview(bubbleImageView)
         textBubbleView.addConstraintsWithFormat("H:|[v0]|", views: bubbleImageView)

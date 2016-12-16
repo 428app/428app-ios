@@ -22,20 +22,20 @@ class CustomTabBarController: UITabBarController {
         let layout = UICollectionViewFlowLayout()
         let connectionsController = ConnectionsController(collectionViewLayout: layout)
         let connectionsNavController = CustomNavigationController(rootViewController: connectionsController)
-        connectionsNavController.tabBarItem.title = "Connections"
+        connectionsNavController.tabBarItem.title = "Messages"
         
         connectionsNavController.tabBarItem.image = #imageLiteral(resourceName: "connections-U")
         connectionsNavController.tabBarItem.selectedImage = #imageLiteral(resourceName: "connections-F")
         
         let topicsController = TopicsController()
         let topicsNavController = CustomNavigationController(rootViewController: topicsController)
-        topicsNavController.tabBarItem.title = "Topics"
+        topicsNavController.tabBarItem.title = "Classrooms"
         topicsNavController.tabBarItem.image = #imageLiteral(resourceName: "topics-U")
         topicsNavController.tabBarItem.selectedImage = #imageLiteral(resourceName: "topics-F")
         
         let settingsController = SettingsController()
         let settingsNavController = CustomNavigationController(rootViewController: settingsController)
-        settingsNavController.tabBarItem.title = "Settings"
+        settingsNavController.tabBarItem.title = "Profile"
         settingsNavController.tabBarItem.image = #imageLiteral(resourceName: "settings-U")
         settingsNavController.tabBarItem.selectedImage = #imageLiteral(resourceName: "settings-F")
         

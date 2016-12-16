@@ -41,7 +41,7 @@ class TopicsController: UIViewController, UITableViewDelegate, UITableViewDataSo
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        
+//        showErrorAlert(vc: self, title: "New Classroom", message: "It's the time of the week again. \nHere's Physics I.")
         self.tabBarController?.tabBar.isHidden = false
     }
     
@@ -57,14 +57,14 @@ class TopicsController: UIViewController, UITableViewDelegate, UITableViewDataSo
     
     fileprivate func setupViews() {
         view.addSubview(tableView)
-        view.addSubview(segmentedControl)
+//        view.addSubview(segmentedControl)
         
-        view.addConstraintsWithFormat("H:|-8-[v0]-8-|", views: segmentedControl)
+//        view.addConstraintsWithFormat("H:|-8-[v0]-8-|", views: segmentedControl)
         view.addConstraintsWithFormat("H:|[v0]|", views: tableView)
         
-        view.addConstraint(NSLayoutConstraint(item: segmentedControl, attribute: .top, relatedBy: .equal, toItem: topLayoutGuide, attribute: .bottom, multiplier: 1.0, constant: 12.0))
+        view.addConstraint(NSLayoutConstraint(item: tableView, attribute: .top, relatedBy: .equal, toItem: topLayoutGuide, attribute: .bottom, multiplier: 1.0, constant: 8.0))
         
-        view.addConstraintsWithFormat("V:[v0(30)]-8-[v1]|", views: segmentedControl, tableView)
+        view.addConstraintsWithFormat("V:[v1]|", views: segmentedControl, tableView)
     }
     
     // MARK: Segment
