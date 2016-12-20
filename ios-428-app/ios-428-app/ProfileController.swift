@@ -10,7 +10,7 @@ import Foundation
 import UIKit
 
 
-class ProfileController: UIViewController, UIGestureRecognizerDelegate, UIScrollViewDelegate {//, UITableViewDelegate, UITableViewDataSource {
+class ProfileController: UIViewController, UIGestureRecognizerDelegate, UIScrollViewDelegate, UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
     
     var connection: Connection!
     
@@ -22,25 +22,49 @@ class ProfileController: UIViewController, UIGestureRecognizerDelegate, UIScroll
         self.setupViews()
     }
     
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        NotificationCenter.default.addObserver(self, selector: #selector(openProfileIconModal), name: NOTIF_PROFILEICONTAPPED, object: nil)
+    }
+    
+    func openProfileIconModal(notif: Notification) {
+        if let userInfo = notif.userInfo as? [String: String], let iconImageName = userInfo["iconImageName"] {
+            // TODO: Have to map icon image name to icon description to set in alert title
+            let controller = UIAlertController(title: iconImageName, message: "This is how you do it...", preferredStyle: .alert)
+            self.present(controller, animated: true, completion: { 
+                controller.view.superview?.isUserInteractionEnabled = true
+                let tapToDismissModal = UITapGestureRecognizer(target: self, action: #selector(self.dismissProfileIconModal))
+                controller.view.superview?.addGestureRecognizer(tapToDismissModal)
+            })
+        }
+    }
+    
+    func dismissProfileIconModal() {
+        self.dismiss(animated: true, completion: nil)
+    }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        NotificationCenter.default.removeObserver(self, name: NOTIF_PROFILEICONTAPPED, object: nil)
+    }
+    
     override var prefersStatusBarHidden: Bool {
         return true
     }
     
-    // MARK: Views
+    // MARK: Views 0 - Close button, Profile image, cover image
     
     fileprivate lazy var coverImageView: UIImageView = {
         let imageView = UIImageView()
         imageView.contentMode = .scaleAspectFill
         imageView.autoresizesSubviews = true
         imageView.clipsToBounds = true
-        imageView.image = UIImage(color: GRAY_UICOLOR)
-        imageView.alpha = 0.75
+        imageView.image = UIImage(color: GREEN_UICOLOR)
         imageView.isUserInteractionEnabled = true
         let pan = UIPanGestureRecognizer(target: self, action: #selector(coverImageDrag(sender:)))
         imageView.addGestureRecognizer(pan)
         return imageView
     }()
-    
     
     fileprivate let closeButton: UIButton = {
         let button = UIButton()
@@ -61,12 +85,15 @@ class ProfileController: UIViewController, UIGestureRecognizerDelegate, UIScroll
         let imageView = UIImageView()
         imageView.contentMode = .scaleAspectFill
         imageView.layer.borderColor = UIColor.white.cgColor
-        imageView.layer.borderWidth = 2.0
+        imageView.layer.borderWidth = 4.0
         imageView.layer.cornerRadius = 90.0 // Actual image size is 180.0 so this is /2
         imageView.clipsToBounds = true
+//        imageView.layer.masksToBounds = false
+//        imageView.layer.shadowOffset = CGSize(width: 5.0, height: 5.0)
+//        imageView.layer.shadowRadius = 8.0
+//        imageView.layer.shadowOpacity = 0.5
         imageView.isUserInteractionEnabled = true
         imageView.addGestureRecognizer(self.picTap)
-        imageView.image = UIImage(color: GRAY_UICOLOR)
         return imageView
     }()
     
@@ -89,11 +116,13 @@ class ProfileController: UIViewController, UIGestureRecognizerDelegate, UIScroll
         return tap
     }()
     
-    fileprivate let nameLbl: UILabel = {
+    // MARK: Views 1 - Discipline icon, name and age label
+    
+    fileprivate let nameAndAgeLbl: UILabel = {
         let label = UILabel()
         label.textAlignment = .center
         label.font = FONT_MEDIUM_XLARGE
-        label.textColor = UIColor.black
+        label.textColor = UIColor.darkGray
         return label
     }()
     
@@ -104,6 +133,128 @@ class ProfileController: UIViewController, UIGestureRecognizerDelegate, UIScroll
         return imageView
     }()
     
+    // MARK: Views 2 - Horizontal collection views of badge and classroom icons
+    
+    fileprivate let BADGES_CELL_ID = "badgesCollectionCell"
+    fileprivate let CLASSROOMS_CELL_ID = "classroomsCollectionCell"
+//    fileprivate var badges = [String]() // Image names of acquired badges
+//    fileprivate var classrooms = [String]() // Image names of participated classrooms
+    
+    // TODO: Dummy data for icons
+    fileprivate var badges = ["badge1", "badge2", "badge3", "badge4", "badge5", "badge6", "badge7", "badge8", "badge9", "badge10", "badge11", "badge12"]
+    fileprivate var classrooms = ["biology", "chemistry","computer", "eastasian", "electricengineering", "physics"]
+
+    open static let ICON_SIZE: CGFloat = 33.0
+    
+    fileprivate func collectionViewTemplate() -> UICollectionView {
+        let layout = UICollectionViewFlowLayout()
+        let collectionView = UICollectionView(frame: UIScreen.main.bounds, collectionViewLayout: layout)
+        collectionView.backgroundColor = UIColor.white
+        collectionView.showsHorizontalScrollIndicator = false
+        collectionView.showsVerticalScrollIndicator = false
+        collectionView.bounces = true
+        return collectionView
+    }
+    
+    fileprivate lazy var badgesCollectionView: UICollectionView = {
+        return self.collectionViewTemplate()
+    }()
+    
+    fileprivate lazy var classroomsCollectionView: UICollectionView = {
+        return self.collectionViewTemplate()
+    }()
+    
+    fileprivate func sectionLabelTemplate(labelText: String) -> UILabel {
+        let label = UILabel()
+        label.text = labelText
+        label.font = FONT_HEAVY_MID
+        label.textColor = UIColor.darkGray
+        label.textAlignment = .left
+        return label
+    }
+    
+    fileprivate lazy var badgesLbl: UILabel = {
+        return self.sectionLabelTemplate(labelText: "Badges")
+    }()
+    
+    fileprivate lazy var classroomsLbl: UILabel = {
+        return self.sectionLabelTemplate(labelText: "Classrooms")
+    }()
+    
+    fileprivate func setupCollectionViews() {
+        self.badgesCollectionView.delegate = self
+        self.badgesCollectionView.dataSource = self
+        self.classroomsCollectionView.delegate = self
+        self.classroomsCollectionView.dataSource = self
+        self.badgesCollectionView.register(HorizontalScrollCell.self, forCellWithReuseIdentifier: BADGES_CELL_ID)
+        self.classroomsCollectionView.register(HorizontalScrollCell.self, forCellWithReuseIdentifier: CLASSROOMS_CELL_ID)
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        // Each of the two collection views only have one section
+        return 1
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        if collectionView == badgesCollectionView {
+            // Return badges collection view
+            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: BADGES_CELL_ID, for: indexPath) as! HorizontalScrollCell
+            cell.configureCell(icons: badges)
+            return cell
+        } else {
+            // Return classrooms collection view
+            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: CLASSROOMS_CELL_ID, for: indexPath) as! HorizontalScrollCell
+            cell.configureCell(icons: classrooms)
+            return cell
+        }
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+        return CGSize(width: view.frame.width, height: ProfileController.ICON_SIZE) // Width is defined in HorizontalScrollCell
+    }
+    
+    fileprivate let dividerLineForCollectionView: UIView = {
+        let view = UIView()
+        view.backgroundColor = UIColor(white: 0.5, alpha: 0.2)
+        return view
+    }()
+    
+    // MARK: Views 3 - Location, School, Organization Labels
+    
+    fileprivate lazy var locationLbl: UILabel = {
+        return self.sectionLabelTemplate(labelText: "Location")
+    }()
+    
+    fileprivate func fieldTemplate(text: String) -> UILabel {
+        let label = UILabel()
+        label.textColor = UIColor.gray
+        label.font = FONT_MEDIUM_MID
+        label.text = text
+        label.textAlignment = .left
+        label.numberOfLines = 1
+        return label
+    }
+    
+    fileprivate lazy var locationText: UILabel = {
+        return self.fieldTemplate(text: "Singapore")
+    }()
+    
+    fileprivate lazy var schoolLbl: UILabel = {
+        return self.sectionLabelTemplate(labelText: "School")
+    }()
+    
+    fileprivate lazy var schoolText: UILabel = {
+        return self.fieldTemplate(text: "Harvard University")
+    }()
+    
+    fileprivate lazy var organizationLbl: UILabel = {
+        return self.sectionLabelTemplate(labelText: "Organization")
+    }()
+    
+    fileprivate lazy var organizationText: UILabel = {
+        return self.fieldTemplate(text: "428")
+    }()
+    
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
         // Disable top bounce only, and not bottom bounce
         if (scrollView.contentOffset.y <= 0) {
@@ -111,12 +262,35 @@ class ProfileController: UIViewController, UIGestureRecognizerDelegate, UIScroll
         }
     }
     
+    fileprivate let dividerLineForProfileInfo: UIView = {
+        let view = UIView()
+        view.backgroundColor = UIColor(white: 0.5, alpha: 0.2)
+        return view
+    }()
+    
+    // MARK: Views 4 - What do you do at 4:28pm textview
+    
+    fileprivate lazy var whatIDoLbl: UILabel = {
+        return self.sectionLabelTemplate(labelText: "What I do at 4:28pm:")
+    }()
+    
+    fileprivate lazy var whatIDoText: UILabel = {
+        let label = UILabel()
+        label.font = FONT_MEDIUM_MID
+        // Additional options to style font are in attributedText
+        label.numberOfLines = 0
+        return label
+    }()
+    
     fileprivate func setupViews() {
         // Set up scroll view, and close button on top of scroll view
         let views = setupScrollView()
         let scrollView = views[0] as! UIScrollView
         let containerView = views[1]
         scrollView.delegate = self // Delegate so as to disable top bounce only
+        
+        // Assign delegate, data source and setup cells for the badges and classrooms colletion views
+        self.setupCollectionViews()
         
         // Add close button on top of scroll view
         view.addSubview(closeButtonBg)
@@ -127,70 +301,71 @@ class ProfileController: UIViewController, UIGestureRecognizerDelegate, UIScroll
         view.addConstraintsWithFormat("V:|-20-[v0(40)]", views: closeButton)
         closeButton.addTarget(self, action: #selector(closeProfile), for: .touchUpInside)
         
+        // Centered discipline icon and name label
+        let disciplineNameAgeContainer = UIView()
+        disciplineNameAgeContainer.addSubview(disciplineImageView)
+        disciplineNameAgeContainer.addSubview(nameAndAgeLbl)
+        disciplineNameAgeContainer.translatesAutoresizingMaskIntoConstraints = false
+        containerView.addSubview(disciplineNameAgeContainer)
+        containerView.addConstraint(NSLayoutConstraint(item: disciplineNameAgeContainer, attribute: .centerX, relatedBy: .equal, toItem: containerView, attribute: .centerX, multiplier: 1.0, constant: 0))
+        disciplineNameAgeContainer.addConstraintsWithFormat("H:|[v0(20)]-5-[v1]|", views: disciplineImageView, nameAndAgeLbl)
+        disciplineNameAgeContainer.addConstraintsWithFormat("V:|[v0(20)]", views: disciplineImageView)
+        disciplineNameAgeContainer.addConstraintsWithFormat("V:|[v0(25)]|", views: nameAndAgeLbl)
+        
         // Add to subviews
         containerView.addSubview(coverImageView)
         containerView.addSubview(profileImageView)
+        containerView.addSubview(disciplineNameAgeContainer)
+        containerView.addSubview(badgesLbl)
+        containerView.addSubview(badgesCollectionView)
+        containerView.addSubview(classroomsLbl)
+        containerView.addSubview(classroomsCollectionView)
+        containerView.addSubview(dividerLineForCollectionView)
+        containerView.addSubview(locationLbl)
+        containerView.addSubview(locationText)
+        containerView.addSubview(schoolLbl)
+        containerView.addSubview(schoolText)
+        containerView.addSubview(organizationLbl)
+        containerView.addSubview(organizationText)
+        containerView.addSubview(dividerLineForProfileInfo)
+        containerView.addSubview(whatIDoLbl)
+        containerView.addSubview(whatIDoText)
         
-        // Centered discipline icon and name label
-        let nameDisciplineContainer = UIView()
-        nameDisciplineContainer.addSubview(disciplineImageView)
-        nameDisciplineContainer.addSubview(nameLbl)
-        nameDisciplineContainer.translatesAutoresizingMaskIntoConstraints = false
-        containerView.addSubview(nameDisciplineContainer)
-        containerView.addConstraint(NSLayoutConstraint(item: nameDisciplineContainer, attribute: .centerX, relatedBy: .equal, toItem: containerView, attribute: .centerX, multiplier: 1.0, constant: 0))
-        nameDisciplineContainer.addConstraintsWithFormat("H:|[v0(20)]-5-[v1]|", views: disciplineImageView, nameLbl)
-        nameDisciplineContainer.addConstraintsWithFormat("V:|[v0(20)]", views: disciplineImageView)
-        nameDisciplineContainer.addConstraintsWithFormat("V:|[v0(25)]|", views: nameLbl)
+        let bottomMargin = CGFloat(self.view.frame.height / 2.5) // Set large bottom margin so user can scroll up and read bottom tagline
         
-        //        containerView.addSubview(ageLocationLbl)
-        //        containerView.addSubview(topDividerLineView)
-        //        containerView.addSubview(tableView)
-        //        containerView.addSubview(bottomDividerLineView)
-        //        containerView.addSubview(tagline1Lbl)
-        //        containerView.addSubview(tagline2Lbl)
-        
-        // Define constraints
+        // Define main constraints
         
         containerView.addConstraintsWithFormat("H:|[v0]|", views: coverImageView)
-        containerView.addConstraintsWithFormat("V:|[v0(250)]-12-[v1]", views: coverImageView, nameDisciplineContainer)
+        containerView.addConstraintsWithFormat("V:|[v0(250)]-14-[v1]-8-[v2(20)]-8-[v3(\(ProfileController.ICON_SIZE))]-8-[v4(20)]-8-[v5(\(ProfileController.ICON_SIZE))]-13-[v6(0.5)]-12-[v7(20)]-4-[v8(20)]-8-[v9(20)]-4-[v10(20)]-8-[v11(20)]-4-[v12(20)]-12-[v13(0.5)]-12-[v14(20)]-4-[v15]-\(bottomMargin)-|", views: coverImageView, disciplineNameAgeContainer, badgesLbl, badgesCollectionView, classroomsLbl, classroomsCollectionView, dividerLineForCollectionView, locationLbl, locationText, schoolLbl, schoolText, organizationLbl, organizationText, dividerLineForProfileInfo, whatIDoLbl, whatIDoText)
+        
+        containerView.addConstraintsWithFormat("H:|-8-[v0]-8-|", views: badgesLbl)
+        containerView.addConstraintsWithFormat("H:|[v0]|", views: badgesCollectionView)
+        containerView.addConstraintsWithFormat("H:|-8-[v0]-8-|", views: classroomsLbl)
+        containerView.addConstraintsWithFormat("H:|[v0]|", views: classroomsCollectionView)
+        containerView.addConstraintsWithFormat("H:|-8-[v0]-8-|", views: dividerLineForCollectionView)
+        containerView.addConstraintsWithFormat("H:|-8-[v0]-8-|", views: locationLbl)
+        containerView.addConstraintsWithFormat("H:|-8-[v0]-8-|", views: locationText)
+        containerView.addConstraintsWithFormat("H:|-8-[v0]-8-|", views: schoolLbl)
+        containerView.addConstraintsWithFormat("H:|-8-[v0]-8-|", views: schoolText)
+        containerView.addConstraintsWithFormat("H:|-8-[v0]-8-|", views: organizationLbl)
+        containerView.addConstraintsWithFormat("H:|-8-[v0]-8-|", views: organizationText)
+        containerView.addConstraintsWithFormat("H:|-8-[v0]-8-|", views: dividerLineForProfileInfo)
+        containerView.addConstraintsWithFormat("H:|-8-[v0]-8-|", views: whatIDoLbl)
+        containerView.addConstraintsWithFormat("H:|-8-[v0]-8-|", views: whatIDoText)
         
         containerView.addConstraintsWithFormat("H:[v0(180)]", views: profileImageView)
         containerView.addConstraint(NSLayoutConstraint(item: profileImageView, attribute: .centerX, relatedBy: .equal, toItem: containerView, attribute: .centerX, multiplier: 1.0, constant: 0))
+
+        containerView.addConstraintsWithFormat("V:|-35-[v0(180)]", views: profileImageView)
         
-        let bottomMargin = CGFloat(self.view.frame.height / 1.5) // Set large bottom margin so user can scroll up and read bottom tagline
-        
-        containerView.addConstraintsWithFormat("V:|-35-[v0(180)]-\(bottomMargin)-|", views: profileImageView)
-        
-        coverImageView.image = #imageLiteral(resourceName: "topic-nonprofits")
         profileImageView.image = #imageLiteral(resourceName: "leo-profile")
-        nameLbl.text = "Leonard"
+        nameAndAgeLbl.text = "Leonard, 25"
         disciplineImageView.image = #imageLiteral(resourceName: "business")
-        
-        
-        //        containerView.addConstraintsWithFormat("H:|-15-[v0]-15-|", views: ageLocationLbl)
-        //        containerView.addConstraintsWithFormat("H:|-15-[v0]-15-|", views: topDividerLineView)
-        //        containerView.addConstraintsWithFormat("H:|-15-[v0]-15-|", views: bottomDividerLineView)
-        //        containerView.addConstraintsWithFormat("H:|-15-[v0]-15-|", views: tagline1Lbl)
-        //        containerView.addConstraintsWithFormat("H:|-15-[v0]-15-|", views: tagline2Lbl)
-        
-        
-        
-        
-        //        heightOfTableViewConstraint = NSLayoutConstraint(item: self.tableView, attribute: .height, relatedBy: .equal, toItem: containerView, attribute: .height, multiplier: 0.0, constant: 1000)
-        //        containerView.addConstraint(heightOfTableViewConstraint)
-        //        containerView.addConstraintsWithFormat("V:|-175-[v0(150)]-10-[v1]-6-[v2(20)]-15-[v3(0.5)]-10-[v4]-10-[v5(0.5)]-20-[v6]-20-[v7]-\(bottomMargin)-|", views: self.profileImageView, nameDisciplineContainer, self.ageLocationLbl, self.topDividerLineView, self.tableView, self.bottomDividerLineView, self.tagline1Lbl, self.tagline2Lbl)
-        //        containerView.addConstraintsWithFormat("H:|[v0]|", views: self.tableView)
-        //
-        //        UIView.animate(withDuration: 0, animations: {
-        //            self.tableView.layoutIfNeeded()
-        //            }) { (complete) in
-        //                var heightOfTableView: CGFloat = 0.0
-        //                let cells = self.tableView.visibleCells
-        //                for cell in cells {
-        //                    heightOfTableView += cell.frame.height
-        //                }
-        //                self.heightOfTableViewConstraint.constant = heightOfTableView
-        //        }
+        let paragraphStyle = NSMutableParagraphStyle()
+        paragraphStyle.lineSpacing = 6
+        paragraphStyle.alignment = .left
+        let whatIDoString = NSMutableAttributedString(string: "My schedule is actually a lot easier to predict than you think. I'm normally hitting the gym at 4:28pm, before I head off to dinner. When I'm not at the gym, I'll go for a swim. When I'm not exercising, I try to keep that time free to catch up on some TechCrunch reading over a hot cup of Peppermint Honey Tea.", attributes: [NSForegroundColorAttributeName: UIColor.gray, NSParagraphStyleAttributeName: paragraphStyle])
+        whatIDoText.attributedText = whatIDoString
         
     }
     

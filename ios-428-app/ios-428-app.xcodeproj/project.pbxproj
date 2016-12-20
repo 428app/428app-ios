@@ -62,6 +62,7 @@
 		4064A2521DB346A800071383 /* Profile.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4064A2511DB346A800071383 /* Profile.swift */; };
 		4064A2541DB34E4D00071383 /* ProfileController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4064A2531DB34E4D00071383 /* ProfileController.swift */; };
 		4064A2561DB3E5E800071383 /* ProfileCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4064A2551DB3E5E800071383 /* ProfileCell.swift */; };
+		40785D5B1E04EDCE009B66E0 /* HorizontalScrollCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 40785D5A1E04EDCE009B66E0 /* HorizontalScrollCell.swift */; };
 		409F05F21DD81E1D001B673F /* Upload.swift in Sources */ = {isa = PBXBuildFile; fileRef = 409F05F11DD81E1D001B673F /* Upload.swift */; };
 		40AB7FF81DB59C9600492788 /* SettingsController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 40AB7FF71DB59C9600492788 /* SettingsController.swift */; };
 		40AB7FFA1DB5B06A00492788 /* SettingCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 40AB7FF91DB5B06A00492788 /* SettingCell.swift */; };
@@ -148,6 +149,7 @@
 		4064A2511DB346A800071383 /* Profile.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Profile.swift; sourceTree = "<group>"; };
 		4064A2531DB34E4D00071383 /* ProfileController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProfileController.swift; sourceTree = "<group>"; };
 		4064A2551DB3E5E800071383 /* ProfileCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProfileCell.swift; sourceTree = "<group>"; };
+		40785D5A1E04EDCE009B66E0 /* HorizontalScrollCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HorizontalScrollCell.swift; sourceTree = "<group>"; };
 		409F05F11DD81E1D001B673F /* Upload.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Upload.swift; sourceTree = "<group>"; };
 		40AB7FF71DB59C9600492788 /* SettingsController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingsController.swift; sourceTree = "<group>"; };
 		40AB7FF91DB5B06A00492788 /* SettingCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingCell.swift; sourceTree = "<group>"; };
@@ -192,7 +194,6 @@
 			children = (
 				4024F2201DB7E2E9007819F7 /* TopicsController.swift */,
 				4024F2281DB853F9007819F7 /* DiscussController.swift */,
-				4024F2301DB88262007819F7 /* DiscussModalController.swift */,
 			);
 			name = Topic;
 			sourceTree = "<group>";
@@ -312,6 +313,9 @@
 		4064A2111DACBB1C00071383 /* View */ = {
 			isa = PBXGroup;
 			children = (
+				4024F2301DB88262007819F7 /* DiscussModalController.swift */,
+				40AB80021DB6FAA200492788 /* PictureModalController.swift */,
+				40785D5A1E04EDCE009B66E0 /* HorizontalScrollCell.swift */,
 				4024F22A1DB85C0E007819F7 /* PaddingLabel.swift */,
 				4064A2131DACBCAA00071383 /* BaseCollectionCell.swift */,
 				40AB7FFB1DB5B09700492788 /* BaseTableViewCell.swift */,
@@ -332,7 +336,6 @@
 			children = (
 				4064A1E51DAC7DA600071383 /* CustomTabBarController.swift */,
 				4064A2041DAC868E00071383 /* CustomNavigationController.swift */,
-				40AB80021DB6FAA200492788 /* PictureModalController.swift */,
 				4064A1B71DAC381300071383 /* ConnectionsController.swift */,
 				4064A1E31DAC590900071383 /* ChatController.swift */,
 				4064A2531DB34E4D00071383 /* ProfileController.swift */,
@@ -572,6 +575,7 @@
 				4064A2541DB34E4D00071383 /* ProfileController.swift in Sources */,
 				4020CE151DBB569000461181 /* Switches.swift in Sources */,
 				4000C37A1DD81227009C10E5 /* Download.swift in Sources */,
+				40785D5B1E04EDCE009B66E0 /* HorizontalScrollCell.swift in Sources */,
 				40AB7FF81DB59C9600492788 /* SettingsController.swift in Sources */,
 				40ADEEE01DDD12D000CE529A /* WhisperView.swift in Sources */,
 				40AB7FFA1DB5B06A00492788 /* SettingCell.swift in Sources */,

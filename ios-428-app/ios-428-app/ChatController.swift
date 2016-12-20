@@ -472,8 +472,6 @@ class ChatController: UIViewController, UICollectionViewDelegateFlowLayout, UITe
         }
         controller.modalTransitionStyle = .coverVertical
         controller.modalPresentationStyle = .overFullScreen
-//        self.navigationController?.navigationBar.isHidden = true
-//        self.collectionView.isHidden = true
         self.present(controller, animated: true, completion: nil)
     }
     
