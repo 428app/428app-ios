@@ -153,7 +153,7 @@ class EditProfessionalController: UIViewController, UITextFieldDelegate, UIPicke
     
     fileprivate lazy var orgTextField: UITextField = {
         let textfield: UITextField = self.textfieldTemplate()
-        textfield.placeholder = "Your company, or school"
+        textfield.placeholder = "Your company or club"
         return textfield
     }()
     
@@ -193,8 +193,8 @@ class EditProfessionalController: UIViewController, UITextFieldDelegate, UIPicke
         view.addConstraintsWithFormat("H:|-15-[v0]-15-|", views: disciplineTitleLabel)
         view.addConstraintsWithFormat("H:|-15-[v0]-15-|", views: disciplineTextField)
         
-        view.addConstraint(NSLayoutConstraint(item: orgTitleLabel, attribute: .top, relatedBy: .equal, toItem: topLayoutGuide, attribute: .bottom, multiplier: 1.0, constant: 15.0))
-        view.addConstraintsWithFormat("V:[v0(20)]-5-[v1(45)]-25-[v2(20)]-5-[v3(45)]-25-[v4(20)]-5-[v5(45)]", views: orgTitleLabel, orgTextField, schoolTitleLabel, schoolTextField, disciplineTitleLabel, disciplineTextField)
+        view.addConstraint(NSLayoutConstraint(item: disciplineTitleLabel, attribute: .top, relatedBy: .equal, toItem: topLayoutGuide, attribute: .bottom, multiplier: 1.0, constant: 15.0))
+        view.addConstraintsWithFormat("V:[v0(20)]-5-[v1(45)]-25-[v2(20)]-5-[v3(45)]-25-[v4(20)]-5-[v5(45)]", views: disciplineTitleLabel, disciplineTextField, schoolTitleLabel, schoolTextField, orgTitleLabel, orgTextField)
     }
     
     // MARK: Text field
@@ -269,13 +269,11 @@ class EditProfessionalController: UIViewController, UITextFieldDelegate, UIPicke
     fileprivate func registerObservers() {
         NotificationCenter.default.addObserver(self, selector: #selector(handleKeyboardNotification), name: NSNotification.Name.UIKeyboardWillHide, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(handleKeyboardNotification), name: NSNotification.Name.UIKeyboardWillChangeFrame, object: nil)
-//        NotificationCenter.default.addObserver(self, selector: #selector(loadProfileData), name: NOTIF_MYPROFILEDOWNLOADED, object: nil)
     }
     
     fileprivate func unregisterObservers() {
         NotificationCenter.default.removeObserver(self, name: NSNotification.Name.UIKeyboardWillHide, object: nil)
         NotificationCenter.default.removeObserver(self, name: NSNotification.Name.UIKeyboardWillChangeFrame, object: nil)
-//        NotificationCenter.default.removeObserver(self, name: NOTIF_MYPROFILEDOWNLOADED, object: nil)
     }
     
     fileprivate func getActiveTextfield() -> UITextField? {
