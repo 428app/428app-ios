@@ -33,14 +33,14 @@ class CustomTabBarController: UITabBarController {
         topicsNavController.tabBarItem.image = #imageLiteral(resourceName: "topics-U")
         topicsNavController.tabBarItem.selectedImage = #imageLiteral(resourceName: "topics-F")
         
-        let settingsController = SettingsController()
-        let settingsNavController = CustomNavigationController(rootViewController: settingsController)
-        settingsNavController.tabBarItem.title = "Profile"
-        settingsNavController.tabBarItem.image = #imageLiteral(resourceName: "settings-U")
-        settingsNavController.tabBarItem.selectedImage = #imageLiteral(resourceName: "settings-F")
+        let meController = MeController()
+        let meNavController = CustomNavigationController(rootViewController: meController)
+        meNavController.tabBarItem.title = "Me"
+        meNavController.tabBarItem.image = #imageLiteral(resourceName: "me-U")
+        meNavController.tabBarItem.selectedImage = #imageLiteral(resourceName: "me-F")
         
         // NOTE: Changing this order will break the remote notification logic in AppDelegate
-        viewControllers = [connectionsNavController, topicsNavController, settingsNavController]
+        viewControllers = [connectionsNavController, topicsNavController, meNavController]
     }
     
     

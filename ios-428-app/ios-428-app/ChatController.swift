@@ -461,7 +461,8 @@ class ChatController: UIViewController, UICollectionViewDelegateFlowLayout, UITe
     
     func openProfile() {
         let controller = ProfileController()
-        controller.connection = connection
+//        controller.connection = connection
+        // TODO: Have to set profile right
 
         controller.transitioningDelegate = self
         

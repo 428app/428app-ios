@@ -1,22 +1,22 @@
 //
-//  ProfileController.swift
+//  MeController.swift
 //  ios-428-app
 //
-//  Created by Leonard Loo on 10/16/16.
+//  Created by Leonard Loo on 12/20/16.
 //  Copyright © 2016 428. All rights reserved.
 //
 
 import Foundation
 import UIKit
 
-
-class ProfileController: UIViewController, UIGestureRecognizerDelegate, UIScrollViewDelegate, UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
+class MeController: UIViewController, UIGestureRecognizerDelegate, UIScrollViewDelegate, UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
     
     var profile: Profile!
     
     override func viewDidLoad() {
         super.viewDidLoad()
         self.view.backgroundColor = UIColor.white
+        self.navigationItem.title = "Me"
         self.setupViews()
     }
     
@@ -29,7 +29,7 @@ class ProfileController: UIViewController, UIGestureRecognizerDelegate, UIScroll
         if let userInfo = notif.userInfo as? [String: String], let iconImageName = userInfo["iconImageName"] {
             // TODO: Have to map icon image name to icon description to set in alert title
             let controller = UIAlertController(title: iconImageName, message: "This is how you do it...", preferredStyle: .alert)
-            self.present(controller, animated: true, completion: { 
+            self.present(controller, animated: true, completion: {
                 controller.view.superview?.isUserInteractionEnabled = true
                 let tapToDismissModal = UITapGestureRecognizer(target: self, action: #selector(self.dismissProfileIconModal))
                 controller.view.superview?.addGestureRecognizer(tapToDismissModal)
@@ -46,10 +46,6 @@ class ProfileController: UIViewController, UIGestureRecognizerDelegate, UIScroll
         NotificationCenter.default.removeObserver(self, name: NOTIF_PROFILEICONTAPPED, object: nil)
     }
     
-    override var prefersStatusBarHidden: Bool {
-        return true
-    }
-    
     // MARK: Views 0 - Close button, Profile image, cover image
     
     fileprivate lazy var coverImageView: UIImageView = {
@@ -57,33 +53,13 @@ class ProfileController: UIViewController, UIGestureRecognizerDelegate, UIScroll
         imageView.contentMode = .scaleAspectFill
         imageView.autoresizesSubviews = true
         imageView.clipsToBounds = true
-        imageView.image = UIImage(color: GREEN_UICOLOR)
-        imageView.isUserInteractionEnabled = true
-        let pan = UIPanGestureRecognizer(target: self, action: #selector(coverImageDrag(sender:)))
-        imageView.addGestureRecognizer(pan)
-        return imageView
-    }()
-    
-    fileprivate let closeButton: UIButton = {
-        let button = UIButton()
-        button.tintColor = UIColor.white
-        button.setImage(#imageLiteral(resourceName: "down"), for: .normal)
-        button.contentEdgeInsets = UIEdgeInsets(top: 10, left: 10, bottom: 10, right: 10)
-        return button
-    }()
-    
-    fileprivate let closeButtonBg: UIImageView = {
-        let imageView = UIImageView()
-        imageView.image = #imageLiteral(resourceName: "downbg").alpha(value: 0.55)
-        imageView.contentMode = .scaleAspectFill
+        imageView.image = UIImage(color: GRAY_UICOLOR)
         return imageView
     }()
     
     fileprivate lazy var profileImageView: UIImageView = {
         let imageView = UIImageView()
         imageView.contentMode = .scaleAspectFill
-        imageView.layer.borderColor = UIColor.white.cgColor
-        imageView.layer.borderWidth = 4.0
         imageView.layer.cornerRadius = 90.0 // Actual image size is 180.0 so this is /2
         imageView.clipsToBounds = true
         imageView.isUserInteractionEnabled = true
@@ -131,13 +107,13 @@ class ProfileController: UIViewController, UIGestureRecognizerDelegate, UIScroll
     
     fileprivate let BADGES_CELL_ID = "badgesCollectionCell"
     fileprivate let CLASSROOMS_CELL_ID = "classroomsCollectionCell"
-//    fileprivate var badges = [String]() // Image names of acquired badges
-//    fileprivate var classrooms = [String]() // Image names of participated classrooms
+    //    fileprivate var badges = [String]() // Image names of acquired badges
+    //    fileprivate var classrooms = [String]() // Image names of participated classrooms
     
     // TODO: Dummy data for icons
     fileprivate var badges = ["badge1", "badge2", "badge3", "badge4", "badge5", "badge6", "badge7", "badge8", "badge9", "badge10", "badge11", "badge12"]
     fileprivate var classrooms = ["biology", "chemistry","computer", "eastasian", "electricengineering", "physics"]
-
+    
     open static let ICON_SIZE: CGFloat = 33.0
     
     fileprivate func collectionViewTemplate() -> UICollectionView {
@@ -213,61 +189,41 @@ class ProfileController: UIViewController, UIGestureRecognizerDelegate, UIScroll
         return view
     }()
     
-    // MARK: Views 3 - Location, School, Organization Labels
+    // MARK: Views 3 - Edit Profile and Settings buttons
     
-    fileprivate lazy var locationLbl: UILabel = {
-        return self.sectionLabelTemplate(labelText: "Location")
-    }()
-    
-    fileprivate func fieldTemplate(text: String) -> UILabel {
-        let label = UILabel()
-        label.textColor = UIColor.gray
-        label.font = FONT_MEDIUM_MID
-        label.text = text
-        label.textAlignment = .left
-        label.numberOfLines = 1
-        return label
+    fileprivate func meBtnTemplate(btnText: String) -> UIButton {
+        let button = UIButton()
+        button.titleLabel?.font = FONT_HEAVY_MID
+        button.titleLabel?.textAlignment = .center
+        button.setTitle(btnText, for: .normal)
+        button.setTitleColor(UIColor.white, for: .normal)
+        button.setTitleColor(UIColor.darkGray, for: .highlighted)
+        button.setBackgroundColor(color: GREEN_UICOLOR, forState: .normal)
+        button.setBackgroundColor(color: GRAY_UICOLOR, forState: .highlighted)
+        button.layer.cornerRadius = 5.0
+        button.layer.masksToBounds = true
+        return button
     }
     
-    fileprivate lazy var locationText: UILabel = {
-        return self.fieldTemplate(text: "Singapore")
+    fileprivate lazy var editProfileBtn: UIButton = {
+        let button: UIButton = self.meBtnTemplate(btnText: "Edit Profile")
+        button.addTarget(self, action: #selector(openEditProfile), for: .touchUpInside)
+        return button
     }()
     
-    fileprivate lazy var schoolLbl: UILabel = {
-        return self.sectionLabelTemplate(labelText: "School")
+    fileprivate lazy var settingsBtn: UIButton = {
+        let button = self.meBtnTemplate(btnText: "Settings")
+        button.addTarget(self, action: #selector(openSettings), for: .touchUpInside)
+        return button
     }()
     
-    fileprivate lazy var schoolText: UILabel = {
-        return self.fieldTemplate(text: "Harvard University")
-    }()
+    func openEditProfile() {
+        log.info("Edit profile")
+    }
     
-    fileprivate lazy var organizationLbl: UILabel = {
-        return self.sectionLabelTemplate(labelText: "Organization")
-    }()
-    
-    fileprivate lazy var organizationText: UILabel = {
-        return self.fieldTemplate(text: "428")
-    }()
-    
-    fileprivate let dividerLineForProfileInfo: UIView = {
-        let view = UIView()
-        view.backgroundColor = UIColor(white: 0.5, alpha: 0.2)
-        return view
-    }()
-    
-    // MARK: Views 4 - What do you do at 4:28pm textview
-    
-    fileprivate lazy var whatIDoLbl: UILabel = {
-        return self.sectionLabelTemplate(labelText: "What I do at 4:28pm:")
-    }()
-    
-    fileprivate lazy var whatIDoText: UILabel = {
-        let label = UILabel()
-        label.font = FONT_MEDIUM_MID
-        // Additional options to style font are in attributedText
-        label.numberOfLines = 0
-        return label
-    }()
+    func openSettings() {
+        log.info("Open settings")
+    }
     
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
         // Disable top bounce only, and not bottom bounce
@@ -286,15 +242,6 @@ class ProfileController: UIViewController, UIGestureRecognizerDelegate, UIScroll
         // Assign delegate, data source and setup cells for the badges and classrooms colletion views
         self.setupCollectionViews()
         
-        // Add close button on top of scroll view
-        view.addSubview(closeButtonBg)
-        view.addSubview(closeButton)
-        view.addConstraintsWithFormat("H:|-15-[v0(30)]", views: closeButtonBg)
-        view.addConstraintsWithFormat("V:|-25-[v0(30)]", views: closeButtonBg)
-        view.addConstraintsWithFormat("H:|-10-[v0(40)]", views: closeButton)
-        view.addConstraintsWithFormat("V:|-20-[v0(40)]", views: closeButton)
-        closeButton.addTarget(self, action: #selector(closeProfile), for: .touchUpInside)
-        
         // Centered discipline icon and name label
         let disciplineNameAgeContainer = UIView()
         disciplineNameAgeContainer.addSubview(disciplineImageView)
@@ -306,6 +253,18 @@ class ProfileController: UIViewController, UIGestureRecognizerDelegate, UIScroll
         disciplineNameAgeContainer.addConstraintsWithFormat("V:|[v0(20)]", views: disciplineImageView)
         disciplineNameAgeContainer.addConstraintsWithFormat("V:|[v0(25)]|", views: nameAndAgeLbl)
         
+        // Button container
+        let buttonContainer = UIView()
+        buttonContainer.addSubview(editProfileBtn)
+        buttonContainer.addSubview(settingsBtn)
+        buttonContainer.translatesAutoresizingMaskIntoConstraints = false
+        containerView.addSubview(buttonContainer)
+        let buttonWidth: CGFloat = (UIScreen.main.bounds.width - 6 * 8.0) / 2.0
+        buttonContainer.addConstraintsWithFormat("H:|-8-[v0(\(buttonWidth))]", views: editProfileBtn)
+        buttonContainer.addConstraintsWithFormat("H:[v0(\(buttonWidth))]-8-|", views: settingsBtn)
+        buttonContainer.addConstraintsWithFormat("V:|-[v0(50)]-|", views: editProfileBtn)
+        buttonContainer.addConstraintsWithFormat("V:|-[v0(50)]-|", views: settingsBtn)
+        
         // Add to subviews
         containerView.addSubview(coverImageView)
         containerView.addSubview(profileImageView)
@@ -315,94 +274,30 @@ class ProfileController: UIViewController, UIGestureRecognizerDelegate, UIScroll
         containerView.addSubview(classroomsLbl)
         containerView.addSubview(classroomsCollectionView)
         containerView.addSubview(dividerLineForCollectionView)
-        containerView.addSubview(locationLbl)
-        containerView.addSubview(locationText)
-        containerView.addSubview(schoolLbl)
-        containerView.addSubview(schoolText)
-        containerView.addSubview(organizationLbl)
-        containerView.addSubview(organizationText)
-        containerView.addSubview(dividerLineForProfileInfo)
-        containerView.addSubview(whatIDoLbl)
-        containerView.addSubview(whatIDoText)
         
         let bottomMargin = CGFloat(self.view.frame.height / 2.5) // Set large bottom margin so user can scroll up and read bottom tagline
         
         // Define main constraints
+        let navBarHeight: CGFloat = self.navigationController!.navigationBar.frame.height
         
         containerView.addConstraintsWithFormat("H:|[v0]|", views: coverImageView)
-        containerView.addConstraintsWithFormat("V:|[v0(250)]-14-[v1]-8-[v2(20)]-8-[v3(\(ProfileController.ICON_SIZE))]-8-[v4(20)]-8-[v5(\(ProfileController.ICON_SIZE))]-13-[v6(0.5)]-12-[v7(20)]-4-[v8(20)]-8-[v9(20)]-4-[v10(20)]-8-[v11(20)]-4-[v12(20)]-12-[v13(0.5)]-12-[v14(20)]-4-[v15]-\(bottomMargin)-|", views: coverImageView, disciplineNameAgeContainer, badgesLbl, badgesCollectionView, classroomsLbl, classroomsCollectionView, dividerLineForCollectionView, locationLbl, locationText, schoolLbl, schoolText, organizationLbl, organizationText, dividerLineForProfileInfo, whatIDoLbl, whatIDoText)
+        containerView.addConstraintsWithFormat("V:|-\(navBarHeight)-[v0(250)]-14-[v1]-8-[v2(20)]-8-[v3(\(ProfileController.ICON_SIZE))]-8-[v4(20)]-8-[v5(\(ProfileController.ICON_SIZE))]-13-[v6(0.5)]-12-[v7]-\(bottomMargin)-|", views: coverImageView, disciplineNameAgeContainer, badgesLbl, badgesCollectionView, classroomsLbl, classroomsCollectionView, dividerLineForCollectionView, buttonContainer)
         
         containerView.addConstraintsWithFormat("H:|-8-[v0]-8-|", views: badgesLbl)
         containerView.addConstraintsWithFormat("H:|[v0]|", views: badgesCollectionView)
         containerView.addConstraintsWithFormat("H:|-8-[v0]-8-|", views: classroomsLbl)
         containerView.addConstraintsWithFormat("H:|[v0]|", views: classroomsCollectionView)
         containerView.addConstraintsWithFormat("H:|-8-[v0]-8-|", views: dividerLineForCollectionView)
-        containerView.addConstraintsWithFormat("H:|-8-[v0]-8-|", views: locationLbl)
-        containerView.addConstraintsWithFormat("H:|-8-[v0]-8-|", views: locationText)
-        containerView.addConstraintsWithFormat("H:|-8-[v0]-8-|", views: schoolLbl)
-        containerView.addConstraintsWithFormat("H:|-8-[v0]-8-|", views: schoolText)
-        containerView.addConstraintsWithFormat("H:|-8-[v0]-8-|", views: organizationLbl)
-        containerView.addConstraintsWithFormat("H:|-8-[v0]-8-|", views: organizationText)
-        containerView.addConstraintsWithFormat("H:|-8-[v0]-8-|", views: dividerLineForProfileInfo)
-        containerView.addConstraintsWithFormat("H:|-8-[v0]-8-|", views: whatIDoLbl)
-        containerView.addConstraintsWithFormat("H:|-8-[v0]-8-|", views: whatIDoText)
+        containerView.addConstraintsWithFormat("H:|-8-[v0]-8-|", views: buttonContainer)
         
         containerView.addConstraintsWithFormat("H:[v0(180)]", views: profileImageView)
         containerView.addConstraint(NSLayoutConstraint(item: profileImageView, attribute: .centerX, relatedBy: .equal, toItem: containerView, attribute: .centerX, multiplier: 1.0, constant: 0))
-
-        containerView.addConstraintsWithFormat("V:|-35-[v0(180)]", views: profileImageView)
+        
+        containerView.addConstraintsWithFormat("V:|-\(navBarHeight + 35)-[v0(180)]", views: profileImageView)
         
         profileImageView.image = #imageLiteral(resourceName: "leo-profile")
         nameAndAgeLbl.text = "Leonard, 25"
         disciplineImageView.image = #imageLiteral(resourceName: "business")
-        let paragraphStyle = NSMutableParagraphStyle()
-        paragraphStyle.lineSpacing = 6
-        paragraphStyle.alignment = .left
-        let whatIDoString = NSMutableAttributedString(string: "My schedule is actually a lot easier to predict than you think. I'm normally hitting the gym at 4:28pm, before I head off to dinner. When I'm not at the gym, I'll go for a swim. When I'm not exercising, I try to keep that time free to catch up on some TechCrunch reading over a hot cup of Peppermint Honey Tea.", attributes: [NSForegroundColorAttributeName: UIColor.gray, NSParagraphStyleAttributeName: paragraphStyle])
-        whatIDoText.attributedText = whatIDoString
     }
     
-    // MARK: Close profile
-    
-    func closeProfile(button: UIButton) {
-        self.dismiss(animated: true, completion: nil)
-    }
-    
-    // Interactor to dismiss modal by dragging cover photo down
-    var interactor: Interactor? = nil
-    func coverImageDrag(sender: UIPanGestureRecognizer) {
-        let percentThreshold: CGFloat = 0.3
-        let translation = sender.translation(in: view)
-        let verticalMovement = translation.y / view.bounds.height
-        let downwardMovement = fmaxf(Float(verticalMovement), 0.0)
-        let downwardMovementPercent = fminf(downwardMovement, 1.0)
-        let progress = CGFloat(downwardMovementPercent)
-        self.view.transform = CGAffineTransform(translationX: 0.0, y: progress * UIScreen.main.bounds.height)
-        guard let interactor = interactor else { return }
-        
-        switch sender.state {
-        case .began:
-            interactor.hasStarted = true
-        case .changed:
-            interactor.shouldFinish = progress > percentThreshold
-            interactor.update(progress)
-        case .cancelled:
-            interactor.hasStarted = false
-            interactor.cancel()
-        case .ended:
-            if progress > percentThreshold {
-                dismiss(animated: true, completion: nil)
-            } else {
-                UIView.animate(withDuration: 0.2, animations: {
-                    self.view.transform = CGAffineTransform(translationX: 0.0, y: 0.0)
-                })
-            }
-            interactor.hasStarted = false
-            interactor.shouldFinish
-                ? interactor.finish()
-                : interactor.cancel()
-        default:
-            break
-        }
-    }
 }
