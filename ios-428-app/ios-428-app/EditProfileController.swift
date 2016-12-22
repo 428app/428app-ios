@@ -168,7 +168,9 @@ class EditProfileController: UIViewController, UIScrollViewDelegate, UIGestureRe
         alertController.addAction(uploadPhotoAction)
         alertController.addAction(viewPhotoAction)
         alertController.addAction(cancelAction)
-        self.present(alertController, animated: true, completion: nil)
+        self.present(alertController, animated: true, completion: {
+            alertController.view.tintColor = GREEN_UICOLOR
+        })
     }
     
     fileprivate lazy var profilePhotoPicker: UIImagePickerController = {
@@ -182,6 +184,7 @@ class EditProfileController: UIViewController, UIScrollViewDelegate, UIGestureRe
         picker.dismiss(animated: true, completion: nil)
         if picker == profilePhotoPicker {
             profileImageView.image = info[UIImagePickerControllerOriginalImage] as? UIImage
+            log.info("Set profile image view to correct image")
             self.uploadImageForImageView(imageView: self.profileImageView)
         }
     }
@@ -268,9 +271,9 @@ class EditProfileController: UIViewController, UIScrollViewDelegate, UIGestureRe
         button.setTitle(title, for: .normal)
         button.setTitleColor(GREEN_UICOLOR, for: .normal)
         button.setTitleColor(UIColor.white, for: .highlighted)
-        button.titleLabel?.font = FONT_MEDIUM_SMALLMID
-        button.imageEdgeInsets = UIEdgeInsets(top: -1, left: 0, bottom: 0, right: 4)
-        button.titleEdgeInsets = UIEdgeInsets(top: 0, left: 4, bottom: 0, right: 0)
+        button.titleLabel?.font = FONT_HEAVY_MID
+        button.imageEdgeInsets = UIEdgeInsets(top: -1, left: 0, bottom: 0, right: 6)
+        button.titleEdgeInsets = UIEdgeInsets(top: 0, left: 6, bottom: 0, right: 0)
         button.imageView?.contentMode = .scaleAspectFit
         button.layer.borderColor = GREEN_UICOLOR.cgColor
         button.layer.borderWidth = 0.8
@@ -380,6 +383,7 @@ class EditProfileController: UIViewController, UIScrollViewDelegate, UIGestureRe
     
     fileprivate func setupViews() {
         // TODO: Until turned true after download
+        // TODO: Hides edit button and profile pic when still loading
 //        profileImageView.isUserInteractionEnabled = false
 //        editButton.isEnabled = false
 //        editProfessionalInfoButton.isEnabled = false
@@ -424,7 +428,7 @@ class EditProfileController: UIViewController, UIScrollViewDelegate, UIGestureRe
         let bottomMargin = CGFloat(self.view.frame.height / 2.5) // Set large bottom margin so user can scroll up and read bottom tagline
         let navBarHeight: CGFloat = self.navigationController!.navigationBar.frame.height
         
-        containerView.addConstraintsWithFormat("V:|-\(navBarHeight)-[v0(250)]-14-[v1(25)]-8-[v2(40)]-8-[v3(20)]-8-[v4(20)]-8-[v5(20)]-8-[v6(20)]-8-[v7(20)]-8-[v8(20)]-8-[v9(0.5)]-8-[v10(40)]-8-[v11(20)]-8-[v12]-\(bottomMargin)-|", views: coverImageView, disciplineNameAgeContainer, editProfessionalInfoButton ,disciplineLbl, disciplineText, schoolLbl, schoolText, organizationLbl, organizationText, dividerLineView, editTaglineButton, taglineLbl, taglineText)
+        containerView.addConstraintsWithFormat("V:|-\(navBarHeight)-[v0(250)]-14-[v1(25)]-8-[v2(40)]-8-[v3(20)]-8-[v4(20)]-8-[v5(20)]-8-[v6(20)]-8-[v7(20)]-8-[v8(20)]-8-[v9(0.5)]-12-[v10(40)]-8-[v11(20)]-8-[v12]-\(bottomMargin)-|", views: coverImageView, disciplineNameAgeContainer, editProfessionalInfoButton ,disciplineLbl, disciplineText, schoolLbl, schoolText, organizationLbl, organizationText, dividerLineView, editTaglineButton, taglineLbl, taglineText)
         
         containerView.addConstraintsWithFormat("H:|[v0]|", views: coverImageView)
         containerView.addConstraintsWithFormat("H:[v0(180)]", views: profileImageView)

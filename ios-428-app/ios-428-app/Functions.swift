@@ -35,7 +35,9 @@ func showErrorAlert(vc: UIViewController, title: String, message: String) {
     alertController.view.tintColor = GREEN_UICOLOR
     let okAction = UIAlertAction(title: "Okay", style: .default, handler: nil)
     alertController.addAction(okAction)
-    vc.present(alertController, animated: true, completion: nil)
+    vc.present(alertController, animated: true, completion: {
+        alertController.view.tintColor = GREEN_UICOLOR
+    })
 }
 
 // SwiftSpinner loader
