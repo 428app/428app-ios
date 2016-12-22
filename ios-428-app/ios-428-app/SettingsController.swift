@@ -147,12 +147,12 @@ class SettingsController: UIViewController, UITableViewDelegate, UITableViewData
                     self.settings[1][0].image = myProfilePhoto!
                     self.tableView.reloadData()
                     if let imageData = UIImageJPEGRepresentation(myProfilePhoto!, 1.0) {
-                        StorageService.ss.uploadOwnPic(data: imageData, isProfilePic: true, completed: { (isSuccess) in
+                        StorageService.ss.uploadOwnPic(data: imageData, completed: { (isSuccess) in
                             if !isSuccess {
                                 log.error("[Error] Unable to upload profile pic to storage")
                             } else {
                                 // Upload success, delete cached profile photo
-                                cachePhotoToUpload(data: nil, isProfilePic: true)
+                                cachePhotoToUpload(data: nil)
                             }
                         })
                     }
@@ -173,12 +173,12 @@ class SettingsController: UIViewController, UITableViewDelegate, UITableViewData
                 if myCoverPhoto != nil {
                     // Retry upload of image
                     if let imageData = UIImageJPEGRepresentation(myCoverPhoto!, 1.0) {
-                        StorageService.ss.uploadOwnPic(data: imageData, isProfilePic: false, completed: { (isSuccess) in
+                        StorageService.ss.uploadOwnPic(data: imageData, completed: { (isSuccess) in
                             if !isSuccess {
                                 log.error("[Error] Unable to upload cover pic to storage")
                             } else {
                                 // Upload success, delete cache
-                                cachePhotoToUpload(data: nil, isProfilePic: false)
+                                cachePhotoToUpload(data: nil)
                             }
                         })
                     }

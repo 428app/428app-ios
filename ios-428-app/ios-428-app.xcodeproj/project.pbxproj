@@ -342,11 +342,10 @@
 				4064A1E31DAC590900071383 /* ChatController.swift */,
 				4064A2531DB34E4D00071383 /* ProfileController.swift */,
 				40AB7FF71DB59C9600492788 /* SettingsController.swift */,
-				40785D5E1E093AAF009B66E0 /* MeController.swift */,
 				4024F2321DB9454B007819F7 /* LoginController.swift */,
 				4024F2341DBB2155007819F7 /* IntroController.swift */,
 				4024F21F1DB7E2DB007819F7 /* Topic */,
-				40AB80011DB6FA9500492788 /* EditProfile */,
+				40AB80011DB6FA9500492788 /* Me */,
 			);
 			name = Controller;
 			sourceTree = "<group>";
@@ -362,14 +361,15 @@
 			name = Services;
 			sourceTree = "<group>";
 		};
-		40AB80011DB6FA9500492788 /* EditProfile */ = {
+		40AB80011DB6FA9500492788 /* Me */ = {
 			isa = PBXGroup;
 			children = (
+				40785D5E1E093AAF009B66E0 /* MeController.swift */,
 				40AB7FFF1DB5FDB100492788 /* EditProfileController.swift */,
 				40AB80041DB7094700492788 /* EditProfessionalController.swift */,
 				40AB80061DB7095200492788 /* EditTaglineController.swift */,
 			);
-			name = EditProfile;
+			name = Me;
 			sourceTree = "<group>";
 		};
 		40ADEECE1DDD12D000CE529A /* Whisper */ = {

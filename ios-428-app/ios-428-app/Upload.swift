@@ -12,9 +12,9 @@ import UIKit
 // MARK: File path storage
 
 // Store profile photo or cover photo temporarily in case user closes app while uploading picture to Firebase storage
-func cachePhotoToUpload(data: Data?, isProfilePic: Bool = true) {
+func cachePhotoToUpload(data: Data?) {
     let fileManager = FileManager.default
-    let picPath = isProfilePic ? "profile_photo.jpg" : "cover_photo.jpg"
+    let picPath = "profile_photo.jpg"
     let paths = (NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true)[0] as NSString).appendingPathComponent(picPath)
     if data == nil {
         // Delete stored data

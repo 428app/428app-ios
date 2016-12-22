@@ -219,18 +219,17 @@ class ProfileController: UIViewController, UIGestureRecognizerDelegate, UIScroll
         return self.sectionLabelTemplate(labelText: "Location")
     }()
     
-    fileprivate func fieldTemplate(text: String) -> UILabel {
+    fileprivate func fieldTemplate() -> UILabel {
         let label = UILabel()
         label.textColor = UIColor.gray
         label.font = FONT_MEDIUM_MID
-        label.text = text
         label.textAlignment = .left
         label.numberOfLines = 1
         return label
     }
     
     fileprivate lazy var locationText: UILabel = {
-        return self.fieldTemplate(text: "Singapore")
+        return self.fieldTemplate()
     }()
     
     fileprivate lazy var schoolLbl: UILabel = {
@@ -238,7 +237,7 @@ class ProfileController: UIViewController, UIGestureRecognizerDelegate, UIScroll
     }()
     
     fileprivate lazy var schoolText: UILabel = {
-        return self.fieldTemplate(text: "Harvard University")
+        return self.fieldTemplate()
     }()
     
     fileprivate lazy var organizationLbl: UILabel = {
@@ -246,7 +245,7 @@ class ProfileController: UIViewController, UIGestureRecognizerDelegate, UIScroll
     }()
     
     fileprivate lazy var organizationText: UILabel = {
-        return self.fieldTemplate(text: "428")
+        return self.fieldTemplate()
     }()
     
     fileprivate let dividerLineForProfileInfo: UIView = {
@@ -255,13 +254,13 @@ class ProfileController: UIViewController, UIGestureRecognizerDelegate, UIScroll
         return view
     }()
     
-    // MARK: Views 4 - What do you do at 4:28pm textview
+    // MARK: Views 4 - Tagline
     
-    fileprivate lazy var whatIDoLbl: UILabel = {
+    fileprivate lazy var taglineLbl: UILabel = {
         return self.sectionLabelTemplate(labelText: "What I do at 4:28pm:")
     }()
     
-    fileprivate lazy var whatIDoText: UILabel = {
+    fileprivate lazy var taglineText: UILabel = {
         let label = UILabel()
         label.font = FONT_MEDIUM_MID
         // Additional options to style font are in attributedText
@@ -309,7 +308,6 @@ class ProfileController: UIViewController, UIGestureRecognizerDelegate, UIScroll
         // Add to subviews
         containerView.addSubview(coverImageView)
         containerView.addSubview(profileImageView)
-        containerView.addSubview(disciplineNameAgeContainer)
         containerView.addSubview(badgesLbl)
         containerView.addSubview(badgesCollectionView)
         containerView.addSubview(classroomsLbl)
@@ -322,15 +320,15 @@ class ProfileController: UIViewController, UIGestureRecognizerDelegate, UIScroll
         containerView.addSubview(organizationLbl)
         containerView.addSubview(organizationText)
         containerView.addSubview(dividerLineForProfileInfo)
-        containerView.addSubview(whatIDoLbl)
-        containerView.addSubview(whatIDoText)
+        containerView.addSubview(taglineLbl)
+        containerView.addSubview(taglineText)
         
         let bottomMargin = CGFloat(self.view.frame.height / 2.5) // Set large bottom margin so user can scroll up and read bottom tagline
         
         // Define main constraints
         
         containerView.addConstraintsWithFormat("H:|[v0]|", views: coverImageView)
-        containerView.addConstraintsWithFormat("V:|[v0(250)]-14-[v1]-8-[v2(20)]-8-[v3(\(ProfileController.ICON_SIZE))]-8-[v4(20)]-8-[v5(\(ProfileController.ICON_SIZE))]-13-[v6(0.5)]-12-[v7(20)]-4-[v8(20)]-8-[v9(20)]-4-[v10(20)]-8-[v11(20)]-4-[v12(20)]-12-[v13(0.5)]-12-[v14(20)]-4-[v15]-\(bottomMargin)-|", views: coverImageView, disciplineNameAgeContainer, badgesLbl, badgesCollectionView, classroomsLbl, classroomsCollectionView, dividerLineForCollectionView, locationLbl, locationText, schoolLbl, schoolText, organizationLbl, organizationText, dividerLineForProfileInfo, whatIDoLbl, whatIDoText)
+        containerView.addConstraintsWithFormat("V:|[v0(250)]-14-[v1]-8-[v2(20)]-8-[v3(\(ProfileController.ICON_SIZE))]-8-[v4(20)]-8-[v5(\(ProfileController.ICON_SIZE))]-13-[v6(0.5)]-12-[v7(20)]-4-[v8(20)]-8-[v9(20)]-4-[v10(20)]-8-[v11(20)]-4-[v12(20)]-12-[v13(0.5)]-12-[v14(20)]-4-[v15]-\(bottomMargin)-|", views: coverImageView, disciplineNameAgeContainer, badgesLbl, badgesCollectionView, classroomsLbl, classroomsCollectionView, dividerLineForCollectionView, locationLbl, locationText, schoolLbl, schoolText, organizationLbl, organizationText, dividerLineForProfileInfo, taglineLbl, taglineText)
         
         containerView.addConstraintsWithFormat("H:|-8-[v0]-8-|", views: badgesLbl)
         containerView.addConstraintsWithFormat("H:|[v0]|", views: badgesCollectionView)
@@ -344,8 +342,8 @@ class ProfileController: UIViewController, UIGestureRecognizerDelegate, UIScroll
         containerView.addConstraintsWithFormat("H:|-8-[v0]-8-|", views: organizationLbl)
         containerView.addConstraintsWithFormat("H:|-8-[v0]-8-|", views: organizationText)
         containerView.addConstraintsWithFormat("H:|-8-[v0]-8-|", views: dividerLineForProfileInfo)
-        containerView.addConstraintsWithFormat("H:|-8-[v0]-8-|", views: whatIDoLbl)
-        containerView.addConstraintsWithFormat("H:|-8-[v0]-8-|", views: whatIDoText)
+        containerView.addConstraintsWithFormat("H:|-8-[v0]-8-|", views: taglineLbl)
+        containerView.addConstraintsWithFormat("H:|-8-[v0]-8-|", views: taglineText)
         
         containerView.addConstraintsWithFormat("H:[v0(180)]", views: profileImageView)
         containerView.addConstraint(NSLayoutConstraint(item: profileImageView, attribute: .centerX, relatedBy: .equal, toItem: containerView, attribute: .centerX, multiplier: 1.0, constant: 0))
@@ -355,11 +353,15 @@ class ProfileController: UIViewController, UIGestureRecognizerDelegate, UIScroll
         profileImageView.image = #imageLiteral(resourceName: "leo-profile")
         nameAndAgeLbl.text = "Leonard, 25"
         disciplineImageView.image = #imageLiteral(resourceName: "business")
+        locationText.text = "Singapore"
+        schoolText.text = "Harvard University"
+        organizationText.text = "428"
         let paragraphStyle = NSMutableParagraphStyle()
         paragraphStyle.lineSpacing = 6
         paragraphStyle.alignment = .left
-        let whatIDoString = NSMutableAttributedString(string: "My schedule is actually a lot easier to predict than you think. I'm normally hitting the gym at 4:28pm, before I head off to dinner. When I'm not at the gym, I'll go for a swim. When I'm not exercising, I try to keep that time free to catch up on some TechCrunch reading over a hot cup of Peppermint Honey Tea.", attributes: [NSForegroundColorAttributeName: UIColor.gray, NSParagraphStyleAttributeName: paragraphStyle])
-        whatIDoText.attributedText = whatIDoString
+        let taglineString = NSMutableAttributedString(string: "My schedule is actually a lot easier to predict than you think. I'm normally hitting the gym at 4:28pm, before I head off to dinner. When I'm not at the gym, I'll go for a swim. When I'm not exercising, I try to keep that time free to catch up on some TechCrunch reading over a hot cup of Peppermint Honey Tea.", attributes: [NSForegroundColorAttributeName: UIColor.gray, NSParagraphStyleAttributeName: paragraphStyle])
+        taglineText.attributedText = taglineString
+        
     }
     
     // MARK: Close profile

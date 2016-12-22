@@ -46,7 +46,7 @@ class MeController: UIViewController, UIGestureRecognizerDelegate, UIScrollViewD
         NotificationCenter.default.removeObserver(self, name: NOTIF_PROFILEICONTAPPED, object: nil)
     }
     
-    // MARK: Views 0 - Close button, Profile image, cover image
+    // MARK: Views 0 - Profile image, cover image
     
     fileprivate lazy var coverImageView: UIImageView = {
         let imageView = UIImageView()
@@ -219,6 +219,10 @@ class MeController: UIViewController, UIGestureRecognizerDelegate, UIScrollViewD
     
     func openEditProfile() {
         log.info("Edit profile")
+        // Launch edit profile
+        self.navigationItem.backBarButtonItem = UIBarButtonItem(title: " ", style: .plain, target: nil, action: nil)
+        let controller = EditProfileController()
+        navigationController?.pushViewController(controller, animated: true)
     }
     
     func openSettings() {
@@ -268,7 +272,6 @@ class MeController: UIViewController, UIGestureRecognizerDelegate, UIScrollViewD
         // Add to subviews
         containerView.addSubview(coverImageView)
         containerView.addSubview(profileImageView)
-        containerView.addSubview(disciplineNameAgeContainer)
         containerView.addSubview(badgesLbl)
         containerView.addSubview(badgesCollectionView)
         containerView.addSubview(classroomsLbl)

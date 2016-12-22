@@ -10,13 +10,7 @@
 import Foundation
 import UIKit
 
-class EditProfileController: UIViewController, UIScrollViewDelegate, UITableViewDelegate, UITableViewDataSource, UIGestureRecognizerDelegate, UINavigationControllerDelegate, UIImagePickerControllerDelegate {
-    
-    fileprivate let CELL_ID = "editProfileCell"
-    fileprivate var heightOfTableViewConstraint: NSLayoutConstraint! // Used to find dynamic height of UITableView
-    // Cells for Organization,
-    fileprivate var profileCellTitles = ["Organization", "School", "Discipline"]
-    fileprivate var profileCellContent = ["-", "-", "-"]
+class EditProfileController: UIViewController, UIScrollViewDelegate, UIGestureRecognizerDelegate, UINavigationControllerDelegate, UIImagePickerControllerDelegate {
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -38,267 +32,106 @@ class EditProfileController: UIViewController, UIScrollViewDelegate, UITableView
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-        self.animateEditButtons()
+        self.animateEditButton()
     }
     
     // Called upon checking myProfile on viewDidLoad, or upon receiving Notification from SettingsController
     func loadProfileData() {
-        guard let profile = myProfile else {
-            return
-        }
-        
-        editProfessionalInfoButton.isEnabled = true
-        editTaglineButton.isEnabled = true
-        
-        // Basic info on top
-        nameLbl.text = profile.name
-        disciplineImageView.image = UIImage(named: profile.disciplineIcon)
-        ageLocationLbl.text = "\(profile.age), \(profile.location)"
-        
-        // Disable edit if cover photo is still being downloaded
-        coverImageView.isUserInteractionEnabled = !(profile.coverImageName != "" && myCoverPhoto == nil)
-        editCoverImageButton.isEnabled = coverImageView.isUserInteractionEnabled
-
-        if let coverImage = myCoverPhoto {
-            coverImageView.image = coverImage
-        }
-        
-        // Disable edit if profile photo is still being downloaded
-        profileImageView.isUserInteractionEnabled = !(profile.profileImageName != "" && myProfilePhoto == nil)
-        editProfileImageButton.isEnabled = profileImageView.isUserInteractionEnabled
-        
-        if let profileImage = myProfilePhoto {
-            profileImageView.image = profileImage
-        }
-        
-        // Professional info in the order: Organization, School, Discipline
-        self.profileCellContent = [profile.org, profile.school, profile.discipline]
-        self.tableView.reloadData()
-        
-        // Tags
+        profileImageView.image = #imageLiteral(resourceName: "leo-profile")
+        nameAndAgeLbl.text = "Leonard, 25"
+        disciplineImageView.image = #imageLiteral(resourceName: "business")
+        disciplineText.text = "Business"
+        schoolText.text = "Harvard University"
+        organizationText.text = "428"
         let paragraphStyle = NSMutableParagraphStyle()
         paragraphStyle.lineSpacing = 6
-        let tagstr1 = NSMutableAttributedString(string: "I am working on", attributes: [NSForegroundColorAttributeName: UIColor.black, NSFontAttributeName: FONT_HEAVY_MID, NSParagraphStyleAttributeName: paragraphStyle])
-        let tag1 = profile.tagline1 == "" ? "..." : profile.tagline1
-        let tagline1 = NSMutableAttributedString(string: " " + tag1, attributes: [NSParagraphStyleAttributeName: paragraphStyle])
-        tagstr1.append(tagline1)
-        tagline1Lbl.attributedText = tagstr1
-
-        let tagstr2 = NSMutableAttributedString(string: "I want to eventually", attributes: [NSForegroundColorAttributeName: UIColor.black, NSFontAttributeName: FONT_HEAVY_MID, NSParagraphStyleAttributeName: paragraphStyle])
-        let tag2 = profile.tagline2 == "" ? "..." : profile.tagline2
-        let tagline2 = NSMutableAttributedString(string: " " + tag2, attributes: [NSParagraphStyleAttributeName: paragraphStyle])
-        tagstr2.append(tagline2)
-        tagline2Lbl.attributedText = tagstr2
+        paragraphStyle.alignment = .left
+        let taglineString = NSMutableAttributedString(string: "My schedule is actually a lot easier to predict than you think. I'm normally hitting the gym at 4:28pm, before I head off to dinner. When I'm not at the gym, I'll go for a swim. When I'm not exercising, I try to keep that time free to catch up on some TechCrunch reading over a hot cup of Peppermint Honey Tea.", attributes: [NSForegroundColorAttributeName: UIColor.gray, NSParagraphStyleAttributeName: paragraphStyle])
+        taglineText.attributedText = taglineString
+        
+//        guard let profile = myProfile else {
+//            return
+//        }
+//        
+//        editProfessionalInfoButton.isEnabled = true
+//        editTaglineButton.isEnabled = true
+//        
+//        // Basic info on top
+//        nameLbl.text = profile.name
+//        disciplineImageView.image = UIImage(named: profile.disciplineIcon)
+//        ageLocationLbl.text = "\(profile.age), \(profile.location)"
+//        
+//        // Disable edit if cover photo is still being downloaded
+//        coverImageView.isUserInteractionEnabled = !(profile.coverImageName != "" && myCoverPhoto == nil)
+//        editCoverImageButton.isEnabled = coverImageView.isUserInteractionEnabled
+//
+//        if let coverImage = myCoverPhoto {
+//            coverImageView.image = coverImage
+//        }
+//        
+//        // Disable edit if profile photo is still being downloaded
+//        profileImageView.isUserInteractionEnabled = !(profile.profileImageName != "" && myProfilePhoto == nil)
+//        editProfileImageButton.isEnabled = profileImageView.isUserInteractionEnabled
+//        
+//        if let profileImage = myProfilePhoto {
+//            profileImageView.image = profileImage
+//        }
+//        
+//        // Professional info in the order: Organization, School, Discipline
+//        self.profileCellContent = [profile.org, profile.school, profile.discipline]
+//        self.tableView.reloadData()
+//        
+//        // Tags
+//        let paragraphStyle = NSMutableParagraphStyle()
+//        paragraphStyle.lineSpacing = 6
+//        let tagstr1 = NSMutableAttributedString(string: "I am working on", attributes: [NSForegroundColorAttributeName: UIColor.black, NSFontAttributeName: FONT_HEAVY_MID, NSParagraphStyleAttributeName: paragraphStyle])
+//        let tag1 = profile.tagline1 == "" ? "..." : profile.tagline1
+//        let tagline1 = NSMutableAttributedString(string: " " + tag1, attributes: [NSParagraphStyleAttributeName: paragraphStyle])
+//        tagstr1.append(tagline1)
+//        tagline1Lbl.attributedText = tagstr1
+//
+//        let tagstr2 = NSMutableAttributedString(string: "I want to eventually", attributes: [NSForegroundColorAttributeName: UIColor.black, NSFontAttributeName: FONT_HEAVY_MID, NSParagraphStyleAttributeName: paragraphStyle])
+//        let tag2 = profile.tagline2 == "" ? "..." : profile.tagline2
+//        let tagline2 = NSMutableAttributedString(string: " " + tag2, attributes: [NSParagraphStyleAttributeName: paragraphStyle])
+//        tagstr2.append(tagline2)
+//        tagline2Lbl.attributedText = tagstr2
     }
     
-    // MARK: Profile views
+    // MARK: Views 0 - Profile image, cover image
     
     fileprivate lazy var coverImageView: UIImageView = {
         let imageView = UIImageView()
         imageView.contentMode = .scaleAspectFill
-        imageView.image = UIImage(color: GRAY_UICOLOR)
         imageView.autoresizesSubviews = true
         imageView.clipsToBounds = true
-        let tapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(editCoverImage))
-        tapGestureRecognizer.delegate = self
-        imageView.addGestureRecognizer(tapGestureRecognizer)
-        imageView.isUserInteractionEnabled = true
+        imageView.image = UIImage(color: GRAY_UICOLOR)
         return imageView
     }()
-    
-    // Delegate function of scroll view
-    func scrollViewDidScroll(_ scrollView: UIScrollView) {
-        // Prevents top bounce
-        let offset = scrollView.contentOffset.y
-        scrollView.bounces = offset > 0
-    }
     
     fileprivate lazy var profileImageView: UIImageView = {
         let imageView = UIImageView()
         imageView.contentMode = .scaleAspectFill
-        imageView.image = UIImage(color: GRAY_UICOLOR)
-        imageView.layer.borderColor = UIColor.white.cgColor
-        imageView.layer.borderWidth = 1.5
-        imageView.layer.cornerRadius = 5.0
-        imageView.layer.masksToBounds = true
-        imageView.layer.shadowColor = UIColor.black.cgColor
-        imageView.layer.shadowOpacity = 0.75
-        imageView.layer.shadowRadius = 3.0
-        imageView.layer.shadowOffset = CGSize(width: 2.0, height: 2.0)
-        let tapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(editProfileImage))
-        tapGestureRecognizer.delegate = self
-        imageView.addGestureRecognizer(tapGestureRecognizer)
+        imageView.layer.cornerRadius = 90.0 // Actual image size is 180.0 so this is /2
+        imageView.clipsToBounds = true
         imageView.isUserInteractionEnabled = true
+        let tap = UITapGestureRecognizer(target: self, action: #selector(self.editProfileImage))
+        tap.delegate = self
+        imageView.addGestureRecognizer(tap)
         return imageView
     }()
     
-    func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWith otherGestureRecognizer: UIGestureRecognizer) -> Bool {
-        return true
-    }
-    
-    fileprivate let nameLbl: UILabel = {
-        let label = UILabel()
-        label.textAlignment = .center
-        label.font = FONT_MEDIUM_XLARGE
-        label.textColor = UIColor.black
-        return label
-    }()
-    
-    fileprivate let disciplineImageView: UIImageView = {
-        let imageView = UIImageView()
-        imageView.contentMode = .scaleAspectFill
-        imageView.image = UIImage(color: GRAY_UICOLOR)
-        imageView.tintColor = UIColor.lightGray
-        return imageView
-    }()
-    
-    fileprivate let ageLocationLbl: UILabel = {
-        let label = UILabel()
-        label.textAlignment = .center
-        label.font = FONT_MEDIUM_MID
-        label.textColor = UIColor.black
-        return label
-    }()
-    
-    fileprivate let topDividerLineView: UIView = {
-        let view = UIView()
-        view.backgroundColor = UIColor(white: 0.5, alpha: 0.2)
-        return view
-    }()
-    
-    fileprivate let tableView: UITableView = {
-        let tableView = UITableView()
-        tableView.backgroundColor = UIColor.white
-        tableView.showsHorizontalScrollIndicator = false
-        tableView.showsVerticalScrollIndicator = false
-        tableView.bounces = false
-        tableView.isScrollEnabled = false
-        return tableView
-    }()
-    
-    fileprivate let bottomDividerLineView: UIView = {
-        let view = UIView()
-        view.backgroundColor = UIColor(white: 0.5, alpha: 0.2)
-        return view
-    }()
-    
-    fileprivate let tagline1Lbl: UILabel = {
-        let label = UILabel()
-        label.numberOfLines = 0
-        label.font = FONT_MEDIUM_MID
-        label.textColor = UIColor.lightGray
-        label.textAlignment = .left
-        return label
-    }()
-    
-    fileprivate let tagline2Lbl: UILabel = {
-        let label = UILabel()
-        label.numberOfLines = 0
-        label.font = FONT_MEDIUM_MID
-        label.textColor = UIColor.lightGray
-        label.textAlignment = .left
-        return label
-    }()
-    
-    // MARK: Firebase storage
-    
-    fileprivate func showErrorForImageUploadFail() {
-        showErrorAlert(vc: self, title: "Failed to save image", message: "We apologize. It doesn't seem like we managed to save your picture. Please check your connection, and try again later.")
-    }
-    
-    // Private function used by sendEditsToServer()
-    fileprivate func uploadImageForImageView(isProfilePic: Bool) {
-        let imageView = isProfilePic ? profileImageView : coverImageView
-        
-        guard let image = imageView.image, let testData = UIImageJPEGRepresentation(image, 1.0) else {
-            log.error("[Error] Unable to convert image to data")
-            self.showErrorForImageUploadFail()
-            return
-        }
-        // Compress image to save storage space, anything more than 2MB will be compressed
-        let sizeInBytes = NSData(data: testData).length
-        let sizeInMB = CGFloat(sizeInBytes) / (1024.0  * 1024.0)
-        let compressionRatio: CGFloat = min(1.0, 2.0/sizeInMB)
-        log.info("Uploading with compression ratio: \(compressionRatio)")
-        if let data = UIImageJPEGRepresentation(image, compressionRatio) {
-            // Save locally first in model before server completes (Before user closes app)
-            // Save locally in file path so that when user closes app, we can retry upload when user logs in
-            if isProfilePic {
-                myProfilePhoto = image
-                // Cache photo to upload first in case user closes the app at this point
-                cachePhotoToUpload(data: data, isProfilePic: true)
-            } else {
-                myCoverPhoto = image
-                cachePhotoToUpload(data: data, isProfilePic: false)
-            }
-
-            StorageService.ss.uploadOwnPic(data: data, isProfilePic: isProfilePic, completed: { (isSuccess) in
-                if !isSuccess {
-                    // NOTE: This does not revert back to previous photo. Meaning if the user closes the app and comes back, his photo will be reverted.
-                    log.error("[Error] Server unable to save profile pic")
-                    self.showErrorForImageUploadFail()
-                } else {
-                    // Remove cached photo as upload is successful
-                    cachePhotoToUpload(data: nil, isProfilePic: isProfilePic)
-                }
-            })
-        } else {
-            log.error("[Error] Profile image unable to be converted to data")
-            showErrorForImageUploadFail()
-        }
-    }
-    
-    // MARK: Edit photos
-    
-    fileprivate func editImageTemplateButton() -> UIButton {
+    fileprivate lazy var editButton: UIButton = {
         let button = UIButton()
-        button.titleLabel?.font = FONT_MEDIUM_SMALL
-        button.setImage(#imageLiteral(resourceName: "camera"), for: .normal)
-        button.imageEdgeInsets = UIEdgeInsets(top: -4, left: 0, bottom: 0, right: 5)
-        button.titleEdgeInsets = UIEdgeInsets(top: -3.5, left: 5, bottom: 0, right: 0)
-        button.setTitleColor(UIColor.black, for: .normal)
-        button.setTitle("Edit", for: .normal)
-        button.backgroundColor = UIColor.white.withAlphaComponent(0.6)
-        button.layer.cornerRadius = 6.0
-        button.clipsToBounds = true
-        return button
-    }
-    
-    fileprivate lazy var editProfileImageButton: UIButton = {
-        let button = self.editImageTemplateButton()
-        button.addTarget(self, action: #selector(editProfileImage), for: .touchUpInside)
+        button.layer.shadowColor = UIColor.black.cgColor
+        button.layer.shadowOpacity = 0.3
+        button.layer.shadowRadius = 3.0
+        button.layer.shadowOffset = CGSize(width: 2.0, height: 2.0)
+        button.setImage(#imageLiteral(resourceName: "edit-with-bg"), for: .normal)
+        button.imageView?.contentMode = .scaleAspectFill
+        button.addTarget(self, action: #selector(self.editProfileImage), for: .touchUpInside)
+        button.translatesAutoresizingMaskIntoConstraints = false
         return button
     }()
-    
-    fileprivate lazy var editCoverImageButton: UIButton = {
-        let button = self.editImageTemplateButton()
-        button.addTarget(self, action: #selector(editCoverImage), for: .touchUpInside)
-        return button
-    }()
-    
-    fileprivate lazy var profilePhotoPicker: UIImagePickerController = {
-       let picker = UIImagePickerController()
-        picker.delegate = self
-        return picker
-    }()
-    
-    fileprivate lazy var coverPhotoPicker: UIImagePickerController = {
-        let picker = UIImagePickerController()
-        picker.delegate = self
-        return picker
-    }()
-
-    // Delegate function that assigns image, and immediately uploads after picker is dismissed
-    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : Any]) {
-        picker.dismiss(animated: true, completion: nil)
-        if picker == profilePhotoPicker {
-            profileImageView.image = info[UIImagePickerControllerOriginalImage] as? UIImage
-            self.uploadImageForImageView(isProfilePic: true)
-        } else {
-            coverImageView.image = info[UIImagePickerControllerOriginalImage] as? UIImage
-            self.uploadImageForImageView(isProfilePic: false)
-        }
-    }
     
     func editProfileImage() {
         let alertController = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
@@ -307,7 +140,7 @@ class EditProfileController: UIViewController, UIScrollViewDelegate, UITableView
         let takePhotoAction = UIAlertAction(title: "Take a new photo", style: .default) { (action) in
             // Take a new photo
             if UIImagePickerController.availableCaptureModes(for: .rear) == nil {
-               // No camera
+                // No camera
                 showErrorAlert(vc: self, title: "No camera", message: "Your device does not have a camera")
             } else {
                 self.profilePhotoPicker.sourceType = .camera
@@ -338,47 +171,95 @@ class EditProfileController: UIViewController, UIScrollViewDelegate, UITableView
         self.present(alertController, animated: true, completion: nil)
     }
     
-    func editCoverImage() {
-        let alertController = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
-        alertController.view.tintColor = GREEN_UICOLOR
-        let cancelAction = UIAlertAction(title: "Cancel", style: .cancel, handler: nil)
-        let takePhotoAction = UIAlertAction(title: "Take a new photo", style: .default) { (action) in
-            // Take a new photo
-            if UIImagePickerController.availableCaptureModes(for: .rear) == nil {
-                // No camera
-                showErrorAlert(vc: self, title: "No camera", message: "Your device does not have a camera")
-            } else {
-                self.coverPhotoPicker.sourceType = .camera
-                self.present(self.coverPhotoPicker, animated: true, completion: nil)
-            }
+    fileprivate lazy var profilePhotoPicker: UIImagePickerController = {
+        let picker = UIImagePickerController()
+        picker.delegate = self
+        return picker
+    }()
+    
+    // Delegate function that assigns image, and immediately uploads after picker is dismissed
+    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : Any]) {
+        picker.dismiss(animated: true, completion: nil)
+        if picker == profilePhotoPicker {
+            profileImageView.image = info[UIImagePickerControllerOriginalImage] as? UIImage
+            self.uploadImageForImageView(imageView: self.profileImageView)
         }
-        let uploadPhotoAction = UIAlertAction(title: "Upload a photo", style: .default) { (action) in
-            // Upload a photo
-            self.coverPhotoPicker.sourceType = .photoLibrary
-            self.present(self.coverPhotoPicker, animated: true, completion: nil)
-        }
-        
-        // Only allow view cover photo if there is a photo to view
-        let viewPhotoAction = UIAlertAction(title: "View cover photo", style: .default) { (action) in
-            // View cover photo if there is one
-            if myCoverPhoto == nil {
-                showErrorAlert(vc: self, title: "Please upload a cover photo first.", message: "")
-            } else {
-                let pictureModalController = PictureModalController()
-                pictureModalController.modalPresentationStyle = .overFullScreen
-                pictureModalController.modalTransitionStyle = .crossDissolve
-                pictureModalController.picture = self.coverImageView.image
-                self.present(pictureModalController, animated: true, completion: nil)
-            }
-        }
-        alertController.addAction(takePhotoAction)
-        alertController.addAction(uploadPhotoAction)
-        alertController.addAction(viewPhotoAction)
-        alertController.addAction(cancelAction)
-        self.present(alertController, animated: true, completion: nil)
     }
     
-    // MARK: Edit text
+    fileprivate func animateEditButton() {
+        UIView.animate(withDuration: 0.2, delay: 0.2, animations: {
+            self.editButton.transform = CGAffineTransform(scaleX: 1.3, y: 1.3)
+        }) { (completion) in
+            UIView.animate(withDuration: 0.1, animations: {
+                self.editButton.transform = CGAffineTransform(scaleX: 1.0, y: 1.0)
+            })
+        }
+    }
+    
+    func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWith otherGestureRecognizer: UIGestureRecognizer) -> Bool {
+        return true
+    }
+    
+    // MARK: Firebase storage
+    
+    fileprivate func showErrorForImageUploadFail() {
+        showErrorAlert(vc: self, title: "Failed to save image", message: "We apologize. It doesn't seem like we managed to save your picture. Please check your connection, and try again later.")
+    }
+    
+    // Private function used by sendEditsToServer()
+    fileprivate func uploadImageForImageView(imageView: UIImageView) {
+        
+        guard let image = imageView.image, let testData = UIImageJPEGRepresentation(image, 1.0) else {
+            log.error("[Error] Unable to convert image to data")
+            self.showErrorForImageUploadFail()
+            return
+        }
+        // Compress image to save storage space, anything more than 2MB will be compressed
+        let sizeInBytes = NSData(data: testData).length
+        let sizeInMB = CGFloat(sizeInBytes) / (1024.0  * 1024.0)
+        let compressionRatio: CGFloat = min(1.0, 2.0/sizeInMB)
+        log.info("Uploading with compression ratio: \(compressionRatio)")
+        if let data = UIImageJPEGRepresentation(image, compressionRatio) {
+            // Save locally first in model before server completes (Before user closes app)
+            // Save locally in file path so that when user closes app, we can retry upload when user logs in
+            myProfilePhoto = image
+            // Cache photo to upload first in case user closes the app at this point
+            cachePhotoToUpload(data: data)
+            
+            StorageService.ss.uploadOwnPic(data: data, completed: { (isSuccess) in
+                if !isSuccess {
+                    // NOTE: This does not revert back to previous photo. Meaning if the user closes the app and comes back, his photo will be reverted.
+                    log.error("[Error] Server unable to save profile pic")
+                    self.showErrorForImageUploadFail()
+                } else {
+                    // Remove cached photo as upload is successful
+                    cachePhotoToUpload(data: nil)
+                }
+            })
+        } else {
+            log.error("[Error] Profile image unable to be converted to data")
+            showErrorForImageUploadFail()
+        }
+    }
+    
+    // MARK: Views 1 - Discipline icon, name and age label
+    
+    fileprivate let nameAndAgeLbl: UILabel = {
+        let label = UILabel()
+        label.textAlignment = .center
+        label.font = FONT_MEDIUM_XLARGE
+        label.textColor = UIColor.darkGray
+        return label
+    }()
+    
+    fileprivate let disciplineImageView: UIImageView = {
+        let imageView = UIImageView()
+        imageView.contentMode = .scaleAspectFill
+        imageView.tintColor = GREEN_UICOLOR
+        return imageView
+    }()
+    
+    // MARK: Views 2: Edit Bio, Discipline, School, Organization
     
     fileprivate func editDetailTemplateButton(title: String) -> UIButton {
         let button = UIButton()
@@ -406,12 +287,6 @@ class EditProfileController: UIViewController, UIScrollViewDelegate, UITableView
         return button
     }()
     
-    fileprivate lazy var editTaglineButton: UIButton = {
-        let button = self.editDetailTemplateButton(title: "Edit tagline")
-        button.addTarget(self, action: #selector(editTagline), for: .touchUpInside)
-        return button
-    }()
-    
     func editProfessionalInfo() {
         let controller = EditProfessionalController()
         let backItem = UIBarButtonItem()
@@ -420,148 +295,160 @@ class EditProfileController: UIViewController, UIScrollViewDelegate, UITableView
         navigationController?.pushViewController(controller, animated: true)
     }
     
+    fileprivate func sectionLabelTemplate(labelText: String) -> UILabel {
+        let label = UILabel()
+        label.text = labelText
+        label.font = FONT_HEAVY_MID
+        label.textColor = UIColor.darkGray
+        label.textAlignment = .left
+        return label
+    }
+    
+    fileprivate lazy var disciplineLbl: UILabel = {
+        return self.sectionLabelTemplate(labelText: "Discipline")
+    }()
+    
+    fileprivate func fieldTemplate() -> UILabel {
+        let label = UILabel()
+        label.textColor = UIColor.gray
+        label.font = FONT_MEDIUM_MID
+        label.textAlignment = .left
+        label.numberOfLines = 1
+        return label
+    }
+    
+    fileprivate lazy var disciplineText: UILabel = {
+        return self.fieldTemplate()
+    }()
+    
+    fileprivate lazy var schoolLbl: UILabel = {
+        return self.sectionLabelTemplate(labelText: "School")
+    }()
+    
+    fileprivate lazy var schoolText: UILabel = {
+        return self.fieldTemplate()
+    }()
+    
+    fileprivate lazy var organizationLbl: UILabel = {
+        return self.sectionLabelTemplate(labelText: "Organization")
+    }()
+    
+    fileprivate lazy var organizationText: UILabel = {
+        return self.fieldTemplate()
+    }()
+    
+    fileprivate let dividerLineView: UIView = {
+        let view = UIView()
+        view.backgroundColor = UIColor(white: 0.5, alpha: 0.2)
+        return view
+    }()
+    
+    // MARK: Views 3: Edit tagline, Tagline
+    
+    fileprivate lazy var editTaglineButton: UIButton = {
+        let button = self.editDetailTemplateButton(title: "Edit tagline")
+        button.addTarget(self, action: #selector(editTagline), for: .touchUpInside)
+        return button
+    }()
+    
     func editTagline() {
         let controller = EditTaglineController()
         navigationController?.pushViewController(controller, animated: true)
     }
     
-    fileprivate func animateEditButtons() {
-        // Called in viewDidAppear to animate the edit buttons to signal to the user that they can click on these
-        UIView.animate(withDuration: 0.2, delay: 0.2, animations: {
-            self.editCoverImageButton.imageView?.transform = CGAffineTransform(scaleX: 1.2, y: 1.2)
-            self.editProfileImageButton.imageView?.transform = CGAffineTransform(scaleX: 1.2, y: 1.2)
-            }) { (completion) in
-                UIView.animate(withDuration: 0.15, animations: { 
-                    self.editCoverImageButton.imageView?.transform = CGAffineTransform(scaleX: 1.0, y: 1.0)
-                    self.editProfileImageButton.imageView?.transform = CGAffineTransform(scaleX: 1.0, y: 1.0)
-                })
+    fileprivate lazy var taglineLbl: UILabel = {
+        return self.sectionLabelTemplate(labelText: "What I do at 4:28pm:")
+    }()
+    
+    fileprivate lazy var taglineText: UILabel = {
+        let label = UILabel()
+        label.font = FONT_MEDIUM_MID
+        // Additional options to style font are in attributedText
+        label.numberOfLines = 0
+        return label
+    }()
+    
+    // Delegate function of scroll view
+    func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        // Prevents top bounce
+        if (scrollView.contentOffset.y <= 0) {
+            scrollView.setContentOffset(CGPoint(x: scrollView.contentOffset.x, y: 0), animated: false)
         }
     }
     
+    // MARK: Setup views
+    
     fileprivate func setupViews() {
-        profileImageView.isUserInteractionEnabled = false
-        coverImageView.isUserInteractionEnabled = false
-        editCoverImageButton.isEnabled = false
-        editProfileImageButton.isEnabled = false
-        editProfessionalInfoButton.isEnabled = false
-        editTaglineButton.isEnabled = false
+        // TODO: Until turned true after download
+//        profileImageView.isUserInteractionEnabled = false
+//        editButton.isEnabled = false
+//        editProfessionalInfoButton.isEnabled = false
+//        editTaglineButton.isEnabled = false
         
         // Set up scroll view, and close button on top of scroll view
         let views = setupScrollView()
         let scrollView = views[0] as! UIScrollView
-    
         let containerView = views[1]
         scrollView.delegate = self // Delegate so as to disable top bounce only
         
         // Add to subviews
-        containerView.addSubview(coverImageView)
-        containerView.addSubview(profileImageView)
-        containerView.addSubview(editProfileImageButton)
-        containerView.addSubview(editCoverImageButton)
         
         // Centered discipline icon and name label
-        let nameDisciplineContainer = UIView()
-        nameDisciplineContainer.addSubview(disciplineImageView)
-        nameDisciplineContainer.addSubview(nameLbl)
-        nameDisciplineContainer.translatesAutoresizingMaskIntoConstraints = false
-        containerView.addSubview(nameDisciplineContainer)
-        containerView.addConstraint(NSLayoutConstraint(item: nameDisciplineContainer, attribute: .centerX, relatedBy: .equal, toItem: containerView, attribute: .centerX, multiplier: 1.0, constant: 0))
-        nameDisciplineContainer.addConstraintsWithFormat("H:|[v0(20)]-5-[v1]|", views: disciplineImageView, nameLbl)
-        nameDisciplineContainer.addConstraintsWithFormat("V:|[v0(20)]", views: disciplineImageView)
-        nameDisciplineContainer.addConstraintsWithFormat("V:|[v0(25)]|", views: nameLbl)
+        let disciplineNameAgeContainer = UIView()
+        disciplineNameAgeContainer.addSubview(disciplineImageView)
+        disciplineNameAgeContainer.addSubview(nameAndAgeLbl)
+        disciplineNameAgeContainer.translatesAutoresizingMaskIntoConstraints = false
+        containerView.addSubview(disciplineNameAgeContainer)
+        containerView.addConstraint(NSLayoutConstraint(item: disciplineNameAgeContainer, attribute: .centerX, relatedBy: .equal, toItem: containerView, attribute: .centerX, multiplier: 1.0, constant: 0))
+        disciplineNameAgeContainer.addConstraintsWithFormat("H:|[v0(20)]-5-[v1]|", views: disciplineImageView, nameAndAgeLbl)
+        disciplineNameAgeContainer.addConstraintsWithFormat("V:|[v0(20)]", views: disciplineImageView)
+        disciplineNameAgeContainer.addConstraintsWithFormat("V:|[v0(25)]|", views: nameAndAgeLbl)
         
-        containerView.addSubview(ageLocationLbl)
-        containerView.addSubview(topDividerLineView)
+        containerView.addSubview(coverImageView)
+        containerView.addSubview(profileImageView)
+        containerView.addSubview(editButton)
         containerView.addSubview(editProfessionalInfoButton)
-        containerView.addSubview(tableView)
-        containerView.addSubview(bottomDividerLineView)
+        containerView.addSubview(disciplineLbl)
+        containerView.addSubview(disciplineText)
+        containerView.addSubview(schoolLbl)
+        containerView.addSubview(schoolText)
+        containerView.addSubview(organizationLbl)
+        containerView.addSubview(organizationText)
+        containerView.addSubview(dividerLineView)
         containerView.addSubview(editTaglineButton)
-        containerView.addSubview(tagline1Lbl)
-        containerView.addSubview(tagline2Lbl)
+        containerView.addSubview(taglineLbl)
+        containerView.addSubview(taglineText)
         
-        // Define constraints
-        
-        containerView.addConstraintsWithFormat("H:|[v0]|", views: coverImageView)
-        containerView.addConstraintsWithFormat("V:|[v0(250)]", views: coverImageView)
-        containerView.addConstraint(NSLayoutConstraint(item: editCoverImageButton, attribute: .bottom, relatedBy: .equal, toItem: coverImageView, attribute: .bottom, multiplier: 1.0, constant: 4.0))
-        containerView.addConstraint(NSLayoutConstraint(item: editCoverImageButton, attribute: .right, relatedBy: .equal, toItem: coverImageView, attribute: .right, multiplier: 1.0, constant: 4.0))
-        containerView.addConstraintsWithFormat("H:[v0(80)]", views: editCoverImageButton)
-        containerView.addConstraintsWithFormat("V:[v0(35)]", views: editCoverImageButton)
-        
-        containerView.addConstraintsWithFormat("H:[v0(150)]", views: profileImageView)
-        containerView.addConstraint(NSLayoutConstraint(item: profileImageView, attribute: .centerX, relatedBy: .equal, toItem: containerView, attribute: .centerX, multiplier: 1.0, constant: 0))
-        containerView.addConstraint(NSLayoutConstraint(item: editProfileImageButton, attribute: .bottom, relatedBy: .equal, toItem: profileImageView, attribute: .bottom, multiplier: 1.0, constant: 4.0))
-        containerView.addConstraint(NSLayoutConstraint(item: editProfileImageButton, attribute: .right, relatedBy: .equal, toItem: profileImageView, attribute: .right, multiplier: 1.0, constant: 4.0))
-        containerView.addConstraintsWithFormat("H:[v0(80)]", views: editProfileImageButton)
-        containerView.addConstraintsWithFormat("V:[v0(35)]", views: editProfileImageButton)
-        
-        
-        containerView.addConstraintsWithFormat("H:|-15-[v0]-15-|", views: ageLocationLbl)
-        containerView.addConstraintsWithFormat("H:|-15-[v0]-15-|", views: editProfessionalInfoButton)
-        containerView.addConstraintsWithFormat("H:|-15-[v0]-15-|", views: editTaglineButton)
-        
-        containerView.addConstraintsWithFormat("H:|-15-[v0]-15-|", views: topDividerLineView)
-        containerView.addConstraintsWithFormat("H:|-15-[v0]-15-|", views: bottomDividerLineView)
-        containerView.addConstraintsWithFormat("H:|-15-[v0]-15-|", views: tagline1Lbl)
-        containerView.addConstraintsWithFormat("H:|-15-[v0]-15-|", views: tagline2Lbl)
-        
+        // Define main constraints
         
         let bottomMargin = CGFloat(self.view.frame.height / 2.5) // Set large bottom margin so user can scroll up and read bottom tagline
+        let navBarHeight: CGFloat = self.navigationController!.navigationBar.frame.height
         
-        heightOfTableViewConstraint = NSLayoutConstraint(item: self.tableView, attribute: .height, relatedBy: .equal, toItem: nil, attribute: .notAnAttribute, multiplier: 1.0, constant: 1000)
-        containerView.addConstraint(heightOfTableViewConstraint)
-        containerView.addConstraintsWithFormat("V:|-175-[v0(150)]-10-[v1]-6-[v2(20)]-8-[v3(0.5)]-10-[v4(40)]-5-[v5]-2-[v6(0.5)]-12-[v7(40)]-10-[v8]-20-[v9]-\(bottomMargin)-|", views: self.profileImageView, nameDisciplineContainer, self.ageLocationLbl, self.topDividerLineView, self.editProfessionalInfoButton, self.tableView, self.bottomDividerLineView, self.editTaglineButton, self.tagline1Lbl, self.tagline2Lbl)
-        containerView.addConstraintsWithFormat("H:|[v0]|", views: self.tableView)
+        containerView.addConstraintsWithFormat("V:|-\(navBarHeight)-[v0(250)]-14-[v1(25)]-8-[v2(40)]-8-[v3(20)]-8-[v4(20)]-8-[v5(20)]-8-[v6(20)]-8-[v7(20)]-8-[v8(20)]-8-[v9(0.5)]-8-[v10(40)]-8-[v11(20)]-8-[v12]-\(bottomMargin)-|", views: coverImageView, disciplineNameAgeContainer, editProfessionalInfoButton ,disciplineLbl, disciplineText, schoolLbl, schoolText, organizationLbl, organizationText, dividerLineView, editTaglineButton, taglineLbl, taglineText)
         
-        // Hack to get height of table view dynamically to display in constraint
-        UIView.animate(withDuration: 0, animations: {
-            self.tableView.layoutIfNeeded()
-        }) { (complete) in
-            var heightOfTableView: CGFloat = 0.0
-            let cells = self.tableView.visibleCells
-            for cell in cells {
-                heightOfTableView += cell.frame.height
-            }
-            self.heightOfTableViewConstraint.constant = heightOfTableView
-        }
+        containerView.addConstraintsWithFormat("H:|[v0]|", views: coverImageView)
+        containerView.addConstraintsWithFormat("H:[v0(180)]", views: profileImageView)
+        containerView.addConstraintsWithFormat("H:|-8-[v0]-8-|", views: editProfessionalInfoButton)
+        containerView.addConstraintsWithFormat("H:|-8-[v0]-8-|", views: disciplineLbl)
+        containerView.addConstraintsWithFormat("H:|-8-[v0]-8-|", views: disciplineText)
+        containerView.addConstraintsWithFormat("H:|-8-[v0]-8-|", views: schoolLbl)
+        containerView.addConstraintsWithFormat("H:|-8-[v0]-8-|", views: schoolText)
+        containerView.addConstraintsWithFormat("H:|-8-[v0]-8-|", views: organizationLbl)
+        containerView.addConstraintsWithFormat("H:|-8-[v0]-8-|", views: organizationText)
+        containerView.addConstraintsWithFormat("H:|-8-[v0]-8-|", views: dividerLineView)
+        containerView.addConstraintsWithFormat("H:|-8-[v0]-8-|", views: editTaglineButton)
+        containerView.addConstraintsWithFormat("H:|-8-[v0]-8-|", views: taglineLbl)
+        containerView.addConstraintsWithFormat("H:|-8-[v0]-8-|", views: taglineText)
         
-        self.setupTableView()
-        
-    }
-    
-    // MARK: Table view
-    
-    fileprivate func setupTableView() {
-        tableView.delegate = self
-        tableView.dataSource = self
-        tableView.register(ProfileCell.self, forCellReuseIdentifier: CELL_ID)
-        tableView.separatorStyle = .none
-        tableView.allowsSelection = false
-        tableView.estimatedRowHeight = 50.0
-        tableView.rowHeight = UITableViewAutomaticDimension
-    }
-    
-    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return UITableViewAutomaticDimension
-    }
-    
-    func tableView(_ tableView: UITableView, estimatedHeightForRowAt indexPath: IndexPath) -> CGFloat {
-        return UITableViewAutomaticDimension
-    }
+        // Profile image and edit button constraints
 
-    func numberOfSections(in tableView: UITableView) -> Int {
-        return 1
-    }
-    
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return profileCellTitles.count
-    }
-    
-    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: CELL_ID, for: indexPath) as! ProfileCell
-        let cellTitle = self.profileCellTitles[indexPath.row]
-        let cellContent = self.profileCellContent[indexPath.row]
-        cell.configureCell(title: cellTitle, content: cellContent, isEdit: true)
-        return cell
+        containerView.addConstraint(NSLayoutConstraint(item: profileImageView, attribute: .centerX, relatedBy: .equal, toItem: containerView, attribute: .centerX, multiplier: 1.0, constant: 0))
+        containerView.addConstraintsWithFormat("V:|-\(navBarHeight + 35)-[v0(180)]", views: profileImageView)
+        
+        // Align edit button to right and bottom of profile image view
+        containerView.addConstraintsWithFormat("V:[v0(40.0)]", views: editButton)
+        containerView.addConstraintsWithFormat("H:[v0(40.0)]", views: editButton)
+        containerView.addConstraint(NSLayoutConstraint(item: editButton, attribute: .right, relatedBy: .equal, toItem: profileImageView, attribute: .right, multiplier: 1.0, constant: -10.0))
+        containerView.addConstraint(NSLayoutConstraint(item: editButton, attribute: .bottom, relatedBy: .equal, toItem: profileImageView, attribute: .bottom, multiplier: 1.0, constant: 0.0))
     }
 }
