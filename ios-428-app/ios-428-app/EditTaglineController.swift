@@ -32,11 +32,11 @@ class EditTaglineController: UIViewController, UITextViewDelegate {
     func saveEdits() {
         let taglineSaved = taglineTextView.text.trim().lowercaseFirstLetter()
         if myProfile != nil {
-            myProfile!.tagline1 = taglineSaved
+            myProfile!.tagline = taglineSaved
             NotificationCenter.default.post(name: NOTIF_MYPROFILEDOWNLOADED, object: nil)
         }
         
-        DataService.ds.updateUserFields(tagline1: taglineSaved) { (isSuccess) in
+        NewDataService.ds.updateUserFields(tagline: taglineSaved) { (isSuccess) in
             if !isSuccess {
                 log.error("[Error] Taglines failed to be updated")
             }
@@ -75,7 +75,7 @@ class EditTaglineController: UIViewController, UITextViewDelegate {
         guard let profile = myProfile else {
             return
         }
-        self.tagline = profile.tagline1
+        self.tagline = profile.tagline
     }
     
     // MARK: Views

@@ -65,7 +65,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         FBSDKAppEvents.activateApp()
         connectToFcm()
         // Might consider removing this if it is hitting the database too much
-        DataService.ds.updateUserLastSeen{ (isSuccess) in
+        NewDataService.ds.updateUserLastSeen{ (isSuccess) in
             if !isSuccess {
                 log.warning("Unable to set user last seen")
             }
@@ -86,7 +86,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     fileprivate func setupRemoteNotifications(application: UIApplication) {
         
         // Check for push token, if it is still in UserDefaults, update it
-        DataService.ds.updateUserPushToken()
+        NewDataService.ds.updateUserPushToken()
         
         if #available(iOS 10.0, *) {
             let authOptions: UNAuthorizationOptions = [.alert, .badge, .sound]
@@ -117,7 +117,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         if let refreshedToken = FIRInstanceID.instanceID().token() {
             log.info("User push token: \(refreshedToken)")
             savePushToken(token: refreshedToken)
-            DataService.ds.updateUserPushToken()
+            NewDataService.ds.updateUserPushToken()
         }
         // Connect to FCM since connection may have failed when attempted before having a token
         connectToFcm()

@@ -397,7 +397,6 @@ class DiscussController: UIViewController, UIGestureRecognizerDelegate, UITextVi
             log.info("opening profile of uid: \(uid)")
             // TODO: Grab the profile info using this uid
             let controller = ProfileController()
-            controller.profile = jennyprof
             controller.modalTransitionStyle = .coverVertical
             self.hideViewsBeforeTransitioning()
             self.present(controller, animated: true, completion: nil)

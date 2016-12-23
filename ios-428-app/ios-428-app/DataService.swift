@@ -77,278 +77,278 @@ class DataService {
     
     // MARK: User
     
-    func logout(completed: @escaping (_ isSuccess: Bool) -> ()) {
-        if let auth = FIRAuth.auth(), let _ = try? auth.signOut() {
-            self.removeAllObservers()
-            log.info("User logged out")
-            FIRMessaging.messaging().disconnect()
-            FBSDKLoginManager().logOut()
-            setIsLoggedIn(isLoggedIn: false, completed: { (isSuccess) in
-                completed(isSuccess)
-            })
-            return
-        }
-        completed(false)
-    }
-    
-    // Maintaining user's logged in state allows us to deliver our remote notifications correctly
-    fileprivate func setIsLoggedIn(isLoggedIn: Bool, completed: @escaping (_ isSuccess: Bool) -> ()) {
-        guard let uid = getStoredUid() else {
-            completed(false)
-            return
-        }
-        REF_USERSETTINGS.child("\(uid)/isLoggedIn").setValue(isLoggedIn, withCompletionBlock: { (err, ref) in
-            completed(err == nil)
-        })
-    }
-    
-    // Called in LoginController to create new user or log existing user in
-    func loginFirebaseUser(fbid: String, name: String, birthday: String, pictureUrl: String, timezone: Double, completed: @escaping (_ isSuccess: Bool, _ isFirstTimeUser: Bool) -> ()) {
-        guard let uid = getStoredUid() else {
-            completed(false, true)
-            return
-        }
-        
-        // Update name locally
-        saveName(name: name)
-        
-        let timeNow = Date().timeIntervalSince1970
-        var user: [String: Any] = ["fbid": fbid, "name": name, "birthday": birthday, "profilePhoto": pictureUrl, "timezone": timezone, "lastSeen": timeNow]
-        self.REF_USERS.child(uid).observeSingleEvent(of: .value, with: { snapshot in
-            if snapshot.exists() {
-                // Check if user has already filled in at least org, school and discipline, if not label first time user
-                var isFirstTimeUser = true
-                if let userDict = snapshot.value as? [String: Any], let _ = userDict["organization"] as? String, let _ = userDict["school"] as? String, let _ = userDict["discipline"] as? String {
-                    isFirstTimeUser = false
-                }
-                // Update user info
-                self.REF_USERS.child(uid).updateChildValues(user, withCompletionBlock: { (err, ref) in
-                    completed(err == nil, isFirstTimeUser)
-                })
-                // Update isLoggedIn in user settings
-                self.setIsLoggedIn(isLoggedIn: true, completed: { (loginSuccess) in })
-                
-            } else {
-                // Create new user
-                user["badgeCount"] = 0
-                let userSettings = ["newConnections": true, "newTopics": true, "dailyAlert": true, "connectionMessages": true, "topicMessages": true, "inAppNotifications": true, "isLoggedIn": true]
-                self.REF_BASE.updateChildValues(["/users/\(uid)": user, "/userSettings/\(uid)": userSettings], withCompletionBlock: { (err, ref) in
-                    completed(err == nil, true)
-                })
-            }
-        })
-    }
-    
-    // Called in LoginController to update own location, after location manager gets it
-    func updateUserLocation(lat: Double, lon: Double, completed: @escaping (_ isSuccess: Bool) -> ()) {
-        guard let uid = getStoredUid() else {
-            completed(false)
-            return
-        }
-        let timeNow = Date().timeIntervalSince1970
-        self.REF_USERS.child(uid).observeSingleEvent(of: .value, with: { snapshot in
-            if snapshot.exists() {
-                self.REF_USERS.child(uid).updateChildValues(["location": "\(lat),\(lon)", "lastSeen": timeNow], withCompletionBlock: { (error, ref) in
-                    completed(error == nil)
-                })
-            } else {
-                // User does not exist. Error.
-                completed(false)
-            }
-        })
-    }
-    
-    // Updates the user push token: Used in two places - one in LoginController and one in AppDelegate
-    func updateUserPushToken() {
-        guard let uid = getStoredUid(), let token = getPushToken() else {
-            return
-        }
-        // set savePushToken(nil) here
-        REF_USERS.child("\(uid)/pushToken").setValue(token, withCompletionBlock: { (err, ref) in
-            if err == nil {
-                // No need to save push token anymore
-                savePushToken(token: nil)
-            }
-        })
-    }
-    
-    // Updates own last seen in AppDelegate's applicationDidBecomeActive
-    func updateUserLastSeen(completed: @escaping (_ isSuccess: Bool) -> ()) {
-        guard let uid = getStoredUid() else {
-            completed(false)
-            return
-        }
-        let timeNow = Date().timeIntervalSince1970
-        self.REF_USERS.child(uid).observeSingleEvent(of: .value, with: { snapshot in
-            if snapshot.exists() {
-                self.REF_USERS.child(uid).updateChildValues(["lastSeen": timeNow], withCompletionBlock: { (error, ref) in
-                    completed(error == nil)
-                })
-            } else {
-                // User does not exist. Error
-                completed(false)
-            }
-        })
-    }
-    
-    // Update own profile data; Called in IntroController and SettingControllers
-    func updateUserFields(organization: String? = nil, school: String? = nil, discipline: String? = nil, tagline1: String? = nil, tagline2: String? = nil, completed: @escaping (_ isSuccess: Bool) -> ()) {
-        guard let uid = getStoredUid() else {
-            completed(false)
-            return
-        }
-        var userFields: [String: Any] = [:]
-        if organization != nil {
-            userFields["organization"] = organization!
-        }
-        if school != nil {
-            userFields["school"] = school!
-        }
-        if discipline != nil {
-            userFields["discipline"] = discipline!
-        }
-        if tagline1 != nil {
-            userFields["tagline1"] = tagline1!.lowercaseFirstLetter()
-        }
-        if tagline2 != nil {
-            userFields["tagline2"] = tagline2!.lowercaseFirstLetter()
-        }
-        
-        // Update discipline locally
-        if discipline != nil {
-            saveDiscipline(discipline: discipline!)
-        }
-        
-        self.REF_USERS.child(uid).observeSingleEvent(of: .value, with: { snapshot in
-            if snapshot.exists() {
-                self.REF_USERS.child(uid).updateChildValues(userFields, withCompletionBlock: { (error, ref) in
-                    completed(error == nil)
-                })
-            } else {
-                // User does not exist. Error
-                completed(false)
-            }
-        })
-    }
-    
-    // Similar to updateUserFields, but only used by StorageService
-    func updateUserPhotos(profilePhotoUrl: String? = nil, coverPhotoUrl: String? = nil, completed: @escaping (_ isSuccess: Bool) -> ()) {
-        guard let uid = getStoredUid() else {
-            completed(false)
-            return
-        }
-        var userPhotos: [String: Any] = [:]
-        if profilePhotoUrl != nil {
-            userPhotos["profilePhoto"] = profilePhotoUrl!
-        }
-        if coverPhotoUrl != nil {
-            userPhotos["coverPhoto"] = coverPhotoUrl!
-        }
-        self.REF_USERS.child(uid).observeSingleEvent(of: .value, with: { snapshot in
-            if snapshot.exists() {
-                self.REF_USERS.child(uid).updateChildValues(userPhotos, withCompletionBlock: { (error, ref) in
-                    completed(error == nil)
-                })
-            } else {
-                // User does not exist. Error
-                completed(false)
-            }
-        })
-    }
-    
-    // Retrive user's profile data based on input user id, used in both ChatController's openProfile and EditProfileController
-    func getUserFields(uid: String?, completed: @escaping (_ isSuccess: Bool, _ user: Profile?) -> ()) {
-        guard let uid_ = uid else {
-            completed(false, nil)
-            return
-        }
-        
-        let ref = self.REF_USERS.child(uid_)
-        ref.keepSynced(true)
-        
-        ref.observeSingleEvent(of: .value, with: { snapshot in
-            if snapshot.exists() {
-
-                // Name, birthday, discipline, organization, profile photo, school are compulsory fields
-                guard let userDict = snapshot.value as? [String: Any], let name = userDict["name"] as? String, let birthday = userDict["birthday"] as? String, let discipline = userDict["discipline"] as? String, let org = userDict["organization"] as? String, let profilePhotoUrl = userDict["profilePhoto"] as? String, let school = userDict["school"] as? String else {
-                    completed(false, nil)
-                    return
-                }
-                var tagline1 = ""
-                if let t = userDict["tagline1"] as? String {
-                    tagline1 = t
-                }
-                var tagline2 = ""
-                if let t = userDict["tagline2"] as? String {
-                    tagline2 = t
-                }
-                var location = ""
-                if let l = userDict["location"] as? String {
-                    location = l
-                }
-                var coverPhotoUrl = ""
-                if let c = userDict["coverPhoto"] as? String {
-                    coverPhotoUrl = c
-                }
-                
-                // Convert birthday of "MM/DD/yyyy" to age integer
-                let age = convertBirthdayToAge(birthday: birthday)
-                if location == "" {
-                    // User disabled location, return here without location
-                    let user = Profile(uid: uid_, name: name, coverImageName: coverPhotoUrl, profileImageName: profilePhotoUrl, age: age, location: "", org: org, school: school, discipline: discipline, tagline1: tagline1, tagline2: tagline2)
-                    completed(true, user)
-                }
-                // Convert "<lat>,<lon>" to "<City>, <State>, <Country>"
-                convertLocationToCityAndCountry(location: location) { (cityCountry) in
-                    // User has city country here
-                    let user = Profile(uid: uid_, name: name, coverImageName: coverPhotoUrl, profileImageName: profilePhotoUrl, age: age, location: cityCountry, org: org, school: school, discipline: discipline, tagline1: tagline1, tagline2: tagline2)
-                    completed(true, user)
-                }
-            } else {
-                // User does not exist. Error
-                completed(false, nil)
-            }
-        })
-    }
-    
-    func updateCachedDetailsInConnections(profilePhoto: String? = nil, discipline: String? = nil, completed: @escaping (_ isSuccess: Bool) -> ()) {
-        guard let uid = getStoredUid() else {
-            completed(false)
-            return
-        }
-        REF_USERS.child("\(uid)/connections").observeSingleEvent(of: .value, with: { snapshot in
-            if !snapshot.exists() { // This user has no connections
-                completed(true)
-                return
-            }
-            guard let snaps = snapshot.children.allObjects as? [FIRDataSnapshot] else {
-                completed(false)
-                return
-            }
-            var snapsLeft = snaps.count
-            var hasError = false
-            for snap in snaps {
-                
-                // For each connection, edit your profile pic/discipline in their list of connections
-                let uid2 = snap.key
-                var updates: [String: Any] = [:]
-                if profilePhoto != nil {
-                   updates["profilePhoto"] = profilePhoto!
-                }
-                if discipline != nil {
-                    updates["discipline"] = discipline!
-                }
-                
-                self.REF_USERS.child("\(uid2)/connections/\(uid)").updateChildValues(updates, withCompletionBlock: { (err, ref) in
-                    snapsLeft -= 1
-                    hasError = err != nil
-                    if snapsLeft <= 0 {
-                        completed(!hasError)
-                    }
-                })
-            }
-        })
-    }
+//    func logout(completed: @escaping (_ isSuccess: Bool) -> ()) {
+//        if let auth = FIRAuth.auth(), let _ = try? auth.signOut() {
+//            self.removeAllObservers()
+//            log.info("User logged out")
+//            FIRMessaging.messaging().disconnect()
+//            FBSDKLoginManager().logOut()
+//            setIsLoggedIn(isLoggedIn: false, completed: { (isSuccess) in
+//                completed(isSuccess)
+//            })
+//            return
+//        }
+//        completed(false)
+//    }
+//    
+//    // Maintaining user's logged in state allows us to deliver our remote notifications correctly
+//    fileprivate func setIsLoggedIn(isLoggedIn: Bool, completed: @escaping (_ isSuccess: Bool) -> ()) {
+//        guard let uid = getStoredUid() else {
+//            completed(false)
+//            return
+//        }
+//        REF_USERSETTINGS.child("\(uid)/isLoggedIn").setValue(isLoggedIn, withCompletionBlock: { (err, ref) in
+//            completed(err == nil)
+//        })
+//    }
+//    
+//    // Called in LoginController to create new user or log existing user in
+//    func loginFirebaseUser(fbid: String, name: String, birthday: String, pictureUrl: String, timezone: Double, completed: @escaping (_ isSuccess: Bool, _ isFirstTimeUser: Bool) -> ()) {
+//        guard let uid = getStoredUid() else {
+//            completed(false, true)
+//            return
+//        }
+//        
+//        // Update name locally
+//        saveName(name: name)
+//        
+//        let timeNow = Date().timeIntervalSince1970
+//        var user: [String: Any] = ["fbid": fbid, "name": name, "birthday": birthday, "profilePhoto": pictureUrl, "timezone": timezone, "lastSeen": timeNow]
+//        self.REF_USERS.child(uid).observeSingleEvent(of: .value, with: { snapshot in
+//            if snapshot.exists() {
+//                // Check if user has already filled in at least org, school and discipline, if not label first time user
+//                var isFirstTimeUser = true
+//                if let userDict = snapshot.value as? [String: Any], let _ = userDict["organization"] as? String, let _ = userDict["school"] as? String, let _ = userDict["discipline"] as? String {
+//                    isFirstTimeUser = false
+//                }
+//                // Update user info
+//                self.REF_USERS.child(uid).updateChildValues(user, withCompletionBlock: { (err, ref) in
+//                    completed(err == nil, isFirstTimeUser)
+//                })
+//                // Update isLoggedIn in user settings
+//                self.setIsLoggedIn(isLoggedIn: true, completed: { (loginSuccess) in })
+//                
+//            } else {
+//                // Create new user
+//                user["badgeCount"] = 0
+//                let userSettings = ["newConnections": true, "newTopics": true, "dailyAlert": true, "connectionMessages": true, "topicMessages": true, "inAppNotifications": true, "isLoggedIn": true]
+//                self.REF_BASE.updateChildValues(["/users/\(uid)": user, "/userSettings/\(uid)": userSettings], withCompletionBlock: { (err, ref) in
+//                    completed(err == nil, true)
+//                })
+//            }
+//        })
+//    }
+//    
+//    // Called in LoginController to update own location, after location manager gets it
+//    func updateUserLocation(lat: Double, lon: Double, completed: @escaping (_ isSuccess: Bool) -> ()) {
+//        guard let uid = getStoredUid() else {
+//            completed(false)
+//            return
+//        }
+//        let timeNow = Date().timeIntervalSince1970
+//        self.REF_USERS.child(uid).observeSingleEvent(of: .value, with: { snapshot in
+//            if snapshot.exists() {
+//                self.REF_USERS.child(uid).updateChildValues(["location": "\(lat),\(lon)", "lastSeen": timeNow], withCompletionBlock: { (error, ref) in
+//                    completed(error == nil)
+//                })
+//            } else {
+//                // User does not exist. Error.
+//                completed(false)
+//            }
+//        })
+//    }
+//    
+//    // Updates the user push token: Used in two places - one in LoginController and one in AppDelegate
+//    func updateUserPushToken() {
+//        guard let uid = getStoredUid(), let token = getPushToken() else {
+//            return
+//        }
+//        // set savePushToken(nil) here
+//        REF_USERS.child("\(uid)/pushToken").setValue(token, withCompletionBlock: { (err, ref) in
+//            if err == nil {
+//                // No need to save push token anymore
+//                savePushToken(token: nil)
+//            }
+//        })
+//    }
+//    
+//    // Updates own last seen in AppDelegate's applicationDidBecomeActive
+//    func updateUserLastSeen(completed: @escaping (_ isSuccess: Bool) -> ()) {
+//        guard let uid = getStoredUid() else {
+//            completed(false)
+//            return
+//        }
+//        let timeNow = Date().timeIntervalSince1970
+//        self.REF_USERS.child(uid).observeSingleEvent(of: .value, with: { snapshot in
+//            if snapshot.exists() {
+//                self.REF_USERS.child(uid).updateChildValues(["lastSeen": timeNow], withCompletionBlock: { (error, ref) in
+//                    completed(error == nil)
+//                })
+//            } else {
+//                // User does not exist. Error
+//                completed(false)
+//            }
+//        })
+//    }
+//    
+//    // Update own profile data; Called in IntroController and SettingControllers
+//    func updateUserFields(organization: String? = nil, school: String? = nil, discipline: String? = nil, tagline1: String? = nil, tagline2: String? = nil, completed: @escaping (_ isSuccess: Bool) -> ()) {
+//        guard let uid = getStoredUid() else {
+//            completed(false)
+//            return
+//        }
+//        var userFields: [String: Any] = [:]
+//        if organization != nil {
+//            userFields["organization"] = organization!
+//        }
+//        if school != nil {
+//            userFields["school"] = school!
+//        }
+//        if discipline != nil {
+//            userFields["discipline"] = discipline!
+//        }
+//        if tagline1 != nil {
+//            userFields["tagline1"] = tagline1!.lowercaseFirstLetter()
+//        }
+//        if tagline2 != nil {
+//            userFields["tagline2"] = tagline2!.lowercaseFirstLetter()
+//        }
+//        
+//        // Update discipline locally
+//        if discipline != nil {
+//            saveDiscipline(discipline: discipline!)
+//        }
+//        
+//        self.REF_USERS.child(uid).observeSingleEvent(of: .value, with: { snapshot in
+//            if snapshot.exists() {
+//                self.REF_USERS.child(uid).updateChildValues(userFields, withCompletionBlock: { (error, ref) in
+//                    completed(error == nil)
+//                })
+//            } else {
+//                // User does not exist. Error
+//                completed(false)
+//            }
+//        })
+//    }
+//    
+//    // Similar to updateUserFields, but only used by StorageService
+//    func updateUserPhotos(profilePhotoUrl: String? = nil, coverPhotoUrl: String? = nil, completed: @escaping (_ isSuccess: Bool) -> ()) {
+//        guard let uid = getStoredUid() else {
+//            completed(false)
+//            return
+//        }
+//        var userPhotos: [String: Any] = [:]
+//        if profilePhotoUrl != nil {
+//            userPhotos["profilePhoto"] = profilePhotoUrl!
+//        }
+//        if coverPhotoUrl != nil {
+//            userPhotos["coverPhoto"] = coverPhotoUrl!
+//        }
+//        self.REF_USERS.child(uid).observeSingleEvent(of: .value, with: { snapshot in
+//            if snapshot.exists() {
+//                self.REF_USERS.child(uid).updateChildValues(userPhotos, withCompletionBlock: { (error, ref) in
+//                    completed(error == nil)
+//                })
+//            } else {
+//                // User does not exist. Error
+//                completed(false)
+//            }
+//        })
+//    }
+//    
+//    // Retrive user's profile data based on input user id, used in both ChatController's openProfile and EditProfileController
+//    func getUserFields(uid: String?, completed: @escaping (_ isSuccess: Bool, _ user: Profile?) -> ()) {
+//        guard let uid_ = uid else {
+//            completed(false, nil)
+//            return
+//        }
+//        
+//        let ref = self.REF_USERS.child(uid_)
+//        ref.keepSynced(true)
+//        
+//        ref.observeSingleEvent(of: .value, with: { snapshot in
+//            if snapshot.exists() {
+//
+//                // Name, birthday, discipline, organization, profile photo, school are compulsory fields
+//                guard let userDict = snapshot.value as? [String: Any], let name = userDict["name"] as? String, let birthday = userDict["birthday"] as? String, let discipline = userDict["discipline"] as? String, let org = userDict["organization"] as? String, let profilePhotoUrl = userDict["profilePhoto"] as? String, let school = userDict["school"] as? String else {
+//                    completed(false, nil)
+//                    return
+//                }
+//                var tagline1 = ""
+//                if let t = userDict["tagline1"] as? String {
+//                    tagline1 = t
+//                }
+//                var tagline2 = ""
+//                if let t = userDict["tagline2"] as? String {
+//                    tagline2 = t
+//                }
+//                var location = ""
+//                if let l = userDict["location"] as? String {
+//                    location = l
+//                }
+//                var coverPhotoUrl = ""
+//                if let c = userDict["coverPhoto"] as? String {
+//                    coverPhotoUrl = c
+//                }
+//                
+//                // Convert birthday of "MM/DD/yyyy" to age integer
+//                let age = convertBirthdayToAge(birthday: birthday)
+//                if location == "" {
+//                    // User disabled location, return here without location
+//                    let user = Profile(uid: uid_, name: name, coverImageName: coverPhotoUrl, profileImageName: profilePhotoUrl, age: age, location: "", org: org, school: school, discipline: discipline, tagline1: tagline1, tagline2: tagline2)
+//                    completed(true, user)
+//                }
+//                // Convert "<lat>,<lon>" to "<City>, <State>, <Country>"
+//                convertLocationToCityAndCountry(location: location) { (cityCountry) in
+//                    // User has city country here
+//                    let user = Profile(uid: uid_, name: name, coverImageName: coverPhotoUrl, profileImageName: profilePhotoUrl, age: age, location: cityCountry, org: org, school: school, discipline: discipline, tagline1: tagline1, tagline2: tagline2)
+//                    completed(true, user)
+//                }
+//            } else {
+//                // User does not exist. Error
+//                completed(false, nil)
+//            }
+//        })
+//    }
+//    
+//    func updateCachedDetailsInConnections(profilePhoto: String? = nil, discipline: String? = nil, completed: @escaping (_ isSuccess: Bool) -> ()) {
+//        guard let uid = getStoredUid() else {
+//            completed(false)
+//            return
+//        }
+//        REF_USERS.child("\(uid)/connections").observeSingleEvent(of: .value, with: { snapshot in
+//            if !snapshot.exists() { // This user has no connections
+//                completed(true)
+//                return
+//            }
+//            guard let snaps = snapshot.children.allObjects as? [FIRDataSnapshot] else {
+//                completed(false)
+//                return
+//            }
+//            var snapsLeft = snaps.count
+//            var hasError = false
+//            for snap in snaps {
+//                
+//                // For each connection, edit your profile pic/discipline in their list of connections
+//                let uid2 = snap.key
+//                var updates: [String: Any] = [:]
+//                if profilePhoto != nil {
+//                   updates["profilePhoto"] = profilePhoto!
+//                }
+//                if discipline != nil {
+//                    updates["discipline"] = discipline!
+//                }
+//                
+//                self.REF_USERS.child("\(uid2)/connections/\(uid)").updateChildValues(updates, withCompletionBlock: { (err, ref) in
+//                    snapsLeft -= 1
+//                    hasError = err != nil
+//                    if snapsLeft <= 0 {
+//                        completed(!hasError)
+//                    }
+//                })
+//            }
+//        })
+//    }
     
     // MARK: Chat
     

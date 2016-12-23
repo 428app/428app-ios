@@ -12,33 +12,41 @@ class Profile {
     
     fileprivate var _uid: String
     fileprivate var _name: String
-    fileprivate var _coverImageName: String
     fileprivate var _profileImageName: String
+    fileprivate var _discipline: String
     fileprivate var _age: Int
     fileprivate var _location: String // Country, City
-    fileprivate var _org: String
     fileprivate var _school: String
-    fileprivate var _discipline: String
-    fileprivate var _tagline1: String // I am working on ...
-    fileprivate var _tagline2: String // I want to eventually ...
+    fileprivate var _org: String
+    fileprivate var _tagline: String // What I do at 4:28pm
+    fileprivate var _badges: [String]
+    fileprivate var _classrooms: [String]
     
     // Calculated variable
     fileprivate var _disciplineIcon: String
+    fileprivate var _classroomIcons: [String]
+    fileprivate var _badgeIcons: [String]
     
-    init(uid: String, name: String, coverImageName: String, profileImageName: String, age: Int, location: String, org: String, school: String, discipline: String, tagline1: String, tagline2: String) {
+    init(uid: String, name: String, profileImageName: String, discipline: String, age: Int, location: String, school: String, org: String, tagline: String, badges: [String], classrooms: [String]) {
         _uid = uid
         _name = name
-        _coverImageName = coverImageName
         _profileImageName = profileImageName
+        _discipline = discipline
         _age = age
         _location = location
-        _org = org
         _school = school
-        _tagline1 = tagline1
-        _tagline2 = tagline2
-        _discipline = discipline
+        _org = org
+        _tagline = tagline
+        _badges = badges
+        _classrooms = classrooms
         _disciplineIcon = getDisciplineIconForDiscipline(discipline: _discipline)
+        _classroomIcons = [String]()
+        for c in classrooms {
+            _classroomIcons.append(getDisciplineIconForDiscipline(discipline: c))
+        }
         
+        // TODO: Convert badge icons
+        _badgeIcons = [String]()
     }
     
     var uid: String {
@@ -53,15 +61,19 @@ class Profile {
         }
     }
     
-    var coverImageName: String {
-        get {
-            return _coverImageName
-        }
-    }
-    
     var profileImageName: String {
         get {
             return _profileImageName
+        }
+    }
+    
+    var discipline: String {
+        get {
+            return _discipline
+        }
+        set(d) {
+            _discipline = d
+            _disciplineIcon = getDisciplineIconForDiscipline(discipline: d)
         }
     }
     
@@ -77,15 +89,6 @@ class Profile {
         }
     }
     
-    var org: String {
-        get {
-            return _org
-        }
-        set(o) {
-            _org = o
-        }
-    }
-    
     var school: String {
         get {
             return _school
@@ -95,37 +98,39 @@ class Profile {
         }
     }
     
-    var discipline: String {
+    var org: String {
         get {
-            return _discipline
+            return _org
         }
-        set(d) {
-            _discipline = d
-            _disciplineIcon = getDisciplineIconForDiscipline(discipline: d)
+        set(o) {
+            _org = o
         }
     }
     
-    var tagline1: String {
+    var tagline: String {
         get {
-            return _tagline1
+            return _tagline
         }
         set(t) {
-            _tagline1 = t
-        }
-    }
-    
-    var tagline2: String {
-        get {
-            return _tagline2
-        }
-        set(t) {
-            _tagline2 = t
+            _tagline = t
         }
     }
     
     var disciplineIcon: String {
         get {
             return _disciplineIcon
+        }
+    }
+    
+    var classroomIcons: [String] {
+        get {
+            return _classroomIcons
+        }
+    }
+    
+    var badgeIcons: [String] {
+        get {
+            return _badgeIcons
         }
     }
 }

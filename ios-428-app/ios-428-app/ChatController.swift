@@ -452,7 +452,7 @@ class ChatController: UIViewController, UICollectionViewDelegateFlowLayout, UITe
     fileprivate var profile: Profile?
     
     fileprivate func downloadProfile() { // Profile is also downloaded here to prepare for potential next screen
-        DataService.ds.getUserFields(uid: connection.uid) { (isSuccess, downloadedProfile) in
+        NewDataService.ds.getUserFields(uid: connection.uid) { (isSuccess, downloadedProfile) in
             if isSuccess && downloadedProfile != nil {
                 self.profile = downloadedProfile
             }

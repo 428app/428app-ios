@@ -135,7 +135,7 @@ class SettingsController: UIViewController, UITableViewDelegate, UITableViewData
     
     // Grabs server settings, user profile from Firebase, then downloads profile image
     fileprivate func populateData() {
-        DataService.ds.getUserFields(uid: getStoredUid()) { (isSuccess, profile) in
+        NewDataService.ds.getUserFields(uid: getStoredUid()) { (isSuccess, profile) in
             if isSuccess && profile != nil {
                 myProfile = profile
                 NotificationCenter.default.post(name: NOTIF_MYPROFILEDOWNLOADED, object: nil)
@@ -184,12 +184,12 @@ class SettingsController: UIViewController, UITableViewDelegate, UITableViewData
                     }
                 } else {
                     // Download image
-                    _ = downloadImage(imageUrlString: profile!.coverImageName, completed: { (image) in
-                        if image != nil {
-                            myCoverPhoto = image!
-                            NotificationCenter.default.post(name: NOTIF_MYPROFILEDOWNLOADED, object: nil)
-                        }
-                    })
+//                    _ = downloadImage(imageUrlString: profile!.coverImageName, completed: { (image) in
+//                        if image != nil {
+//                            myCoverPhoto = image!
+//                            NotificationCenter.default.post(name: NOTIF_MYPROFILEDOWNLOADED, object: nil)
+//                        }
+//                    })
                 }
             }
         }
@@ -273,7 +273,7 @@ class SettingsController: UIViewController, UITableViewDelegate, UITableViewData
         let cancelAction = UIAlertAction(title: "Cancel", style: .cancel, handler: nil)
         let logoutAction = UIAlertAction(title: "Log out", style: .default) { (action) in
             showLoader(message: "Logging you out...")
-            DataService.ds.logout(completed: { (isSuccess) in
+            NewDataService.ds.logout(completed: { (isSuccess) in
                 hideLoader()
                 if isSuccess {
                     self.dismiss(animated: true, completion: nil)
