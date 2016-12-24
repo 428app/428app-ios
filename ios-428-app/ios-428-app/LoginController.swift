@@ -265,7 +265,7 @@ class LoginController: UIViewController, UIScrollViewDelegate, CLLocationManager
     fileprivate let slider1View: UIImageView = {
         let imageView = UIImageView()
         imageView.contentMode = .scaleAspectFit
-        imageView.image = #imageLiteral(resourceName: "LoginSlider1")
+        imageView.image = #imageLiteral(resourceName: "LoginSlider-1")
         imageView.backgroundColor = GRAY_UICOLOR
         return imageView
     }()
@@ -273,7 +273,15 @@ class LoginController: UIViewController, UIScrollViewDelegate, CLLocationManager
     fileprivate let slider2View: UIImageView = {
         let imageView = UIImageView()
         imageView.contentMode = .scaleAspectFit
-        imageView.image = #imageLiteral(resourceName: "LoginSlider2")
+        imageView.image = #imageLiteral(resourceName: "LoginSlider-2")
+        imageView.backgroundColor = GRAY_UICOLOR
+        return imageView
+    }()
+    
+    fileprivate let slider3View: UIImageView = {
+        let imageView = UIImageView()
+        imageView.contentMode = .scaleAspectFit
+        imageView.image = #imageLiteral(resourceName: "LoginSlider-3")
         imageView.backgroundColor = GRAY_UICOLOR
         return imageView
     }()
@@ -296,12 +304,13 @@ class LoginController: UIViewController, UIScrollViewDelegate, CLLocationManager
     fileprivate func setupViews() {
         sliderViews.append(slider1View)
         sliderViews.append(slider2View)
+        sliderViews.append(slider3View)
         view.addSubview(scrollView)
         view.addSubview(pageControl)
         view.addSubview(warningLabel)
         view.addSubview(loginButton)
         
-        for index in 0..<2 {
+        for index in 0..<sliderViews.count {
             frame.origin.x = self.scrollView.frame.size.width * CGFloat(index)
             frame.size = self.scrollView.frame.size
             let subView = self.sliderViews[index]

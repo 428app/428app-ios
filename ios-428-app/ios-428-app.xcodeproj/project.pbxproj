@@ -342,14 +342,13 @@
 		4064A2121DACBB2000071383 /* Controller */ = {
 			isa = PBXGroup;
 			children = (
+				40785D681E0E6B14009B66E0 /* Login */,
 				4064A1E51DAC7DA600071383 /* CustomTabBarController.swift */,
 				4064A2041DAC868E00071383 /* CustomNavigationController.swift */,
 				4064A1B71DAC381300071383 /* PrivateChatController.swift */,
 				4064A1E31DAC590900071383 /* ChatController.swift */,
 				4064A2531DB34E4D00071383 /* ProfileController.swift */,
 				40AB7FF71DB59C9600492788 /* SettingsController.swift */,
-				4024F2321DB9454B007819F7 /* LoginController.swift */,
-				4024F2341DBB2155007819F7 /* IntroController.swift */,
 				4024F21F1DB7E2DB007819F7 /* Topic */,
 				40AB80011DB6FA9500492788 /* Me */,
 			);
@@ -368,6 +367,15 @@
 				4031FB9B1DC0691C0066E6B6 /* StorageService.swift */,
 			);
 			name = Services;
+			sourceTree = "<group>";
+		};
+		40785D681E0E6B14009B66E0 /* Login */ = {
+			isa = PBXGroup;
+			children = (
+				4024F2321DB9454B007819F7 /* LoginController.swift */,
+				4024F2341DBB2155007819F7 /* IntroController.swift */,
+			);
+			name = Login;
 			sourceTree = "<group>";
 		};
 		40AB80011DB6FA9500492788 /* Me */ = {
