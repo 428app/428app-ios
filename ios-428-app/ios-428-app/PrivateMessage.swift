@@ -8,20 +8,20 @@
 
 import Foundation
 
-class ConnectionMessage {
+class PrivateMessage {
 
     fileprivate var _mid: String
     fileprivate var _text: String
-    fileprivate var _connection: Connection
+    fileprivate var _privateChat: PrivateChat
     fileprivate var _date: Date
     fileprivate var _isSentByYou: Bool // True if is sent by you
 //    fileprivate var _hasSeen: Bool
     
-    init(mid: String, text: String, connection: Connection, date: Date, isSentByYou: Bool = false) {
+    init(mid: String, text: String, privateChat: PrivateChat, date: Date, isSentByYou: Bool = false) {
         _mid = mid
         _date = date
         _text = text
-        _connection = connection
+        _privateChat = privateChat
         _isSentByYou = isSentByYou
     }
     
@@ -37,9 +37,9 @@ class ConnectionMessage {
         }
     }
 
-    var connection: Connection {
+    var privateChat: PrivateChat {
         get {
-            return _connection
+            return _privateChat
         }
     }
     

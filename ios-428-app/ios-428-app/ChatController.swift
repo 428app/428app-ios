@@ -27,8 +27,8 @@ class ChatController: UIViewController, UICollectionViewDelegateFlowLayout, UITe
     fileprivate let SECTION_HEADER_HEIGHT: CGFloat = 30.0
     
     /** DATA **/
-    fileprivate var messages: [ConnectionMessage] = [ConnectionMessage]() // All messages
-    fileprivate var messagesInTimeBuckets: [[ConnectionMessage]] = [[ConnectionMessage]]() // Messages separated into buckets of time (at least 1 hour apart)
+    fileprivate var messages: [PrivateMessage] = [PrivateMessage]() // All messages
+    fileprivate var messagesInTimeBuckets: [[PrivateMessage]] = [[PrivateMessage]]() // Messages separated into buckets of time (at least 1 hour apart)
     fileprivate var messageIsLastInChain: [[Bool]] = [[Bool]]() // If true, that means message is the last message sent in chain of messages by one user, so bubble will be attached
     fileprivate var timeBucketHeaders: [Date] = [Date]() // Headers of time buckets, must have same length as messagesInTimeBuckets
 
@@ -43,7 +43,7 @@ class ChatController: UIViewController, UICollectionViewDelegateFlowLayout, UITe
     fileprivate var keyboardHeight: CGFloat = 216.0 // Default of 216.0, but reset the first time keyboard pops up
     
     let interactor = Interactor() // Used for transitioning to and from ProfileController
-    var connection: Connection!
+    var privateChat: PrivateChat!
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -92,7 +92,7 @@ class ChatController: UIViewController, UICollectionViewDelegateFlowLayout, UITe
         imageView.contentMode = .scaleAspectFill
         imageView.layer.cornerRadius = 50
         imageView.layer.masksToBounds = true
-        _ = downloadImage(imageUrlString: self.connection.profileImageName, completed: { (image) in
+        _ = downloadImage(imageUrlString: self.privateChat.profileImageName, completed: { (image) in
             // Can just directly reference image in callback because there is only one image here, and is not dynamic like in a cell
             imageView.image = image
         })
@@ -108,8 +108,8 @@ class ChatController: UIViewController, UICollectionViewDelegateFlowLayout, UITe
         let paragraphStyle = NSMutableParagraphStyle()
         paragraphStyle.lineSpacing = 6
         paragraphStyle.alignment = .center
-        let preStr = NSMutableAttributedString(string: "Hey! Why don't you talk to \(self.connection.name) about ", attributes: [NSForegroundColorAttributeName: UIColor.darkGray, NSParagraphStyleAttributeName: paragraphStyle])
-        let disciplineStr = NSMutableAttributedString(string: "\(self.connection.discipline)?", attributes: [NSParagraphStyleAttributeName: paragraphStyle, NSForegroundColorAttributeName: GREEN_UICOLOR])
+        let preStr = NSMutableAttributedString(string: "Hey! Why don't you talk to \(self.privateChat.name) about ", attributes: [NSForegroundColorAttributeName: UIColor.darkGray, NSParagraphStyleAttributeName: paragraphStyle])
+        let disciplineStr = NSMutableAttributedString(string: "\(self.privateChat.discipline)?", attributes: [NSParagraphStyleAttributeName: paragraphStyle, NSForegroundColorAttributeName: GREEN_UICOLOR])
         preStr.append(disciplineStr)
         label.attributedText = preStr
         return label
@@ -132,7 +132,7 @@ class ChatController: UIViewController, UICollectionViewDelegateFlowLayout, UITe
      Here's why we need 3 functions for observing chat from Firebase:
      By default reobserveMessages() which loads on every new message being added will scroll the chat to the bottom 
      of the screen. However, we don't want that on the two occasions when we first enter the screen and we pull to refresh. Hence,
-     1) initMessages is used to hide the messages first so I can scroll to the bottom before displaying them. This is a hack I invented to make a more natural transition from Connections to this page.
+     1) initMessages is used to hide the messages first so I can scroll to the bottom before displaying them. This is a hack I invented to make a more natural transition from Private Chats to this page.
      2) observeMore is used to change the limit of the query (pull to refresh), and at the same time NOT scroll to the bottom. By default, observeMore will scroll the table to the top.
      NOTE the following intended behavior:
      - When a user receives/sends a message, the scroll view is scrolled to the bottom
@@ -152,14 +152,14 @@ class ChatController: UIViewController, UICollectionViewDelegateFlowLayout, UITe
                 self.activityIndicator.isHidden = false
             }
         })
-        DataService.ds.observeChatMessagesOnce(connection: self.connection, limit: self.numMessages, completed: { (isSuccess, updatedConnection) in
+        NewDataService.ds.observeChatMessagesOnce(privateChat: self.privateChat, limit: self.numMessages, completed: { (isSuccess, updatedPrivateChat) in
             self.activityIndicator.stopAnimating()
             
-            if (!isSuccess || updatedConnection == nil) {
-                // No messages yet, display placeholder view in the middle to prompt user to interact with new connection
+            if (!isSuccess || updatedPrivateChat == nil) {
+                // No messages yet, display placeholder view in the middle to prompt user to interact with new private chat
                 self.emptyPlaceholderView.isHidden = false
                 self.emptyPlaceholderView.isUserInteractionEnabled = true
-                log.info("No messages updated for connection")
+                log.info("No messages updated for private chat")
                 self.reobserveMessages()
                 return
             }
@@ -170,9 +170,9 @@ class ChatController: UIViewController, UICollectionViewDelegateFlowLayout, UITe
             self.emptyPlaceholderView.isHidden = true
             self.emptyPlaceholderView.isUserInteractionEnabled = false
             
-            // Update connection and messages
-            self.connection = updatedConnection
-            self.messages = updatedConnection!.messages
+            // Update private chat and messages
+            self.privateChat = updatedPrivateChat
+            self.messages = updatedPrivateChat!.messages
             
             self.organizeMessages()
             
@@ -199,15 +199,15 @@ class ChatController: UIViewController, UICollectionViewDelegateFlowLayout, UITe
         self.refreshControl.beginRefreshing()
         self.pullToRefreshIndicator.startAnimating()
         
-        DataService.ds.observeChatMessagesOnce(connection: self.connection, limit: self.numMessages, completed: { (isSuccess, updatedConnection) in
+        NewDataService.ds.observeChatMessagesOnce(privateChat: self.privateChat, limit: self.numMessages, completed: { (isSuccess, updatedPrivateChat) in
             self.refreshControl.endRefreshing()
             self.pullToRefreshIndicator.stopAnimating()
             
-            if (!isSuccess || updatedConnection == nil) {
-                // No messages yet, display placeholder view in the middle to prompt user to interact with new connection
+            if (!isSuccess || updatedPrivateChat == nil) {
+                // No messages yet, display placeholder view in the middle to prompt user to interact with new private chat
                 self.emptyPlaceholderView.isHidden = false
                 self.emptyPlaceholderView.isUserInteractionEnabled = true
-                log.info("No messages updated for connection")
+                log.info("No messages updated for private chat")
                 self.reobserveMessages()
                 return
             }
@@ -218,13 +218,13 @@ class ChatController: UIViewController, UICollectionViewDelegateFlowLayout, UITe
             self.emptyPlaceholderView.isHidden = true
             self.emptyPlaceholderView.isUserInteractionEnabled = false
             
-            // Update connection and messages
-            self.connection = updatedConnection
+            // Update private chat and messages
+            self.privateChat = updatedPrivateChat
             
             if self.messagesInTimeBuckets.count > 0 && self.messagesInTimeBuckets[0].count > 0 {
                 // Find the first message in the old message so we scroll to this one
                 let firstMsg = self.messagesInTimeBuckets[0][0]
-                self.messages = updatedConnection!.messages
+                self.messages = updatedPrivateChat!.messages
                 self.organizeMessages()
                 // Find this first message in the new messages to find the new row and section to scroll to
                 var messageFound = false
@@ -263,7 +263,7 @@ class ChatController: UIViewController, UICollectionViewDelegateFlowLayout, UITe
             
             else {
                 // Previous messages are empty - this should very rarely happen, possibly only due to network connectivity issues
-                self.messages = updatedConnection!.messages
+                self.messages = updatedPrivateChat!.messages
                 self.organizeMessages()
                 self.collectionView.reloadData()
             }
@@ -279,33 +279,33 @@ class ChatController: UIViewController, UICollectionViewDelegateFlowLayout, UITe
             queryAndHandle.0.removeObserver(withHandle: queryAndHandle.1)
         }
         
-        queryAndHandle = DataService.ds.reobserveChatMessages(limit: self.numMessages, connection: self.connection) { (isSuccess, updatedConnection) in
+        queryAndHandle = NewDataService.ds.reobserveChatMessages(limit: self.numMessages, privateChat: self.privateChat) { (isSuccess, updatedPrivateChat) in
             
-            if (!isSuccess || updatedConnection == nil) {
+            if (!isSuccess || updatedPrivateChat == nil) {
                 
                 // Rewind increment of numMessages
                 if self.numMessages > self.NUM_INCREMENT {
                     self.numMessages -= self.NUM_INCREMENT
                 }
                 
-                // No messages yet, display placeholder view in the middle to prompt user to interact with new connection
+                // No messages yet, display placeholder view in the middle to prompt user to interact with new private chat
                 self.emptyPlaceholderView.isHidden = false
                 self.emptyPlaceholderView.isUserInteractionEnabled = true
-                log.info("No messages updated for connection")
+                log.info("No messages updated for private chat")
                 return
             }
             
             // Messages seen
-            DataService.ds.seeConnectionMessages(connection: self.connection) { (isSuccess) in }
+            NewDataService.ds.seePrivateMessages(privateChat: self.privateChat) { (isSuccess) in }
             
             // There are messages, hide and disable empty placeholder view
             self.emptyPlaceholderView.isHidden = true
             self.emptyPlaceholderView.isUserInteractionEnabled = false
             
             // Check if messages are exactly the same, if yes, then no need to update
-            if self.messages.count == updatedConnection!.messages.count {
+            if self.messages.count == updatedPrivateChat!.messages.count {
                 var areTheSame = true
-                let updatedMessages = updatedConnection!.messages.sorted(by: { (m1, m2) -> Bool in
+                let updatedMessages = updatedPrivateChat!.messages.sorted(by: { (m1, m2) -> Bool in
                     return m1.date.compare(m2.date) == .orderedAscending
                 })
                 let oldMessages = self.messages.sorted(by: { (m1, m2) -> Bool in
@@ -322,8 +322,8 @@ class ChatController: UIViewController, UICollectionViewDelegateFlowLayout, UITe
                 }
             }
             
-            self.connection = updatedConnection
-            self.messages = updatedConnection!.messages
+            self.privateChat = updatedPrivateChat
+            self.messages = updatedPrivateChat!.messages
             self.organizeMessages()
             self.collectionView.reloadData()
             self.scrollToLastItemInCollectionView(animated: false)
@@ -385,10 +385,10 @@ class ChatController: UIViewController, UICollectionViewDelegateFlowLayout, UITe
         }
         // Sort messages such that earliest messages come first
         self.messages = self.messages.sorted{($0.date.timeIntervalSince1970) < ($1.date.timeIntervalSince1970)}
-        self.messagesInTimeBuckets = [[ConnectionMessage]]()
+        self.messagesInTimeBuckets = [[PrivateMessage]]()
         self.timeBucketHeaders = [Date]()
         var currentBucketTime: Date? = nil
-        var currentBucketMessages: [ConnectionMessage] = [ConnectionMessage]()
+        var currentBucketMessages: [PrivateMessage] = [PrivateMessage]()
         
         for i in 0...self.messages.count - 1 {
             let message = self.messages[i]
@@ -420,7 +420,7 @@ class ChatController: UIViewController, UICollectionViewDelegateFlowLayout, UITe
         }
         self.messageIsLastInChain = [[Bool]]()
         for i in 0...self.messagesInTimeBuckets.count - 1 {
-            let section: [ConnectionMessage] = self.messagesInTimeBuckets[i]
+            let section: [PrivateMessage] = self.messagesInTimeBuckets[i]
             var chains = [Bool]()
             if section.count == 0 {
                 log.error("[Error] No messages in bucket")
@@ -429,8 +429,8 @@ class ChatController: UIViewController, UICollectionViewDelegateFlowLayout, UITe
             }
             if section.count >= 2 {
                 for j in 0...section.count - 2 {
-                    let m0: ConnectionMessage = section[j]
-                    let m1: ConnectionMessage = section[j+1]
+                    let m0: PrivateMessage = section[j]
+                    let m1: PrivateMessage = section[j+1]
                     // Last in chain if next one is different from current
                     chains.append(!((m0.isSentByYou && m1.isSentByYou) || (!m0.isSentByYou && !m1.isSentByYou)))
                 }
@@ -452,7 +452,7 @@ class ChatController: UIViewController, UICollectionViewDelegateFlowLayout, UITe
     fileprivate var profile: Profile?
     
     fileprivate func downloadProfile() { // Profile is also downloaded here to prepare for potential next screen
-        NewDataService.ds.getUserFields(uid: connection.uid) { (isSuccess, downloadedProfile) in
+        NewDataService.ds.getUserFields(uid: privateChat.uid) { (isSuccess, downloadedProfile) in
             if isSuccess && downloadedProfile != nil {
                 self.profile = downloadedProfile
             }
@@ -500,9 +500,9 @@ class ChatController: UIViewController, UICollectionViewDelegateFlowLayout, UITe
     }()
     
     fileprivate func setupNavTitleView() {
-        navButton.setTitle(self.connection.name, for: .normal)
+        navButton.setTitle(self.privateChat.name, for: .normal)
         navButton.setTitleColor(UIColor.black, for: .normal)
-        navDisciplineImageView.image = UIImage(named: self.connection.disciplineImageName)
+        navDisciplineImageView.image = UIImage(named: self.privateChat.disciplineImageName)
         
         navTitleView.addTarget(self, action: #selector(openProfile), for: .touchUpInside)
         navButton.addTarget(self, action: #selector(openProfile), for: .touchUpInside)
@@ -534,10 +534,10 @@ class ChatController: UIViewController, UICollectionViewDelegateFlowLayout, UITe
         let alertController = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
         alertController.view.tintColor = GREEN_UICOLOR
         let cancelAction = UIAlertAction(title: "Cancel", style: .cancel, handler: nil)
-        let rateAction = UIAlertAction(title: "Rate \(self.connection.name)", style: .default) { (action) in
+        let rateAction = UIAlertAction(title: "Rate \(self.privateChat.name)", style: .default) { (action) in
             // TODO: Rate user
         }
-        let reportAction = UIAlertAction(title: "Report \(self.connection.name)", style: .default) { (action) in
+        let reportAction = UIAlertAction(title: "Report \(self.privateChat.name)", style: .default) { (action) in
             // TODO: Report user
         }
         alertController.addAction(rateAction)
@@ -670,8 +670,8 @@ class ChatController: UIViewController, UICollectionViewDelegateFlowLayout, UITe
     func handleSend() {
         if let text = inputTextView.text {
             self.resetInputContainer()
-            DataService.ds.addChatMessage(connection: connection, text: text.trim(), completed: { (isSuccess, updatedConnection) in
-                if !isSuccess || updatedConnection == nil {
+            NewDataService.ds.addChatMessage(privateChat: privateChat, text: text.trim(), completed: { (isSuccess, updatedPrivateChat) in
+                if !isSuccess || updatedPrivateChat == nil {
                     // Reset countdown if failure to add
                     log.error("[Error] Message failed to be posted")
                     showErrorAlert(vc: self, title: "Error", message: "Could not send message. Please try again.")

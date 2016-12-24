@@ -16,7 +16,7 @@ class ConnectionCell: BaseCollectionCell {
     // NOTE: If message has an empty text, it means this is a new connection because we disallow empty 
     // messages from being sent to the server
     
-    fileprivate var message: ConnectionMessage! {
+    fileprivate var message: PrivateMessage! {
         didSet {
             self.isNewConnection = self.message.text.isEmpty
         }
@@ -165,7 +165,7 @@ class ConnectionCell: BaseCollectionCell {
     }()
 
     fileprivate func loadImage() {
-        let imageUrlString = self.message.connection.profileImageName
+        let imageUrlString = self.message.privateChat.profileImageName
         self.profileImageView.af_cancelImageRequest()
         guard let imageUrl = URL(string: imageUrlString) else {
             self.profileImageView.image = #imageLiteral(resourceName: "placeholder-user")
@@ -180,12 +180,12 @@ class ConnectionCell: BaseCollectionCell {
         })
     }
     
-    func configureCell(messageObj: ConnectionMessage) {
+    func configureCell(messageObj: PrivateMessage) {
         self.message = messageObj
         self.loadImage()
         
-        self.nameLabel.text = self.message.connection.name
-        self.disciplineImageView.image = UIImage(named: self.message.connection.disciplineImageName)
+        self.nameLabel.text = self.message.privateChat.name
+        self.disciplineImageView.image = UIImage(named: self.message.privateChat.disciplineImageName)
         
         if isNewConnection {
             // New connection
@@ -213,7 +213,7 @@ class ConnectionCell: BaseCollectionCell {
             constraintsToDelete.append(contentsOf: containerView.addAndGetConstraintsWithFormat("H:|[v0]-12-|", views: messageLabel))
         }
         
-        if message.connection.hasNewMessages {
+        if message.privateChat.hasNewMessages {
             timeLabel.textColor = UIColor.black
             messageLabel.textColor = UIColor.black
         } else {

@@ -8,7 +8,7 @@
 
 import Foundation
 
-class Connection {
+class PrivateChat {
     
     fileprivate var _uid: String
     fileprivate var _name: String
@@ -17,11 +17,11 @@ class Connection {
     fileprivate var _hasNewMessages: Bool
     
     // NOTE: Most recent message is on top of messages
-    fileprivate var _messages = [ConnectionMessage]() // Not loaded off the start, only loaded when user clicks on chat
+    fileprivate var _messages = [PrivateMessage]() // Not loaded off the start, only loaded when user clicks on chat
     fileprivate var _dateMatched: String
     fileprivate var _disciplineImageName: String // Packaged in the app's assets
     
-    init(uid: String, name: String, profileImageName: String, discipline: String, messages: [ConnectionMessage] = [ConnectionMessage](), dateMatched: String = "", hasNewMessages: Bool = false) {
+    init(uid: String, name: String, profileImageName: String, discipline: String, messages: [PrivateMessage] = [PrivateMessage](), dateMatched: String = "", hasNewMessages: Bool = false) {
         _uid = uid
         _name = name
         _profileImageName = profileImageName
@@ -71,13 +71,13 @@ class Connection {
         }
     }
     
-    var messages: [ConnectionMessage] {
+    var messages: [PrivateMessage] {
         get {
             return _messages
         }
     }
     
-    func addMessage(message: ConnectionMessage) {
+    func addMessage(message: PrivateMessage) {
         _messages.append(message)
     }
     

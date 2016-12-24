@@ -508,7 +508,7 @@ class IntroController: UIViewController, UIScrollViewDelegate, UITextFieldDelega
             } else {
                 justFinishedIntro = true
                 // TODO: This has to be removed on production
-                DataService.ds.connectWithAll()
+                NewDataService.ds.connectWithAll()
                 setHasToFillInfo(hasToFill: false)
                 self.dismiss(animated: true, completion: nil)
             }

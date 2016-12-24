@@ -104,7 +104,7 @@ class SettingsController: UIViewController, UITableViewDelegate, UITableViewData
         if let userInfo = notif.userInfo as? [String: AnyObject], let option = userInfo["option"] as? String, let isOn = userInfo["isOn"] as? Bool {
             self.settingsChosen[option] = isOn
             
-            DataService.ds.updateUserSettings(newConnections: settingsChosen["New connections"]!, newTopics: settingsChosen["New topics"]!, dailyAlert: settingsChosen["Daily alert"]!, connectionMessages: settingsChosen["Connection messages"]!, topicMessages: settingsChosen["Topic messages"]!, inAppNotifications: settingsChosen["In-app notifications"]!, completed: { (isSuccess) in
+            NewDataService.ds.updateUserSettings(dailyAlert: settingsChosen["Daily alert"]!, privateMessages: settingsChosen["Private messages"]!, classroomMessages: settingsChosen["Classroom messages"]!, inAppNotifications: settingsChosen["In-app notifications"]!, completed: { (isSuccess) in
                 if !isSuccess {
                     log.error("[Error] Error updating user settings")
                     // Revert settings chosen
@@ -195,9 +195,9 @@ class SettingsController: UIViewController, UITableViewDelegate, UITableViewData
         }
         
         // Load default settings first - All enabled
-        self.settingsChosen = ["New connections": true, "New topics": true, "Daily alert": true, "Connection messages": true, "Topic messages": true, "In-app notifications": true]
+        self.settingsChosen = ["Daily alert": true, "Private messages": true, "Classroom messages": true, "In-app notifications": true]
         
-        DataService.ds.getUserSettings(completed: { (settings) in
+        NewDataService.ds.getUserSettings(completed: { (settings) in
             if settings != nil {
                 self.settingsChosen = settings!
             }
@@ -217,9 +217,7 @@ class SettingsController: UIViewController, UITableViewDelegate, UITableViewData
     
     fileprivate var settings: [[Setting]] = [
         [Setting(text: "", type: .timer)],
-        [Setting(text: "", type: .profilepic, image: UIImage(color: UIColor.white))],
-        [Setting(text: "New connections", type: .toggle, isOn: true), Setting(text: "New topics", type: .toggle, isLastCell: true, isOn: true)],
-        [Setting(text: "Daily alert", type: .toggle, isOn: true),  Setting(text: "Connection messages", type: .toggle, isOn: true), Setting(text: "Topic messages", type: .toggle, isOn: true), Setting(text: "In-app notifications", type: .toggle, isLastCell: true, isOn: true)],
+        [Setting(text: "Daily alert", type: .toggle, isOn: true),  Setting(text: "Private messages", type: .toggle, isOn: true), Setting(text: "Classroom messages", type: .toggle, isOn: true), Setting(text: "In-app notifications", type: .toggle, isLastCell: true, isOn: true)],
         [Setting(text: "Help and Support", type: .link), Setting(text: "Rate us", type: .link), Setting(text: "Share 428", type: .link, isLastCell: true)],
         [Setting(text: "Privacy Policy", type: .link), Setting(text: "Terms", type: .link, isLastCell: true)],
         [Setting(text: "Log out", type: .center, isLastCell: true)],

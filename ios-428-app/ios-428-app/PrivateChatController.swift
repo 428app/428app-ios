@@ -1,5 +1,5 @@
 //
-//  ConnectionsController.swift
+//  PrivateChatController.swift
 //  ios-428-app
 //
 //  Created by Leonard Loo on 10/10/16.
@@ -9,13 +9,13 @@
 import UIKit
 import Firebase
 
-class ConnectionsController: UICollectionViewController, UICollectionViewDelegateFlowLayout {
+class PrivateChatController: UICollectionViewController, UICollectionViewDelegateFlowLayout {
     
-    fileprivate let CELL_ID = "connectionCell"
+    fileprivate let CELL_ID = "privateChatCell"
     
-    open var latestMessages: [ConnectionMessage] = [ConnectionMessage]() // Non-private so DataService can access
+    open var latestMessages: [PrivateMessage] = [PrivateMessage]() // Non-private so DataService can access
     
-    fileprivate var connectionsRefAndHandle: (FIRDatabaseReference, FIRDatabaseHandle)!
+    fileprivate var privateChatRefAndHandle: (FIRDatabaseReference, FIRDatabaseHandle)!
     fileprivate var recentMessageRefsAndHandles: [(FIRDatabaseReference, FIRDatabaseHandle)] = []
     
     
@@ -24,7 +24,7 @@ class ConnectionsController: UICollectionViewController, UICollectionViewDelegat
         self.loadFromFirebase()
         self.extendedLayoutIncludesOpaqueBars = true
         self.setupViews()
-        navigationItem.title = "Connections"
+        navigationItem.title = "Private Messages"
         self.navigationItem.backBarButtonItem = UIBarButtonItem(title: " ", style: .plain, target: nil, action: nil)
     }
     
@@ -38,7 +38,7 @@ class ConnectionsController: UICollectionViewController, UICollectionViewDelegat
         for (ref, handle) in recentMessageRefsAndHandles {
             ref.removeObserver(withHandle: handle)
         }
-        connectionsRefAndHandle.0.removeObserver(withHandle: connectionsRefAndHandle.1)
+        privateChatRefAndHandle.0.removeObserver(withHandle: privateChatRefAndHandle.1)
         self.countdownTimer.invalidate()
     }
     
@@ -168,8 +168,9 @@ class ConnectionsController: UICollectionViewController, UICollectionViewDelegat
         
         // Note that there is no pagination with connections, because at the rate of 1 new connection a day, 
         // this list will not likely become obscenely large
-        self.connectionsRefAndHandle = DataService.ds.observeConnections { (isSuccess, connections) in
-            if connections.count == 0 {
+        
+        self.privateChatRefAndHandle = NewDataService.ds.observePrivateChats { (isSuccess, privateChats) in
+            if privateChats.count == 0 {
                 // New user, empty placeholder view, and fire countdown timer
                 self.emptyPlaceholderView.isHidden = false
                 self.countdownTimer.invalidate()
@@ -187,27 +188,27 @@ class ConnectionsController: UICollectionViewController, UICollectionViewDelegat
             
             self.latestMessages = []
             
-            for conn in connections {
+            for chat in privateChats {
                 // Register handlers for each of these
                 if !isSuccess {
-                    log.error("[Error] Can't pull all connections")
+                    log.error("[Error] Can't pull all private chats")
                     return
                 }
-                self.recentMessageRefsAndHandles.append(DataService.ds.observeRecentChat(connection: conn, completed: {
-                    (isSuccess, connection) in
+                self.recentMessageRefsAndHandles.append(NewDataService.ds.observeRecentChat(privateChat: chat, completed: {
+                    (isSuccess, privateChat) in
                     
                     self.activityIndicator.stopAnimating()
                     
-                    if !isSuccess || connection == nil {
+                    if !isSuccess || privateChat == nil {
                         log.error("[Error] Can't pull a certain connection")
                         return
                     }
                     
-                    // Find the messages belonging to this connection, remove them, then add this
-                    self.latestMessages = self.latestMessages.filter() {$0.connection.uid != connection!.uid}
+                    // Find the messages belonging to this private chat, remove them, then add this
+                    self.latestMessages = self.latestMessages.filter() {$0.privateChat.uid != privateChat!.uid}
                     
                     // Log new messages coming in
-                    self.latestMessages.append(contentsOf: connection!.messages)
+                    self.latestMessages.append(contentsOf: privateChat!.messages)
                     
                     // Sort latest messages based on time
                     // I know, not the most efficient. Could have done a binary search and insert, but frontend 
@@ -241,7 +242,7 @@ class ConnectionsController: UICollectionViewController, UICollectionViewDelegat
     override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         collectionView.deselectItem(at: indexPath, animated: false)
         let controller = ChatController()
-        controller.connection = self.latestMessages[indexPath.item].connection
+        controller.privateChat = self.latestMessages[indexPath.item].privateChat
         navigationController?.pushViewController(controller, animated: true)
     }
 }

@@ -54,7 +54,7 @@ class CustomTextView: UITextView {
 
 class ChatCell: BaseCollectionCell, UITextViewDelegate {
     
-    fileprivate var message: ConnectionMessage!
+    fileprivate var message: PrivateMessage!
     open var shouldExpand = false
     fileprivate let TEXT_VIEW_FONT = UIFont.systemFont(ofSize: 16.0)
     open var request: Request?
@@ -134,7 +134,7 @@ class ChatCell: BaseCollectionCell, UITextViewDelegate {
         self.profileImageView.image = image
     }
     
-    func configureCell(messageObj: ConnectionMessage, viewWidth: CGFloat, isLastInChain: Bool) {
+    func configureCell(messageObj: PrivateMessage, viewWidth: CGFloat, isLastInChain: Bool) {
         self.message = messageObj
         let messageText = self.message.text
 
@@ -142,7 +142,7 @@ class ChatCell: BaseCollectionCell, UITextViewDelegate {
         self.messageTextView.attributedText = NSAttributedString(string: self.message!.text, attributes: [NSFontAttributeName: TEXT_VIEW_FONT])
         
         // Download profile image
-        self.request = downloadImage(imageUrlString: self.message.connection.profileImageName, completed: { (image) in
+        self.request = downloadImage(imageUrlString: self.message.privateChat.profileImageName, completed: { (image) in
             self.populateCellWithImage(image: image)
         })
         

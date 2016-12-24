@@ -42,9 +42,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // Use this method to pause ongoing tasks, disable timers, and invalidate graphics rendering callbacks. Games should use this method to pause the game.
         
         // Get badge count from server and set it before entering background
-        DataService.ds.updateBadgeCount { (isSuccess, badgeCount) in
+        NewDataService.ds.updatePushCount { (isSuccess, pushCount) in
             if isSuccess {
-                UIApplication.shared.applicationIconBadgeNumber = badgeCount
+                UIApplication.shared.applicationIconBadgeNumber = pushCount
             }
         }
         
@@ -143,7 +143,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     open func handleRemote(userInfo: [AnyHashable: Any], isForeground: Bool = false) {
         log.info("\(userInfo)")
         /**
-         type: topic|connection|settings,
+         type: classroom|private|settings,
          image: "",
          uid: "",
          tid: "",
@@ -235,7 +235,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         if let chatVC = nvc.visibleViewController as? ChatController {
             // Only show popup if the chatVC uid is different from the uid in payload
-            if chatVC.connection.uid != uid {
+            if chatVC.privateChat.uid != uid {
                 show(shout: announcement, to: vc, completion: {
                     // This callback is reached when user taps, so we transition to the right page based on type, and uid/tid
                     self.transitionToRightScreenBasedOnType(type: type, uid: uid, tid: tid)
@@ -259,35 +259,35 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             return
         }
         
-        if type == .CONNECTION {
-            self.findAndTransitionToConnection(uid: uid, tabBarController: tabBarController)
-        } else if type == .TOPIC {
+        if type == .PRIVATE {
+            self.findAndTransitionToPrivateChat(uid: uid, tabBarController: tabBarController)
+        } else if type == .CLASSROOM {
             self.findAndTransitionToTopic(tid: tid, tabBarController: tabBarController)
         }
     }
     
     // Open the correct connection that matches uid
-    fileprivate func findAndTransitionToConnection(uid: String, tabBarController: CustomTabBarController) {
+    fileprivate func findAndTransitionToPrivateChat(uid: String, tabBarController: CustomTabBarController) {
         
-        guard let vcs = tabBarController.viewControllers, let connectionsNVC = vcs[0] as? CustomNavigationController, let connectionsVC = connectionsNVC.viewControllers.first as? ConnectionsController else {
+        guard let vcs = tabBarController.viewControllers, let privateChatNVC = vcs[0] as? CustomNavigationController, let privateChatVC = privateChatNVC.viewControllers.first as? PrivateChatController else {
             return
         }
         
-        if connectionsNVC.viewControllers.count > 1 {
+        if privateChatNVC.viewControllers.count > 1 {
             // Currently in a chat screen or profile screen, etc., need to dismiss back to ConnectionsController before pushing ChatController
-            connectionsNVC.popToRootViewController(animated: false)
+            privateChatNVC.popToRootViewController(animated: false)
         }
         
         // Look for the correct connection in latest messages
-        let correctMessage = connectionsVC.latestMessages.filter() {$0.connection.uid == uid}
+        let correctMessage = privateChatVC.latestMessages.filter() {$0.privateChat.uid == uid}
         if correctMessage.count != 1 {
-            log.warning("Uid could not be found in connections / too many of the same uid")
+            log.warning("Uid could not be found in private chats / too many of the same uid")
             return
         }
         
         let chatVC: ChatController = ChatController()
-        chatVC.connection = correctMessage[0].connection
-        connectionsNVC.pushViewController(chatVC, animated: false)
+        chatVC.privateChat = correctMessage[0].privateChat
+        privateChatNVC.pushViewController(chatVC, animated: false)
         tabBarController.selectedIndex = 0
     }
     
