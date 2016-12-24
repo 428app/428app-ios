@@ -16,7 +16,7 @@ import FBSDKLoginKit
 
 // Extends DataService to house Remote notification, and some utility calls
 // Most of these calls are used by other services such as PrivateChatService and ClassroomService
-extension NewDataService {
+extension DataService {
 
     // Adds message to Queue that will be picked up by push server
     open func addToNotificationQueue(type: TokenType, posterUid: String, recipientUid: String, cid: String, title: String, body: String) {

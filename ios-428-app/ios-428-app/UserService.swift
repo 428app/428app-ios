@@ -15,7 +15,7 @@ import FBSDKCoreKit
 import FBSDKLoginKit
 
 // Extends DataService to house User calls
-extension NewDataService {
+extension DataService {
     
     // MARK: User
     

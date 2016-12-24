@@ -169,7 +169,7 @@ class PrivateChatController: UICollectionViewController, UICollectionViewDelegat
         // Note that there is no pagination with connections, because at the rate of 1 new connection a day, 
         // this list will not likely become obscenely large
         
-        self.privateChatRefAndHandle = NewDataService.ds.observePrivateChats { (isSuccess, privateChats) in
+        self.privateChatRefAndHandle = DataService.ds.observePrivateChats { (isSuccess, privateChats) in
             if privateChats.count == 0 {
                 // New user, empty placeholder view, and fire countdown timer
                 self.emptyPlaceholderView.isHidden = false
@@ -194,7 +194,7 @@ class PrivateChatController: UICollectionViewController, UICollectionViewDelegat
                     log.error("[Error] Can't pull all private chats")
                     return
                 }
-                self.recentMessageRefsAndHandles.append(NewDataService.ds.observeRecentChat(privateChat: chat, completed: {
+                self.recentMessageRefsAndHandles.append(DataService.ds.observeRecentChat(privateChat: chat, completed: {
                     (isSuccess, privateChat) in
                     
                     self.activityIndicator.stopAnimating()

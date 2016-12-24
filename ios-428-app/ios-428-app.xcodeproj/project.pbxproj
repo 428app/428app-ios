@@ -10,7 +10,6 @@
 		4000C37A1DD81227009C10E5 /* Download.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4000C3791DD81227009C10E5 /* Download.swift */; };
 		4020CE151DBB569000461181 /* Switches.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4020CE141DBB569000461181 /* Switches.swift */; };
 		4020CE171DBCA1E900461181 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 4020CE161DBCA1E900461181 /* GoogleService-Info.plist */; };
-		4020CE191DBCA67A00461181 /* DataService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4020CE181DBCA67A00461181 /* DataService.swift */; };
 		4020CE1E1DBCA84C00461181 /* Bolts.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4020CE1A1DBCA84C00461181 /* Bolts.framework */; };
 		4020CE1F1DBCA84C00461181 /* FBSDKCoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4020CE1B1DBCA84C00461181 /* FBSDKCoreKit.framework */; };
 		4020CE201DBCA84C00461181 /* FBSDKLoginKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4020CE1C1DBCA84C00461181 /* FBSDKLoginKit.framework */; };
@@ -64,7 +63,7 @@
 		4064A2561DB3E5E800071383 /* ProfileCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4064A2551DB3E5E800071383 /* ProfileCell.swift */; };
 		40785D5B1E04EDCE009B66E0 /* HorizontalScrollCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 40785D5A1E04EDCE009B66E0 /* HorizontalScrollCell.swift */; };
 		40785D5F1E093AAF009B66E0 /* MeController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 40785D5E1E093AAF009B66E0 /* MeController.swift */; };
-		40785D611E0D2C81009B66E0 /* NewDataService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 40785D601E0D2C81009B66E0 /* NewDataService.swift */; };
+		40785D611E0D2C81009B66E0 /* DataService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 40785D601E0D2C81009B66E0 /* DataService.swift */; };
 		40785D631E0D981C009B66E0 /* PrivateChatService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 40785D621E0D981C009B66E0 /* PrivateChatService.swift */; };
 		40785D651E0D9868009B66E0 /* UserService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 40785D641E0D9868009B66E0 /* UserService.swift */; };
 		40785D671E0E5A1F009B66E0 /* RemoteService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 40785D661E0E5A1F009B66E0 /* RemoteService.swift */; };
@@ -99,7 +98,6 @@
 		4000C3791DD81227009C10E5 /* Download.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Download.swift; sourceTree = "<group>"; };
 		4020CE141DBB569000461181 /* Switches.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Switches.swift; sourceTree = "<group>"; };
 		4020CE161DBCA1E900461181 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
-		4020CE181DBCA67A00461181 /* DataService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DataService.swift; sourceTree = "<group>"; };
 		4020CE1A1DBCA84C00461181 /* Bolts.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Bolts.framework; sourceTree = "<group>"; };
 		4020CE1B1DBCA84C00461181 /* FBSDKCoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = FBSDKCoreKit.framework; sourceTree = "<group>"; };
 		4020CE1C1DBCA84C00461181 /* FBSDKLoginKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = FBSDKLoginKit.framework; sourceTree = "<group>"; };
@@ -156,7 +154,7 @@
 		4064A2551DB3E5E800071383 /* ProfileCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProfileCell.swift; sourceTree = "<group>"; };
 		40785D5A1E04EDCE009B66E0 /* HorizontalScrollCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HorizontalScrollCell.swift; sourceTree = "<group>"; };
 		40785D5E1E093AAF009B66E0 /* MeController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MeController.swift; sourceTree = "<group>"; };
-		40785D601E0D2C81009B66E0 /* NewDataService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NewDataService.swift; sourceTree = "<group>"; };
+		40785D601E0D2C81009B66E0 /* DataService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DataService.swift; sourceTree = "<group>"; };
 		40785D621E0D981C009B66E0 /* PrivateChatService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PrivateChatService.swift; sourceTree = "<group>"; };
 		40785D641E0D9868009B66E0 /* UserService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserService.swift; sourceTree = "<group>"; };
 		40785D661E0E5A1F009B66E0 /* RemoteService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RemoteService.swift; sourceTree = "<group>"; };
@@ -363,8 +361,7 @@
 			children = (
 				4064A2261DB13FBD00071383 /* Debug.swift */,
 				4064A1CA1DAC495D00071383 /* DummyDataService.swift */,
-				4020CE181DBCA67A00461181 /* DataService.swift */,
-				40785D601E0D2C81009B66E0 /* NewDataService.swift */,
+				40785D601E0D2C81009B66E0 /* DataService.swift */,
 				40785D641E0D9868009B66E0 /* UserService.swift */,
 				40785D621E0D981C009B66E0 /* PrivateChatService.swift */,
 				40785D661E0E5A1F009B66E0 /* RemoteService.swift */,
@@ -618,7 +615,6 @@
 				4064A21F1DAD72DF00071383 /* Functions.swift in Sources */,
 				4064A22B1DB2B27F00071383 /* PrivateChat.swift in Sources */,
 				40ADEEDE1DDD12D000CE529A /* Showing.swift in Sources */,
-				4020CE191DBCA67A00461181 /* DataService.swift in Sources */,
 				4031FB9C1DC0691C0066E6B6 /* StorageService.swift in Sources */,
 				40ADEEDF1DDD12D000CE529A /* WhisperFactory.swift in Sources */,
 				40ADEEE11DDD12D000CE529A /* WhistleFactory.swift in Sources */,
@@ -631,7 +627,7 @@
 				40ADEEE31DDD82E300CE529A /* Enums.swift in Sources */,
 				4024F22B1DB85C0E007819F7 /* PaddingLabel.swift in Sources */,
 				40AB7FFC1DB5B09700492788 /* BaseTableViewCell.swift in Sources */,
-				40785D611E0D2C81009B66E0 /* NewDataService.swift in Sources */,
+				40785D611E0D2C81009B66E0 /* DataService.swift in Sources */,
 				40E2E1401DD26B8200469B4D /* Discipline.swift in Sources */,
 				40785D631E0D981C009B66E0 /* PrivateChatService.swift in Sources */,
 				4064A2161DACBCDC00071383 /* Extensions.swift in Sources */,

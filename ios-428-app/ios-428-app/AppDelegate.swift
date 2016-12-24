@@ -42,7 +42,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // Use this method to pause ongoing tasks, disable timers, and invalidate graphics rendering callbacks. Games should use this method to pause the game.
         
         // Get badge count from server and set it before entering background
-        NewDataService.ds.updatePushCount { (isSuccess, pushCount) in
+        DataService.ds.updatePushCount { (isSuccess, pushCount) in
             if isSuccess {
                 UIApplication.shared.applicationIconBadgeNumber = pushCount
             }
@@ -65,7 +65,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         FBSDKAppEvents.activateApp()
         connectToFcm()
         // Might consider removing this if it is hitting the database too much
-        NewDataService.ds.updateUserLastSeen{ (isSuccess) in
+        DataService.ds.updateUserLastSeen{ (isSuccess) in
             if !isSuccess {
                 log.warning("Unable to set user last seen")
             }
@@ -86,7 +86,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     fileprivate func setupRemoteNotifications(application: UIApplication) {
         
         // Check for push token, if it is still in UserDefaults, update it
-        NewDataService.ds.updateUserPushToken()
+        DataService.ds.updateUserPushToken()
         
         if #available(iOS 10.0, *) {
             let authOptions: UNAuthorizationOptions = [.alert, .badge, .sound]
@@ -117,7 +117,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         if let refreshedToken = FIRInstanceID.instanceID().token() {
             log.info("User push token: \(refreshedToken)")
             savePushToken(token: refreshedToken)
-            NewDataService.ds.updateUserPushToken()
+            DataService.ds.updateUserPushToken()
         }
         // Connect to FCM since connection may have failed when attempted before having a token
         connectToFcm()

@@ -502,13 +502,13 @@ class IntroController: UIViewController, UIScrollViewDelegate, UITextFieldDelega
     // Enter main app after updating user profile data
     func goIntoApp() {
         // Set environment variable, then dismiss to Login
-        NewDataService.ds.updateUserFields(discipline: disciplineTextField.text, school: schoolTextField.text, organization: orgTextField.text, tagline: tagline1TextView.text, completed: { (isSuccess) in
+        DataService.ds.updateUserFields(discipline: disciplineTextField.text, school: schoolTextField.text, organization: orgTextField.text, tagline: tagline1TextView.text, completed: { (isSuccess) in
             if !isSuccess {
                 showErrorAlert(vc: self, title: "Unable to proceed", message: "We apologize. We seem to be unable to log you in at this time. Please try again later.")
             } else {
                 justFinishedIntro = true
                 // TODO: This has to be removed on production
-                NewDataService.ds.connectWithAll()
+                DataService.ds.connectWithAll()
                 setHasToFillInfo(hasToFill: false)
                 self.dismiss(animated: true, completion: nil)
             }

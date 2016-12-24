@@ -85,7 +85,7 @@ class EditProfessionalController: UIViewController, UITextFieldDelegate, UIPicke
             
             // If discipline has changed, update it in cached details of connections
             if myProfile?.discipline != disciplineSaved {
-                NewDataService.ds.updateCachedDetailsInPrivates(discipline: disciplineSaved, completed: { (isSuccess) in
+                DataService.ds.updateCachedDetailsInPrivates(discipline: disciplineSaved, completed: { (isSuccess) in
                     if !isSuccess {
                         log.error("[Error] Updating discipline in cached details of connections failed")
                     }
@@ -95,7 +95,7 @@ class EditProfessionalController: UIViewController, UITextFieldDelegate, UIPicke
             myProfile?.discipline = disciplineSaved
             NotificationCenter.default.post(name: NOTIF_MYPROFILEDOWNLOADED, object: nil)
             
-            NewDataService.ds.updateUserFields(discipline: disciplineSaved, school: schoolSaved, organization: orgSaved, completed: { (isSuccess) in
+            DataService.ds.updateUserFields(discipline: disciplineSaved, school: schoolSaved, organization: orgSaved, completed: { (isSuccess) in
                 if !isSuccess {
                     log.error("[Error] Professional fields failed to be updated")
                 }

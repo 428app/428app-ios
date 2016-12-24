@@ -88,7 +88,7 @@ class LoginController: UIViewController, UIScrollViewDelegate, CLLocationManager
                 log.error("[Error] Stored uid not set yet")
                 return
             }
-            NewDataService.ds.updateUserLocation(lat: lat, lon: lon, completed: { (isSuccess) in
+            DataService.ds.updateUserLocation(lat: lat, lon: lon, completed: { (isSuccess) in
                 if isSuccess {
                     self.locationManager.stopUpdatingLocation()
                 } else {
@@ -172,14 +172,14 @@ class LoginController: UIViewController, UIScrollViewDelegate, CLLocationManager
             let fullDisplayName = user!.providerData[0].displayName!
             let displayName = fullDisplayName.components(separatedBy: " ")[0]
             saveUid(uid: authuid) // Saving uid here is crucial for the rest of the app to function right
-            NewDataService.ds.updateUserPushToken() // Update push token again here because uid is now saved
+            DataService.ds.updateUserPushToken() // Update push token again here because uid is now saved
             
             // Get timezone
             let secondsFromGMT: Double = Double(NSTimeZone.local.secondsFromGMT())
             let timezone: Double = secondsFromGMT*1.0 / (60.0*60.0)
             
             // Create/Update Firebase user with details
-            NewDataService.ds.loginFirebaseUser(fbid: fbid, name: displayName, birthday: birthdayString, pictureUrl: pictureUrl, timezone: timezone, completed: { (isSuccess, isFirstTimeUser) in
+            DataService.ds.loginFirebaseUser(fbid: fbid, name: displayName, birthday: birthdayString, pictureUrl: pictureUrl, timezone: timezone, completed: { (isSuccess, isFirstTimeUser) in
                 hideLoader()
                 if !isSuccess {
                     log.error("[Error] Login to Firebase failed")

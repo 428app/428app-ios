@@ -15,7 +15,7 @@ import FBSDKCoreKit
 import FBSDKLoginKit
 
 // Extends DataService to house Private Chat calls
-extension NewDataService {
+extension DataService {
     
     // Returns chat id from two uids
     // The chat id is of the form <uid1>:<uid2>, with the lexicographically smaller uid being uid1

@@ -46,13 +46,13 @@ class StorageService {
                  if let imageUrl = metadata?.downloadURL()?.absoluteString {
                     log.info("url of uploaded: \(imageUrl)")
                     
-                    NewDataService.ds.updateUserPhoto(profilePhotoUrl: imageUrl, completed: { (isSuccess) in
+                    DataService.ds.updateUserPhoto(profilePhotoUrl: imageUrl, completed: { (isSuccess) in
                         // Also update the profile pic in all of user's connections' connections. This one need not be checked for completion.
                         completed(isSuccess)
                     })
                     
                     // This does not need to complete
-                    NewDataService.ds.updateCachedDetailsInPrivates(profilePhoto: imageUrl, completed: { (isSuccess) in
+                    DataService.ds.updateCachedDetailsInPrivates(profilePhoto: imageUrl, completed: { (isSuccess) in
                         if !isSuccess {
                             log.error("[Error] Failed to update cached details in all connections")
                         }

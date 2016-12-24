@@ -104,7 +104,7 @@ class SettingsController: UIViewController, UITableViewDelegate, UITableViewData
         if let userInfo = notif.userInfo as? [String: AnyObject], let option = userInfo["option"] as? String, let isOn = userInfo["isOn"] as? Bool {
             self.settingsChosen[option] = isOn
             
-            NewDataService.ds.updateUserSettings(dailyAlert: settingsChosen["Daily alert"]!, privateMessages: settingsChosen["Private messages"]!, classroomMessages: settingsChosen["Classroom messages"]!, inAppNotifications: settingsChosen["In-app notifications"]!, completed: { (isSuccess) in
+            DataService.ds.updateUserSettings(dailyAlert: settingsChosen["Daily alert"]!, privateMessages: settingsChosen["Private messages"]!, classroomMessages: settingsChosen["Classroom messages"]!, inAppNotifications: settingsChosen["In-app notifications"]!, completed: { (isSuccess) in
                 if !isSuccess {
                     log.error("[Error] Error updating user settings")
                     // Revert settings chosen
@@ -135,7 +135,7 @@ class SettingsController: UIViewController, UITableViewDelegate, UITableViewData
     
     // Grabs server settings, user profile from Firebase, then downloads profile image
     fileprivate func populateData() {
-        NewDataService.ds.getUserFields(uid: getStoredUid()) { (isSuccess, profile) in
+        DataService.ds.getUserFields(uid: getStoredUid()) { (isSuccess, profile) in
             if isSuccess && profile != nil {
                 myProfile = profile
                 NotificationCenter.default.post(name: NOTIF_MYPROFILEDOWNLOADED, object: nil)
@@ -197,7 +197,7 @@ class SettingsController: UIViewController, UITableViewDelegate, UITableViewData
         // Load default settings first - All enabled
         self.settingsChosen = ["Daily alert": true, "Private messages": true, "Classroom messages": true, "In-app notifications": true]
         
-        NewDataService.ds.getUserSettings(completed: { (settings) in
+        DataService.ds.getUserSettings(completed: { (settings) in
             if settings != nil {
                 self.settingsChosen = settings!
             }
@@ -271,7 +271,7 @@ class SettingsController: UIViewController, UITableViewDelegate, UITableViewData
         let cancelAction = UIAlertAction(title: "Cancel", style: .cancel, handler: nil)
         let logoutAction = UIAlertAction(title: "Log out", style: .default) { (action) in
             showLoader(message: "Logging you out...")
-            NewDataService.ds.logout(completed: { (isSuccess) in
+            DataService.ds.logout(completed: { (isSuccess) in
                 hideLoader()
                 if isSuccess {
                     self.dismiss(animated: true, completion: nil)

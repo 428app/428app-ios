@@ -42,6 +42,4 @@ class CustomTabBarController: UITabBarController {
         // NOTE: Changing this order will break the remote notification logic in AppDelegate
         viewControllers = [privateChatNavController, topicsNavController, meNavController]
     }
-    
-    
 }

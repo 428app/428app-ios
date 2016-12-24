@@ -152,7 +152,7 @@ class ChatController: UIViewController, UICollectionViewDelegateFlowLayout, UITe
                 self.activityIndicator.isHidden = false
             }
         })
-        NewDataService.ds.observeChatMessagesOnce(privateChat: self.privateChat, limit: self.numMessages, completed: { (isSuccess, updatedPrivateChat) in
+        DataService.ds.observeChatMessagesOnce(privateChat: self.privateChat, limit: self.numMessages, completed: { (isSuccess, updatedPrivateChat) in
             self.activityIndicator.stopAnimating()
             
             if (!isSuccess || updatedPrivateChat == nil) {
@@ -199,7 +199,7 @@ class ChatController: UIViewController, UICollectionViewDelegateFlowLayout, UITe
         self.refreshControl.beginRefreshing()
         self.pullToRefreshIndicator.startAnimating()
         
-        NewDataService.ds.observeChatMessagesOnce(privateChat: self.privateChat, limit: self.numMessages, completed: { (isSuccess, updatedPrivateChat) in
+        DataService.ds.observeChatMessagesOnce(privateChat: self.privateChat, limit: self.numMessages, completed: { (isSuccess, updatedPrivateChat) in
             self.refreshControl.endRefreshing()
             self.pullToRefreshIndicator.stopAnimating()
             
@@ -279,7 +279,7 @@ class ChatController: UIViewController, UICollectionViewDelegateFlowLayout, UITe
             queryAndHandle.0.removeObserver(withHandle: queryAndHandle.1)
         }
         
-        queryAndHandle = NewDataService.ds.reobserveChatMessages(limit: self.numMessages, privateChat: self.privateChat) { (isSuccess, updatedPrivateChat) in
+        queryAndHandle = DataService.ds.reobserveChatMessages(limit: self.numMessages, privateChat: self.privateChat) { (isSuccess, updatedPrivateChat) in
             
             if (!isSuccess || updatedPrivateChat == nil) {
                 
@@ -296,7 +296,7 @@ class ChatController: UIViewController, UICollectionViewDelegateFlowLayout, UITe
             }
             
             // Messages seen
-            NewDataService.ds.seePrivateMessages(privateChat: self.privateChat) { (isSuccess) in }
+            DataService.ds.seePrivateMessages(privateChat: self.privateChat) { (isSuccess) in }
             
             // There are messages, hide and disable empty placeholder view
             self.emptyPlaceholderView.isHidden = true
@@ -452,7 +452,7 @@ class ChatController: UIViewController, UICollectionViewDelegateFlowLayout, UITe
     fileprivate var profile: Profile?
     
     fileprivate func downloadProfile() { // Profile is also downloaded here to prepare for potential next screen
-        NewDataService.ds.getUserFields(uid: privateChat.uid) { (isSuccess, downloadedProfile) in
+        DataService.ds.getUserFields(uid: privateChat.uid) { (isSuccess, downloadedProfile) in
             if isSuccess && downloadedProfile != nil {
                 self.profile = downloadedProfile
             }
@@ -670,7 +670,7 @@ class ChatController: UIViewController, UICollectionViewDelegateFlowLayout, UITe
     func handleSend() {
         if let text = inputTextView.text {
             self.resetInputContainer()
-            NewDataService.ds.addChatMessage(privateChat: privateChat, text: text.trim(), completed: { (isSuccess, updatedPrivateChat) in
+            DataService.ds.addChatMessage(privateChat: privateChat, text: text.trim(), completed: { (isSuccess, updatedPrivateChat) in
                 if !isSuccess || updatedPrivateChat == nil {
                     // Reset countdown if failure to add
                     log.error("[Error] Message failed to be posted")

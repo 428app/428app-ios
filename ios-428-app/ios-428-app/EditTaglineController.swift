@@ -36,7 +36,7 @@ class EditTaglineController: UIViewController, UITextViewDelegate {
             NotificationCenter.default.post(name: NOTIF_MYPROFILEDOWNLOADED, object: nil)
         }
         
-        NewDataService.ds.updateUserFields(tagline: taglineSaved) { (isSuccess) in
+        DataService.ds.updateUserFields(tagline: taglineSaved) { (isSuccess) in
             if !isSuccess {
                 log.error("[Error] Taglines failed to be updated")
             }
