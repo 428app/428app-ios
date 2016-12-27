@@ -8,10 +8,11 @@
 
 import Foundation
 import UIKit
+import Firebase
 
 class MeController: UIViewController, UIGestureRecognizerDelegate, UIScrollViewDelegate, UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
     
-    var profile: Profile!
+//    var profile: Profile!
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -22,7 +23,8 @@ class MeController: UIViewController, UIGestureRecognizerDelegate, UIScrollViewD
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        NotificationCenter.default.addObserver(self, selector: #selector(openProfileIconModal), name: NOTIF_PROFILEICONTAPPED, object: nil)
+        self.populateData()
+        self.registerObservers()
     }
     
     func openProfileIconModal(notif: Notification) {
@@ -43,7 +45,70 @@ class MeController: UIViewController, UIGestureRecognizerDelegate, UIScrollViewD
     
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillAppear(animated)
+        self.unregisterObservers()
+    }
+    
+    func setProfilePic() {
+        guard let profilePic = myProfilePhoto else {
+            return
+        }
+        self.profileImageView.image = profilePic
+    }
+    
+    fileprivate func registerObservers() {
+        NotificationCenter.default.addObserver(self, selector: #selector(openProfileIconModal), name: NOTIF_PROFILEICONTAPPED, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(setProfilePic), name: NOTIF_MYPROFILEPICDOWNLOADED, object: nil)
+    }
+    
+    fileprivate func unregisterObservers() {
         NotificationCenter.default.removeObserver(self, name: NOTIF_PROFILEICONTAPPED, object: nil)
+        NotificationCenter.default.removeObserver(self, name: NOTIF_MYPROFILEPICDOWNLOADED, object: nil)
+    }
+    
+    // MARK: Firebase
+    
+    // Grabs server settings, user profile from Firebase, then downloads profile image
+    fileprivate func populateData() {
+        DataService.ds.getUserFields(uid: getStoredUid()) { (isSuccess, profile) in
+            if isSuccess && profile != nil {
+                
+                // Downloads profile photo, or get from uploaded pic that previously failed
+                myProfilePhoto = getPhotoToUpload()
+                if myProfilePhoto != nil { // There is a photo that is previously uploaded but user quit the app
+                    
+                    // Set that photo as current photo
+                    self.profileImageView.image = myProfilePhoto!
+                    
+                    // Retry upload of image
+                    if let imageData = UIImageJPEGRepresentation(myProfilePhoto!, 1.0) {
+                        StorageService.ss.uploadOwnPic(data: imageData, completed: { (isSuccess) in
+                            if !isSuccess {
+                                log.error("[Error] Unable to upload profile pic to storage")
+                            } else {
+                                // Upload success, delete cached profile photo
+                                cachePhotoToUpload(data: nil)
+                            }
+                        })
+                    }
+                } else {
+                    // Download image
+                    _ = downloadImage(imageUrlString: profile!.profileImageName, completed: { (image) in
+                        if image != nil {
+                            self.profileImageView.image = image!
+                            myProfilePhoto = image!
+                        }
+                    })
+                }
+                
+                // Discipline, name and age
+                myProfile = profile!
+                self.nameAndAgeLbl.text = "\(myProfile!.name), \(myProfile!.age)"
+                self.disciplineImageView.image = UIImage(named: myProfile!.disciplineIcon)
+                
+                // TODO: Badges, and classrooms
+                
+            }
+        }
     }
     
     // MARK: Views 0 - Profile image, cover image
@@ -298,9 +363,9 @@ class MeController: UIViewController, UIGestureRecognizerDelegate, UIScrollViewD
         
         containerView.addConstraintsWithFormat("V:|-\(navBarHeight + 35)-[v0(180)]", views: profileImageView)
         
-        profileImageView.image = #imageLiteral(resourceName: "leo-profile")
-        nameAndAgeLbl.text = "Leonard, 25"
-        disciplineImageView.image = #imageLiteral(resourceName: "business")
+//        profileImageView.image = #imageLiteral(resourceName: "leo-profile")
+//        nameAndAgeLbl.text = "Leonard, 25"
+//        disciplineImageView.image = #imageLiteral(resourceName: "business")
     }
     
 }

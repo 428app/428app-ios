@@ -40,6 +40,6 @@ class CustomTabBarController: UITabBarController {
         meNavController.tabBarItem.selectedImage = #imageLiteral(resourceName: "me-F")
         
         // NOTE: Changing this order will break the remote notification logic in AppDelegate
-        viewControllers = [privateChatNavController, topicsNavController, meNavController]
+        viewControllers = [meNavController, topicsNavController, privateChatNavController]
     }
 }

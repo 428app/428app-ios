@@ -141,7 +141,7 @@ class SettingsController: UIViewController, UITableViewDelegate, UITableViewData
                 NotificationCenter.default.post(name: NOTIF_MYPROFILEDOWNLOADED, object: nil)
                 
                 // Downloads profile photo, or get from uploaded pic that previously failed
-                myProfilePhoto = getPhotoToUpload(isProfilePic: true)
+                myProfilePhoto = getPhotoToUpload()
                 if myProfilePhoto != nil {
                     // Retry upload of image
                     self.settings[1][0].image = myProfilePhoto!
@@ -169,20 +169,20 @@ class SettingsController: UIViewController, UITableViewDelegate, UITableViewData
                 }
                 
                 // Do the same for cover photo
-                myCoverPhoto = getPhotoToUpload(isProfilePic: false)
-                if myCoverPhoto != nil {
-                    // Retry upload of image
-                    if let imageData = UIImageJPEGRepresentation(myCoverPhoto!, 1.0) {
-                        StorageService.ss.uploadOwnPic(data: imageData, completed: { (isSuccess) in
-                            if !isSuccess {
-                                log.error("[Error] Unable to upload cover pic to storage")
-                            } else {
-                                // Upload success, delete cache
-                                cachePhotoToUpload(data: nil)
-                            }
-                        })
-                    }
-                } else {
+//                myCoverPhoto = getPhotoToUpload(isProfilePic: false)
+//                if myCoverPhoto != nil {
+//                    // Retry upload of image
+//                    if let imageData = UIImageJPEGRepresentation(myCoverPhoto!, 1.0) {
+//                        StorageService.ss.uploadOwnPic(data: imageData, completed: { (isSuccess) in
+//                            if !isSuccess {
+//                                log.error("[Error] Unable to upload cover pic to storage")
+//                            } else {
+//                                // Upload success, delete cache
+//                                cachePhotoToUpload(data: nil)
+//                            }
+//                        })
+//                    }
+//                } else {
                     // Download image
 //                    _ = downloadImage(imageUrlString: profile!.coverImageName, completed: { (image) in
 //                        if image != nil {
@@ -190,7 +190,7 @@ class SettingsController: UIViewController, UITableViewDelegate, UITableViewData
 //                            NotificationCenter.default.post(name: NOTIF_MYPROFILEDOWNLOADED, object: nil)
 //                        }
 //                    })
-                }
+//                }
             }
         }
         

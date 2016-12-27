@@ -10,6 +10,13 @@
 import Foundation
 import UIKit
 
-var myProfile: Profile?
-var myProfilePhoto: UIImage?
-var myCoverPhoto: UIImage?
+var myProfile: Profile? {
+    didSet {
+        NotificationCenter.default.post(name: NOTIF_MYPROFILEDOWNLOADED, object: nil)
+    }
+}
+var myProfilePhoto: UIImage? {
+    didSet {
+        NotificationCenter.default.post(name: NOTIF_MYPROFILEPICDOWNLOADED, object: nil)
+    }
+}

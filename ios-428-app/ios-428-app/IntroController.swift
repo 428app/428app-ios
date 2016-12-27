@@ -75,12 +75,6 @@ class IntroController: UIViewController, UIScrollViewDelegate, UITextFieldDelega
         return view
     }()
     
-    fileprivate let slider4View: UIView = {
-        let view = UIView()
-        view.backgroundColor = GRAY_UICOLOR
-        return view
-    }()
-    
     var sliderViews: [UIView] = []
     var frame: CGRect = CGRect(x: 0, y: 0, width: 0, height: 0)
     
@@ -100,7 +94,6 @@ class IntroController: UIViewController, UIScrollViewDelegate, UITextFieldDelega
         sliderViews.append(slider1View)
         sliderViews.append(slider2View)
         sliderViews.append(slider3View)
-        sliderViews.append(slider4View)
         
         view.addSubview(scrollView)
         view.addSubview(pageControl)
@@ -125,7 +118,6 @@ class IntroController: UIViewController, UIScrollViewDelegate, UITextFieldDelega
         self.setupSlider1()
         self.setupSlider2()
         self.setupSlider3()
-        self.setupSlider4()
  
     }
     
@@ -150,24 +142,24 @@ class IntroController: UIViewController, UIScrollViewDelegate, UITextFieldDelega
         return label
     }
     
-    fileprivate lazy var orgTitleLabel: UILabel = {
+    fileprivate lazy var disciplineTitleLabel: UILabel = {
         let label = self.titleLabelTemplate()
-        label.text = "Organization"
+        label.text = "Discipline*"
         return label
     }()
     
     fileprivate lazy var schoolTitleLabel: UILabel = {
         let label = self.titleLabelTemplate()
-        label.text = "School"
+        label.text = "School*"
         return label
     }()
     
-    fileprivate lazy var disciplineTitleLabel: UILabel = {
+    fileprivate lazy var orgTitleLabel: UILabel = {
         let label = self.titleLabelTemplate()
-        label.text = "Discipline"
+        label.text = "Organization*"
         return label
     }()
-    
+
     fileprivate func textfieldTemplate() -> UITextField {
         let textfield = UITextField()
         textfield.delegate = self
@@ -188,9 +180,10 @@ class IntroController: UIViewController, UIScrollViewDelegate, UITextFieldDelega
         return textfield
     }
     
-    fileprivate lazy var orgTextField: UITextField = {
+    fileprivate lazy var disciplineTextField: UITextField = {
         let textfield: UITextField = self.textfieldTemplate()
-        textfield.placeholder = "Your company, or school"
+        textfield.placeholder = "Your discipline or industry"
+        textfield.inputView = self.pickerView
         return textfield
     }()
     
@@ -200,14 +193,18 @@ class IntroController: UIViewController, UIScrollViewDelegate, UITextFieldDelega
         return textfield
     }()
     
-    fileprivate lazy var disciplineTextField: UITextField = {
+    fileprivate lazy var orgTextField: UITextField = {
         let textfield: UITextField = self.textfieldTemplate()
-        textfield.placeholder = "Your discipline or industry"
-        textfield.inputView = self.pickerView
+        textfield.placeholder = "Your company or club"
         return textfield
     }()
     
     fileprivate func editDisciplineIconInTextField(imageString: String) {
+        if imageString.isEmpty {
+            // Null choice, display empty text field
+            disciplineTextField.text = ""
+            return
+        }
         let imageView: UIImageView = UIImageView(image: UIImage(named: imageString))
         imageView.frame = CGRect(x: 0, y: 0, width: imageView.image!.size.width + 20, height: imageView.image!.size.height)
         imageView.contentMode = .center
@@ -259,10 +256,10 @@ class IntroController: UIViewController, UIScrollViewDelegate, UITextFieldDelega
     }
     
     func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
+        log.info("Picker picked row: \(row)")
         disciplineTextField.text = DISCIPLINE_OPTIONS[row]
         enableGo(yes: orgTextField.text!.characters.count > 0 && schoolTextField.text!.characters.count > 0)
         editDisciplineIconInTextField(imageString: DISCIPLINE_ICONS[row])
-//        self.view.endEditing(true)
     }
     
     fileprivate func setupSlider1() {
@@ -286,7 +283,7 @@ class IntroController: UIViewController, UIScrollViewDelegate, UITextFieldDelega
         
         let margin: CGFloat = max((UIScreen.main.bounds.height - 450) / 2.0, 0.0)
         
-        slider1View.addConstraintsWithFormat("V:|-\(margin)-[v0(40)]-15-[v1(20)]-5-[v2(45)]-25-[v3(20)]-5-[v4(45)]-25-[v5(20)]-5-[v6(45)]-10-[v7(20)]", views: firstTellUsLabel, orgTitleLabel, orgTextField, schoolTitleLabel, schoolTextField, disciplineTitleLabel, disciplineTextField, slider1FillInNow)
+        slider1View.addConstraintsWithFormat("V:|-\(margin)-[v0(40)]-15-[v1(20)]-5-[v2(45)]-25-[v3(20)]-5-[v4(45)]-25-[v5(20)]-5-[v6(45)]-10-[v7(20)]", views: firstTellUsLabel, disciplineTitleLabel, disciplineTextField, schoolTitleLabel, schoolTextField, orgTitleLabel, orgTextField, slider1FillInNow)
     }
     
     // MARK: Slider 2 - I am working on text view
@@ -301,9 +298,9 @@ class IntroController: UIViewController, UIScrollViewDelegate, UITextFieldDelega
         return label
     }
     
-    fileprivate lazy var tagline1Placeholder: UILabel = {
+    fileprivate lazy var taglinePlaceholder: UILabel = {
         let label: UILabel = self.placeholderTemplate()
-        label.text = "the app we call 428..."
+        label.text = "At 4:28pm, you can find me..."
         return label
     }()
     
@@ -318,27 +315,17 @@ class IntroController: UIViewController, UIScrollViewDelegate, UITextFieldDelega
         return textView
     }
     
-    fileprivate lazy var tagline1TextView: UITextView = {
+    fileprivate lazy var taglineTextView: UITextView = {
         let textView: UITextView = self.textViewTemplate()
         return textView
     }()
     
-    fileprivate lazy var tagline2TextView: UITextView = {
-        let textView: UITextView = self.textViewTemplate()
-        return textView
-    }()
-    
-    fileprivate func labelTemplate() -> UILabel {
+    fileprivate lazy var taglineLabel: UILabel = {
         let label = UILabel()
         label.font = FONT_HEAVY_LARGE
-        label.textColor = UIColor.darkGray
+        label.textColor = UIColor.black
         label.textAlignment = .left
-        return label
-    }
-    
-    fileprivate lazy var tagline1Label: UILabel = {
-        let label: UILabel = self.labelTemplate()
-        label.text = "I am working on..."
+        label.text = "What I do at 4:28pm:"
         return label
     }()
     
@@ -351,13 +338,13 @@ class IntroController: UIViewController, UIScrollViewDelegate, UITextFieldDelega
         return label
     }
     
-    fileprivate lazy var tagline1CountLabel: UILabel = {
+    fileprivate lazy var taglineCountLabel: UILabel = {
         let label: UILabel = self.countLabelTemplate()
         label.text = "\(self.MAX_TEXTVIEW_CHARACTERS)"
         return label
     }()
     
-    fileprivate let tagline1FillInLater: UILabel = {
+    fileprivate let taglineFillInLater: UILabel = {
         let label = UILabel()
         label.text = "You may fill this in later."
         label.font = FONT_HEAVY_SMALL
@@ -367,91 +354,37 @@ class IntroController: UIViewController, UIScrollViewDelegate, UITextFieldDelega
     }()
     
     fileprivate func setupSlider2() {
-        slider2View.addSubview(tagline1Label)
-        slider2View.addSubview(tagline1TextView)
-        slider2View.addSubview(tagline1Placeholder)
-        slider2View.addSubview(tagline1CountLabel)
-        slider2View.addSubview(tagline1FillInLater)
+        slider2View.addSubview(taglineLabel)
+        slider2View.addSubview(taglineTextView)
+        slider2View.addSubview(taglinePlaceholder)
+        slider2View.addSubview(taglineCountLabel)
+        slider2View.addSubview(taglineFillInLater)
         
-        slider2View.addConstraintsWithFormat("H:|-8-[v0]", views: tagline1Label)
-        slider2View.addConstraintsWithFormat("H:|-8-[v0]-8-|", views: tagline1TextView)
-        slider2View.addConstraintsWithFormat("H:|-8-[v0]-8-|", views: tagline1CountLabel)
-        slider2View.addConstraintsWithFormat("H:|-8-[v0]-8-|", views: tagline1FillInLater)
-        
-        let margin: CGFloat = max((UIScreen.main.bounds.height - 350) / 2.0, 0.0)
-        
-        // Each text view is 0.3 * screenSize
-        let textviewHeight = 0.28 * UIScreen.main.bounds.height
-        slider2View.addConstraintsWithFormat("V:|-\(margin)-[v0(20)]-8-[v1(\(textviewHeight))][v2(20)]-8-[v3(20)]", views: tagline1Label, tagline1TextView, tagline1CountLabel, tagline1FillInLater)
-        
-        // Align placeholders to text views
-        slider2View.addConstraintsWithFormat("H:|-13-[v0]-13-|", views: tagline1Placeholder)
-        slider2View.addConstraintsWithFormat("V:[v0(100)]", views: tagline1Placeholder)
-        
-        slider2View.addConstraint(NSLayoutConstraint(item: tagline1Placeholder, attribute: .top, relatedBy: .equal, toItem: tagline1Label, attribute: .bottom, multiplier: 1.0, constant: -24.0))
-    }
-    
-    // MARK: Slider 3 - I want to eventually text view
-    
-    fileprivate lazy var tagline2Placeholder: UILabel = {
-        let label: UILabel = self.placeholderTemplate()
-        label.text = "make my mark on the world..."
-        return label
-    }()
-    
-    fileprivate lazy var tagline2Label: UILabel = {
-        let label: UILabel = self.labelTemplate()
-        label.text = "I want to eventually..."
-        return label
-    }()
-    
-    fileprivate lazy var tagline2CountLabel: UILabel = {
-        let label: UILabel = self.countLabelTemplate()
-        label.text = "\(self.MAX_TEXTVIEW_CHARACTERS)"
-        return label
-    }()
-    
-    fileprivate let tagline2FillInLater: UILabel = {
-        let label = UILabel()
-        label.text = "You may fill this in later."
-        label.font = FONT_HEAVY_SMALL
-        label.textColor = GREEN_UICOLOR
-        label.textAlignment = .center
-        return label
-    }()
-    
-    fileprivate func setupSlider3() {
-        slider3View.addSubview(tagline2Label)
-        slider3View.addSubview(tagline2TextView)
-        slider3View.addSubview(tagline2Placeholder)
-        slider3View.addSubview(tagline2CountLabel)
-        slider3View.addSubview(tagline2FillInLater)
-        
-        slider3View.addConstraintsWithFormat("H:|-8-[v0]", views: tagline2Label)
-        slider3View.addConstraintsWithFormat("H:|-8-[v0]-8-|", views: tagline2TextView)
-        slider3View.addConstraintsWithFormat("H:|-8-[v0]-8-|", views: tagline2CountLabel)
-        slider3View.addConstraintsWithFormat("H:|-8-[v0]-8-|", views: tagline2FillInLater)
+        slider2View.addConstraintsWithFormat("H:|-8-[v0]", views: taglineLabel)
+        slider2View.addConstraintsWithFormat("H:|-8-[v0]-8-|", views: taglineTextView)
+        slider2View.addConstraintsWithFormat("H:|-8-[v0]-8-|", views: taglineCountLabel)
+        slider2View.addConstraintsWithFormat("H:|-8-[v0]-8-|", views: taglineFillInLater)
         
         let margin: CGFloat = max((UIScreen.main.bounds.height - 350) / 2.0, 0.0)
         
         // Each text view is 0.3 * screenSize
         let textviewHeight = 0.28 * UIScreen.main.bounds.height
-        slider3View.addConstraintsWithFormat("V:|-\(margin)-[v0(20)]-8-[v1(\(textviewHeight))][v2(20)]-8-[v3(20)]", views: tagline2Label, tagline2TextView, tagline2CountLabel, tagline2FillInLater)
+        slider2View.addConstraintsWithFormat("V:|-\(margin)-[v0(20)]-8-[v1(\(textviewHeight))][v2(20)]-8-[v3(20)]", views: taglineLabel, taglineTextView, taglineCountLabel, taglineFillInLater)
         
         // Align placeholders to text views
-        slider3View.addConstraintsWithFormat("H:|-13-[v0]-13-|", views: tagline2Placeholder)
-        slider3View.addConstraintsWithFormat("V:[v0(100)]", views: tagline2Placeholder)
+        slider2View.addConstraintsWithFormat("H:|-13-[v0]-13-|", views: taglinePlaceholder)
+        slider2View.addConstraintsWithFormat("V:[v0(100)]", views: taglinePlaceholder)
         
-        slider3View.addConstraint(NSLayoutConstraint(item: tagline2Placeholder, attribute: .top, relatedBy: .equal, toItem: tagline2Label, attribute: .bottom, multiplier: 1.0, constant: -24.0))
+        slider2View.addConstraint(NSLayoutConstraint(item: taglinePlaceholder, attribute: .top, relatedBy: .equal, toItem: taglineLabel, attribute: .bottom, multiplier: 1.0, constant: -24.0))
     }
     
-    // MARK: Slider 4 - Segue to main app
+    // MARK: Slider 3 - Segue to main app
     
     fileprivate let descriptionLabel: UILabel = {
         let label = UILabel()
         label.font = FONT_MEDIUM_XLARGE
         label.textColor = UIColor.darkGray
-        label.text = "You get a new connection and topic every day at"
+        label.text = "You get a classroom a week, and a new question a day at"
         label.textAlignment = .center
         label.numberOfLines = 0
         return label
@@ -468,7 +401,7 @@ class IntroController: UIViewController, UIScrollViewDelegate, UITextFieldDelega
     
     fileprivate lazy var goButton: UIButton = {
         let button = UIButton()
-        button.setTitle("Begin", for: .normal)
+        button.setTitle("LET'S GO!", for: .normal)
         button.titleLabel?.font = FONT_HEAVY_XLARGE
         button.setTitleColor(UIColor.white, for: .normal)
         button.setBackgroundColor(color: GREEN_UICOLOR, forState: .normal)
@@ -502,41 +435,39 @@ class IntroController: UIViewController, UIScrollViewDelegate, UITextFieldDelega
     // Enter main app after updating user profile data
     func goIntoApp() {
         // Set environment variable, then dismiss to Login
-        DataService.ds.updateUserFields(discipline: disciplineTextField.text, school: schoolTextField.text, organization: orgTextField.text, tagline: tagline1TextView.text, completed: { (isSuccess) in
+        DataService.ds.updateUserFields(discipline: disciplineTextField.text, school: schoolTextField.text, organization: orgTextField.text, tagline: taglineTextView.text, completed: { (isSuccess) in
             if !isSuccess {
                 showErrorAlert(vc: self, title: "Unable to proceed", message: "We apologize. We seem to be unable to log you in at this time. Please try again later.")
             } else {
                 justFinishedIntro = true
                 // TODO: This has to be removed on production
-                DataService.ds.connectWithAll()
+//                DataService.ds.connectWithAll()
                 setHasToFillInfo(hasToFill: false)
                 self.dismiss(animated: true, completion: nil)
             }
         })
     }
     
-    fileprivate func setupSlider4() {
-        slider4View.addSubview(descriptionLabel)
-        slider4View.addSubview(_428Label)
-        slider4View.addSubview(goButton)
-        slider4View.addSubview(cautionText)
+    fileprivate func setupSlider3() {
+        slider3View.addSubview(descriptionLabel)
+        slider3View.addSubview(_428Label)
+        slider3View.addSubview(goButton)
+        slider3View.addSubview(cautionText)
         
-        slider4View.addConstraintsWithFormat("H:|-15-[v0]-15-|", views: descriptionLabel)
-        slider4View.addConstraintsWithFormat("H:|-15-[v0]-15-|", views: _428Label)
-        slider4View.addConstraintsWithFormat("H:|-15-[v0]-15-|", views: goButton)
-        slider4View.addConstraintsWithFormat("H:|-15-[v0]-15-|", views: cautionText)
+        slider3View.addConstraintsWithFormat("H:|-15-[v0]-15-|", views: descriptionLabel)
+        slider3View.addConstraintsWithFormat("H:|-15-[v0]-15-|", views: _428Label)
+        slider3View.addConstraintsWithFormat("H:|-15-[v0]-15-|", views: goButton)
+        slider3View.addConstraintsWithFormat("H:|-15-[v0]-15-|", views: cautionText)
         
         let margin: CGFloat = max((UIScreen.main.bounds.height - 300) / 2.0, 0.0)
-        slider4View.addConstraintsWithFormat("V:|-\(margin)-[v0(60)]-8-[v1(40)]-8-[v2(40)]-8-[v3(30)]", views: descriptionLabel, _428Label, goButton, cautionText)
+        slider3View.addConstraintsWithFormat("V:|-\(margin)-[v0(60)]-8-[v1(40)]-8-[v2(40)]-8-[v3(30)]", views: descriptionLabel, _428Label, goButton, cautionText)
     }
     
     // MARK: Text view
     
     func textViewDidChange(_ textView: UITextView) {
-        if textView == tagline1TextView {
-            self.tagline1Placeholder.isHidden = !textView.text.isEmpty
-        } else {
-            self.tagline2Placeholder.isHidden = !textView.text.isEmpty
+        if textView == taglineTextView {
+            self.taglinePlaceholder.isHidden = !textView.text.isEmpty
         }
     }
     
@@ -545,10 +476,8 @@ class IntroController: UIViewController, UIScrollViewDelegate, UITextFieldDelega
         let numberOfChars = newText.characters.count
         
         if numberOfChars <= MAX_TEXTVIEW_CHARACTERS {
-            if textView == tagline1TextView {
-                tagline1CountLabel.text = "\(max(MAX_TEXTVIEW_CHARACTERS - numberOfChars, 0))"
-            } else {
-                tagline2CountLabel.text = "\(max(MAX_TEXTVIEW_CHARACTERS - numberOfChars, 0))"
+            if textView == taglineTextView {
+                taglineCountLabel.text = "\(max(MAX_TEXTVIEW_CHARACTERS - numberOfChars, 0))"
             }
         }
         return numberOfChars < MAX_TEXTVIEW_CHARACTERS
@@ -611,11 +540,8 @@ class IntroController: UIViewController, UIScrollViewDelegate, UITextFieldDelega
     }
     
     fileprivate func getActiveTextViewFrame() -> CGRect? {
-        if self.tagline1TextView.isFirstResponder {
-            return slider2View.convert(tagline1TextView.frame, to: view)
-        }
-        if self.tagline2TextView.isFirstResponder {
-            return slider3View.convert(tagline2TextView.frame, to: view)
+        if self.taglineTextView.isFirstResponder {
+            return slider2View.convert(taglineTextView.frame, to: view)
         }
         return nil
     }

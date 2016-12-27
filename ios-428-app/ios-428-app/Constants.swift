@@ -16,6 +16,7 @@ let NOTIF_CHANGESETTING = NSNotification.Name.init(rawValue: "changeSetting")
 let NOTIF_EDITPROFILE = NSNotification.Name.init(rawValue: "editProfile")
 let NOTIF_OPENPROFILE = NSNotification.Name.init(rawValue: "openProfile")
 let NOTIF_MYPROFILEDOWNLOADED = NSNotification.Name.init(rawValue: "myProfileDownloaded")
+let NOTIF_MYPROFILEPICDOWNLOADED = NSNotification.Name.init(rawValue: "myProfilePicDownloaded")
 let NOTIF_PROFILEICONTAPPED = NSNotification.Name.init(rawValue: "profileIconTapped")
 
 // Colors

@@ -22,12 +22,15 @@ class EditProfileController: UIViewController, UIScrollViewDelegate, UIGestureRe
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         self.loadProfileData() // Note that this must come AFTER the viewDidLoad setup above
+        self.loadProfilePic()
         NotificationCenter.default.addObserver(self, selector: #selector(loadProfileData), name: NOTIF_MYPROFILEDOWNLOADED, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(loadProfilePic), name: NOTIF_MYPROFILEPICDOWNLOADED, object: nil)
     }
     
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         NotificationCenter.default.removeObserver(self, name: NOTIF_MYPROFILEDOWNLOADED, object: nil)
+        NotificationCenter.default.removeObserver(self, name: NOTIF_MYPROFILEPICDOWNLOADED, object: nil)
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -37,64 +40,36 @@ class EditProfileController: UIViewController, UIScrollViewDelegate, UIGestureRe
     
     // Called upon checking myProfile on viewDidLoad, or upon receiving Notification from SettingsController
     func loadProfileData() {
-        profileImageView.image = #imageLiteral(resourceName: "leo-profile")
-        nameAndAgeLbl.text = "Leonard, 25"
-        disciplineImageView.image = #imageLiteral(resourceName: "business")
-        disciplineText.text = "Business"
-        schoolText.text = "Harvard University"
-        organizationText.text = "428"
+        
+        guard let profile = myProfile else {
+            return
+        }
+        
+        // Set profile information
+        nameAndAgeLbl.text = "\(profile.name), \(profile.age)"
+        disciplineImageView.image = UIImage(named: profile.disciplineIcon)
+        disciplineText.text = profile.discipline
+        schoolText.text = profile.school
+        organizationText.text = profile.org
         let paragraphStyle = NSMutableParagraphStyle()
         paragraphStyle.lineSpacing = 6
         paragraphStyle.alignment = .left
-        let taglineString = NSMutableAttributedString(string: "My schedule is actually a lot easier to predict than you think. I'm normally hitting the gym at 4:28pm, before I head off to dinner. When I'm not at the gym, I'll go for a swim. When I'm not exercising, I try to keep that time free to catch up on some TechCrunch reading over a hot cup of Peppermint Honey Tea.", attributes: [NSForegroundColorAttributeName: UIColor.gray, NSParagraphStyleAttributeName: paragraphStyle])
+        let taglineString = NSMutableAttributedString(string: profile.tagline, attributes: [NSForegroundColorAttributeName: UIColor.gray, NSParagraphStyleAttributeName: paragraphStyle])
         taglineText.attributedText = taglineString
         
-//        guard let profile = myProfile else {
-//            return
-//        }
-//        
-//        editProfessionalInfoButton.isEnabled = true
-//        editTaglineButton.isEnabled = true
-//        
-//        // Basic info on top
-//        nameLbl.text = profile.name
-//        disciplineImageView.image = UIImage(named: profile.disciplineIcon)
-//        ageLocationLbl.text = "\(profile.age), \(profile.location)"
-//        
-//        // Disable edit if cover photo is still being downloaded
-//        coverImageView.isUserInteractionEnabled = !(profile.coverImageName != "" && myCoverPhoto == nil)
-//        editCoverImageButton.isEnabled = coverImageView.isUserInteractionEnabled
-//
-//        if let coverImage = myCoverPhoto {
-//            coverImageView.image = coverImage
-//        }
-//        
-//        // Disable edit if profile photo is still being downloaded
-//        profileImageView.isUserInteractionEnabled = !(profile.profileImageName != "" && myProfilePhoto == nil)
-//        editProfileImageButton.isEnabled = profileImageView.isUserInteractionEnabled
-//        
-//        if let profileImage = myProfilePhoto {
-//            profileImageView.image = profileImage
-//        }
-//        
-//        // Professional info in the order: Organization, School, Discipline
-//        self.profileCellContent = [profile.org, profile.school, profile.discipline]
-//        self.tableView.reloadData()
-//        
-//        // Tags
-//        let paragraphStyle = NSMutableParagraphStyle()
-//        paragraphStyle.lineSpacing = 6
-//        let tagstr1 = NSMutableAttributedString(string: "I am working on", attributes: [NSForegroundColorAttributeName: UIColor.black, NSFontAttributeName: FONT_HEAVY_MID, NSParagraphStyleAttributeName: paragraphStyle])
-//        let tag1 = profile.tagline1 == "" ? "..." : profile.tagline1
-//        let tagline1 = NSMutableAttributedString(string: " " + tag1, attributes: [NSParagraphStyleAttributeName: paragraphStyle])
-//        tagstr1.append(tagline1)
-//        tagline1Lbl.attributedText = tagstr1
-//
-//        let tagstr2 = NSMutableAttributedString(string: "I want to eventually", attributes: [NSForegroundColorAttributeName: UIColor.black, NSFontAttributeName: FONT_HEAVY_MID, NSParagraphStyleAttributeName: paragraphStyle])
-//        let tag2 = profile.tagline2 == "" ? "..." : profile.tagline2
-//        let tagline2 = NSMutableAttributedString(string: " " + tag2, attributes: [NSParagraphStyleAttributeName: paragraphStyle])
-//        tagstr2.append(tagline2)
-//        tagline2Lbl.attributedText = tagstr2
+        editProfessionalInfoButton.isEnabled = true
+        editTaglineButton.isEnabled = true
+    }
+    
+    func loadProfilePic() {
+        
+        guard let profilePic = myProfilePhoto else {
+            return
+        }
+        
+        profileImageView.image = profilePic
+        editPicButton.isEnabled = true
+        profileImageView.isUserInteractionEnabled = true
     }
     
     // MARK: Views 0 - Profile image, cover image
@@ -117,10 +92,11 @@ class EditProfileController: UIViewController, UIScrollViewDelegate, UIGestureRe
         let tap = UITapGestureRecognizer(target: self, action: #selector(self.editProfileImage))
         tap.delegate = self
         imageView.addGestureRecognizer(tap)
+        imageView.isUserInteractionEnabled = false
         return imageView
     }()
     
-    fileprivate lazy var editButton: UIButton = {
+    fileprivate lazy var editPicButton: UIButton = {
         let button = UIButton()
         button.layer.shadowColor = UIColor.black.cgColor
         button.layer.shadowOpacity = 0.3
@@ -130,6 +106,7 @@ class EditProfileController: UIViewController, UIScrollViewDelegate, UIGestureRe
         button.imageView?.contentMode = .scaleAspectFill
         button.addTarget(self, action: #selector(self.editProfileImage), for: .touchUpInside)
         button.translatesAutoresizingMaskIntoConstraints = false
+        button.isEnabled = false
         return button
     }()
     
@@ -191,10 +168,10 @@ class EditProfileController: UIViewController, UIScrollViewDelegate, UIGestureRe
     
     fileprivate func animateEditButton() {
         UIView.animate(withDuration: 0.2, delay: 0.2, animations: {
-            self.editButton.transform = CGAffineTransform(scaleX: 1.3, y: 1.3)
+            self.editPicButton.transform = CGAffineTransform(scaleX: 1.3, y: 1.3)
         }) { (completion) in
             UIView.animate(withDuration: 0.1, animations: {
-                self.editButton.transform = CGAffineTransform(scaleX: 1.0, y: 1.0)
+                self.editPicButton.transform = CGAffineTransform(scaleX: 1.0, y: 1.0)
             })
         }
     }
@@ -281,6 +258,7 @@ class EditProfileController: UIViewController, UIScrollViewDelegate, UIGestureRe
         button.clipsToBounds = true
         button.setBackgroundColor(color: UIColor.white, forState: .normal)
         button.setBackgroundColor(color: GREEN_UICOLOR, forState: .highlighted)
+        button.isEnabled = false
         return button
     }
     
@@ -410,7 +388,7 @@ class EditProfileController: UIViewController, UIScrollViewDelegate, UIGestureRe
         
         containerView.addSubview(coverImageView)
         containerView.addSubview(profileImageView)
-        containerView.addSubview(editButton)
+        containerView.addSubview(editPicButton)
         containerView.addSubview(editProfessionalInfoButton)
         containerView.addSubview(disciplineLbl)
         containerView.addSubview(disciplineText)
@@ -450,9 +428,9 @@ class EditProfileController: UIViewController, UIScrollViewDelegate, UIGestureRe
         containerView.addConstraintsWithFormat("V:|-\(navBarHeight + 35)-[v0(180)]", views: profileImageView)
         
         // Align edit button to right and bottom of profile image view
-        containerView.addConstraintsWithFormat("V:[v0(40.0)]", views: editButton)
-        containerView.addConstraintsWithFormat("H:[v0(40.0)]", views: editButton)
-        containerView.addConstraint(NSLayoutConstraint(item: editButton, attribute: .right, relatedBy: .equal, toItem: profileImageView, attribute: .right, multiplier: 1.0, constant: -10.0))
-        containerView.addConstraint(NSLayoutConstraint(item: editButton, attribute: .bottom, relatedBy: .equal, toItem: profileImageView, attribute: .bottom, multiplier: 1.0, constant: 0.0))
+        containerView.addConstraintsWithFormat("V:[v0(40.0)]", views: editPicButton)
+        containerView.addConstraintsWithFormat("H:[v0(40.0)]", views: editPicButton)
+        containerView.addConstraint(NSLayoutConstraint(item: editPicButton, attribute: .right, relatedBy: .equal, toItem: profileImageView, attribute: .right, multiplier: 1.0, constant: -10.0))
+        containerView.addConstraint(NSLayoutConstraint(item: editPicButton, attribute: .bottom, relatedBy: .equal, toItem: profileImageView, attribute: .bottom, multiplier: 1.0, constant: 0.0))
     }
 }

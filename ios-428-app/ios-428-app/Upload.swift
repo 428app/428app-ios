@@ -29,8 +29,8 @@ func cachePhotoToUpload(data: Data?) {
     }
 }
 
-func getPhotoToUpload(isProfilePic: Bool = true) -> UIImage? {
-    let picPath = isProfilePic ? "profile_photo.jpg" : "cover_photo.jpg"
+func getPhotoToUpload() -> UIImage? {
+    let picPath = "profile_photo.jpg"
     let paths = NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true)
     let documentsDirectory = paths[0] as NSString
     let fileManager = FileManager.default
