@@ -11,7 +11,7 @@ import UIKit
 
 class SettingsController: UIViewController, UITableViewDelegate, UITableViewDataSource {
     
-    fileprivate let CELL_ID = "SETTING_CELL"
+    fileprivate let CELL_ID = "settingCell"
     fileprivate lazy var tableView: UITableView = {
         let tableView = UITableView(frame: self.view.frame, style: .grouped)
         tableView.backgroundColor = GRAY_UICOLOR
@@ -29,18 +29,14 @@ class SettingsController: UIViewController, UITableViewDelegate, UITableViewData
     
     fileprivate func setSettingTableBasedOnText(option: String, isOn: Bool) {
         switch option {
-        case "New connections":
-            self.settings[2][0].isOn = isOn
-        case "New topics":
-            self.settings[2][1].isOn = isOn
         case "Daily alert":
-            self.settings[3][0].isOn = isOn
-        case "Connection messages":
-            self.settings[3][1].isOn = isOn
-        case "Topic messages":
-            self.settings[3][2].isOn = isOn
+            self.settings[0][0].isOn = isOn
+        case "Private messages":
+            self.settings[0][1].isOn = isOn
+        case "Classroom messages":
+            self.settings[0][2].isOn = isOn
         case "In-app notifications":
-            self.settings[3][3].isOn = isOn
+            self.settings[0][3].isOn = isOn
         default:
             return
         }
@@ -52,13 +48,6 @@ class SettingsController: UIViewController, UITableViewDelegate, UITableViewData
             for (option, isOn) in settingsChosen {
                 setSettingTableBasedOnText(option: option, isOn: isOn)
             }
-            
-//            self.settings[2][0].isOn = self.settingsChosen["New connections"]
-//            self.settings[2][1].isOn = self.settingsChosen["New topics"]
-//            self.settings[3][0].isOn = self.settingsChosen["Daily alert"]
-//            self.settings[3][1].isOn = self.settingsChosen["Connection messages"]
-//            self.settings[3][2].isOn = self.settingsChosen["Topic messages"]
-//            self.settings[3][3].isOn = self.settingsChosen["In-app notifications"]
             self.tableView.reloadData()
         }
     }
@@ -66,7 +55,6 @@ class SettingsController: UIViewController, UITableViewDelegate, UITableViewData
     override func viewDidLoad() {
         super.viewDidLoad()
         self.view.backgroundColor = GRAY_UICOLOR
-        populateData()
         self.navigationItem.title = "Settings"
         self.navigationItem.backBarButtonItem = UIBarButtonItem(title: " ", style: .plain, target: nil, action: nil)
         setupViews()
@@ -74,35 +62,24 @@ class SettingsController: UIViewController, UITableViewDelegate, UITableViewData
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        // Always load image from MyProfile.swift upon entering because EditProfileController might have uploaded new image
-        loadImage()
+        getUserSettings()
         NotificationCenter.default.addObserver(self, selector: #selector(updateSettingsArr), name: NOTIF_CHANGESETTING, object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(openEditProfile), name: NOTIF_EDITPROFILE, object: nil)
-    }
-    
-    fileprivate var cameFromViewDidLoad = true // Prevents table view from being reloaded twice on first entering
-    
-    override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(animated)
-        if !cameFromViewDidLoad {
-            tableView.reloadData()
-        } else {
-            cameFromViewDidLoad = false
-        }
     }
     
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
-        timerForCountdown.invalidate()
         NotificationCenter.default.removeObserver(self, name: NOTIF_CHANGESETTING, object: nil)
-        NotificationCenter.default.removeObserver(self, name: NOTIF_EDITPROFILE, object: nil)
     }
-    
     
     // Settings are updated to server upon every toggle
     func updateSettingsArr(notif: Notification) {
         if let userInfo = notif.userInfo as? [String: AnyObject], let option = userInfo["option"] as? String, let isOn = userInfo["isOn"] as? Bool {
+            
             self.settingsChosen[option] = isOn
+            
+            log.info("\(self.settingsChosen)")
+            
+            // Update all user settings with each change
             
             DataService.ds.updateUserSettings(dailyAlert: settingsChosen["Daily alert"]!, privateMessages: settingsChosen["Private messages"]!, classroomMessages: settingsChosen["Classroom messages"]!, inAppNotifications: settingsChosen["In-app notifications"]!, completed: { (isSuccess) in
                 if !isSuccess {
@@ -116,84 +93,9 @@ class SettingsController: UIViewController, UITableViewDelegate, UITableViewData
         }
     }
     
-    func openEditProfile(notif: Notification) {
-        let controller = EditProfileController()
-        self.navigationController?.pushViewController(controller, animated: true)
-    }
+    // MARK: Firebase
     
-    // MARK: Set up views
-    
-    func loadImage() {
-        // Change Setting cell's image upon getting a change
-        var imageUsed = UIImage(color: UIColor.white)
-        if let profileImage = myProfilePhoto {
-            imageUsed = profileImage
-        }
-        self.settings[1][0].image = imageUsed
-        self.tableView.reloadData()
-    }
-    
-    // Grabs server settings, user profile from Firebase, then downloads profile image
-    fileprivate func populateData() {
-        DataService.ds.getUserFields(uid: getStoredUid()) { (isSuccess, profile) in
-            if isSuccess && profile != nil {
-                myProfile = profile
-                NotificationCenter.default.post(name: NOTIF_MYPROFILEDOWNLOADED, object: nil)
-                
-                // Downloads profile photo, or get from uploaded pic that previously failed
-                myProfilePhoto = getPhotoToUpload()
-                if myProfilePhoto != nil {
-                    // Retry upload of image
-                    self.settings[1][0].image = myProfilePhoto!
-                    self.tableView.reloadData()
-                    if let imageData = UIImageJPEGRepresentation(myProfilePhoto!, 1.0) {
-                        StorageService.ss.uploadOwnPic(data: imageData, completed: { (isSuccess) in
-                            if !isSuccess {
-                                log.error("[Error] Unable to upload profile pic to storage")
-                            } else {
-                                // Upload success, delete cached profile photo
-                                cachePhotoToUpload(data: nil)
-                            }
-                        })
-                    }
-                } else {
-                    // Download image
-                    _ = downloadImage(imageUrlString: profile!.profileImageName, completed: { (image) in
-                        if image != nil {
-                            self.settings[1][0].image = image
-                            self.tableView.reloadData()
-                            myProfilePhoto = image!
-                            NotificationCenter.default.post(name: NOTIF_MYPROFILEDOWNLOADED, object: nil)
-                        }
-                    })
-                }
-                
-                // Do the same for cover photo
-//                myCoverPhoto = getPhotoToUpload(isProfilePic: false)
-//                if myCoverPhoto != nil {
-//                    // Retry upload of image
-//                    if let imageData = UIImageJPEGRepresentation(myCoverPhoto!, 1.0) {
-//                        StorageService.ss.uploadOwnPic(data: imageData, completed: { (isSuccess) in
-//                            if !isSuccess {
-//                                log.error("[Error] Unable to upload cover pic to storage")
-//                            } else {
-//                                // Upload success, delete cache
-//                                cachePhotoToUpload(data: nil)
-//                            }
-//                        })
-//                    }
-//                } else {
-                    // Download image
-//                    _ = downloadImage(imageUrlString: profile!.coverImageName, completed: { (image) in
-//                        if image != nil {
-//                            myCoverPhoto = image!
-//                            NotificationCenter.default.post(name: NOTIF_MYPROFILEDOWNLOADED, object: nil)
-//                        }
-//                    })
-//                }
-            }
-        }
-        
+    fileprivate func getUserSettings() {
         // Load default settings first - All enabled
         self.settingsChosen = ["Daily alert": true, "Private messages": true, "Classroom messages": true, "In-app notifications": true]
         
@@ -204,6 +106,8 @@ class SettingsController: UIViewController, UITableViewDelegate, UITableViewData
         })
     }
     
+    // MARK: Set up views
+    
     fileprivate func setupViews() {
         self.view.backgroundColor = GRAY_UICOLOR
         self.view.addSubview(tableView)
@@ -213,21 +117,18 @@ class SettingsController: UIViewController, UITableViewDelegate, UITableViewData
     
     // MARK: Table view
     
-    fileprivate var settingHeaders: [String] = ["", "", "Discovery Settings", "Notifications", "Contact and Share", "Legal", "", ""]
+    // Note: The setting headers have to match with the 2d array settings. The number of entries in setting headers has to be the same as the number of setting arrays in settings.
+    
+    fileprivate var settingHeaders: [String] = ["Notifications", "Find us", "Legal", "", ""]
     
     fileprivate var settings: [[Setting]] = [
-        [Setting(text: "", type: .timer)],
         [Setting(text: "Daily alert", type: .toggle, isOn: true),  Setting(text: "Private messages", type: .toggle, isOn: true), Setting(text: "Classroom messages", type: .toggle, isOn: true), Setting(text: "In-app notifications", type: .toggle, isLastCell: true, isOn: true)],
-        [Setting(text: "Help and Support", type: .link), Setting(text: "Rate us", type: .link), Setting(text: "Share 428", type: .link, isLastCell: true)],
+        [Setting(text: "428 Website", type: .link), Setting(text: "428 Facebook", type: .link), Setting(text: "Rate us", type: .link, isLastCell: true)],
         [Setting(text: "Privacy Policy", type: .link), Setting(text: "Terms", type: .link, isLastCell: true)],
         [Setting(text: "Log out", type: .center, isLastCell: true)],
         [Setting(text: "Version 1.0.0", type: .nobg, isLastCell: true)]]
     
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
-        if section <= 1 { // No section header for timer and profile pic
-            return nil
-        }
-        
         let view = UIView()
         let label = UILabel(frame: CGRect(x: 16, y: 20, width: self.view.frame.width, height: 20))
         label.text = settingHeaders[section]
@@ -248,12 +149,7 @@ class SettingsController: UIViewController, UITableViewDelegate, UITableViewData
     }
     
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
-        if section == 0 {
-            return 18.0
-        }
-        if section == 1 {
-            return 0.001
-        }
+        // Last section does not have divider so have different height
         return (section != settingHeaders.count - 1) ? 45.5 : 45
     }
     
@@ -263,10 +159,11 @@ class SettingsController: UIViewController, UITableViewDelegate, UITableViewData
         if setting.text == "Log out" {
             self.logout()
         }
+        tableView.deselectRow(at: indexPath, animated: true)
     }
     
     fileprivate func logout() {
-        let alertController = UIAlertController(title: "Are you sure?", message: "You will not be notified of your daily connections and topics!", preferredStyle: .actionSheet)
+        let alertController = UIAlertController(title: "Are you sure?", message: "You will not be notified of all the juicy questions and fun conversation!", preferredStyle: .actionSheet)
         alertController.view.tintColor = GREEN_UICOLOR
         let cancelAction = UIAlertAction(title: "Cancel", style: .cancel, handler: nil)
         let logoutAction = UIAlertAction(title: "Log out", style: .default) { (action) in
@@ -291,9 +188,6 @@ class SettingsController: UIViewController, UITableViewDelegate, UITableViewData
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        if indexPath.section == 1 { // Extra height for profilepic
-            return 170.0
-        }
         return 50.0
     }
     

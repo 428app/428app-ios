@@ -336,7 +336,7 @@ extension DataService {
             }
             // These are settings are values mapped directly to the keys that will be displayed on the frontend
             // Note: The keys must be named exactly as you want them to appear on the frontend
-            let settings = ["Daily alert": dailyAlert, "Private messages": privateMessages, "Classroom Messages": classroomMessages, "In-app notifications": inAppNotifications]
+            let settings = ["Daily alert": dailyAlert, "Private messages": privateMessages, "Classroom messages": classroomMessages, "In-app notifications": inAppNotifications]
             completed(settings)
         })
     }

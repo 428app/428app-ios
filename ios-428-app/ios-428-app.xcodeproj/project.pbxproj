@@ -348,7 +348,6 @@
 				4064A1B71DAC381300071383 /* PrivateChatController.swift */,
 				4064A1E31DAC590900071383 /* ChatController.swift */,
 				4064A2531DB34E4D00071383 /* ProfileController.swift */,
-				40AB7FF71DB59C9600492788 /* SettingsController.swift */,
 				4024F21F1DB7E2DB007819F7 /* Topic */,
 				40AB80011DB6FA9500492788 /* Me */,
 			);
@@ -385,6 +384,7 @@
 				40AB7FFF1DB5FDB100492788 /* EditProfileController.swift */,
 				40AB80041DB7094700492788 /* EditProfessionalController.swift */,
 				40AB80061DB7095200492788 /* EditTaglineController.swift */,
+				40AB7FF71DB59C9600492788 /* SettingsController.swift */,
 			);
 			name = Me;
 			sourceTree = "<group>";

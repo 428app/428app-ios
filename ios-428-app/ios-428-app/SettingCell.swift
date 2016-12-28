@@ -42,81 +42,6 @@ class SettingCell: BaseTableViewCell {
         NotificationCenter.default.post(name: NOTIF_CHANGESETTING, object: nil, userInfo: ["option": setting.text, "isOn": switch_.isOn])
     }
     
-    // MARK: Profile pic
-    
-    fileprivate lazy var myPicImageView: UIImageView = {
-        let imageView = UIImageView()
-        imageView.layer.cornerRadius = 85.0
-        imageView.clipsToBounds = true
-        imageView.contentMode = .scaleAspectFill
-        imageView.isUserInteractionEnabled = true
-        let tapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(self.editProfile))
-        imageView.addGestureRecognizer(tapGestureRecognizer)
-        return imageView
-    }()
-    
-    fileprivate lazy var editButton: UIButton = {
-        let button = UIButton()
-        button.layer.shadowColor = UIColor.black.cgColor
-        button.layer.shadowOpacity = 0.3
-        button.layer.shadowRadius = 3.0
-        button.layer.shadowOffset = CGSize(width: 2.0, height: 2.0)
-        button.setImage(#imageLiteral(resourceName: "edit-with-bg"), for: .normal)
-        button.imageView?.contentMode = .scaleAspectFill
-        button.addTarget(self, action: #selector(self.editProfile), for: .touchUpInside)
-        button.translatesAutoresizingMaskIntoConstraints = false
-        return button
-    }()
-    
-    func editProfile() {
-        NotificationCenter.default.post(name: NOTIF_EDITPROFILE, object: nil)
-    }
-
-//    fileprivate func animateEdit() {
-//        UIView.animate(withDuration: 0.2, delay: 0.2, animations: {
-//            self.editButton.transform = CGAffineTransform(scaleX: 1.3, y: 1.3)
-//            }) { (completion) in
-//                UIView.animate(withDuration: 0.1, animations: {
-//                    self.editButton.transform = CGAffineTransform(scaleX: 1.0, y: 1.0)
-//                })
-//        }
-//    }
-    
-    // MARK: Timer
-    
-    func updateTime() {
-        let now = Date()
-        let calendar = Calendar.current
-        let components = DateComponents(calendar: calendar, hour: 16, minute: 28)
-        guard let next438 = calendar.nextDate(after: now, matching: components, matchingPolicy: .nextTime) else {
-            return
-        }
-        let diff = calendar.dateComponents([.hour, .minute, .second], from: now, to: next438)
-        if let hours = diff.hour, let minutes = diff.minute, let seconds = diff.second {
-            let hoursString = hours < 10 ? "0\(hours)" : "\(hours)"
-            let minutesString = minutes < 10 ? "0\(minutes)" : "\(minutes)"
-            let secondsString = seconds < 10 ? "0\(seconds)" : "\(seconds)"
-            self.timerLabel.text = "\(hoursString):\(minutesString):\(secondsString)"
-        }
-    }
-    
-    fileprivate let timerLabel: UILabel = {
-        let label = UILabel()
-        label.font = FONT_MEDIUM_XLARGE
-        label.textColor = UIColor.black
-        label.textAlignment = .center
-        return label
-    }()
-    
-    fileprivate let timerDetailLabel: UILabel = {
-        let label = UILabel()
-        label.font = FONT_HEAVY_MID
-        label.textColor = GREEN_UICOLOR
-        label.textAlignment = .center
-        label.text = "until 4:28pm"
-        return label
-    }()
-    
     // MARK: Set up views
     
     override func setupViews() {
@@ -154,7 +79,7 @@ class SettingCell: BaseTableViewCell {
         
         if setting.type == .link {
             
-            // Link to website / function
+            // Link to website, Facebook or rate us
             
             constraintsToDelete.append(contentsOf: addAndGetConstraintsWithFormat("H:|-16-[v0]", views: settingLabel))
             self.selectionStyle = .gray
@@ -193,56 +118,6 @@ class SettingCell: BaseTableViewCell {
             constraintsToDelete.append(centerXSettingConstraint)
             dividerView.isHidden = true
             settingLabel.font = FONT_HEAVY_MID
-        } else if setting.type == .profilepic {
-            
-            // Used to display profile pic on top
-
-            backgroundColor = GRAY_UICOLOR
-            if let image = setting.image {
-                myPicImageView.image = image
-            }
-            addSubview(myPicImageView)
-            addSubview(editButton)
-            viewsToRemove.append(myPicImageView)
-            viewsToRemove.append(editButton)
-            settingLabel.isHidden = true
-            dividerView.isHidden = true
-            
-            constraintsToDelete.append(contentsOf: addAndGetConstraintsWithFormat("H:[v0(170)]", views: myPicImageView))
-            let centerXPicConstraint = NSLayoutConstraint(item: myPicImageView, attribute: .centerX, relatedBy: .equal, toItem: self, attribute: .centerX, multiplier: 1.0, constant: 0.0)
-            addConstraint(centerXPicConstraint)
-            constraintsToDelete.append(centerXPicConstraint)
-            constraintsToDelete.append(contentsOf: addAndGetConstraintsWithFormat("V:[v0(170)]|", views: myPicImageView))
-            
-            constraintsToDelete.append(contentsOf: addAndGetConstraintsWithFormat("V:[v0(40.0)]", views: editButton))
-            constraintsToDelete.append(contentsOf: addAndGetConstraintsWithFormat("H:[v0(40.0)]", views: editButton))
-            let editButtonRightConstraint = NSLayoutConstraint(item: editButton, attribute: .right, relatedBy: .equal, toItem: myPicImageView, attribute: .right, multiplier: 1.0, constant: -10.0)
-            addConstraint(editButtonRightConstraint)
-            constraintsToDelete.append(editButtonRightConstraint)
-            let editButtonBottomConstraint = NSLayoutConstraint(item: editButton, attribute: .bottom, relatedBy: .equal, toItem: myPicImageView, attribute: .bottom, multiplier: 1.0, constant: 0)
-            addConstraint(editButtonBottomConstraint)
-            constraintsToDelete.append(editButtonBottomConstraint)
-            // Removed animation of edit button for now as it might irritate user
-//            animateEdit()
-        
-        } else if setting.type == .timer {
-            
-            // Used to display timer at the top
-            
-            addSubview(timerLabel)
-            addSubview(timerDetailLabel)
-            viewsToRemove.append(timerLabel)
-            viewsToRemove.append(timerDetailLabel)
-            timerForCountdown.invalidate()
-            timerForCountdown = Timer.scheduledTimer(timeInterval: 1.0, target: self, selector: #selector(self.updateTime), userInfo: nil, repeats: true)
-            timerForCountdown.fire()
-            settingLabel.isHidden = true
-            dividerView.isHidden = true
-            backgroundColor = GRAY_UICOLOR
-            
-            constraintsToDelete.append(contentsOf: addAndGetConstraintsWithFormat("H:|[v0]|", views: timerLabel))
-            constraintsToDelete.append(contentsOf: addAndGetConstraintsWithFormat("H:|[v0]|", views: timerDetailLabel))
-            constraintsToDelete.append(contentsOf: addAndGetConstraintsWithFormat("V:[v0(25)]-2-[v1(20)]", views: timerLabel, timerDetailLabel))
         }
         
         if setting.isLastCell {

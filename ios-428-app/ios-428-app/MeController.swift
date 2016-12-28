@@ -12,8 +12,6 @@ import Firebase
 
 class MeController: UIViewController, UIGestureRecognizerDelegate, UIScrollViewDelegate, UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
     
-//    var profile: Profile!
-    
     override func viewDidLoad() {
         super.viewDidLoad()
         self.view.backgroundColor = UIColor.white
@@ -281,7 +279,7 @@ class MeController: UIViewController, UIGestureRecognizerDelegate, UIScrollViewD
     
     func openEditProfile() {
         log.info("Edit profile")
-        // Launch edit profile
+        // Launch EditProfileController which has two sub controllers, EditProfession and EditTagline
         self.navigationItem.backBarButtonItem = UIBarButtonItem(title: " ", style: .plain, target: nil, action: nil)
         let controller = EditProfileController()
         navigationController?.pushViewController(controller, animated: true)
@@ -289,6 +287,10 @@ class MeController: UIViewController, UIGestureRecognizerDelegate, UIScrollViewD
     
     func openSettings() {
         log.info("Open settings")
+        // Launch SettingsController
+        self.navigationItem.backBarButtonItem = UIBarButtonItem(title: " ", style: .plain, target: nil, action: nil)
+        let controller = SettingsController()
+        navigationController?.pushViewController(controller, animated: true)
     }
     
     func scrollViewDidScroll(_ scrollView: UIScrollView) {

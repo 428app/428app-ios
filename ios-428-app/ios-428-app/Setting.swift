@@ -14,19 +14,17 @@ import UIKit
 class Setting {
     
     enum TYPE: Int {
-        case toggle = 0, link, center, nobg, profilepic, timer
+        case toggle = 0, link, center, nobg
     }
     
     fileprivate var _text: String // Can be text or url for profilepic
     fileprivate var _type: Setting.TYPE
     fileprivate var _isOn: Bool? // Used only by toggle type, otherwise nil
     fileprivate var _isLastCell: Bool
-    fileprivate var _image: UIImage?
     
-    init(text: String, type: Setting.TYPE, image: UIImage? = nil, isLastCell: Bool = false, isOn: Bool? = nil) {
+    init(text: String, type: Setting.TYPE, isLastCell: Bool = false, isOn: Bool? = nil) {
         _text = text
         _type = type
-        _image = image
         _isLastCell = isLastCell
         _isOn = isOn
     }
@@ -40,15 +38,6 @@ class Setting {
     var type: Setting.TYPE {
         get {
             return _type
-        }
-    }
-    
-    var image: UIImage? {
-        get {
-            return _image
-        }
-        set (image) {
-            _image = image
         }
     }
     
