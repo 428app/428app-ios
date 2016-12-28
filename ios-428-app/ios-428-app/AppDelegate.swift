@@ -25,10 +25,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         window?.backgroundColor = UIColor.white
         window?.makeKeyAndVisible()
         window?.rootViewController = LoginController()
-//        UINavigationBar.appearance().isTranslucent = false
         UINavigationBar.appearance().isOpaque = true
         FIRApp.configure()
         FIRDatabase.database().persistenceEnabled = true
+        
+        // Reupload previous photo that might not have been uploaded due to network issues or user quitting the app after changing profile photo
+        reuploadPhoto()
  
         // Note that if a remote notification launches the app, we will NOT support directing it to the right page because the data has likely not been loaded and it can very tricky to wait for data to load before pushing the right page (even worse under bad network conditions!)
         setupRemoteNotifications(application: application)
@@ -79,6 +81,25 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     
     func application(_ application: UIApplication, open url: URL, sourceApplication: String?, annotation: Any) -> Bool {
         return FBSDKApplicationDelegate.sharedInstance().application(application, open: url, sourceApplication: sourceApplication, annotation: annotation)
+    }
+    
+    // MARK: Reupload profile photo if user previously closed app without finishing upload
+    
+    fileprivate func reuploadPhoto() {
+        myProfilePhoto = getPhotoToUpload()
+        if myProfilePhoto != nil { // There is a photo that is previously uploaded but user quit the app
+            // Retry upload of image
+            if let imageData = UIImageJPEGRepresentation(myProfilePhoto!, 1.0) {
+                StorageService.ss.uploadOwnPic(data: imageData, completed: { (isSuccess) in
+                    if !isSuccess {
+                        log.error("[Error] Unable to upload profile pic to storage")
+                    } else {
+                        // Upload success, delete cached profile photo
+                        cachePhotoToUpload(data: nil)
+                    }
+                })
+            }
+        }
     }
     
     // MARK: Remote notifications

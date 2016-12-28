@@ -52,7 +52,17 @@ class MeController: UIViewController, UIGestureRecognizerDelegate, UIScrollViewD
         guard let profilePic = myProfilePhoto else {
             return
         }
+        self.profileImageView.isUserInteractionEnabled = true
         self.profileImageView.image = profilePic
+    }
+    
+    func setProfileData() {
+        guard let profileData = myProfile else {
+            return
+        }
+        self.nameAndAgeLbl.text = "\(profileData.name), \(profileData.age)"
+        self.disciplineImageView.image = UIImage(named: profileData.disciplineIcon)
+        // TODO: Badges, and classrooms
     }
     
     fileprivate func registerObservers() {
@@ -69,43 +79,30 @@ class MeController: UIViewController, UIGestureRecognizerDelegate, UIScrollViewD
     
     // Grabs server settings, user profile from Firebase, then downloads profile image
     fileprivate func populateData() {
+        
+        // Triggered when changes are made in EditProfileController/EditProfessionController and user goes back to MeController
+        self.setProfilePic()
+        self.setProfileData()
+        
         DataService.ds.getUserFields(uid: getStoredUid()) { (isSuccess, profile) in
             if isSuccess && profile != nil {
                 
-                // Downloads profile photo, or get from uploaded pic that previously failed
-                myProfilePhoto = getPhotoToUpload()
-                if myProfilePhoto != nil { // There is a photo that is previously uploaded but user quit the app
-                    
-                    // Set that photo as current photo
-                    self.profileImageView.image = myProfilePhoto!
-                    
-                    // Retry upload of image
-                    if let imageData = UIImageJPEGRepresentation(myProfilePhoto!, 1.0) {
-                        StorageService.ss.uploadOwnPic(data: imageData, completed: { (isSuccess) in
-                            if !isSuccess {
-                                log.error("[Error] Unable to upload profile pic to storage")
-                            } else {
-                                // Upload success, delete cached profile photo
-                                cachePhotoToUpload(data: nil)
-                            }
-                        })
-                    }
+                // Profile photo
+                if myProfilePhoto != nil {
+                    self.setProfilePic()
                 } else {
-                    // Download image
+                    // Download image and set profile pic
                     _ = downloadImage(imageUrlString: profile!.profileImageName, completed: { (image) in
                         if image != nil {
-                            self.profileImageView.image = image!
                             myProfilePhoto = image!
+                            self.setProfilePic() // This has to come after setting myProfilePhoto
                         }
                     })
                 }
                 
                 // Discipline, name and age
                 myProfile = profile!
-                self.nameAndAgeLbl.text = "\(myProfile!.name), \(myProfile!.age)"
-                self.disciplineImageView.image = UIImage(named: myProfile!.disciplineIcon)
-                
-                // TODO: Badges, and classrooms
+                self.setProfileData()
                 
             }
         }
@@ -127,7 +124,7 @@ class MeController: UIViewController, UIGestureRecognizerDelegate, UIScrollViewD
         imageView.contentMode = .scaleAspectFill
         imageView.layer.cornerRadius = 90.0 // Actual image size is 180.0 so this is /2
         imageView.clipsToBounds = true
-        imageView.isUserInteractionEnabled = true
+        imageView.isUserInteractionEnabled = false
         imageView.addGestureRecognizer(self.picTap)
         return imageView
     }()
@@ -362,10 +359,6 @@ class MeController: UIViewController, UIGestureRecognizerDelegate, UIScrollViewD
         containerView.addConstraint(NSLayoutConstraint(item: profileImageView, attribute: .centerX, relatedBy: .equal, toItem: containerView, attribute: .centerX, multiplier: 1.0, constant: 0))
         
         containerView.addConstraintsWithFormat("V:|-\(navBarHeight + 35)-[v0(180)]", views: profileImageView)
-        
-//        profileImageView.image = #imageLiteral(resourceName: "leo-profile")
-//        nameAndAgeLbl.text = "Leonard, 25"
-//        disciplineImageView.image = #imageLiteral(resourceName: "business")
     }
     
 }

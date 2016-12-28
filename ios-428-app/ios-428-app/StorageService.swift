@@ -14,8 +14,8 @@ class StorageService {
     
     static let ss = StorageService()
     
-    fileprivate var _REF_BASE = FIRStorage.storage().reference()
-    fileprivate var _REF_USER = FIRStorage.storage().reference().child("/user")
+    fileprivate var _REF_BASE = FIRStorage.storage().reference().child("\(DB_ROOT)")
+    fileprivate var _REF_USER = FIRStorage.storage().reference().child("\(DB_ROOT)/user")
     
     var REF_BASE: FIRStorageReference {
         get {
@@ -39,7 +39,7 @@ class StorageService {
         let filePath = "profile_photo"
         let metadata = FIRStorageMetadata()
         metadata.contentType = "image/jpeg"
-        _REF_USER.child("\(uid)/\(filePath)").put(data, metadata: metadata) { (metadata, error) in
+        REF_USER.child("\(uid)/\(filePath)").put(data, metadata: metadata) { (metadata, error) in
             if error != nil || metadata == nil {
                 log.error("[Error] Fail to store image in cloud storage")
             } else {

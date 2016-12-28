@@ -21,7 +21,7 @@ func cachePhotoToUpload(data: Data?) {
         do {
             try fileManager.removeItem(atPath: paths as String)
         } catch {
-            log.info("Failed to remove profile_photo after upload is complete")
+            log.warning("profile_photo.jpg cannot be removed at path")
         }
     } else {
         // Store data

@@ -17,7 +17,7 @@ import FBSDKLoginKit
 // Houses all the Firebase refs for the various extensions (Services) to call
 
 // Root of DB: Either real_db or test_db
-private let DB_ROOT = "real_db"
+let DB_ROOT = "real_db"
 
 class DataService {
 

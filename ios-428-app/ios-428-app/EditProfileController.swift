@@ -360,12 +360,6 @@ class EditProfileController: UIViewController, UIScrollViewDelegate, UIGestureRe
     // MARK: Setup views
     
     fileprivate func setupViews() {
-        // TODO: Until turned true after download
-        // TODO: Hides edit button and profile pic when still loading
-//        profileImageView.isUserInteractionEnabled = false
-//        editButton.isEnabled = false
-//        editProfessionalInfoButton.isEnabled = false
-//        editTaglineButton.isEnabled = false
         
         // Set up scroll view, and close button on top of scroll view
         let views = setupScrollView()
