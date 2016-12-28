@@ -81,7 +81,7 @@ class SettingsController: UIViewController, UITableViewDelegate, UITableViewData
             
             // Update all user settings with each change
             
-            DataService.ds.updateUserSettings(dailyAlert: settingsChosen["Daily alert"]!, privateMessages: settingsChosen["Private messages"]!, classroomMessages: settingsChosen["Classroom messages"]!, inAppNotifications: settingsChosen["In-app notifications"]!, completed: { (isSuccess) in
+            DataService.ds.updateUserSettings(dailyAlert: settingsChosen["Daily alert"]!, inboxMessages: settingsChosen["Private messages"]!, classroomMessages: settingsChosen["Classroom messages"]!, inAppNotifications: settingsChosen["In-app notifications"]!, completed: { (isSuccess) in
                 if !isSuccess {
                     log.error("[Error] Error updating user settings")
                     // Revert settings chosen

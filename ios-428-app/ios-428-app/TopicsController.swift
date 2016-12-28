@@ -41,7 +41,6 @@ class TopicsController: UIViewController, UITableViewDelegate, UITableViewDataSo
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-//        showErrorAlert(vc: self, title: "New Classroom", message: "It's the time of the week again. \nHere's Physics I.")
         self.tabBarController?.tabBar.isHidden = false
     }
     
@@ -51,67 +50,124 @@ class TopicsController: UIViewController, UITableViewDelegate, UITableViewDataSo
         tableView.rowHeight = UITableViewAutomaticDimension
     }
     
+    deinit {
+        self.countdownTimer.invalidate()
+    }
+    
+    // MARK: Firebase
+    
     fileprivate func loadData() {
-        self.topics = loadTopics()
+        // TODO: Load classrooms from server
+//        self.topics = loadTopics()
+        emptyPlaceholderView.isHidden = false
+        self.countdownTimer.invalidate()
+        self.countdownTimer = Timer.scheduledTimer(timeInterval: 1.0, target: self, selector: #selector(self.updateTime), userInfo: nil, repeats: true)
+        self.countdownTimer.fire()
+    }
+    
+    // MARK: Views for no classrooms
+    
+    fileprivate let emptyPlaceholderView: UIView = {
+        let view = UIView(frame: CGRect(x: 0, y: 0, width: UIScreen.main.bounds.width * 0.9, height: UIScreen.main.bounds.height * 0.4))
+        view.isHidden = true
+        return view
+    }()
+    
+    fileprivate let logo428: UIImageView = {
+        let logo = #imageLiteral(resourceName: "logo")
+        let imageView = UIImageView(image: logo)
+        imageView.contentMode = .scaleAspectFit
+        return imageView
+    }()
+    
+    fileprivate let timerLabel: UILabel = {
+        let label = UILabel()
+        label.font = FONT_MEDIUM_XXLARGE
+        label.textColor = UIColor.darkGray
+        label.textAlignment = .center
+        return label
+    }()
+    
+    func updateTime() {
+        let now = Date()
+        let calendar = Calendar.current
+        let components = DateComponents(calendar: calendar, hour: 16, minute: 28)
+        guard let next438 = calendar.nextDate(after: now, matching: components, matchingPolicy: .nextTime) else {
+            return
+        }
+        let diff = calendar.dateComponents([.hour, .minute, .second], from: now, to: next438)
+        if let hours = diff.hour, let minutes = diff.minute, let seconds = diff.second {
+            let hoursString = hours < 10 ? "0\(hours)" : "\(hours)"
+            let minutesString = minutes < 10 ? "0\(minutes)" : "\(minutes)"
+            let secondsString = seconds < 10 ? "0\(seconds)" : "\(seconds)"
+            self.timerLabel.text = "\(hoursString):\(minutesString):\(secondsString)"
+        }
+    }
+    
+    fileprivate lazy var countdownTimer: Timer = {
+        return Timer.scheduledTimer(timeInterval: 1.0, target: self, selector: #selector(self.updateTime), userInfo: nil, repeats: true)
+    }()
+    
+    fileprivate let until428Label: UILabel = {
+        let label = UILabel()
+        label.font = FONT_HEAVY_LARGE
+        label.textColor = GREEN_UICOLOR
+        label.text = "until 4:28pm"
+        label.textAlignment = .center
+        return label
+    }()
+    
+    fileprivate let infoIcon: UIImageView = {
+        let icon = #imageLiteral(resourceName: "info")
+        let imageView = UIImageView(image: icon)
+        imageView.image = imageView.image?.withRenderingMode(.alwaysTemplate)
+        imageView.tintColor = UIColor.darkGray
+        imageView.contentMode = .scaleAspectFit
+        return imageView
+    }()
+    
+    fileprivate let classroomIsOnTheWayLabel: UIView = {
+        let label = UILabel()
+        label.font = FONT_MEDIUM_MID
+        label.textColor = UIColor.darkGray
+        label.textAlignment = .center
+        label.text = "Your classroom is on the way..."
+        return label
+    }()
+    
+    fileprivate func setupEmptyPlaceholderView() {
+        self.tableView.addSubview(self.emptyPlaceholderView)
+        self.emptyPlaceholderView.center = CGPoint(x: self.view.center.x, y: self.view.center.y - 0.03 * self.view.frame.height)
+        
+        self.emptyPlaceholderView.addSubview(logo428)
+        self.emptyPlaceholderView.addSubview(timerLabel)
+        self.emptyPlaceholderView.addSubview(until428Label)
+        self.emptyPlaceholderView.addConstraintsWithFormat("H:[v0(60)]", views: logo428)
+        self.emptyPlaceholderView.addConstraint(NSLayoutConstraint(item: logo428, attribute: .centerX, relatedBy: .equal, toItem: self.emptyPlaceholderView, attribute: .centerX, multiplier: 1.0, constant: 0.0))
+        self.emptyPlaceholderView.addConstraintsWithFormat("H:|-8-[v0]-8-|", views: timerLabel)
+        self.emptyPlaceholderView.addConstraintsWithFormat("H:|-8-[v0]-8-|", views: until428Label)
+        
+        let infoContainer = UIView()
+        infoContainer.addSubview(infoIcon)
+        infoContainer.addSubview(classroomIsOnTheWayLabel)
+        infoContainer.addConstraintsWithFormat("H:|[v0(14)]-4-[v1]|", views: infoIcon, classroomIsOnTheWayLabel)
+        infoContainer.addConstraintsWithFormat("V:|-1-[v0(14)]", views: infoIcon)
+        infoContainer.addConstraintsWithFormat("V:|[v0(18)]|", views: classroomIsOnTheWayLabel)
+        self.emptyPlaceholderView.addSubview(infoContainer)
+        self.emptyPlaceholderView.addConstraint(NSLayoutConstraint(item: infoContainer, attribute: .centerX, relatedBy: .equal, toItem: self.emptyPlaceholderView, attribute: .centerX, multiplier: 1.0, constant: 0.0))
+        
+        self.emptyPlaceholderView.addConstraintsWithFormat("V:|-8-[v0(60)]-5-[v1]-2-[v2]-8-[v3]", views: logo428, timerLabel, until428Label, infoContainer)
     }
     
     fileprivate func setupViews() {
         view.addSubview(tableView)
-//        view.addSubview(segmentedControl)
-        
-//        view.addConstraintsWithFormat("H:|-8-[v0]-8-|", views: segmentedControl)
         view.addConstraintsWithFormat("H:|[v0]|", views: tableView)
-        
         view.addConstraint(NSLayoutConstraint(item: tableView, attribute: .top, relatedBy: .equal, toItem: topLayoutGuide, attribute: .bottom, multiplier: 1.0, constant: 8.0))
-        
-        view.addConstraintsWithFormat("V:[v1]|", views: segmentedControl, tableView)
+        view.addConstraintsWithFormat("V:[v0]|", views: tableView)
+        self.setupEmptyPlaceholderView()
     }
     
-    // MARK: Segment
-    
-    fileprivate enum SEGMENT_TYPE: Int {
-        case posted = 0, replied, hot
-    }
-    
-    fileprivate var chosenSegment: SEGMENT_TYPE = .posted
-    
-    fileprivate lazy var segmentedControl: UISegmentedControl = {
-        let options = ["Posted", "Replied", "Hot"]
-        let control = UISegmentedControl(items: options)
-        let frame = UIScreen.main.bounds
-        control.setTitleTextAttributes([NSFontAttributeName: FONT_HEAVY_MID], for: .normal)
-        control.selectedSegmentIndex = 0
-        control.layer.cornerRadius = 4.0
-        control.backgroundColor = UIColor.white
-        control.isEnabled = true
-        control.isOpaque = true
-        control.isHidden = false
-        control.tintColor = GREEN_UICOLOR
-        control.addTarget(self, action: #selector(changeSegment), for: .valueChanged)
-        return control
-    }()
-    
-    func changeSegment(sender: UISegmentedControl) {
-        switch sender.selectedSegmentIndex {
-        case SEGMENT_TYPE.posted.rawValue:
-            topics.sort{$0.date.compare($1.date) == .orderedDescending }
-        case SEGMENT_TYPE.replied.rawValue:
-            topics.sort{$0.latestMessageDate.compare($1.latestMessageDate) == .orderedDescending }
-        case SEGMENT_TYPE.hot.rawValue:
-            topics.sort{$0.topicMessages.count > $1.topicMessages.count }
-        default:
-            return
-        }
-        self.reloadTableViewAnimated()
-    }
-    
-    fileprivate func reloadTableViewAnimated() {
-        let range = NSMakeRange(0, tableView.numberOfSections)
-        let sections = NSIndexSet(indexesIn: range)
-        tableView.reloadSections(sections as IndexSet, with: .automatic)
-    }
-    
-    // MARK: Table view
+    // MARK: Table view of classrooms
     
     func numberOfSections(in tableView: UITableView) -> Int {
         return 1

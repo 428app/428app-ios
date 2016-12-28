@@ -10,5 +10,5 @@ import Foundation
 
 
 enum TokenType: String {
-    case PRIVATE = "private", CLASSROOM = "classroom"
+    case INBOX = "inbox", CLASSROOM = "classroom"
 }

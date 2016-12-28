@@ -15,7 +15,7 @@ import FBSDKCoreKit
 import FBSDKLoginKit
 
 // Extends DataService to house Remote notification, and some utility calls
-// Most of these calls are used by other services such as PrivateChatService and ClassroomService
+// Most of these calls are used by other services such as InboxService and ClassroomService
 extension DataService {
 
     // Adds message to Queue that will be picked up by push server
@@ -26,7 +26,7 @@ extension DataService {
     }
     
     // Increments push count of user to display the right number for push notifications on the app's icon
-    // Used by other services such as PrivateChatService and ClassroomService
+    // Used by other services such as InboxService and ClassroomService
     open func adjustPushCount(isIncrement: Bool, uid: String, completed: @escaping (_ isSuccess: Bool) -> ()) {
         // Note: Transaction blocks only work when persistence is set to True
         self.REF_USERS.child(uid).runTransactionBlock({ (currentData) -> FIRTransactionResult in
@@ -61,7 +61,7 @@ extension DataService {
         }
         // Look for all this user's private chats, look at all the Chats and see how many hasNew, then update pushCount, and return
         // TODO: This will have to also look at Classrooms once those are up
-        REF_USERS.child("\(uid)/privates").observeSingleEvent(of: .value, with: { privatesSnap in
+        REF_USERS.child("\(uid)/inbox").observeSingleEvent(of: .value, with: { privatesSnap in
             if !privatesSnap.exists() {
                 completed(true, 0)
                 return
@@ -74,8 +74,8 @@ extension DataService {
             var pushCount = 0
             for privSnap in privSnaps {
                 let uid2 = privSnap.key
-                let chatId = self.getChatId(uid1: uid, uid2: uid2)
-                let ref = self.REF_PRIVATECHATS.child("\(chatId)/hasNew:\(uid)")
+                let inboxId = self.getInboxId(uid1: uid, uid2: uid2)
+                let ref = self.REF_INBOX.child("\(inboxId)/hasNew:\(uid)")
                 ref.keepSynced(true)
                 ref.observeSingleEvent(of: .value, with: { chatSnap in
                     if chatSnap.exists() {

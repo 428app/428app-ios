@@ -256,7 +256,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         if let chatVC = nvc.visibleViewController as? ChatController {
             // Only show popup if the chatVC uid is different from the uid in payload
-            if chatVC.privateChat.uid != uid {
+            if chatVC.inbox.uid != uid {
                 show(shout: announcement, to: vc, completion: {
                     // This callback is reached when user taps, so we transition to the right page based on type, and uid/tid
                     self.transitionToRightScreenBasedOnType(type: type, uid: uid, tid: tid)
@@ -280,35 +280,35 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             return
         }
         
-        if type == .PRIVATE {
-            self.findAndTransitionToPrivateChat(uid: uid, tabBarController: tabBarController)
+        if type == .INBOX {
+            self.findAndTransitionToInbox(uid: uid, tabBarController: tabBarController)
         } else if type == .CLASSROOM {
             self.findAndTransitionToTopic(tid: tid, tabBarController: tabBarController)
         }
     }
     
     // Open the correct connection that matches uid
-    fileprivate func findAndTransitionToPrivateChat(uid: String, tabBarController: CustomTabBarController) {
+    fileprivate func findAndTransitionToInbox(uid: String, tabBarController: CustomTabBarController) {
         
-        guard let vcs = tabBarController.viewControllers, let privateChatNVC = vcs[0] as? CustomNavigationController, let privateChatVC = privateChatNVC.viewControllers.first as? PrivateChatController else {
+        guard let vcs = tabBarController.viewControllers, let inboxNVC = vcs[0] as? CustomNavigationController, let inboxVC = inboxNVC.viewControllers.first as? InboxController else {
             return
         }
         
-        if privateChatNVC.viewControllers.count > 1 {
+        if inboxNVC.viewControllers.count > 1 {
             // Currently in a chat screen or profile screen, etc., need to dismiss back to ConnectionsController before pushing ChatController
-            privateChatNVC.popToRootViewController(animated: false)
+            inboxNVC.popToRootViewController(animated: false)
         }
         
         // Look for the correct connection in latest messages
-        let correctMessage = privateChatVC.latestMessages.filter() {$0.privateChat.uid == uid}
+        let correctMessage = inboxVC.latestMessages.filter() {$0.inbox.uid == uid}
         if correctMessage.count != 1 {
             log.warning("Uid could not be found in private chats / too many of the same uid")
             return
         }
         
         let chatVC: ChatController = ChatController()
-        chatVC.privateChat = correctMessage[0].privateChat
-        privateChatNVC.pushViewController(chatVC, animated: false)
+        chatVC.inbox = correctMessage[0].inbox
+        inboxNVC.pushViewController(chatVC, animated: false)
         tabBarController.selectedIndex = 0
     }
     

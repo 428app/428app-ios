@@ -21,6 +21,7 @@ class MeController: UIViewController, UIGestureRecognizerDelegate, UIScrollViewD
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+        tabBarController?.tabBar.isHidden = false
         self.populateData()
         self.registerObservers()
     }

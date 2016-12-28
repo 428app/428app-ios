@@ -77,7 +77,7 @@ extension DataService {
                 user["badgeCount"] = 0
                 user["hasNewBadge"] = false
                 user["HasNewClassroom"] = false
-                let userSettings = ["dailyAlert": true, "privateMessages": true, "classroomMessages": true, "inAppNotifications": true, "isLoggedIn": true]
+                let userSettings = ["dailyAlert": true, "inboxMessages": true, "classroomMessages": true, "inAppNotifications": true, "isLoggedIn": true]
                 
                 self.REF_BASE.updateChildValues(["/users/\(uid)": user, "/userSettings/\(uid)": userSettings], withCompletionBlock: { (err, ref) in
                     completed(err == nil, true)
@@ -265,7 +265,7 @@ extension DataService {
             completed(false)
             return
         }
-        REF_USERS.child("\(uid)/privates").observeSingleEvent(of: .value, with: { snapshot in
+        REF_USERS.child("\(uid)/inbox").observeSingleEvent(of: .value, with: { snapshot in
             if !snapshot.exists() { // This user has no private messages yet
                 completed(true)
                 return
@@ -288,7 +288,7 @@ extension DataService {
                     updates["discipline"] = discipline!
                 }
                 
-                self.REF_USERS.child("\(uid2)/privates/\(uid)").updateChildValues(updates, withCompletionBlock: { (err, ref) in
+                self.REF_USERS.child("\(uid2)/inbox/\(uid)").updateChildValues(updates, withCompletionBlock: { (err, ref) in
                     snapsLeft -= 1
                     hasError = err != nil
                     if snapsLeft <= 0 {
@@ -302,13 +302,13 @@ extension DataService {
     // MARK: User Settings
     
     // Updates user settings whenever a user toggles the various settings in SettingsController
-    func updateUserSettings(dailyAlert: Bool, privateMessages: Bool, classroomMessages: Bool, inAppNotifications: Bool, completed: @escaping (_ isSuccess: Bool) -> ()) {
+    func updateUserSettings(dailyAlert: Bool, inboxMessages: Bool, classroomMessages: Bool, inAppNotifications: Bool, completed: @escaping (_ isSuccess: Bool) -> ()) {
         guard let uid = getStoredUid() else {
             completed(false)
             return
         }
         // Replace all existing settings
-        let settings: [String: Bool] = ["dailyAlert": dailyAlert, "privateMessages": privateMessages, "classroomMessages": classroomMessages, "inAppNotifications": inAppNotifications]
+        let settings: [String: Bool] = ["dailyAlert": dailyAlert, "inboxMessages": inboxMessages, "classroomMessages": classroomMessages, "inAppNotifications": inAppNotifications]
         
         REF_USERSETTINGS.child(uid).updateChildValues(settings, withCompletionBlock: { (err, ref) in
             completed(err == nil)
@@ -330,13 +330,13 @@ extension DataService {
                 completed(nil)
                 return
             }
-            guard let dict = snapshot.value as? [String: Bool], let dailyAlert = dict["dailyAlert"], let privateMessages = dict["privateMessages"], let classroomMessages = dict["classroomMessages"], let inAppNotifications = dict["inAppNotifications"] else {
+            guard let dict = snapshot.value as? [String: Bool], let dailyAlert = dict["dailyAlert"], let inboxMessages = dict["inboxMessages"], let classroomMessages = dict["classroomMessages"], let inAppNotifications = dict["inAppNotifications"] else {
                 completed(nil)
                 return
             }
             // These are settings are values mapped directly to the keys that will be displayed on the frontend
             // Note: The keys must be named exactly as you want them to appear on the frontend
-            let settings = ["Daily alert": dailyAlert, "Private messages": privateMessages, "Classroom messages": classroomMessages, "In-app notifications": inAppNotifications]
+            let settings = ["Daily alert": dailyAlert, "Private messages": inboxMessages, "Classroom messages": classroomMessages, "In-app notifications": inAppNotifications]
             completed(settings)
         })
     }
@@ -366,10 +366,10 @@ extension DataService {
                         let otherDiscipline = otherDict["discipline"] as! String
                         let otherName = otherDict["name"] as! String
                         let otherProfilePhoto = otherDict["profilePhoto"] as! String
-                        self.REF_USERS.child("\(uid1)/privates/\(uid2)").setValue(["discipline": otherDiscipline, "name": otherName, "profilePhoto": otherProfilePhoto])
-                        self.REF_USERS.child("\(uid2)/privates/\(uid1)").setValue(["discipline": myDiscipline, "name": myName, "profilePhoto": myProfilePhoto])
-                        let chatId = self.getChatId(uid1: uid1, uid2: uid2)
-                        self.REF_PRIVATECHATS.child(chatId).setValue(["hasNew:\(uid1)": true, "hasNew:\(uid2)": true, "lastMessage": "", "mid": "", "poster": "", "timestamp": Date().timeIntervalSince1970])
+                        self.REF_USERS.child("\(uid1)/inbox/\(uid2)").setValue(["discipline": otherDiscipline, "name": otherName, "profilePhoto": otherProfilePhoto])
+                        self.REF_USERS.child("\(uid2)/inbox/\(uid1)").setValue(["discipline": myDiscipline, "name": myName, "profilePhoto": myProfilePhoto])
+                        let inboxId = self.getInboxId(uid1: uid1, uid2: uid2)
+                        self.REF_INBOX.child(inboxId).setValue(["hasNew:\(uid1)": true, "hasNew:\(uid2)": true, "lastMessage": "", "mid": "", "poster": "", "timestamp": Date().timeIntervalSince1970])
                     })
                 }
             })

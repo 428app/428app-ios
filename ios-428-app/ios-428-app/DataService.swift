@@ -26,8 +26,8 @@ class DataService {
     fileprivate var _REF_BASE = FIRDatabase.database().reference().child(DB_ROOT)
     fileprivate var _REF_USERS = FIRDatabase.database().reference().child("\(DB_ROOT)/users")
     fileprivate var _REF_USERSETTINGS = FIRDatabase.database().reference().child("\(DB_ROOT)/userSettings")
-    fileprivate var _REF_PRIVATEMESSAGES = FIRDatabase.database().reference().child("\(DB_ROOT)/privateMessages")
-    fileprivate var _REF_PRIVATECHATS = FIRDatabase.database().reference().child("\(DB_ROOT)/privateChats")
+    fileprivate var _REF_INBOXMESSAGES = FIRDatabase.database().reference().child("\(DB_ROOT)/inboxMessages")
+    fileprivate var _REF_INBOX = FIRDatabase.database().reference().child("\(DB_ROOT)/inbox")
     fileprivate var _REF_CLASSROOMS = FIRDatabase.database().reference().child("\(DB_ROOT)/classrooms")
     fileprivate var _REF_CLASSROOMMESSAGES = FIRDatabase.database().reference().child("\(DB_ROOT)/classroomMessages")
     fileprivate var _REF_QUESTIONS = FIRDatabase.database().reference().child("\(DB_ROOT)/questions")
@@ -51,15 +51,15 @@ class DataService {
         }
     }
     
-    var REF_PRIVATEMESSAGES: FIRDatabaseReference {
+    var REF_INBOXMESSAGES: FIRDatabaseReference {
         get {
-            return _REF_PRIVATEMESSAGES
+            return _REF_INBOXMESSAGES
         }
     }
     
-    var REF_PRIVATECHATS: FIRDatabaseReference {
+    var REF_INBOX: FIRDatabaseReference {
         get {
-            return _REF_PRIVATECHATS
+            return _REF_INBOX
         }
     }
     
@@ -71,7 +71,7 @@ class DataService {
     
     var REF_CLASSROOMMESSAGES: FIRDatabaseReference {
         get {
-            return _REF_PRIVATEMESSAGES
+            return _REF_CLASSROOMMESSAGES
         }
     }
     
@@ -92,8 +92,8 @@ class DataService {
         _REF_BASE.removeAllObservers()
         _REF_USERS.removeAllObservers()
         _REF_USERSETTINGS.removeAllObservers()
-        _REF_PRIVATEMESSAGES.removeAllObservers()
-        _REF_PRIVATECHATS.removeAllObservers()
+        _REF_INBOXMESSAGES.removeAllObservers()
+        _REF_INBOX.removeAllObservers()
         _REF_CLASSROOMS.removeAllObservers()
         _REF_CLASSROOMMESSAGES.removeAllObservers()
         _REF_QUESTIONS.removeAllObservers()
