@@ -158,6 +158,11 @@ class SettingsController: UIViewController, UITableViewDelegate, UITableViewData
         log.info("Selected row: \(setting.text)") // TODO: Perform right logic based on the selected row
         if setting.text == "Log out" {
             self.logout()
+        } else if setting.text == "428 Facebook" {
+            let controller = WebviewController()
+            controller.urlString = "https://www.facebook.com/428app"
+            self.navigationItem.backBarButtonItem?.title = "Back to 428"
+            self.navigationController?.pushViewController(controller, animated: true)
         }
         tableView.deselectRow(at: indexPath, animated: true)
     }
