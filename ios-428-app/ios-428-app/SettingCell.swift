@@ -21,6 +21,21 @@ class SettingCell: BaseTableViewCell {
         return label
     }()
     
+    fileprivate let versionLabel: UILabel = {
+        let label = UILabel()
+        label.font = FONT_MEDIUM_LARGE
+        label.textColor = UIColor.darkGray
+        label.textAlignment = .center
+        return label
+    }()
+    
+    fileprivate let logo428: UIImageView = {
+        let logo = #imageLiteral(resourceName: "logo")
+        let imageView = UIImageView(image: logo)
+        imageView.contentMode = .scaleAspectFit
+        return imageView
+    }()
+    
     fileprivate let dividerView: UIView = {
        let view = UIView()
         view.backgroundColor = UIColor(white: 0.5, alpha: 0.3)
@@ -110,14 +125,29 @@ class SettingCell: BaseTableViewCell {
             constraintsToDelete.append(centerXSettingConstraint)
         } else if setting.type == .nobg {
             
-            // Used to display Version number at bottom
+            // Used to display logo and version number at bottom
+            
+            settingLabel.isHidden = true
+            versionLabel.text = setting.text
+            
+            let centralizedView = UIView()
+            centralizedView.addSubview(logo428)
+            centralizedView.addSubview(versionLabel)
+            centralizedView.addConstraintsWithFormat("H:[v0(60)]", views: logo428)
+            centralizedView.addConstraint(NSLayoutConstraint(item: logo428, attribute: .centerX, relatedBy: .equal, toItem: centralizedView, attribute: .centerX, multiplier: 1.0, constant: 0.0))
+            centralizedView.addConstraintsWithFormat("H:|-8-[v0]-8-|", views: versionLabel)
+            centralizedView.addConstraintsWithFormat("V:|-8-[v0(60)]-8-[v1(30)]-8-|", views: logo428, versionLabel)
+            
+            addSubview(centralizedView)
+            viewsToRemove.append(centralizedView)
             
             backgroundColor = GRAY_UICOLOR
-            let centerXSettingConstraint = NSLayoutConstraint(item: settingLabel, attribute: .centerX, relatedBy: .equal, toItem: self, attribute: .centerX, multiplier: 1.0, constant: 0.0)
-            self.addConstraint(centerXSettingConstraint)
-            constraintsToDelete.append(centerXSettingConstraint)
+            let centerYConstraint = NSLayoutConstraint(item: centralizedView, attribute: .centerY, relatedBy: .equal, toItem: self, attribute: .centerY, multiplier: 1.0, constant: 0.0)
+            self.addConstraint(centerYConstraint)
+            constraintsToDelete.append(centerYConstraint)
+            constraintsToDelete.append(contentsOf: addAndGetConstraintsWithFormat("H:|-8-[v0]-8-|", views: centralizedView))
             dividerView.isHidden = true
-            settingLabel.font = FONT_HEAVY_MID
+            
         }
         
         if setting.isLastCell {

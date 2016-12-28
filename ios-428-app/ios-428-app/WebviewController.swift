@@ -16,18 +16,14 @@ class WebviewController: UIViewController, UIWebViewDelegate {
     override func viewDidLoad() {
         super.viewDidLoad()
         self.view.backgroundColor = UIColor.white
-        self.view.addSubview(webView)
+        self.extendedLayoutIncludesOpaqueBars = false
+        self.setupViews()
         if let url = URL(string: urlString) {
             let request = URLRequest(url: url)
             webView.loadRequest(request)
         }
     }
-    
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-//        self.setupToolbar()
-    }
-    
+
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         self.setupToolbar()
@@ -37,17 +33,13 @@ class WebviewController: UIViewController, UIWebViewDelegate {
         super.viewWillDisappear(animated)
         self.navigationController?.setToolbarHidden(true, animated: false)
     }
-    
-    fileprivate lazy var webView: UIWebView = {
-        let view = UIWebView(frame: CGRect(x: 0.0, y: 0.0, width: UIScreen.main.bounds.width, height: UIScreen.main.bounds.height))
-        view.delegate = self
-        view.backgroundColor = UIColor.white
-        return view
-    }()
+
+    // MARK: Web view delegate functions
     
     func webView(_ webView: UIWebView, didFailLoadWithError error: Error) {
         log.warning("Web view stopped loading")
         UIApplication.shared.isNetworkActivityIndicatorVisible = false
+        viewForFailedLoad()
     }
     
     func webView(_ webView: UIWebView, shouldStartLoadWith request: URLRequest, navigationType: UIWebViewNavigationType) -> Bool {
@@ -67,6 +59,7 @@ class WebviewController: UIViewController, UIWebViewDelegate {
     
     func webViewDidFinishLoad(_ webView: UIWebView) {
         UIApplication.shared.isNetworkActivityIndicatorVisible = false
+        viewForSuccessfulLoad()
         log.info("Web view finished loading")
         // Set back and forward button accordingly
         forward.isEnabled = webView.canGoForward
@@ -109,4 +102,64 @@ class WebviewController: UIViewController, UIWebViewDelegate {
     func goForward() {
         webView.goForward()
     }
+    
+    // MARK: Setup views
+    
+    fileprivate func viewForSuccessfulLoad() {
+        logo428.isHidden = true
+        noLoadLbl.isHidden = true
+        webView.isHidden = false
+    }
+    
+    fileprivate func viewForFailedLoad() {
+        logo428.isHidden = false
+        noLoadLbl.isHidden = false
+        webView.isHidden = true
+    }
+    
+    fileprivate lazy var webView: UIWebView = {
+        let view = UIWebView(frame: CGRect(x: 0.0, y: 0.0, width: UIScreen.main.bounds.width, height: UIScreen.main.bounds.height))
+        view.delegate = self
+        view.isOpaque = false
+        view.backgroundColor = UIColor.clear
+        view.isHidden = false
+        return view
+    }()
+    
+    fileprivate let logo428: UIImageView = {
+        let logo = #imageLiteral(resourceName: "logo")
+        let imageView = UIImageView(image: logo)
+        imageView.contentMode = .scaleAspectFit
+        imageView.isHidden = true
+        return imageView
+    }()
+    
+    fileprivate let noLoadLbl: UILabel = {
+        let label = UILabel()
+        label.text = "Oops, something went wrong."
+        label.font = FONT_HEAVY_MID
+        label.textColor = UIColor.darkGray
+        label.isHidden = true
+        label.textAlignment = .center
+        return label
+    }()
+    
+    fileprivate func setupViews() {
+        self.view.addSubview(webView)
+        
+        let centralizedView = UIView()
+        centralizedView.addSubview(logo428)
+        centralizedView.addSubview(noLoadLbl)
+        centralizedView.addConstraintsWithFormat("H:[v0(60)]", views: logo428)
+        centralizedView.addConstraint(NSLayoutConstraint(item: logo428, attribute: .centerX, relatedBy: .equal, toItem: centralizedView, attribute: .centerX, multiplier: 1.0, constant: 0.0))
+        centralizedView.addConstraintsWithFormat("H:|-8-[v0]-8-|", views: noLoadLbl)
+        centralizedView.addConstraintsWithFormat("V:|-8-[v0(60)]-8-[v1(30)]-8-|", views: logo428, noLoadLbl)
+        
+        self.view.addSubview(centralizedView)
+        
+        self.view.addConstraint(NSLayoutConstraint(item: centralizedView, attribute: .centerY, relatedBy: .equal, toItem: self.view, attribute: .centerY, multiplier: 1.0, constant: 0.0))
+        self.view.addConstraintsWithFormat("H:|[v0]|", views: centralizedView)
+    }
+    
+    
 }

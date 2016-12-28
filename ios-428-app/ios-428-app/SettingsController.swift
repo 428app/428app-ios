@@ -158,6 +158,11 @@ class SettingsController: UIViewController, UITableViewDelegate, UITableViewData
         log.info("Selected row: \(setting.text)") // TODO: Perform right logic based on the selected row
         if setting.text == "Log out" {
             self.logout()
+        } else if setting.text == "428 Website" {
+            let controller = WebviewController()
+            controller.urlString = "www.428pm.com"
+            self.navigationItem.backBarButtonItem?.title = "Back to 428"
+            self.navigationController?.pushViewController(controller, animated: true)
         } else if setting.text == "428 Facebook" {
             let controller = WebviewController()
             controller.urlString = "https://www.facebook.com/428app"
@@ -193,6 +198,10 @@ class SettingsController: UIViewController, UITableViewDelegate, UITableViewData
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        // If last section, taller height because of image
+        if indexPath.row == settings.count - 1 {
+            return 140.0
+        }
         return 50.0
     }
     
