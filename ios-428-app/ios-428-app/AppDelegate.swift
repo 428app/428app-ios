@@ -180,7 +180,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             return
         }
         
-        guard let title = alert["title"], let body = alert["body"], let typeString = userInfo["type"] as? String, let type = TokenType(rawValue: typeString), let uid = userInfo["uid"] as? String, let tid = userInfo["tid"] as? String, let imageUrlString = userInfo["image"] as? String else {
+        guard let title = alert["title"], let body = alert["body"], let typeString = userInfo["type"] as? String, let type = TokenType(rawValue: typeString), let uid = userInfo["uid"] as? String, let cid = userInfo["cid"] as? String, let imageUrlString = userInfo["image"] as? String else {
             return
         }
         
@@ -196,11 +196,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             
             // Download image, then show popup after complete
             _ = downloadImage(imageUrlString: imageUrlString, completed: { (image) in
-                self.showPopup(title: title, subtitle: body, image: image, uid: uid, tid: tid, type: type)
+                self.showPopup(title: title, subtitle: body, image: image, uid: uid, cid: cid, type: type)
             })
         } else {
             // In background, set the right page to transition to based on type, and uid/tid
-            self.transitionToRightScreenBasedOnType(type: type, uid: uid, tid: tid)
+            self.transitionToRightScreenBasedOnType(type: type, uid: uid, cid: cid)
         }
     }
     
@@ -233,7 +233,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
     
     // Used to show popup in the right view controller
-    fileprivate func showPopup(title: String, subtitle: String, image: UIImage?, uid: String, tid: String, type: TokenType) {
+    fileprivate func showPopup(title: String, subtitle: String, image: UIImage?, uid: String, cid: String, type: TokenType) {
         // Note that image can be nil
         let announcement = Announcement(title: title, subtitle: subtitle, image: image, duration: 2.0, action: nil)
         guard let vc = self.getVisibleViewController(self.window?.rootViewController), let nvc = vc as? CustomNavigationController else { // Check for custom navigation controller is crucial, if not popup will show up even on LoginScreen
@@ -259,18 +259,18 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             if chatVC.inbox.uid != uid {
                 show(shout: announcement, to: vc, completion: {
                     // This callback is reached when user taps, so we transition to the right page based on type, and uid/tid
-                    self.transitionToRightScreenBasedOnType(type: type, uid: uid, tid: tid)
+                    self.transitionToRightScreenBasedOnType(type: type, uid: uid, cid: cid)
                 })
             }
         } else {
             // Show for all other screens
             show(shout: announcement, to: vc, completion: {
-                self.transitionToRightScreenBasedOnType(type: type, uid: uid, tid: tid)
+                self.transitionToRightScreenBasedOnType(type: type, uid: uid, cid: cid)
             })
         }
     }
     
-    fileprivate func transitionToRightScreenBasedOnType(type: TokenType, uid: String, tid: String) {
+    fileprivate func transitionToRightScreenBasedOnType(type: TokenType, uid: String, cid: String) {
         
         guard let rootVC = self.window?.rootViewController as? LoginController else {
             return
@@ -283,7 +283,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         if type == .INBOX {
             self.findAndTransitionToInbox(uid: uid, tabBarController: tabBarController)
         } else if type == .CLASSROOM {
-            self.findAndTransitionToClassroom(tid: tid, tabBarController: tabBarController)
+            self.findAndTransitionToClassroom(cid: cid, tabBarController: tabBarController)
         }
     }
     
@@ -313,27 +313,27 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
     
     // Open the correct classroom that matches tid
-    fileprivate func findAndTransitionToClassroom(tid: String, tabBarController: CustomTabBarController) {
-        
-        guard let vcs = tabBarController.viewControllers, let classroomsNVC = vcs[1] as? CustomNavigationController, let classroomsVC = classroomsNVC.viewControllers.first as? ClassroomsController else {
-            return
-        }
-        if classroomsNVC.viewControllers.count > 1 {
-            // Currently in a discuss screen or profile screen, etc., need to dismiss back to ClassroomsController before pushing DiscussController
-            classroomsNVC.popToRootViewController(animated: false)
-        }
-        // Look for the correct classroom in all classrooms
-        // Note: Because ClassroomVC is not loaded by default, the classrooms array might still be empty until the user clicks on the Classrooms tab. In that case, we just change the tab index instead of going into the individual classroom.
-        let correctClassroom = classroomsVC.classrooms.filter() {$0.tid == tid}
-        if correctClassroom.count != 1 {
-            tabBarController.selectedIndex = 1
-            log.warning("Tid could not be found in classrooms / too many of the same tid, OR page not loaded yet")
-            return
-        }
-        let discussVC: DiscussController = DiscussController()
-        discussVC.classroom = correctClassroom[0]
-        classroomsNVC.pushViewController(discussVC, animated: false)
-        tabBarController.selectedIndex = 1
+    fileprivate func findAndTransitionToClassroom(cid: String, tabBarController: CustomTabBarController) {
+//        
+//        guard let vcs = tabBarController.viewControllers, let classroomsNVC = vcs[1] as? CustomNavigationController, let classroomsVC = classroomsNVC.viewControllers.first as? ClassroomsController else {
+//            return
+//        }
+//        if classroomsNVC.viewControllers.count > 1 {
+//            // Currently in a discuss screen or profile screen, etc., need to dismiss back to ClassroomsController before pushing DiscussController
+//            classroomsNVC.popToRootViewController(animated: false)
+//        }
+//        // Look for the correct classroom in all classrooms
+//        // Note: Because ClassroomVC is not loaded by default, the classrooms array might still be empty until the user clicks on the Classrooms tab. In that case, we just change the tab index instead of going into the individual classroom.
+//        let correctClassroom = classroomsVC.classrooms.filter() {$0.cid == cid}
+//        if correctClassroom.count != 1 {
+//            tabBarController.selectedIndex = 1
+//            log.warning("Tid could not be found in classrooms / too many of the same tid, OR page not loaded yet")
+//            return
+//        }
+//        let discussVC: DiscussController = DiscussController()
+//        discussVC.classroom = correctClassroom[0]
+//        classroomsNVC.pushViewController(discussVC, animated: false)
+//        tabBarController.selectedIndex = 1
     }
     
     // Received in foreground (iOS 9)

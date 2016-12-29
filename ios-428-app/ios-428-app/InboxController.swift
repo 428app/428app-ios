@@ -93,7 +93,7 @@ class InboxController: UICollectionViewController, UICollectionViewDelegateFlowL
         collectionView?.delegate = self
         collectionView?.backgroundColor = UIColor.white
         collectionView?.alwaysBounceVertical = true
-        collectionView?.register(ConnectionCell.self, forCellWithReuseIdentifier: CELL_ID)
+        collectionView?.register(InboxCell.self, forCellWithReuseIdentifier: CELL_ID)
         
         self.setupEmptyPlaceholderView()
         
@@ -166,7 +166,7 @@ class InboxController: UICollectionViewController, UICollectionViewDelegateFlowL
     }
     
     override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: CELL_ID, for: indexPath) as! ConnectionCell
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: CELL_ID, for: indexPath) as! InboxCell
         let message = self.latestMessages[indexPath.item]
         cell.configureCell(messageObj: message)
         return cell

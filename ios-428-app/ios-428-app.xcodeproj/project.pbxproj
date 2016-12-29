@@ -17,10 +17,10 @@
 		4024F2211DB7E2E9007819F7 /* ClassroomController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4024F2201DB7E2E9007819F7 /* ClassroomController.swift */; };
 		4024F2231DB7F664007819F7 /* Classroom.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4024F2221DB7F664007819F7 /* Classroom.swift */; };
 		4024F2251DB7F83F007819F7 /* ClassroomMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4024F2241DB7F83F007819F7 /* ClassroomMessage.swift */; };
-		4024F2271DB82239007819F7 /* TopicCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4024F2261DB82239007819F7 /* TopicCell.swift */; };
+		4024F2271DB82239007819F7 /* ClassroomCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4024F2261DB82239007819F7 /* ClassroomCell.swift */; };
 		4024F2291DB853F9007819F7 /* DiscussController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4024F2281DB853F9007819F7 /* DiscussController.swift */; };
 		4024F22B1DB85C0E007819F7 /* PaddingLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4024F22A1DB85C0E007819F7 /* PaddingLabel.swift */; };
-		4024F22D1DB86B18007819F7 /* TopicChatCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4024F22C1DB86B18007819F7 /* TopicChatCell.swift */; };
+		4024F22D1DB86B18007819F7 /* ClassroomChatCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4024F22C1DB86B18007819F7 /* ClassroomChatCell.swift */; };
 		4024F2311DB88262007819F7 /* DiscussModalController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4024F2301DB88262007819F7 /* DiscussModalController.swift */; };
 		4024F2331DB9454B007819F7 /* LoginController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4024F2321DB9454B007819F7 /* LoginController.swift */; };
 		4024F2351DBB2155007819F7 /* IntroController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4024F2341DBB2155007819F7 /* IntroController.swift */; };
@@ -52,7 +52,7 @@
 		4064A2141DACBCAA00071383 /* BaseCollectionCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4064A2131DACBCAA00071383 /* BaseCollectionCell.swift */; };
 		4064A2161DACBCDC00071383 /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4064A2151DACBCDC00071383 /* Extensions.swift */; };
 		4064A2181DACC1B700071383 /* ChatCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4064A2171DACC1B700071383 /* ChatCell.swift */; };
-		4064A21A1DACC20E00071383 /* ConnectionCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4064A2191DACC20E00071383 /* ConnectionCell.swift */; };
+		4064A21A1DACC20E00071383 /* InboxCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4064A2191DACC20E00071383 /* InboxCell.swift */; };
 		4064A21F1DAD72DF00071383 /* Functions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4064A21E1DAD72DF00071383 /* Functions.swift */; };
 		4064A2211DADE67E00071383 /* ChatHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4064A2201DADE67E00071383 /* ChatHeaderView.swift */; };
 		4064A2271DB13FBD00071383 /* Debug.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4064A2261DB13FBD00071383 /* Debug.swift */; };
@@ -108,10 +108,10 @@
 		4024F2201DB7E2E9007819F7 /* ClassroomController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ClassroomController.swift; sourceTree = "<group>"; };
 		4024F2221DB7F664007819F7 /* Classroom.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Classroom.swift; sourceTree = "<group>"; };
 		4024F2241DB7F83F007819F7 /* ClassroomMessage.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ClassroomMessage.swift; sourceTree = "<group>"; };
-		4024F2261DB82239007819F7 /* TopicCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TopicCell.swift; sourceTree = "<group>"; };
+		4024F2261DB82239007819F7 /* ClassroomCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ClassroomCell.swift; sourceTree = "<group>"; };
 		4024F2281DB853F9007819F7 /* DiscussController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DiscussController.swift; sourceTree = "<group>"; };
 		4024F22A1DB85C0E007819F7 /* PaddingLabel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PaddingLabel.swift; sourceTree = "<group>"; };
-		4024F22C1DB86B18007819F7 /* TopicChatCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TopicChatCell.swift; sourceTree = "<group>"; };
+		4024F22C1DB86B18007819F7 /* ClassroomChatCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ClassroomChatCell.swift; sourceTree = "<group>"; };
 		4024F2301DB88262007819F7 /* DiscussModalController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DiscussModalController.swift; sourceTree = "<group>"; };
 		4024F2321DB9454B007819F7 /* LoginController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LoginController.swift; sourceTree = "<group>"; };
 		4024F2341DBB2155007819F7 /* IntroController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IntroController.swift; sourceTree = "<group>"; };
@@ -145,7 +145,7 @@
 		4064A2131DACBCAA00071383 /* BaseCollectionCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BaseCollectionCell.swift; sourceTree = "<group>"; };
 		4064A2151DACBCDC00071383 /* Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
 		4064A2171DACC1B700071383 /* ChatCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChatCell.swift; sourceTree = "<group>"; };
-		4064A2191DACC20E00071383 /* ConnectionCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConnectionCell.swift; sourceTree = "<group>"; };
+		4064A2191DACC20E00071383 /* InboxCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = InboxCell.swift; sourceTree = "<group>"; };
 		4064A21E1DAD72DF00071383 /* Functions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Functions.swift; sourceTree = "<group>"; };
 		4064A2201DADE67E00071383 /* ChatHeaderView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChatHeaderView.swift; sourceTree = "<group>"; };
 		4064A2261DB13FBD00071383 /* Debug.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Debug.swift; sourceTree = "<group>"; };
@@ -201,13 +201,13 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		4024F21F1DB7E2DB007819F7 /* Topic */ = {
+		4024F21F1DB7E2DB007819F7 /* Classroom */ = {
 			isa = PBXGroup;
 			children = (
 				4024F2201DB7E2E9007819F7 /* ClassroomController.swift */,
 				4024F2281DB853F9007819F7 /* DiscussController.swift */,
 			);
-			name = Topic;
+			name = Classroom;
 			sourceTree = "<group>";
 		};
 		404C22F71DBDB8580054FE19 /* Frontend */ = {
@@ -337,11 +337,11 @@
 				40AB7FFB1DB5B09700492788 /* BaseTableViewCell.swift */,
 				4064A2171DACC1B700071383 /* ChatCell.swift */,
 				4064A2201DADE67E00071383 /* ChatHeaderView.swift */,
-				4064A2191DACC20E00071383 /* ConnectionCell.swift */,
+				4064A2191DACC20E00071383 /* InboxCell.swift */,
 				4064A2551DB3E5E800071383 /* ProfileCell.swift */,
 				40AB7FF91DB5B06A00492788 /* SettingCell.swift */,
-				4024F2261DB82239007819F7 /* TopicCell.swift */,
-				4024F22C1DB86B18007819F7 /* TopicChatCell.swift */,
+				4024F2261DB82239007819F7 /* ClassroomCell.swift */,
+				4024F22C1DB86B18007819F7 /* ClassroomChatCell.swift */,
 				40E2E1411DD3788300469B4D /* CustomActivityIndicatorView.swift */,
 			);
 			name = View;
@@ -352,8 +352,8 @@
 			children = (
 				40785D681E0E6B14009B66E0 /* Login */,
 				40AB80011DB6FA9500492788 /* Me */,
-				4024F21F1DB7E2DB007819F7 /* Topic */,
-				40A2C0881E14268500D477E1 /* Private Messages */,
+				4024F21F1DB7E2DB007819F7 /* Classroom */,
+				40A2C0881E14268500D477E1 /* Inbox */,
 			);
 			name = Controller;
 			sourceTree = "<group>";
@@ -381,13 +381,13 @@
 			name = Login;
 			sourceTree = "<group>";
 		};
-		40A2C0881E14268500D477E1 /* Private Messages */ = {
+		40A2C0881E14268500D477E1 /* Inbox */ = {
 			isa = PBXGroup;
 			children = (
 				4064A1B71DAC381300071383 /* InboxController.swift */,
 				4064A1E31DAC590900071383 /* ChatController.swift */,
 			);
-			name = "Private Messages";
+			name = Inbox;
 			sourceTree = "<group>";
 		};
 		40AB80011DB6FA9500492788 /* Me */ = {
@@ -617,9 +617,9 @@
 				40AB7FFA1DB5B06A00492788 /* SettingCell.swift in Sources */,
 				4064A1EB1DAC80F100071383 /* Constants.swift in Sources */,
 				4064A2141DACBCAA00071383 /* BaseCollectionCell.swift in Sources */,
-				4024F22D1DB86B18007819F7 /* TopicChatCell.swift in Sources */,
+				4024F22D1DB86B18007819F7 /* ClassroomChatCell.swift in Sources */,
 				4024F2211DB7E2E9007819F7 /* ClassroomController.swift in Sources */,
-				4024F2271DB82239007819F7 /* TopicCell.swift in Sources */,
+				4024F2271DB82239007819F7 /* ClassroomCell.swift in Sources */,
 				4064A2181DACC1B700071383 /* ChatCell.swift in Sources */,
 				4064A1E61DAC7DA600071383 /* CustomTabBarController.swift in Sources */,
 				4064A2521DB346A800071383 /* Profile.swift in Sources */,
@@ -659,7 +659,7 @@
 				40AB80051DB7094700492788 /* EditProfessionalController.swift in Sources */,
 				4024F2331DB9454B007819F7 /* LoginController.swift in Sources */,
 				4024F2311DB88262007819F7 /* DiscussModalController.swift in Sources */,
-				4064A21A1DACC20E00071383 /* ConnectionCell.swift in Sources */,
+				4064A21A1DACC20E00071383 /* InboxCell.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

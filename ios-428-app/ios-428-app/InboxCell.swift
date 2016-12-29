@@ -1,5 +1,5 @@
 //
-//  ConnectionCell.swift
+//  InboxCell.swift
 //  ios-428-app
 //
 //  Created by Leonard Loo on 10/11/16.
@@ -11,7 +11,7 @@ import UIKit
 import Alamofire
 import AlamofireImage
 
-class ConnectionCell: BaseCollectionCell {
+class InboxCell: BaseCollectionCell {
     
     // NOTE: If message has an empty text, it means this is a new connection because we disallow empty 
     // messages from being sent to the server
