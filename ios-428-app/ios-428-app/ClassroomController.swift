@@ -1,5 +1,5 @@
 //
-//  TopicsController.swift
+//  ClassroomsController.swift
 //  ios-428-app
 //
 //  I use a table view controller when I need dynamically sized cells, 
@@ -12,11 +12,11 @@
 import Foundation
 import UIKit
 
-class TopicsController: UIViewController, UITableViewDelegate, UITableViewDataSource {
+class ClassroomsController: UIViewController, UITableViewDelegate, UITableViewDataSource {
     
-    fileprivate let CELL_ID = "topicCell"
+    fileprivate let CELL_ID = "classroomCell"
     
-    open var topics = [Topic]()
+    open var classrooms = [Classroom]()
     fileprivate lazy var tableView: UITableView = {
        let tableView = UITableView()
         tableView.delegate = self
@@ -25,7 +25,7 @@ class TopicsController: UIViewController, UITableViewDelegate, UITableViewDataSo
         tableView.showsVerticalScrollIndicator = false
         tableView.showsHorizontalScrollIndicator = false
         tableView.separatorStyle = .none
-        tableView.register(TopicCell.self, forCellReuseIdentifier: self.CELL_ID)
+        tableView.register(ClassroomCell.self, forCellReuseIdentifier: self.CELL_ID)
         return tableView
     }()
     
@@ -58,7 +58,7 @@ class TopicsController: UIViewController, UITableViewDelegate, UITableViewDataSo
     
     fileprivate func loadData() {
         // TODO: Load classrooms from server
-//        self.topics = loadTopics()
+//        self.classrooms = loadClassrooms()
         emptyPlaceholderView.isHidden = false
         self.countdownTimer.invalidate()
         self.countdownTimer = Timer.scheduledTimer(timeInterval: 1.0, target: self, selector: #selector(self.updateTime), userInfo: nil, repeats: true)
@@ -174,13 +174,13 @@ class TopicsController: UIViewController, UITableViewDelegate, UITableViewDataSo
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return topics.count
+        return classrooms.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: CELL_ID, for: indexPath) as! TopicCell
-        let topic = topics[indexPath.row]
-        cell.configureCell(topic: topic)
+        let cell = tableView.dequeueReusableCell(withIdentifier: CELL_ID, for: indexPath) as! ClassroomCell
+        let classroom = classrooms[indexPath.row]
+        cell.configureCell(classroom: classroom)
         return cell
     }
     
@@ -190,9 +190,9 @@ class TopicsController: UIViewController, UITableViewDelegate, UITableViewDataSo
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: false)
-        let topic = topics[indexPath.row]
+        let classroom = classrooms[indexPath.row]
         let controller = DiscussController()
-        controller.topic = topic
+        controller.classroom = classroom
         let backItem = UIBarButtonItem()
         backItem.title = " "
         navigationItem.backBarButtonItem = backItem

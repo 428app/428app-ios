@@ -14,9 +14,9 @@
 		4020CE1F1DBCA84C00461181 /* FBSDKCoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4020CE1B1DBCA84C00461181 /* FBSDKCoreKit.framework */; };
 		4020CE201DBCA84C00461181 /* FBSDKLoginKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4020CE1C1DBCA84C00461181 /* FBSDKLoginKit.framework */; };
 		4020CE211DBCA84C00461181 /* FBSDKShareKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4020CE1D1DBCA84C00461181 /* FBSDKShareKit.framework */; };
-		4024F2211DB7E2E9007819F7 /* TopicsController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4024F2201DB7E2E9007819F7 /* TopicsController.swift */; };
-		4024F2231DB7F664007819F7 /* Topic.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4024F2221DB7F664007819F7 /* Topic.swift */; };
-		4024F2251DB7F83F007819F7 /* TopicMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4024F2241DB7F83F007819F7 /* TopicMessage.swift */; };
+		4024F2211DB7E2E9007819F7 /* ClassroomController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4024F2201DB7E2E9007819F7 /* ClassroomController.swift */; };
+		4024F2231DB7F664007819F7 /* Classroom.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4024F2221DB7F664007819F7 /* Classroom.swift */; };
+		4024F2251DB7F83F007819F7 /* ClassroomMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4024F2241DB7F83F007819F7 /* ClassroomMessage.swift */; };
 		4024F2271DB82239007819F7 /* TopicCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4024F2261DB82239007819F7 /* TopicCell.swift */; };
 		4024F2291DB853F9007819F7 /* DiscussController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4024F2281DB853F9007819F7 /* DiscussController.swift */; };
 		4024F22B1DB85C0E007819F7 /* PaddingLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4024F22A1DB85C0E007819F7 /* PaddingLabel.swift */; };
@@ -67,6 +67,7 @@
 		40785D631E0D981C009B66E0 /* InboxService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 40785D621E0D981C009B66E0 /* InboxService.swift */; };
 		40785D651E0D9868009B66E0 /* UserService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 40785D641E0D9868009B66E0 /* UserService.swift */; };
 		40785D671E0E5A1F009B66E0 /* RemoteService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 40785D661E0E5A1F009B66E0 /* RemoteService.swift */; };
+		4081B2621E1500FF00D6E690 /* Question.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4081B2611E1500FF00D6E690 /* Question.swift */; };
 		409F05F21DD81E1D001B673F /* Upload.swift in Sources */ = {isa = PBXBuildFile; fileRef = 409F05F11DD81E1D001B673F /* Upload.swift */; };
 		40A2C0871E13D61F00D477E1 /* WebviewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 40A2C0861E13D61F00D477E1 /* WebviewController.swift */; };
 		40AB7FF81DB59C9600492788 /* SettingsController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 40AB7FF71DB59C9600492788 /* SettingsController.swift */; };
@@ -104,9 +105,9 @@
 		4020CE1C1DBCA84C00461181 /* FBSDKLoginKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = FBSDKLoginKit.framework; sourceTree = "<group>"; };
 		4020CE1D1DBCA84C00461181 /* FBSDKShareKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = FBSDKShareKit.framework; sourceTree = "<group>"; };
 		4020CE221DBCADFD00461181 /* ios-428-app.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "ios-428-app.entitlements"; sourceTree = "<group>"; };
-		4024F2201DB7E2E9007819F7 /* TopicsController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TopicsController.swift; sourceTree = "<group>"; };
-		4024F2221DB7F664007819F7 /* Topic.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Topic.swift; sourceTree = "<group>"; };
-		4024F2241DB7F83F007819F7 /* TopicMessage.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TopicMessage.swift; sourceTree = "<group>"; };
+		4024F2201DB7E2E9007819F7 /* ClassroomController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ClassroomController.swift; sourceTree = "<group>"; };
+		4024F2221DB7F664007819F7 /* Classroom.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Classroom.swift; sourceTree = "<group>"; };
+		4024F2241DB7F83F007819F7 /* ClassroomMessage.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ClassroomMessage.swift; sourceTree = "<group>"; };
 		4024F2261DB82239007819F7 /* TopicCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TopicCell.swift; sourceTree = "<group>"; };
 		4024F2281DB853F9007819F7 /* DiscussController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DiscussController.swift; sourceTree = "<group>"; };
 		4024F22A1DB85C0E007819F7 /* PaddingLabel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PaddingLabel.swift; sourceTree = "<group>"; };
@@ -159,6 +160,7 @@
 		40785D621E0D981C009B66E0 /* InboxService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = InboxService.swift; sourceTree = "<group>"; };
 		40785D641E0D9868009B66E0 /* UserService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserService.swift; sourceTree = "<group>"; };
 		40785D661E0E5A1F009B66E0 /* RemoteService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RemoteService.swift; sourceTree = "<group>"; };
+		4081B2611E1500FF00D6E690 /* Question.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Question.swift; sourceTree = "<group>"; };
 		409F05F11DD81E1D001B673F /* Upload.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Upload.swift; sourceTree = "<group>"; };
 		40A2C0861E13D61F00D477E1 /* WebviewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WebviewController.swift; sourceTree = "<group>"; };
 		40AB7FF71DB59C9600492788 /* SettingsController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingsController.swift; sourceTree = "<group>"; };
@@ -202,7 +204,7 @@
 		4024F21F1DB7E2DB007819F7 /* Topic */ = {
 			isa = PBXGroup;
 			children = (
-				4024F2201DB7E2E9007819F7 /* TopicsController.swift */,
+				4024F2201DB7E2E9007819F7 /* ClassroomController.swift */,
 				4024F2281DB853F9007819F7 /* DiscussController.swift */,
 			);
 			name = Topic;
@@ -317,8 +319,9 @@
 				4064A22A1DB2B27F00071383 /* Inbox.swift */,
 				4064A2511DB346A800071383 /* Profile.swift */,
 				40AB7FFD1DB5B89C00492788 /* Setting.swift */,
-				4024F2221DB7F664007819F7 /* Topic.swift */,
-				4024F2241DB7F83F007819F7 /* TopicMessage.swift */,
+				4024F2221DB7F664007819F7 /* Classroom.swift */,
+				4081B2611E1500FF00D6E690 /* Question.swift */,
+				4024F2241DB7F83F007819F7 /* ClassroomMessage.swift */,
 			);
 			name = Model;
 			sourceTree = "<group>";
@@ -597,7 +600,7 @@
 				4024F2291DB853F9007819F7 /* DiscussController.swift in Sources */,
 				4064A2051DAC868E00071383 /* CustomNavigationController.swift in Sources */,
 				4024F2351DBB2155007819F7 /* IntroController.swift in Sources */,
-				4024F2231DB7F664007819F7 /* Topic.swift in Sources */,
+				4024F2231DB7F664007819F7 /* Classroom.swift in Sources */,
 				40ADEEDB1DDD12D000CE529A /* FontList.swift in Sources */,
 				40785D5F1E093AAF009B66E0 /* MeController.swift in Sources */,
 				40E2E1421DD3788300469B4D /* CustomActivityIndicatorView.swift in Sources */,
@@ -606,6 +609,7 @@
 				4064A1E41DAC590900071383 /* ChatController.swift in Sources */,
 				4064A2541DB34E4D00071383 /* ProfileController.swift in Sources */,
 				4020CE151DBB569000461181 /* Switches.swift in Sources */,
+				4081B2621E1500FF00D6E690 /* Question.swift in Sources */,
 				4000C37A1DD81227009C10E5 /* Download.swift in Sources */,
 				40785D5B1E04EDCE009B66E0 /* HorizontalScrollCell.swift in Sources */,
 				40AB7FF81DB59C9600492788 /* SettingsController.swift in Sources */,
@@ -614,7 +618,7 @@
 				4064A1EB1DAC80F100071383 /* Constants.swift in Sources */,
 				4064A2141DACBCAA00071383 /* BaseCollectionCell.swift in Sources */,
 				4024F22D1DB86B18007819F7 /* TopicChatCell.swift in Sources */,
-				4024F2211DB7E2E9007819F7 /* TopicsController.swift in Sources */,
+				4024F2211DB7E2E9007819F7 /* ClassroomController.swift in Sources */,
 				4024F2271DB82239007819F7 /* TopicCell.swift in Sources */,
 				4064A2181DACC1B700071383 /* ChatCell.swift in Sources */,
 				4064A1E61DAC7DA600071383 /* CustomTabBarController.swift in Sources */,
@@ -622,7 +626,7 @@
 				4064A2561DB3E5E800071383 /* ProfileCell.swift in Sources */,
 				40785D651E0D9868009B66E0 /* UserService.swift in Sources */,
 				40ADEEDA1DDD12D000CE529A /* ColorList.swift in Sources */,
-				4024F2251DB7F83F007819F7 /* TopicMessage.swift in Sources */,
+				4024F2251DB7F83F007819F7 /* ClassroomMessage.swift in Sources */,
 				40AB80071DB7095200492788 /* EditTaglineController.swift in Sources */,
 				4064A2271DB13FBD00071383 /* Debug.swift in Sources */,
 				4064A2211DADE67E00071383 /* ChatHeaderView.swift in Sources */,

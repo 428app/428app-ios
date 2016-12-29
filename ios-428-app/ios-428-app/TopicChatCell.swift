@@ -1,5 +1,5 @@
 //
-//  TopicChatCell.swift
+//  ClassroomChatCell.swift
 //  ios-428-app
 //
 //  Created by Leonard Loo on 10/19/16.
@@ -9,9 +9,9 @@
 import Foundation
 import UIKit
 
-class TopicChatCell: BaseCollectionCell {
+class ClassroomChatCell: BaseCollectionCell {
     
-    fileprivate var message: TopicMessage!
+    fileprivate var message: ClassroomMessage!
     open var shouldExpand = false
     fileprivate let TEXT_VIEW_FONT = UIFont.systemFont(ofSize: 16.0)
     
@@ -87,7 +87,7 @@ class TopicChatCell: BaseCollectionCell {
         
     }
     
-    func configureCell(messageObj: TopicMessage, viewWidth: CGFloat, isLastInChain: Bool) {
+    func configureCell(messageObj: ClassroomMessage, viewWidth: CGFloat, isLastInChain: Bool) {
         self.message = messageObj
         self.messageTextView.isScrollEnabled = true
         self.messageTextView.text = self.message.text

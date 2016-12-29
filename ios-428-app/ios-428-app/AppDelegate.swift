@@ -283,7 +283,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         if type == .INBOX {
             self.findAndTransitionToInbox(uid: uid, tabBarController: tabBarController)
         } else if type == .CLASSROOM {
-            self.findAndTransitionToTopic(tid: tid, tabBarController: tabBarController)
+            self.findAndTransitionToClassroom(tid: tid, tabBarController: tabBarController)
         }
     }
     
@@ -312,27 +312,27 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         tabBarController.selectedIndex = 0
     }
     
-    // Open the correct topic that matches tid
-    fileprivate func findAndTransitionToTopic(tid: String, tabBarController: CustomTabBarController) {
+    // Open the correct classroom that matches tid
+    fileprivate func findAndTransitionToClassroom(tid: String, tabBarController: CustomTabBarController) {
         
-        guard let vcs = tabBarController.viewControllers, let topicsNVC = vcs[1] as? CustomNavigationController, let topicsVC = topicsNVC.viewControllers.first as? TopicsController else {
+        guard let vcs = tabBarController.viewControllers, let classroomsNVC = vcs[1] as? CustomNavigationController, let classroomsVC = classroomsNVC.viewControllers.first as? ClassroomsController else {
             return
         }
-        if topicsNVC.viewControllers.count > 1 {
-            // Currently in a discuss screen or profile screen, etc., need to dismiss back to TopicsController before pushing DiscussController
-            topicsNVC.popToRootViewController(animated: false)
+        if classroomsNVC.viewControllers.count > 1 {
+            // Currently in a discuss screen or profile screen, etc., need to dismiss back to ClassroomsController before pushing DiscussController
+            classroomsNVC.popToRootViewController(animated: false)
         }
-        // Look for the correct topic in all topics
-        // Note: Because TopicVC is not loaded by default, the topics array might still be empty until the user clicks on the Topics tab. In that case, we just change the tab index instead of going into the individual topic.
-        let correctTopic = topicsVC.topics.filter() {$0.tid == tid}
-        if correctTopic.count != 1 {
+        // Look for the correct classroom in all classrooms
+        // Note: Because ClassroomVC is not loaded by default, the classrooms array might still be empty until the user clicks on the Classrooms tab. In that case, we just change the tab index instead of going into the individual classroom.
+        let correctClassroom = classroomsVC.classrooms.filter() {$0.tid == tid}
+        if correctClassroom.count != 1 {
             tabBarController.selectedIndex = 1
-            log.warning("Tid could not be found in topics / too many of the same tid, OR page not loaded yet")
+            log.warning("Tid could not be found in classrooms / too many of the same tid, OR page not loaded yet")
             return
         }
         let discussVC: DiscussController = DiscussController()
-        discussVC.topic = correctTopic[0]
-        topicsNVC.pushViewController(discussVC, animated: false)
+        discussVC.classroom = correctClassroom[0]
+        classroomsNVC.pushViewController(discussVC, animated: false)
         tabBarController.selectedIndex = 1
     }
     

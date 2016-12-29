@@ -106,13 +106,13 @@ class WebviewController: UIViewController, UIWebViewDelegate {
     // MARK: Setup views
     
     fileprivate func viewForSuccessfulLoad() {
-        logo428.isHidden = true
+        noLoadImage.isHidden = true
         noLoadLbl.isHidden = true
         webView.isHidden = false
     }
     
     fileprivate func viewForFailedLoad() {
-        logo428.isHidden = false
+        noLoadImage.isHidden = false
         noLoadLbl.isHidden = false
         webView.isHidden = true
     }
@@ -126,9 +126,9 @@ class WebviewController: UIViewController, UIWebViewDelegate {
         return view
     }()
     
-    fileprivate let logo428: UIImageView = {
-        let logo = #imageLiteral(resourceName: "logo")
-        let imageView = UIImageView(image: logo)
+    fileprivate let noLoadImage: UIImageView = {
+        let img = #imageLiteral(resourceName: "brokenlink")
+        let imageView = UIImageView(image: img)
         imageView.contentMode = .scaleAspectFit
         imageView.isHidden = true
         return imageView
@@ -148,12 +148,12 @@ class WebviewController: UIViewController, UIWebViewDelegate {
         self.view.addSubview(webView)
         
         let centralizedView = UIView()
-        centralizedView.addSubview(logo428)
+        centralizedView.addSubview(noLoadImage)
         centralizedView.addSubview(noLoadLbl)
-        centralizedView.addConstraintsWithFormat("H:[v0(60)]", views: logo428)
-        centralizedView.addConstraint(NSLayoutConstraint(item: logo428, attribute: .centerX, relatedBy: .equal, toItem: centralizedView, attribute: .centerX, multiplier: 1.0, constant: 0.0))
+        centralizedView.addConstraintsWithFormat("H:[v0(60)]", views: noLoadImage)
+        centralizedView.addConstraint(NSLayoutConstraint(item: noLoadImage, attribute: .centerX, relatedBy: .equal, toItem: centralizedView, attribute: .centerX, multiplier: 1.0, constant: 0.0))
         centralizedView.addConstraintsWithFormat("H:|-8-[v0]-8-|", views: noLoadLbl)
-        centralizedView.addConstraintsWithFormat("V:|-8-[v0(60)]-8-[v1(30)]-8-|", views: logo428, noLoadLbl)
+        centralizedView.addConstraintsWithFormat("V:|-8-[v0(60)]-8-[v1(30)]-8-|", views: noLoadImage, noLoadLbl)
         
         self.view.addSubview(centralizedView)
         

@@ -5,7 +5,7 @@
 
 MAJOR BUGS
 - Once logout, cannot log back in? (Unable to replicate)
-- iOS 9: Chat screen keyboard blocking on first load before collection view scroll: Try to figure out issue when coding TopicsController
+- iOS 9: Chat screen keyboard blocking on first load before collection view scroll: Try to figure out issue when coding ClassroomsController
 
 MINOR BUGS
 - Only allow copy of whole ChatCell: Wait for reply on stack overflow
@@ -16,10 +16,10 @@ MINOR BUGS
 - getUserFields upon opening app, and already set profileImage on coverImage etc. from Settings. After getting, reupdate name and discipline in NSUserDefaults
 
 
-- observeTopics(uid)
-- observeRecentTopic(tid)
-- observeTopicMessages(tid)
-- addTopicMessage(msg, uid, name, discipline, timestamp)
+- observeClassrooms(uid)
+- observeRecentClassroom(tid)
+- observeClassroomMessages(tid)
+- addClassroomMessage(msg, uid, name, discipline, timestamp)
 
 
 !SETTINGS!

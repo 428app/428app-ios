@@ -12,13 +12,13 @@ import UIKit
 class DiscussController: UIViewController, UIGestureRecognizerDelegate, UITextViewDelegate, UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
     
     /** CONSTANTS **/
-    fileprivate let CELL_ID = "topicChatCell"
-    fileprivate let CELL_HEADER_ID = "topicChatHeaderView"
+    fileprivate let CELL_ID = "classroomChatCell"
+    fileprivate let CELL_HEADER_ID = "classroomChatHeaderView"
     fileprivate let SECTION_HEADER_HEIGHT: CGFloat = 30.0
     
     /** DATA **/
-    fileprivate var messages: [TopicMessage] = [TopicMessage]() // All messages
-    fileprivate var messagesInTimeBuckets: [[TopicMessage]] = [[TopicMessage]]() // Messages separated into buckets of time (at least 1 hour apart)
+    fileprivate var messages: [ClassroomMessage] = [ClassroomMessage]() // All messages
+    fileprivate var messagesInTimeBuckets: [[ClassroomMessage]] = [[ClassroomMessage]]() // Messages separated into buckets of time (at least 1 hour apart)
     fileprivate var messageIsLastInChain: [[Bool]] = [[Bool]]() // If true, that means message is the last message sent in chain of messages by one user, so bubble will be attached
     fileprivate var timeBucketHeaders: [Date] = [Date]() // Headers of time buckets, must have same length as messagesInTimeBuckets
     
@@ -31,11 +31,11 @@ class DiscussController: UIViewController, UIGestureRecognizerDelegate, UITextVi
     fileprivate var topConstraintForCollectionView: NSLayoutConstraint!
     fileprivate var keyboardHeight: CGFloat = 216.0 // Default of 216.0, but reset the first time keyboard pops up
     
-    var topic: Topic! {
+    var classroom: Classroom! {
         didSet {
-            if let dateString = topic.dateString {
+            if let dateString = classroom.dateString {
                 self.navigationItem.title = "Physics I"
-                self.messages = topic.topicMessages
+                self.messages = classroom.classroomMessages
                 self.bucketMessagesIntoTime()
                 self.assembleMessageIsLastInChain()
             }
@@ -148,7 +148,7 @@ class DiscussController: UIViewController, UIGestureRecognizerDelegate, UITextVi
     
     func openDescription() {
         let discussModalController = DiscussModalController()
-        discussModalController.topic = self.topic
+        discussModalController.classroom = self.classroom
         discussModalController.modalPresentationStyle = .overFullScreen
         discussModalController.modalTransitionStyle = .crossDissolve
         self.present(discussModalController, animated: true, completion: nil)
@@ -159,7 +159,7 @@ class DiscussController: UIViewController, UIGestureRecognizerDelegate, UITextVi
         paragraphStyle.lineSpacing = 6
         paragraphStyle.lineBreakMode = .byTruncatingTail
         promptLabel.text = "Read Question 1 here"
-//        promptLabel.attributedText = NSMutableAttributedString(string: topic.prompt, attributes: [NSParagraphStyleAttributeName: paragraphStyle])
+//        promptLabel.attributedText = NSMutableAttributedString(string: classroom.prompt, attributes: [NSParagraphStyleAttributeName: paragraphStyle])
         
         view.addSubview(promptLabel)
 //        view.addSubview(promptExpandIcon)
@@ -189,10 +189,10 @@ class DiscussController: UIViewController, UIGestureRecognizerDelegate, UITextVi
         }
         // Sort messages such that earliest messages come first
         self.messages = self.messages.sorted{($0.date.timeIntervalSince1970) < ($1.date.timeIntervalSince1970)}
-        self.messagesInTimeBuckets = [[TopicMessage]]()
+        self.messagesInTimeBuckets = [[ClassroomMessage]]()
         self.timeBucketHeaders = [Date]()
         var currentBucketTime: Date? = nil
-        var currentBucketMessages: [TopicMessage] = [TopicMessage]()
+        var currentBucketMessages: [ClassroomMessage] = [ClassroomMessage]()
         
         for i in 0...self.messages.count - 1 {
             let message = self.messages[i]
@@ -224,7 +224,7 @@ class DiscussController: UIViewController, UIGestureRecognizerDelegate, UITextVi
         }
         self.messageIsLastInChain = [[Bool]]()
         for i in 0...self.messagesInTimeBuckets.count - 1 {
-            let section: [TopicMessage] = self.messagesInTimeBuckets[i]
+            let section: [ClassroomMessage] = self.messagesInTimeBuckets[i]
             var chains = [Bool]()
             if section.count == 0 {
                 log.error("[Error] No messages in bucket")
@@ -233,8 +233,8 @@ class DiscussController: UIViewController, UIGestureRecognizerDelegate, UITextVi
             }
             if section.count >= 2 {
                 for j in 0...section.count - 2 {
-                    let m0: TopicMessage = section[j]
-                    let m1: TopicMessage = section[j+1]
+                    let m0: ClassroomMessage = section[j]
+                    let m1: ClassroomMessage = section[j+1]
                     // Last in chain if next one is different from current
                     chains.append(!((m0.isSentByYou && m1.isSentByYou) || (!m0.isSentByYou && !m1.isSentByYou)))
                 }
@@ -367,7 +367,7 @@ class DiscussController: UIViewController, UIGestureRecognizerDelegate, UITextVi
     func handleSend() {
         if let text = inputTextView.text {
             // Trim text before sending
-            let message = TopicMessage(tmid: "999", parentTid: "4", posterUid: "999", posterName: "Yihang", posterDiscipline: "business", text: text.trim(), date: Date(), isSentByYou: true)
+            let message = ClassroomMessage(tmid: "999", parentTid: "4", posterUid: "999", posterName: "Yihang", posterDiscipline: "business", text: text.trim(), date: Date(), isSentByYou: true)
             self.messages.append(message)
             self.bucketMessagesIntoTime()
             self.assembleMessageIsLastInChain()
@@ -472,7 +472,7 @@ class DiscussController: UIViewController, UIGestureRecognizerDelegate, UITextVi
         self.automaticallyAdjustsScrollViewInsets = false
         self.collectionView.contentInset = UIEdgeInsets(top: 8.0, left: 0, bottom: 0.8*SECTION_HEADER_HEIGHT, right: 0) // Fix top and bottom padding since automaticallyAdjustScrollViewInsets set to false
         
-        self.collectionView.register(TopicChatCell.self, forCellWithReuseIdentifier: CELL_ID)
+        self.collectionView.register(ClassroomChatCell.self, forCellWithReuseIdentifier: CELL_ID)
         self.collectionView.register(ChatHeaderView.self, forSupplementaryViewOfKind: UICollectionElementKindSectionHeader, withReuseIdentifier: CELL_HEADER_ID)
         
         self.view.insertSubview(collectionView, at: 0)
@@ -530,7 +530,7 @@ class DiscussController: UIViewController, UIGestureRecognizerDelegate, UITextVi
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: CELL_ID, for: indexPath) as! TopicChatCell
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: CELL_ID, for: indexPath) as! ClassroomChatCell
         let message = self.messagesInTimeBuckets[indexPath.section][indexPath.row]
         let isLastInChain = self.messageIsLastInChain[indexPath.section][indexPath.row]
         cell.configureCell(messageObj: message, viewWidth: view.frame.width, isLastInChain: isLastInChain)
@@ -549,7 +549,7 @@ class DiscussController: UIViewController, UIGestureRecognizerDelegate, UITextVi
         let options = NSStringDrawingOptions.usesFontLeading.union(.usesLineFragmentOrigin)
         let estimatedFrame = NSString(string: messageText).boundingRect(with: size, options: options, attributes: [NSFontAttributeName: UIFont.systemFont(ofSize: 16.0)], context: nil)
         let cellHeight = message.isSentByYou ? estimatedFrame.height + 16 : estimatedFrame.height + 16 + 19
-        if let cell = self.collectionView.cellForItem(at: indexPath) as? TopicChatCell {
+        if let cell = self.collectionView.cellForItem(at: indexPath) as? ClassroomChatCell {
             if cell.shouldExpand {
                 self.cellTimeLabel.removeFromSuperview()
                 let cellFrame = self.collectionView.convert(cell.frame, to: self.view)
@@ -609,7 +609,7 @@ class DiscussController: UIViewController, UIGestureRecognizerDelegate, UITextVi
     }
     
     func expandCell(notif: Notification) {
-        // Called by TopicChatCell's messageTextView to invalidate layout
+        // Called by ClassroomChatCell's messageTextView to invalidate layout
         UIView.animate(withDuration: 0.3) {
             self.collectionView.collectionViewLayout.invalidateLayout()
         }
