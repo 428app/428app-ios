@@ -57,8 +57,8 @@ class InboxController: UICollectionViewController, UICollectionViewDelegateFlowL
     }()
     
     fileprivate let inboxImage: UIImageView = {
-        let logo = #imageLiteral(resourceName: "inbox-empty")
-        let imageView = UIImageView(image: logo)
+        let image = #imageLiteral(resourceName: "inbox-empty")
+        let imageView = UIImageView(image: image)
         imageView.contentMode = .scaleAspectFit
         return imageView
     }()

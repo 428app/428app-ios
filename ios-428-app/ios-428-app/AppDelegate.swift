@@ -250,7 +250,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         if let _ = nvc.visibleViewController as? IntroController {
             return
         }
-        if let _ = nvc.visibleViewController as? DiscussModalController {
+        if let _ = nvc.visibleViewController as? ModalChatClassroomController {
             return
         }
         

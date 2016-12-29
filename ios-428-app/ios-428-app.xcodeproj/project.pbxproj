@@ -18,10 +18,10 @@
 		4024F2231DB7F664007819F7 /* Classroom.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4024F2221DB7F664007819F7 /* Classroom.swift */; };
 		4024F2251DB7F83F007819F7 /* ClassroomMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4024F2241DB7F83F007819F7 /* ClassroomMessage.swift */; };
 		4024F2271DB82239007819F7 /* ClassroomCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4024F2261DB82239007819F7 /* ClassroomCell.swift */; };
-		4024F2291DB853F9007819F7 /* DiscussController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4024F2281DB853F9007819F7 /* DiscussController.swift */; };
+		4024F2291DB853F9007819F7 /* ChatClassroomController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4024F2281DB853F9007819F7 /* ChatClassroomController.swift */; };
 		4024F22B1DB85C0E007819F7 /* PaddingLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4024F22A1DB85C0E007819F7 /* PaddingLabel.swift */; };
 		4024F22D1DB86B18007819F7 /* ClassroomChatCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4024F22C1DB86B18007819F7 /* ClassroomChatCell.swift */; };
-		4024F2311DB88262007819F7 /* DiscussModalController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4024F2301DB88262007819F7 /* DiscussModalController.swift */; };
+		4024F2311DB88262007819F7 /* ModalChatClassroomController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4024F2301DB88262007819F7 /* ModalChatClassroomController.swift */; };
 		4024F2331DB9454B007819F7 /* LoginController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4024F2321DB9454B007819F7 /* LoginController.swift */; };
 		4024F2351DBB2155007819F7 /* IntroController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4024F2341DBB2155007819F7 /* IntroController.swift */; };
 		4031FB9A1DC04B490066E6B6 /* MyProfile.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4031FB991DC04B490066E6B6 /* MyProfile.swift */; };
@@ -109,10 +109,10 @@
 		4024F2221DB7F664007819F7 /* Classroom.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Classroom.swift; sourceTree = "<group>"; };
 		4024F2241DB7F83F007819F7 /* ClassroomMessage.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ClassroomMessage.swift; sourceTree = "<group>"; };
 		4024F2261DB82239007819F7 /* ClassroomCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ClassroomCell.swift; sourceTree = "<group>"; };
-		4024F2281DB853F9007819F7 /* DiscussController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DiscussController.swift; sourceTree = "<group>"; };
+		4024F2281DB853F9007819F7 /* ChatClassroomController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChatClassroomController.swift; sourceTree = "<group>"; };
 		4024F22A1DB85C0E007819F7 /* PaddingLabel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PaddingLabel.swift; sourceTree = "<group>"; };
 		4024F22C1DB86B18007819F7 /* ClassroomChatCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ClassroomChatCell.swift; sourceTree = "<group>"; };
-		4024F2301DB88262007819F7 /* DiscussModalController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DiscussModalController.swift; sourceTree = "<group>"; };
+		4024F2301DB88262007819F7 /* ModalChatClassroomController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ModalChatClassroomController.swift; sourceTree = "<group>"; };
 		4024F2321DB9454B007819F7 /* LoginController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LoginController.swift; sourceTree = "<group>"; };
 		4024F2341DBB2155007819F7 /* IntroController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IntroController.swift; sourceTree = "<group>"; };
 		4031FB991DC04B490066E6B6 /* MyProfile.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MyProfile.swift; sourceTree = "<group>"; };
@@ -205,7 +205,8 @@
 			isa = PBXGroup;
 			children = (
 				4024F2201DB7E2E9007819F7 /* ClassroomController.swift */,
-				4024F2281DB853F9007819F7 /* DiscussController.swift */,
+				4024F2281DB853F9007819F7 /* ChatClassroomController.swift */,
+				4024F2301DB88262007819F7 /* ModalChatClassroomController.swift */,
 			);
 			name = Classroom;
 			sourceTree = "<group>";
@@ -329,7 +330,6 @@
 		4064A2111DACBB1C00071383 /* View */ = {
 			isa = PBXGroup;
 			children = (
-				4024F2301DB88262007819F7 /* DiscussModalController.swift */,
 				40AB80021DB6FAA200492788 /* PictureModalController.swift */,
 				40785D5A1E04EDCE009B66E0 /* HorizontalScrollCell.swift */,
 				4024F22A1DB85C0E007819F7 /* PaddingLabel.swift */,
@@ -597,7 +597,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				4024F2291DB853F9007819F7 /* DiscussController.swift in Sources */,
+				4024F2291DB853F9007819F7 /* ChatClassroomController.swift in Sources */,
 				4064A2051DAC868E00071383 /* CustomNavigationController.swift in Sources */,
 				4024F2351DBB2155007819F7 /* IntroController.swift in Sources */,
 				4024F2231DB7F664007819F7 /* Classroom.swift in Sources */,
@@ -658,7 +658,7 @@
 				40AB80031DB6FAA200492788 /* PictureModalController.swift in Sources */,
 				40AB80051DB7094700492788 /* EditProfessionalController.swift in Sources */,
 				4024F2331DB9454B007819F7 /* LoginController.swift in Sources */,
-				4024F2311DB88262007819F7 /* DiscussModalController.swift in Sources */,
+				4024F2311DB88262007819F7 /* ModalChatClassroomController.swift in Sources */,
 				4064A21A1DACC20E00071383 /* InboxCell.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

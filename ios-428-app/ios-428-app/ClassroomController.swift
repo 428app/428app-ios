@@ -50,21 +50,45 @@ class ClassroomsController: UIViewController, UICollectionViewDelegate, UICollec
     
     // MARK: Firebase
     
+    fileprivate func minAgo(minutesAgo: Double) -> Date {
+        return Date().addingTimeInterval(-minutesAgo * 60.0)
+    }
     
     fileprivate func loadClassrooms() -> [Classroom] {
         // TODO: Load classrooms from server
         
         // Create some dummy classrooms
-        let prof1 = Profile(uid: "1", name: "Leonard", profileImageName: "", discipline: "Business", age: 25, location: "Singapore", school: "Harvard", org: "428", tagline: "Hey!", badges: [String](), classrooms: ["Physics"])
         
-        let q1 = Question(qid: "1", timestamp: 1, imageName: "https://scontent-sit4-1.xx.fbcdn.net/v/t31.0-8/15039689_1271173046259920_4366784399934560581_o.jpg?oh=22f4ffd1a592e2d0b55bf1208ca9e1d2&oe=58D6797C", question: "Q1", answer: "Answer")
+        // Profiles
+        let im1 = "https://scontent-sit4-1.xx.fbcdn.net/v/t1.0-9/12360259_1036119596431934_7410932159803664054_n.jpg?oh=84251aca7d9dcc8e428a9ee58c420f57&oe=58E36C07"
+        let im2 = "https://scontent-sit4-1.xx.fbcdn.net/v/t1.0-9/15338895_214351679010971_9083811642954576817_n.jpg?oh=241c744be40dd57b91d00932d0879147&oe=58E1338E"
+        let im3 = "https://scontent-sit4-1.xx.fbcdn.net/v/t31.0-8/13247840_10153651151013170_4586384765586065139_o.jpg?oh=2b8d422b5c0dda4734e77d180fd5392e&oe=58DAF753"
+        let im4 = "https://scontent-sit4-1.xx.fbcdn.net/v/t1.0-9/12373224_10153942082375757_2547226759416788825_n.jpg?oh=801b6fb09dc2e9a7822ef09660955c75&oe=58E75959"
+        
+        let prof1 = Profile(uid: "1", name: "Leonard", profileImageName: im1, discipline: "Business", age: 25, location: "Singapore", school: "Harvard", org: "428", tagline: "Hey!", badges: [String](), classrooms: ["Physics"])
+        let prof2 = Profile(uid: "1", name: "Tomas", profileImageName: im2, discipline: "Computer Science", age: 27, location: "Iceland", school: "Harvard", org: "Harvard", tagline: "Hey ya!", badges: [String](), classrooms: ["Physics"])
+        let prof3 = Profile(uid: "1", name: "Jenny", profileImageName: im3, discipline: "Biology", age: 23, location: "USA", school: "Harvard", org: "428", tagline: "Hey!", badges: [String](), classrooms: ["Physics"])
+        let prof4 = Profile(uid: "1", name: "Kyooeun", profileImageName: im4, discipline: "East Asian Studies", age: 25, location: "Korea", school: "Harvard", org: "428", tagline: "Hey!", badges: [String](), classrooms: ["Physics"])
+        
+        // Questions
+        let q1 = Question(qid: "1", timestamp: 1, imageName: "https://scontent-sit4-1.xx.fbcdn.net/v/t31.0-8/15039689_1271173046259920_4366784399934560581_o.jpg?oh=22f4ffd1a592e2d0b55bf1208ca9e1d2&oe=58D6797C", question: "What happens when sperm travel to the speed of light? Think about it this way... what happens when anything travels to the speed of the light? Is it a black hole? Is it a plane? What is it?", answer: "Answer")
         let q2 = Question(qid: "2", timestamp: 2, imageName: "https://scontent-sit4-1.xx.fbcdn.net/v/t31.0-8/15068551_10155379098362506_9156974081960886025_o.jpg?oh=4c761407b791ca16541c2c237c2f414f&oe=58D869C7", question: "Q2", answer: "Answer")
-        let q3 = Question(qid: "3", timestamp: 3, imageName: "https://scontent-sit4-1.xx.fbcdn.net/v/t1.0-9/14567998_10154822094095757_2510961597749082744_n.jpg?oh=95c0eb4a5f54fd8f4b02ec2f5dda2295&oe=58E6E644", question: "Q3", answer: "Answer")
-        let q4 = Question(qid: "4", timestamp: 1, imageName: "https://scontent-sit4-1.xx.fbcdn.net/v/t1.0-9/15326324_1298235190220372_4417723045154146576_n.jpg?oh=bcf6f25e81e8c5d0cbc7da11d3e87812&oe=58F2AD0F", question: "Q1", answer: "Answer")
+        let q3 = Question(qid: "3", timestamp: 3, imageName: "https://scontent-sit4-1.xx.fbcdn.net/v/t1.0-9/14567998_10154822094095757_2510961597749082744_n.jpg?oh=95c0eb4a5f54fd8f4b02ec2f5dda2295&oe=58E6E644", question: "What happens when sperm travel to the speed of light? Think about it this way... what happens when anything travels to the speed of the light? Is it a black hole? Is it a plane? What is it?", answer: "Answer")
+        let q4 = Question(qid: "4", timestamp: 1, imageName: "https://scontent-sit4-1.xx.fbcdn.net/v/t1.0-9/15326324_1298235190220372_4417723045154146576_n.jpg?oh=bcf6f25e81e8c5d0cbc7da11d3e87812&oe=58F2AD0F", question: "What happens when sperm travel to the speed of light? Think about it this way... what happens when anything travels to the speed of the light? Is it a black hole? Is it a plane? What is it?", answer: "Answer")
         
-        let room1 = Classroom(cid: "1", title: "Physics", timeCreated: 1, members: [prof1], questions: [q1, q2], hasSeen: true)
-        let room2 = Classroom(cid: "2", title: "Business", timeCreated: 2, members: [prof1], questions: [q1])
-        let room3 = Classroom(cid: "3", title: "Computer Science", timeCreated: 3, members: [prof1], questions: [q3, q4])
+        // Messages
+        let m1 = ClassroomMessage(mid: "1", parentCid: "1", posterUid: "1", posterImageName: im1, posterName: "Leonard", text: "Sup guys!", date: minAgo(minutesAgo: 10), isSentByYou: false)
+        let m2 = ClassroomMessage(mid: "1", parentCid: "1", posterUid: "2", posterImageName: im2, posterName: "Tomas", text: "What happens when sperm travel to the speed of light? Think about it this way... what happens when anything travels to the speed of the light? Is it a black hole? Is it a plane? What is it?", date: minAgo(minutesAgo: 8), isSentByYou: false)
+        let m3 = ClassroomMessage(mid: "1", parentCid: "1", posterUid: "3", posterImageName: im3, posterName: "Jenny", text: "Hahaha!", date: minAgo(minutesAgo: 6), isSentByYou: false)
+        let m4 = ClassroomMessage(mid: "1", parentCid: "1", posterUid: "5", posterImageName: im1, posterName: "Yihang", text: "That is lame.", date: minAgo(minutesAgo: 4), isSentByYou: true)
+        let m5 = ClassroomMessage(mid: "1", parentCid: "1", posterUid: "4", posterImageName: im4, posterName: "Kyooeun", text: "Oh this is lively isn't it! :)", date: minAgo(minutesAgo: 2), isSentByYou: false)
+        
+        let messages = [m1, m2, m3, m4, m5]
+        
+        let room1 = Classroom(cid: "1", title: "Physics", timeCreated: 1, members: [prof1, prof2, prof3, prof4], questions: [q1, q2], classroomMessages: messages, hasSeen: true)
+        
+        let room2 = Classroom(cid: "2", title: "Business", timeCreated: 2, members: [prof1, prof2, prof3, prof4], questions: [q1])
+        let room3 = Classroom(cid: "3", title: "Computer Science", timeCreated: 3, members: [prof1, prof2, prof3, prof4], questions: [q3, q4])
         
         var rooms = [room1, room2, room3]
         
@@ -207,18 +231,12 @@ class ClassroomsController: UIViewController, UICollectionViewDelegate, UICollec
         collectionView.deselectItem(at: indexPath, animated: false)
         let classroom = classrooms[indexPath.row]
         log.info("Selected classroom: \(classroom.title)")
+        let controller = ChatClassroomController()
+        controller.classroom = classroom
+        let backItem = UIBarButtonItem()
+        backItem.title = " "
+        navigationItem.backBarButtonItem = backItem
+        self.navigationController?.pushViewController(controller, animated: true)
     }
     
-    
-//    
-//    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-//        tableView.deselectRow(at: indexPath, animated: false)
-//        let classroom = classrooms[indexPath.row]
-//        let controller = DiscussController()
-//        controller.classroom = classroom
-//        let backItem = UIBarButtonItem()
-//        backItem.title = " "
-//        navigationItem.backBarButtonItem = backItem
-//        self.navigationController?.pushViewController(controller, animated: true)
-//    }
 }
