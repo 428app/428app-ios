@@ -139,7 +139,7 @@ class ChatCell: BaseCollectionCell, UITextViewDelegate {
         let messageText = self.message.text
 
         // Attributed text is crucial, normal text will screw up if emoji is sent
-        self.messageTextView.attributedText = NSAttributedString(string: self.message!.text, attributes: [NSFontAttributeName: TEXT_VIEW_FONT])
+        self.messageTextView.attributedText = NSAttributedString(string: messageText, attributes: [NSFontAttributeName: TEXT_VIEW_FONT])
         
         // Download profile image
         self.request = downloadImage(imageUrlString: self.message.inbox.profileImageName, completed: { (image) in
@@ -202,7 +202,7 @@ class ChatCell: BaseCollectionCell, UITextViewDelegate {
     
     func notifyControllerToExpand(tap: UITapGestureRecognizer) {
         self.shouldExpand = true
-        NotificationCenter.default.post(name: NOTIF_EXPANDCHATCELL, object: nil)
+        NotificationCenter.default.post(name: NOTIF_EXPANDINBOXCHATCELL, object: nil)
     }
     
 }

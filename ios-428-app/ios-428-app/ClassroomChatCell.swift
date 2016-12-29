@@ -33,6 +33,7 @@ class ClassroomChatCell: BaseCollectionCell {
         textView.tintColor = RED_UICOLOR
         textView.dataDetectorTypes = .all
         textView.isUserInteractionEnabled = true
+        textView.isScrollEnabled = false
         return textView
     }()
     
@@ -72,7 +73,7 @@ class ClassroomChatCell: BaseCollectionCell {
         addSubview(posterImageView)
         
         addConstraintsWithFormat("H:|-8-[v0(30)]", views: posterImageView)
-        addConstraintsWithFormat("V:|-3-[v0(30)]", views: posterImageView)
+        addConstraintsWithFormat("V:|-5-[v0(30)]", views: posterImageView)
         
         textBubbleView.addSubview(bubbleImageView)
         textBubbleView.addConstraintsWithFormat("H:|[v0]|", views: bubbleImageView)
@@ -102,17 +103,25 @@ class ClassroomChatCell: BaseCollectionCell {
     
     func configureCell(messageObj: ClassroomMessage, viewWidth: CGFloat, isLastInChain: Bool) {
         self.message = messageObj
-        self.messageTextView.isScrollEnabled = true
-        self.messageTextView.text = self.message.text
+//        self.messageTextView.isScrollEnabled = true
+        let messageText = self.message.text
+        
+        // Attributed text is crucial, normal text will screw up if emoji is sent
+        self.messageTextView.attributedText = NSAttributedString(string: messageText, attributes: [NSFontAttributeName: TEXT_VIEW_FONT])
+        
         self.nameLabel.text = self.message.posterName
         
         // Download poster profile image
         loadPosterImage()
         
-        let size = CGSize(width: 250, height: 1000)
+        let size = CGSize(width: 250, height: CGFloat.greatestFiniteMagnitude)
         let options = NSStringDrawingOptions.usesFontLeading.union(.usesLineFragmentOrigin)
         let estimatedFrame = NSString(string: self.message.text).boundingRect(with: size, options: options, attributes: [NSFontAttributeName: TEXT_VIEW_FONT], context: nil)
+        
         if !self.message.isSentByYou {
+            
+            // Message on left side 
+            
             addSubview(nameLabel)
             self.nameLabel.frame = CGRect(x: 45 + 13, y: 12, width: estimatedFrame.width, height: 18)
             self.messageTextView.frame = CGRect(x: 45 + 8, y: 21, width: estimatedFrame.width + 14, height: estimatedFrame.height + 16)
@@ -125,6 +134,9 @@ class ClassroomChatCell: BaseCollectionCell {
             self.bubbleImageView.tintColor = UIColor(white: 0.95, alpha: 1)
 
         } else {
+            
+            // Message on right side 
+            
             nameLabel.removeFromSuperview()
             self.messageTextView.frame = CGRect(x: viewWidth - estimatedFrame.width - 16 - 16 - 8, y: 2, width: estimatedFrame.width + 16, height: estimatedFrame.height + 16)
             self.posterImageView.isHidden = true
@@ -141,12 +153,11 @@ class ClassroomChatCell: BaseCollectionCell {
                 self.bubbleImageView.backgroundColor = GREEN_UICOLOR
             }
         }
-        self.messageTextView.isScrollEnabled = false
     }
     
     func notifyControllerToExpand(tap: UITapGestureRecognizer) {
         self.shouldExpand = true
-        NotificationCenter.default.post(name: NOTIF_EXPANDTOPICCELL, object: nil)
+        NotificationCenter.default.post(name: NOTIF_EXPANDCLASSROOMCHATCELL, object: nil)
     }
     
 }

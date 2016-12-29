@@ -385,14 +385,14 @@ class ChatClassroomController: UIViewController, UIGestureRecognizerDelegate, UI
     fileprivate func registerObservers() {
         NotificationCenter.default.addObserver(self, selector: #selector(handleKeyboardNotification), name: NSNotification.Name.UIKeyboardWillHide, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(handleKeyboardNotification), name: NSNotification.Name.UIKeyboardWillChangeFrame, object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(expandCell), name: NOTIF_EXPANDTOPICCELL, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(expandCell), name: NOTIF_EXPANDCLASSROOMCHATCELL, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(openProfile), name: NOTIF_OPENPROFILE, object: nil)
     }
     
     private func unregisterObservers() {
         NotificationCenter.default.removeObserver(self, name: NSNotification.Name.UIKeyboardWillHide, object: nil)
         NotificationCenter.default.removeObserver(self, name: NSNotification.Name.UIKeyboardWillChangeFrame, object: nil)
-        NotificationCenter.default.removeObserver(self, name: NOTIF_EXPANDTOPICCELL, object: nil)
+        NotificationCenter.default.removeObserver(self, name: NOTIF_EXPANDCLASSROOMCHATCELL, object: nil)
         NotificationCenter.default.removeObserver(self, name: NOTIF_OPENPROFILE, object: nil)
     }
     
@@ -554,27 +554,22 @@ class ChatClassroomController: UIViewController, UIGestureRecognizerDelegate, UI
         let size = CGSize(width: 250, height: 1000)
         let options = NSStringDrawingOptions.usesFontLeading.union(.usesLineFragmentOrigin)
         let estimatedFrame = NSString(string: messageText).boundingRect(with: size, options: options, attributes: [NSFontAttributeName: UIFont.systemFont(ofSize: 16.0)], context: nil)
-        let cellHeight = message.isSentByYou ? estimatedFrame.height + 16 : estimatedFrame.height + 16 + 19
+        let cellHeight = message.isSentByYou ? estimatedFrame.height + 11 : estimatedFrame.height + 11 + 19
         if let cell = self.collectionView.cellForItem(at: indexPath) as? ClassroomChatCell {
             if cell.shouldExpand {
                 self.cellTimeLabel.removeFromSuperview()
                 let cellFrame = self.collectionView.convert(cell.frame, to: self.view)
                 var yi = cellFrame.origin.y + cellFrame.height
                 // Insert timeLabel here
-                log.info("=====")
-                log.info("\(self.tappedIndexPath)")
-                yi += 10
+                yi += 12
                 if tappedIndexPath == nil {
-                    log.info("Indexpath nil")
                     tappedIndexPath = indexPath
                 }
                 else {
                     if indexPath.section > tappedIndexPath!.section || (indexPath.section == tappedIndexPath!.section && indexPath.row > tappedIndexPath!.row) {
-                        log.info("Tapped below")
-                        yi -= 24
+                        yi -= 21
                     } else if indexPath.section == tappedIndexPath!.section && indexPath.row == tappedIndexPath!.row {
                         // Clicked to hide
-                        log.info("Hiding")
                         self.tappedIndexPath = nil
                         cell.shouldExpand = false
                         // Return with no expansion
@@ -583,7 +578,8 @@ class ChatClassroomController: UIViewController, UIGestureRecognizerDelegate, UI
                     tappedIndexPath = indexPath
                 }
                 
-                let labelFrameInView = CGRect(x: 50, y: yi, width: self.view.frame.width - 80, height: 15)
+                let xi: CGFloat = message.isSentByYou ? 55.0 : 45.0
+                let labelFrameInView = CGRect(x: xi, y: yi, width: self.view.frame.width - 80, height: 15)
                 let labelFrame = self.view.convert(labelFrameInView, to: self.collectionView)
                 cellTimeLabel = UILabel(frame: labelFrame)
                 
@@ -602,7 +598,7 @@ class ChatClassroomController: UIViewController, UIGestureRecognizerDelegate, UI
                 self.collectionView.addSubview(cellTimeLabel)
                 cell.shouldExpand = false
                 // Return with expansion
-                return CGSize(width: view.frame.width, height: cellHeight + 24)
+                return CGSize(width: view.frame.width, height: cellHeight + 20.0)
             }
         }
         // Return with no expansion
@@ -616,8 +612,20 @@ class ChatClassroomController: UIViewController, UIGestureRecognizerDelegate, UI
     
     func expandCell(notif: Notification) {
         // Called by ClassroomChatCell's messageTextView to invalidate layout
-        UIView.animate(withDuration: 0.3) {
+        UIView.performWithoutAnimation {
             self.collectionView.collectionViewLayout.invalidateLayout()
+        }
+    }
+    
+    // Remove time label is called upon observing more messages (pull up) and reobserve (new messages coming in)
+    fileprivate func removeTimeLabel() {
+        self.cellTimeLabel.removeFromSuperview()
+        // Find index path and set unchecked
+        if tappedIndexPath != nil {
+            if let cell = collectionView(self.collectionView, cellForItemAt: tappedIndexPath!) as? ChatCell {
+                self.tappedIndexPath = nil
+                cell.shouldExpand = false
+            }
         }
     }
 }

@@ -686,13 +686,13 @@ class ChatController: UIViewController, UICollectionViewDelegateFlowLayout, UITe
     fileprivate func registerObservers() {
         NotificationCenter.default.addObserver(self, selector: #selector(handleKeyboardNotification), name: NSNotification.Name.UIKeyboardWillHide, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(handleKeyboardNotification), name: NSNotification.Name.UIKeyboardWillChangeFrame, object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(expandCell), name: NOTIF_EXPANDCHATCELL, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(expandCell), name: NOTIF_EXPANDINBOXCHATCELL, object: nil)
     }
     
     private func unregisterObservers() {
         NotificationCenter.default.removeObserver(self, name: NSNotification.Name.UIKeyboardWillHide, object: nil)
         NotificationCenter.default.removeObserver(self, name: NSNotification.Name.UIKeyboardWillChangeFrame, object: nil)
-        NotificationCenter.default.removeObserver(self, name: NOTIF_EXPANDCHATCELL, object: nil)
+        NotificationCenter.default.removeObserver(self, name: NOTIF_EXPANDINBOXCHATCELL, object: nil)
     }
     
     fileprivate func bottomOfCollectionView() -> CGFloat {
