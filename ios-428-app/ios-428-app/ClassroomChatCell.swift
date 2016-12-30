@@ -45,11 +45,14 @@ class ClassroomChatCell: BaseCollectionCell {
         return view
     }()
     
-    fileprivate let posterImageView: UIImageView = {
+    fileprivate lazy var posterImageView: UIImageView = {
         let imageView = UIImageView()
         imageView.contentMode = .scaleAspectFill
         imageView.layer.cornerRadius = 15
         imageView.layer.masksToBounds = true
+        imageView.isUserInteractionEnabled = true
+        let tap = UITapGestureRecognizer(target: self, action: #selector(self.openProfile))
+        imageView.addGestureRecognizer(tap)
         return imageView
     }()
     
@@ -103,10 +106,9 @@ class ClassroomChatCell: BaseCollectionCell {
     
     func configureCell(messageObj: ClassroomMessage, viewWidth: CGFloat, isLastInChain: Bool) {
         self.message = messageObj
-//        self.messageTextView.isScrollEnabled = true
-        let messageText = self.message.text
-        
+
         // Attributed text is crucial, normal text will screw up if emoji is sent
+        let messageText = self.message.text
         self.messageTextView.attributedText = NSAttributedString(string: messageText, attributes: [NSFontAttributeName: TEXT_VIEW_FONT])
         
         self.nameLabel.text = self.message.posterName

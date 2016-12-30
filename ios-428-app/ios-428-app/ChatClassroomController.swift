@@ -31,6 +31,8 @@ class ChatClassroomController: UIViewController, UIGestureRecognizerDelegate, UI
     fileprivate var topConstraintForCollectionView: NSLayoutConstraint!
     fileprivate var keyboardHeight: CGFloat = 216.0 // Default of 216.0, but reset the first time keyboard pops up
     
+    let interactor = Interactor() // Used for transitioning to and from ProfileController
+    
     var classroom: Classroom! {
         didSet {
             self.navigationItem.title = classroom.title
@@ -400,9 +402,19 @@ class ChatClassroomController: UIViewController, UIGestureRecognizerDelegate, UI
         if let userInfo = notif.userInfo as? [String: String], let uid = userInfo["uid"] {
             log.info("opening profile of uid: \(uid)")
             // TODO: Grab the profile info using this uid
+            
+            let profilesToOpen = classroom.members.filter{$0.uid == uid}
+            if profilesToOpen.count != 1 {
+                return
+            }
+            let profileToOpen = profilesToOpen[0]
             let controller = ProfileController()
+            controller.transitioningDelegate = self
+            controller.interactor = interactor
+            controller.profile = profileToOpen
             controller.modalTransitionStyle = .coverVertical
-            self.hideViewsBeforeTransitioning()
+            controller.modalPresentationStyle = .overFullScreen
+//            self.hideViewsBeforeTransitioning()
             self.present(controller, animated: true, completion: nil)
         }
     }

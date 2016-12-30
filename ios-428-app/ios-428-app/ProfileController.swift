@@ -110,7 +110,7 @@ class ProfileController: UIViewController, UIGestureRecognizerDelegate, UIScroll
         return tap
     }()
     
-    // MARK: Views 1 - Discipline icon, name and age label
+    // MARK: Views 1 - Discipline icon, name and age label, and message button
     
     fileprivate let nameAndAgeLbl: UILabel = {
         let label = UILabel()
@@ -127,16 +127,42 @@ class ProfileController: UIViewController, UIGestureRecognizerDelegate, UIScroll
         return imageView
     }()
     
+    fileprivate lazy var messageBtn: UIButton = {
+        let button = UIButton()
+        button.setImage(#imageLiteral(resourceName: "message-U"), for: .normal)
+        button.setImage(#imageLiteral(resourceName: "message-F"), for: .highlighted)
+        button.setTitle("Send message", for: .normal)
+        button.setTitleColor(GREEN_UICOLOR, for: .normal)
+        button.setTitleColor(UIColor.white, for: .highlighted)
+        button.titleLabel?.font = FONT_HEAVY_MID
+        button.imageEdgeInsets = UIEdgeInsets(top: -1, left: 0, bottom: 0, right: 6)
+        button.titleEdgeInsets = UIEdgeInsets(top: 0, left: 6, bottom: 0, right: 0)
+        button.imageView?.contentMode = .scaleAspectFit
+        button.layer.borderColor = GREEN_UICOLOR.cgColor
+        button.layer.borderWidth = 0.8
+        button.layer.cornerRadius = 4.0
+        button.clipsToBounds = true
+        button.setBackgroundColor(color: UIColor.white, forState: .normal)
+        button.setBackgroundColor(color: GREEN_UICOLOR, forState: .highlighted)
+        button.addTarget(self, action: #selector(messageUser), for: .touchUpInside)
+        return button
+    }()
+    
+    func messageUser() {
+        // TODO: Transition to send a message
+        log.info("Transition to message: \(self.profile.name)")
+    }
+    
     // MARK: Views 2 - Horizontal collection views of badge and classroom icons
     
     fileprivate let BADGES_CELL_ID = "badgesCollectionCell"
     fileprivate let CLASSROOMS_CELL_ID = "classroomsCollectionCell"
-//    fileprivate var badges = [String]() // Image names of acquired badges
-//    fileprivate var classrooms = [String]() // Image names of participated classrooms
+    fileprivate var badges = [String]() // Image names of acquired badges
+    fileprivate var classrooms = [String]() // Image names of participated classrooms
     
     // TODO: Dummy data for icons
-    fileprivate var badges = ["badge1", "badge2", "badge3", "badge4", "badge5", "badge6", "badge7", "badge8", "badge9", "badge10", "badge11", "badge12"]
-    fileprivate var classrooms = ["biology", "chemistry","computer", "eastasian", "electricengineering", "physics"]
+//    fileprivate var badges = ["badge1", "badge2", "badge3", "badge4", "badge5", "badge6", "badge7", "badge8", "badge9", "badge10", "badge11", "badge12"]
+//    fileprivate var classrooms = ["biology", "chemistry","computer", "eastasian", "electricengineering", "physics"]
 
     open static let ICON_SIZE: CGFloat = 33.0
     
@@ -211,6 +237,26 @@ class ProfileController: UIViewController, UIGestureRecognizerDelegate, UIScroll
         let view = UIView()
         view.backgroundColor = UIColor(white: 0.5, alpha: 0.2)
         return view
+    }()
+    
+    // Empty view
+    
+    let noBadgesLbl: UILabel = {
+       let label = UILabel()
+        label.text = "No badges yet."
+        label.font = FONT_MEDIUM_MID
+        label.textColor = UIColor.gray
+        label.textAlignment = .left
+        return label
+    }()
+    
+    let noClassroomsLbl: UILabel = {
+        let label = UILabel()
+        label.text = "No classrooms yet."
+        label.font = FONT_MEDIUM_MID
+        label.textColor = UIColor.gray
+        label.textAlignment = .left
+        return label
     }()
     
     // MARK: Views 3 - Location, School, Organization Labels
@@ -308,6 +354,7 @@ class ProfileController: UIViewController, UIGestureRecognizerDelegate, UIScroll
         // Add to subviews
         containerView.addSubview(coverImageView)
         containerView.addSubview(profileImageView)
+        containerView.addSubview(messageBtn)
         containerView.addSubview(badgesLbl)
         containerView.addSubview(badgesCollectionView)
         containerView.addSubview(classroomsLbl)
@@ -323,13 +370,14 @@ class ProfileController: UIViewController, UIGestureRecognizerDelegate, UIScroll
         containerView.addSubview(taglineLbl)
         containerView.addSubview(taglineText)
         
-        let bottomMargin = CGFloat(self.view.frame.height / 2.5) // Set large bottom margin so user can scroll up and read bottom tagline
+        let bottomMargin = CGFloat(self.view.frame.height / 2.25) // Set large bottom margin so user can scroll up and read bottom tagline
         
         // Define main constraints
         
         containerView.addConstraintsWithFormat("H:|[v0]|", views: coverImageView)
-        containerView.addConstraintsWithFormat("V:|[v0(250)]-14-[v1]-8-[v2(20)]-8-[v3(\(ProfileController.ICON_SIZE))]-8-[v4(20)]-8-[v5(\(ProfileController.ICON_SIZE))]-13-[v6(0.5)]-12-[v7(20)]-4-[v8(20)]-8-[v9(20)]-4-[v10(20)]-8-[v11(20)]-4-[v12(20)]-12-[v13(0.5)]-12-[v14(20)]-4-[v15]-\(bottomMargin)-|", views: coverImageView, disciplineNameAgeContainer, badgesLbl, badgesCollectionView, classroomsLbl, classroomsCollectionView, dividerLineForCollectionView, locationLbl, locationText, schoolLbl, schoolText, organizationLbl, organizationText, dividerLineForProfileInfo, taglineLbl, taglineText)
+        containerView.addConstraintsWithFormat("V:|[v0(250)]-14-[v1]-8-[v2(40)]-8-[v3(20)]-8-[v4(\(ProfileController.ICON_SIZE))]-8-[v5(20)]-8-[v6(\(ProfileController.ICON_SIZE))]-13-[v7(0.5)]-12-[v8(20)]-4-[v9(20)]-8-[v10(20)]-4-[v11(20)]-8-[v12(20)]-4-[v13(20)]-12-[v14(0.5)]-12-[v15(20)]-4-[v16]-\(bottomMargin)-|", views: coverImageView, disciplineNameAgeContainer, messageBtn, badgesLbl, badgesCollectionView, classroomsLbl, classroomsCollectionView, dividerLineForCollectionView, locationLbl, locationText, schoolLbl, schoolText, organizationLbl, organizationText, dividerLineForProfileInfo, taglineLbl, taglineText)
         
+        containerView.addConstraintsWithFormat("H:|-8-[v0]-8-|", views: messageBtn)
         containerView.addConstraintsWithFormat("H:|-8-[v0]-8-|", views: badgesLbl)
         containerView.addConstraintsWithFormat("H:|[v0]|", views: badgesCollectionView)
         containerView.addConstraintsWithFormat("H:|-8-[v0]-8-|", views: classroomsLbl)
@@ -345,23 +393,47 @@ class ProfileController: UIViewController, UIGestureRecognizerDelegate, UIScroll
         containerView.addConstraintsWithFormat("H:|-8-[v0]-8-|", views: taglineLbl)
         containerView.addConstraintsWithFormat("H:|-8-[v0]-8-|", views: taglineText)
         
+        // Profile image view over cover image
         containerView.addConstraintsWithFormat("H:[v0(180)]", views: profileImageView)
         containerView.addConstraint(NSLayoutConstraint(item: profileImageView, attribute: .centerX, relatedBy: .equal, toItem: containerView, attribute: .centerX, multiplier: 1.0, constant: 0))
 
         containerView.addConstraintsWithFormat("V:|-35-[v0(180)]", views: profileImageView)
         
-        profileImageView.image = #imageLiteral(resourceName: "leo-profile")
-        nameAndAgeLbl.text = "Leonard, 25"
-        disciplineImageView.image = #imageLiteral(resourceName: "business")
-        locationText.text = "Singapore"
-        schoolText.text = "Harvard University"
-        organizationText.text = "428"
+        loadData()
+        
+        // Add no badges and no classrooms lbl to collection views in case there are no badges or classrooms, if necessary
+        // Note that this has to be after data is loaded above
+        if badges.count == 0 {
+            containerView.addSubview(noBadgesLbl)
+            containerView.addConstraint(NSLayoutConstraint(item: noBadgesLbl, attribute: .top, relatedBy: .equal, toItem: badgesLbl, attribute: .bottom, multiplier: 1.0, constant: 8.0))
+            containerView.addConstraintsWithFormat("H:|-8-[v0]-8-|", views: noBadgesLbl)
+        }
+        if classrooms.count == 0 {
+            containerView.addSubview(noClassroomsLbl)
+            containerView.addConstraint(NSLayoutConstraint(item: noClassroomsLbl, attribute: .top, relatedBy: .equal, toItem: classroomsLbl, attribute: .bottom, multiplier: 1.0, constant: 8.0))
+            containerView.addConstraintsWithFormat("H:|-8-[v0]-8-|", views: noClassroomsLbl)
+        }
+    }
+    
+    fileprivate func loadData() {
+        _ = downloadImage(imageUrlString: profile.profileImageName, completed: { image in
+            self.profileImageView.image = image
+        })
+        nameAndAgeLbl.text = "\(profile.name), \(profile.age)"
+        disciplineImageView.image = UIImage(named: profile.disciplineIcon)
+        locationText.text = profile.location
+        schoolText.text = profile.school
+        organizationText.text = profile.org
         let paragraphStyle = NSMutableParagraphStyle()
         paragraphStyle.lineSpacing = 6
         paragraphStyle.alignment = .left
-        let taglineString = NSMutableAttributedString(string: "My schedule is actually a lot easier to predict than you think. I'm normally hitting the gym at 4:28pm, before I head off to dinner. When I'm not at the gym, I'll go for a swim. When I'm not exercising, I try to keep that time free to catch up on some TechCrunch reading over a hot cup of Peppermint Honey Tea.", attributes: [NSForegroundColorAttributeName: UIColor.gray, NSParagraphStyleAttributeName: paragraphStyle])
+        let taglineString = NSMutableAttributedString(string: profile.tagline, attributes: [NSForegroundColorAttributeName: UIColor.gray, NSParagraphStyleAttributeName: paragraphStyle])
         taglineText.attributedText = taglineString
         
+        self.badges = profile.badgeIcons
+        self.classrooms = profile.classroomIcons
+        self.badgesCollectionView.reloadData()
+        self.classroomsCollectionView.reloadData()
     }
     
     // MARK: Close profile

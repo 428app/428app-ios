@@ -66,9 +66,9 @@ class ClassroomsController: UIViewController, UICollectionViewDelegate, UICollec
         let im4 = "https://scontent-sit4-1.xx.fbcdn.net/v/t1.0-9/12373224_10153942082375757_2547226759416788825_n.jpg?oh=801b6fb09dc2e9a7822ef09660955c75&oe=58E75959"
         
         let prof1 = Profile(uid: "1", name: "Leonard", profileImageName: im1, discipline: "Business", age: 25, location: "Singapore", school: "Harvard", org: "428", tagline: "Hey!", badges: [String](), classrooms: ["Physics"])
-        let prof2 = Profile(uid: "1", name: "Tomas", profileImageName: im2, discipline: "Computer Science", age: 27, location: "Iceland", school: "Harvard", org: "Harvard", tagline: "Hey ya!", badges: [String](), classrooms: ["Physics"])
-        let prof3 = Profile(uid: "1", name: "Jenny", profileImageName: im3, discipline: "Biology", age: 23, location: "USA", school: "Harvard", org: "428", tagline: "Hey!", badges: [String](), classrooms: ["Physics"])
-        let prof4 = Profile(uid: "1", name: "Kyooeun", profileImageName: im4, discipline: "East Asian Studies", age: 25, location: "Korea", school: "Harvard", org: "428", tagline: "Hey!", badges: [String](), classrooms: ["Physics"])
+        let prof2 = Profile(uid: "2", name: "Tomas", profileImageName: im2, discipline: "Computer Science", age: 27, location: "Iceland", school: "Harvard", org: "Harvard", tagline: "Hey ya!", badges: [String](), classrooms: ["Physics"])
+        let prof3 = Profile(uid: "3", name: "Jenny", profileImageName: im3, discipline: "Biology", age: 23, location: "USA", school: "Harvard", org: "428", tagline: "Hey!", badges: [String](), classrooms: ["Physics"])
+        let prof4 = Profile(uid: "4", name: "Kyooeun", profileImageName: im4, discipline: "East Asian Studies", age: 25, location: "Korea", school: "Harvard", org: "428", tagline: "Hey!", badges: [String](), classrooms: ["Physics"])
         
         // Questions
         let q1 = Question(qid: "1", timestamp: 1, imageName: "https://scontent-sit4-1.xx.fbcdn.net/v/t31.0-8/15039689_1271173046259920_4366784399934560581_o.jpg?oh=22f4ffd1a592e2d0b55bf1208ca9e1d2&oe=58D6797C", question: "What happens when sperm travel to the speed of light? Think about it this way... what happens when anything travels to the speed of the light? Is it a black hole? Is it a plane? What is it?", answer: "Answer")
