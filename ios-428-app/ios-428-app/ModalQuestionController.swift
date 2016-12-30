@@ -1,5 +1,5 @@
 //
-//  ModalChatClassroomController.swift
+//  ModalQuestionController.swift
 //  ios-428-app
 //
 //  Created by Leonard Loo on 10/20/16.
@@ -9,7 +9,7 @@
 import Foundation
 import UIKit
 
-class ModalChatClassroomController: UIViewController {
+class ModalQuestionController: UIViewController {
     
     var classroom: Classroom! {
         didSet {

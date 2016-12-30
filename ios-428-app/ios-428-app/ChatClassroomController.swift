@@ -45,7 +45,7 @@ class ChatClassroomController: UIViewController, UIGestureRecognizerDelegate, UI
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        self.view.backgroundColor = UIColor.white
+        self.view.backgroundColor = GREEN_UICOLOR
         self.setupNavigationBar()
         self.setupPromptView()
         self.setupCollectionView()
@@ -55,28 +55,29 @@ class ChatClassroomController: UIViewController, UIGestureRecognizerDelegate, UI
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         self.extendedLayoutIncludesOpaqueBars = true
-        self.showViewsAfterTransitioning()
+//        self.showViewsAfterTransitioning()
         self.tabBarController?.tabBar.isHidden = true
         self.registerObservers()
     }
 
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
+        self.tabBarController?.tabBar.isHidden = false
         self.unregisterObservers()
     }
     
-    fileprivate func hideViewsBeforeTransitioning() {
-        self.navigationController?.navigationBar.isHidden = true
-        self.collectionView.isHidden = true
-        self.questionBanner.isHidden = true
-    }
-    
-    fileprivate func showViewsAfterTransitioning() {
-        self.navigationController?.navigationBar.isHidden = false
-        self.collectionView.isHidden = false
-        self.questionBanner.isHidden = false
-    }
-    
+//    fileprivate func hideViewsBeforeTransitioning() {
+//        self.navigationController?.navigationBar.isHidden = true
+//        self.collectionView.isHidden = true
+//        self.questionBanner.isHidden = true
+//    }
+//    
+//    fileprivate func showViewsAfterTransitioning() {
+//        self.navigationController?.navigationBar.isHidden = false
+//        self.collectionView.isHidden = false
+//        self.questionBanner.isHidden = false
+//    }
+//    
     // MARK: Navigation
     
     fileprivate func setupNavigationBar() {
@@ -92,7 +93,10 @@ class ChatClassroomController: UIViewController, UIGestureRecognizerDelegate, UI
         alertController.view.tintColor = GREEN_UICOLOR
         let cancelAction = UIAlertAction(title: "Cancel", style: .cancel, handler: nil)
         let classmatesAction = UIAlertAction(title: "View classmates", style: .default) { (action) in
-            // TODO: View classmates
+            let layout = UICollectionViewFlowLayout()
+            let controller = ClassmatesController(collectionViewLayout: layout)
+            controller.classmates = self.classroom.members
+            self.navigationController?.pushViewController(controller, animated: true)
         }
         let answersAction = UIAlertAction(title: "View answers", style: .default) { (action) in
             // TODO: View answers
@@ -128,7 +132,7 @@ class ChatClassroomController: UIViewController, UIGestureRecognizerDelegate, UI
     }()
     
     func openDescription() {
-        let modalController = ModalChatClassroomController()
+        let modalController = ModalQuestionController()
         modalController.classroom = self.classroom
         modalController.modalPresentationStyle = .overFullScreen
         modalController.modalTransitionStyle = .crossDissolve
@@ -401,8 +405,6 @@ class ChatClassroomController: UIViewController, UIGestureRecognizerDelegate, UI
     func openProfile(notif: Notification) {
         if let userInfo = notif.userInfo as? [String: String], let uid = userInfo["uid"] {
             log.info("opening profile of uid: \(uid)")
-            // TODO: Grab the profile info using this uid
-            
             let profilesToOpen = classroom.members.filter{$0.uid == uid}
             if profilesToOpen.count != 1 {
                 return
@@ -414,7 +416,6 @@ class ChatClassroomController: UIViewController, UIGestureRecognizerDelegate, UI
             controller.profile = profileToOpen
             controller.modalTransitionStyle = .coverVertical
             controller.modalPresentationStyle = .overFullScreen
-//            self.hideViewsBeforeTransitioning()
             self.present(controller, animated: true, completion: nil)
         }
     }
