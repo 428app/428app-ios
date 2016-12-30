@@ -62,6 +62,8 @@
 		4064A2541DB34E4D00071383 /* ProfileController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4064A2531DB34E4D00071383 /* ProfileController.swift */; };
 		4064A2561DB3E5E800071383 /* ProfileCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4064A2551DB3E5E800071383 /* ProfileCell.swift */; };
 		4072AD961E15FD0E0067046D /* ClassmatesController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4072AD951E15FD0E0067046D /* ClassmatesController.swift */; };
+		4072AD981E1619BD0067046D /* ClassmatesProfileCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4072AD971E1619BD0067046D /* ClassmatesProfileCell.swift */; };
+		4072AD9A1E1633E30067046D /* AnswersController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4072AD991E1633E30067046D /* AnswersController.swift */; };
 		40785D5B1E04EDCE009B66E0 /* HorizontalScrollCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 40785D5A1E04EDCE009B66E0 /* HorizontalScrollCell.swift */; };
 		40785D5F1E093AAF009B66E0 /* MeController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 40785D5E1E093AAF009B66E0 /* MeController.swift */; };
 		40785D611E0D2C81009B66E0 /* DataService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 40785D601E0D2C81009B66E0 /* DataService.swift */; };
@@ -156,6 +158,8 @@
 		4064A2531DB34E4D00071383 /* ProfileController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProfileController.swift; sourceTree = "<group>"; };
 		4064A2551DB3E5E800071383 /* ProfileCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProfileCell.swift; sourceTree = "<group>"; };
 		4072AD951E15FD0E0067046D /* ClassmatesController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ClassmatesController.swift; sourceTree = "<group>"; };
+		4072AD971E1619BD0067046D /* ClassmatesProfileCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ClassmatesProfileCell.swift; sourceTree = "<group>"; };
+		4072AD991E1633E30067046D /* AnswersController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AnswersController.swift; sourceTree = "<group>"; };
 		40785D5A1E04EDCE009B66E0 /* HorizontalScrollCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HorizontalScrollCell.swift; sourceTree = "<group>"; };
 		40785D5E1E093AAF009B66E0 /* MeController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MeController.swift; sourceTree = "<group>"; };
 		40785D601E0D2C81009B66E0 /* DataService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DataService.swift; sourceTree = "<group>"; };
@@ -210,6 +214,7 @@
 				4024F2281DB853F9007819F7 /* ChatClassroomController.swift */,
 				4024F2301DB88262007819F7 /* ModalQuestionController.swift */,
 				4072AD951E15FD0E0067046D /* ClassmatesController.swift */,
+				4072AD991E1633E30067046D /* AnswersController.swift */,
 			);
 			name = Classroom;
 			sourceTree = "<group>";
@@ -346,6 +351,7 @@
 				4024F2261DB82239007819F7 /* ClassroomCell.swift */,
 				4024F22C1DB86B18007819F7 /* ClassroomChatCell.swift */,
 				40E2E1411DD3788300469B4D /* CustomActivityIndicatorView.swift */,
+				4072AD971E1619BD0067046D /* ClassmatesProfileCell.swift */,
 			);
 			name = View;
 			sourceTree = "<group>";
@@ -658,12 +664,14 @@
 				40785D611E0D2C81009B66E0 /* DataService.swift in Sources */,
 				40E2E1401DD26B8200469B4D /* Discipline.swift in Sources */,
 				40785D631E0D981C009B66E0 /* InboxService.swift in Sources */,
+				4072AD981E1619BD0067046D /* ClassmatesProfileCell.swift in Sources */,
 				4064A2161DACBCDC00071383 /* Extensions.swift in Sources */,
 				40AB80031DB6FAA200492788 /* PictureModalController.swift in Sources */,
 				40AB80051DB7094700492788 /* EditProfessionalController.swift in Sources */,
 				4024F2331DB9454B007819F7 /* LoginController.swift in Sources */,
 				4024F2311DB88262007819F7 /* ModalQuestionController.swift in Sources */,
 				4064A21A1DACC20E00071383 /* InboxCell.swift in Sources */,
+				4072AD9A1E1633E30067046D /* AnswersController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -93,13 +93,14 @@ class ChatClassroomController: UIViewController, UIGestureRecognizerDelegate, UI
         alertController.view.tintColor = GREEN_UICOLOR
         let cancelAction = UIAlertAction(title: "Cancel", style: .cancel, handler: nil)
         let classmatesAction = UIAlertAction(title: "View classmates", style: .default) { (action) in
-            let layout = UICollectionViewFlowLayout()
-            let controller = ClassmatesController(collectionViewLayout: layout)
+            let controller = ClassmatesController(collectionViewLayout: UICollectionViewFlowLayout())
             controller.classmates = self.classroom.members
             self.navigationController?.pushViewController(controller, animated: true)
         }
         let answersAction = UIAlertAction(title: "View answers", style: .default) { (action) in
-            // TODO: View answers
+            let controller = AnswersController()
+            controller.questions = self.classroom.questions
+            self.navigationController?.pushViewController(controller, animated: true)
         }
         let ratingsAction = UIAlertAction(title: "Weekly ratings", style: .default) { (action) in
             // TODO: View ratings/rate

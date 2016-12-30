@@ -74,7 +74,8 @@ class ClassroomsController: UIViewController, UICollectionViewDelegate, UICollec
         let q1 = Question(qid: "1", timestamp: 1, imageName: "https://scontent-sit4-1.xx.fbcdn.net/v/t31.0-8/15039689_1271173046259920_4366784399934560581_o.jpg?oh=22f4ffd1a592e2d0b55bf1208ca9e1d2&oe=58D6797C", question: "What happens when sperm travel to the speed of light? Think about it this way... what happens when anything travels to the speed of the light? Is it a black hole? Is it a plane? What is it?", answer: "Answer")
         let q2 = Question(qid: "2", timestamp: 2, imageName: "https://scontent-sit4-1.xx.fbcdn.net/v/t31.0-8/15068551_10155379098362506_9156974081960886025_o.jpg?oh=4c761407b791ca16541c2c237c2f414f&oe=58D869C7", question: "Q2", answer: "Answer")
         let q3 = Question(qid: "3", timestamp: 3, imageName: "https://scontent-sit4-1.xx.fbcdn.net/v/t1.0-9/14567998_10154822094095757_2510961597749082744_n.jpg?oh=95c0eb4a5f54fd8f4b02ec2f5dda2295&oe=58E6E644", question: "What happens when sperm travel to the speed of light? Think about it this way... what happens when anything travels to the speed of the light? Is it a black hole? Is it a plane? What is it?", answer: "Answer")
-        let q4 = Question(qid: "4", timestamp: 1, imageName: "https://scontent-sit4-1.xx.fbcdn.net/v/t1.0-9/15326324_1298235190220372_4417723045154146576_n.jpg?oh=bcf6f25e81e8c5d0cbc7da11d3e87812&oe=58F2AD0F", question: "What happens when sperm travel to the speed of light? Think about it this way... what happens when anything travels to the speed of the light? Is it a black hole? Is it a plane? What is it?", answer: "Answer")
+        let q4 = Question(qid: "4", timestamp: 4, imageName: "https://scontent-sit4-1.xx.fbcdn.net/v/t1.0-9/15326324_1298235190220372_4417723045154146576_n.jpg?oh=bcf6f25e81e8c5d0cbc7da11d3e87812&oe=58F2AD0F", question: "What happens when sperm travel to the speed of light? Think about it this way... what happens when anything travels to the speed of the light? Is it a black hole? Is it a plane? What is it?", answer: "Answer")
+        let q5 = Question(qid: "5", timestamp: 5, imageName: "https://scontent-sit4-1.xx.fbcdn.net/v/t1.0-9/15326324_1298235190220372_4417723045154146576_n.jpg?oh=bcf6f25e81e8c5d0cbc7da11d3e87812&oe=58F2AD0F", question: "What happens when sperm travel to the speed of light? Think about it this way... what happens when anything travels to the speed of the light? Is it a black hole? Is it a plane? What is it?", answer: "What happens when sperm travel to the speed of light? Think about it this way... what happens when anything travels to the speed of the light? Is it a black hole? Is it a plane? What is it?")
         
         // Messages
         let m1 = ClassroomMessage(mid: "1", parentCid: "1", posterUid: "1", posterImageName: im1, posterName: "Leonard", text: "Sup guys!", date: minAgo(minutesAgo: 10), isSentByYou: false)
@@ -85,7 +86,7 @@ class ClassroomsController: UIViewController, UICollectionViewDelegate, UICollec
         
         let messages = [m1, m2, m3, m4, m5]
         
-        let room1 = Classroom(cid: "1", title: "Physics", timeCreated: 1, members: [prof1, prof2, prof3, prof4], questions: [q1, q2], classroomMessages: messages, hasSeen: true)
+        let room1 = Classroom(cid: "1", title: "Physics", timeCreated: 1, members: [prof1, prof2, prof3, prof4], questions: [q1, q2, q3, q4, q5], classroomMessages: messages, hasSeen: true)
         
         let room2 = Classroom(cid: "2", title: "Business", timeCreated: 2, members: [prof1, prof2, prof3, prof4], questions: [q1])
         let room3 = Classroom(cid: "3", title: "Computer Science", timeCreated: 3, members: [prof1, prof2, prof3, prof4], questions: [q3, q4])
