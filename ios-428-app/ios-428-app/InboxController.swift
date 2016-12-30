@@ -25,7 +25,6 @@ class InboxController: UICollectionViewController, UICollectionViewDelegateFlowL
         self.extendedLayoutIncludesOpaqueBars = true
         self.setupViews()
         navigationItem.title = "Inbox"
-        self.navigationItem.backBarButtonItem = UIBarButtonItem(title: " ", style: .plain, target: nil, action: nil)
     }
     
     override func viewWillAppear(_ animated: Bool) {

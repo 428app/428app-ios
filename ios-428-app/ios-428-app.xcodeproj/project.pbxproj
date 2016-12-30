@@ -64,6 +64,8 @@
 		4072AD961E15FD0E0067046D /* ClassmatesController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4072AD951E15FD0E0067046D /* ClassmatesController.swift */; };
 		4072AD981E1619BD0067046D /* ClassmatesProfileCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4072AD971E1619BD0067046D /* ClassmatesProfileCell.swift */; };
 		4072AD9A1E1633E30067046D /* AnswersController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4072AD991E1633E30067046D /* AnswersController.swift */; };
+		4072AD9C1E164A880067046D /* Rating.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4072AD9B1E164A880067046D /* Rating.swift */; };
+		4072ADA21E1657D50067046D /* RatingsController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4072ADA11E1657D50067046D /* RatingsController.swift */; };
 		40785D5B1E04EDCE009B66E0 /* HorizontalScrollCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 40785D5A1E04EDCE009B66E0 /* HorizontalScrollCell.swift */; };
 		40785D5F1E093AAF009B66E0 /* MeController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 40785D5E1E093AAF009B66E0 /* MeController.swift */; };
 		40785D611E0D2C81009B66E0 /* DataService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 40785D601E0D2C81009B66E0 /* DataService.swift */; };
@@ -160,6 +162,8 @@
 		4072AD951E15FD0E0067046D /* ClassmatesController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ClassmatesController.swift; sourceTree = "<group>"; };
 		4072AD971E1619BD0067046D /* ClassmatesProfileCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ClassmatesProfileCell.swift; sourceTree = "<group>"; };
 		4072AD991E1633E30067046D /* AnswersController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AnswersController.swift; sourceTree = "<group>"; };
+		4072AD9B1E164A880067046D /* Rating.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Rating.swift; sourceTree = "<group>"; };
+		4072ADA11E1657D50067046D /* RatingsController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RatingsController.swift; sourceTree = "<group>"; };
 		40785D5A1E04EDCE009B66E0 /* HorizontalScrollCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HorizontalScrollCell.swift; sourceTree = "<group>"; };
 		40785D5E1E093AAF009B66E0 /* MeController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MeController.swift; sourceTree = "<group>"; };
 		40785D601E0D2C81009B66E0 /* DataService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DataService.swift; sourceTree = "<group>"; };
@@ -215,6 +219,7 @@
 				4024F2301DB88262007819F7 /* ModalQuestionController.swift */,
 				4072AD951E15FD0E0067046D /* ClassmatesController.swift */,
 				4072AD991E1633E30067046D /* AnswersController.swift */,
+				4072ADA11E1657D50067046D /* RatingsController.swift */,
 			);
 			name = Classroom;
 			sourceTree = "<group>";
@@ -331,6 +336,7 @@
 				4024F2221DB7F664007819F7 /* Classroom.swift */,
 				4081B2611E1500FF00D6E690 /* Question.swift */,
 				4024F2241DB7F83F007819F7 /* ClassroomMessage.swift */,
+				4072AD9B1E164A880067046D /* Rating.swift */,
 			);
 			name = Model;
 			sourceTree = "<group>";
@@ -657,6 +663,7 @@
 				40ADEED91DDD12D000CE529A /* Config.swift in Sources */,
 				40785D671E0E5A1F009B66E0 /* RemoteService.swift in Sources */,
 				404C22FA1DBDB86D0054FE19 /* UserDefaults.swift in Sources */,
+				4072AD9C1E164A880067046D /* Rating.swift in Sources */,
 				4064A2291DB2B0B500071383 /* InboxMessage.swift in Sources */,
 				40ADEEE31DDD82E300CE529A /* Enums.swift in Sources */,
 				4024F22B1DB85C0E007819F7 /* PaddingLabel.swift in Sources */,
@@ -667,6 +674,7 @@
 				4072AD981E1619BD0067046D /* ClassmatesProfileCell.swift in Sources */,
 				4064A2161DACBCDC00071383 /* Extensions.swift in Sources */,
 				40AB80031DB6FAA200492788 /* PictureModalController.swift in Sources */,
+				4072ADA21E1657D50067046D /* RatingsController.swift in Sources */,
 				40AB80051DB7094700492788 /* EditProfessionalController.swift in Sources */,
 				4024F2331DB9454B007819F7 /* LoginController.swift in Sources */,
 				4024F2311DB88262007819F7 /* ModalQuestionController.swift in Sources */,

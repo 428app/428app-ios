@@ -64,11 +64,13 @@ class ClassroomsController: UIViewController, UICollectionViewDelegate, UICollec
         let im2 = "https://scontent-sit4-1.xx.fbcdn.net/v/t1.0-9/15338895_214351679010971_9083811642954576817_n.jpg?oh=241c744be40dd57b91d00932d0879147&oe=58E1338E"
         let im3 = "https://scontent-sit4-1.xx.fbcdn.net/v/t31.0-8/13247840_10153651151013170_4586384765586065139_o.jpg?oh=2b8d422b5c0dda4734e77d180fd5392e&oe=58DAF753"
         let im4 = "https://scontent-sit4-1.xx.fbcdn.net/v/t1.0-9/12373224_10153942082375757_2547226759416788825_n.jpg?oh=801b6fb09dc2e9a7822ef09660955c75&oe=58E75959"
+        let im5 = "https://scontent-sit4-1.xx.fbcdn.net/v/t31.0-8/14115448_10210401045933593_3308068963999044390_o.jpg?oh=270c123499c84c016e9328b62127bff5&oe=59245AAB"
         
         let prof1 = Profile(uid: "1", name: "Leonard", profileImageName: im1, discipline: "Business", age: 25, location: "Singapore", school: "Harvard", org: "428", tagline: "Hey!", badges: [String](), classrooms: ["Physics"])
         let prof2 = Profile(uid: "2", name: "Tomas", profileImageName: im2, discipline: "Computer Science", age: 27, location: "Iceland", school: "Harvard", org: "Harvard", tagline: "Hey ya!", badges: [String](), classrooms: ["Physics"])
         let prof3 = Profile(uid: "3", name: "Jenny", profileImageName: im3, discipline: "Biology", age: 23, location: "USA", school: "Harvard", org: "428", tagline: "Hey!", badges: [String](), classrooms: ["Physics"])
         let prof4 = Profile(uid: "4", name: "Kyooeun", profileImageName: im4, discipline: "East Asian Studies", age: 25, location: "Korea", school: "Harvard", org: "428", tagline: "Hey!", badges: [String](), classrooms: ["Physics"])
+        let prof5 = Profile(uid: "5", name: "Yihang", profileImageName: im5, discipline: "Business", age: 24, location: "Korea", school: "Harvard", org: "428", tagline: "Hey! I am Yihang and I am awesome!", badges: [String](), classrooms: ["Physics"])
         
         // Questions
         let q1 = Question(qid: "1", timestamp: 1, imageName: "https://scontent-sit4-1.xx.fbcdn.net/v/t31.0-8/15039689_1271173046259920_4366784399934560581_o.jpg?oh=22f4ffd1a592e2d0b55bf1208ca9e1d2&oe=58D6797C", question: "What happens when sperm travel to the speed of light? Think about it this way... what happens when anything travels to the speed of the light? Is it a black hole? Is it a plane? What is it?", answer: "Answer")
@@ -84,9 +86,16 @@ class ClassroomsController: UIViewController, UICollectionViewDelegate, UICollec
         let m4 = ClassroomMessage(mid: "1", parentCid: "1", posterUid: "5", posterImageName: im1, posterName: "Yihang", text: "That is lame.", date: minAgo(minutesAgo: 4), isSentByYou: true)
         let m5 = ClassroomMessage(mid: "1", parentCid: "1", posterUid: "4", posterImageName: im4, posterName: "Kyooeun", text: "Oh this is lively isn't it! :)", date: minAgo(minutesAgo: 2), isSentByYou: false)
         
+        // Ratings
+        let r1 = Rating(ratingName: "Most funny", userVotedFor: prof1)
+        let r2 = Rating(ratingName: "Most awkward", userVotedFor: prof5)
+        let r3 = Rating(ratingName: "Most serious", userVotedFor: nil)
+        let r4 = Rating(ratingName: "Prettiest", userVotedFor: nil)
+        let ratings = [r1, r2, r3, r4]
+        
         let messages = [m1, m2, m3, m4, m5]
         
-        let room1 = Classroom(cid: "1", title: "Physics", timeCreated: 1, members: [prof1, prof2, prof3, prof4], questions: [q1, q2, q3, q4, q5], classroomMessages: messages, hasSeen: true)
+        let room1 = Classroom(cid: "1", title: "Physics", timeCreated: 1, members: [prof1, prof2, prof3, prof4, prof5], questions: [q1, q2, q3, q4, q5], classroomMessages: messages, ratings: ratings, hasUpdates: true)
         
         let room2 = Classroom(cid: "2", title: "Business", timeCreated: 2, members: [prof1, prof2, prof3, prof4], questions: [q1])
         let room3 = Classroom(cid: "3", title: "Computer Science", timeCreated: 3, members: [prof1, prof2, prof3, prof4], questions: [q3, q4])

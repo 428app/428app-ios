@@ -24,14 +24,10 @@ class ClassmatesController: UICollectionViewController, UICollectionViewDelegate
         self.extendedLayoutIncludesOpaqueBars = true
         self.setupViews()
     }
-    
-    override var prefersStatusBarHidden: Bool {
-        return true
-    }
-    
+
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        self.navigationController?.navigationBar.setBackgroundImage(UIImage(), for: .default)
+        self.navigationController?.navigationBar.setBackgroundImage(UIImage.init(color: GREEN_UICOLOR), for: .default)
         self.navigationController?.navigationBar.shadowImage = UIImage()
         self.tabBarController?.tabBar.isHidden = true
     }
@@ -51,7 +47,7 @@ class ClassmatesController: UICollectionViewController, UICollectionViewDelegate
         collectionView?.delegate = self
         collectionView?.dataSource = self
         collectionView?.backgroundColor = GREEN_UICOLOR
-        collectionView?.bounces = false
+        collectionView?.bounces = true
         collectionView?.showsVerticalScrollIndicator = false
         collectionView?.showsHorizontalScrollIndicator = false
         collectionView?.register(ClassmatesProfileCell.self, forCellWithReuseIdentifier: CELL_ID)

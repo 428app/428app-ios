@@ -94,16 +94,22 @@ class ChatClassroomController: UIViewController, UIGestureRecognizerDelegate, UI
         let cancelAction = UIAlertAction(title: "Cancel", style: .cancel, handler: nil)
         let classmatesAction = UIAlertAction(title: "View classmates", style: .default) { (action) in
             let controller = ClassmatesController(collectionViewLayout: UICollectionViewFlowLayout())
+            self.navigationItem.backBarButtonItem = UIBarButtonItem(title: " ", style: .plain, target: nil, action: nil)
             controller.classmates = self.classroom.members
             self.navigationController?.pushViewController(controller, animated: true)
         }
         let answersAction = UIAlertAction(title: "View answers", style: .default) { (action) in
             let controller = AnswersController()
+            self.navigationItem.backBarButtonItem = UIBarButtonItem(title: " ", style: .plain, target: nil, action: nil)
             controller.questions = self.classroom.questions
             self.navigationController?.pushViewController(controller, animated: true)
         }
         let ratingsAction = UIAlertAction(title: "Weekly ratings", style: .default) { (action) in
-            // TODO: View ratings/rate
+            let controller = RatingsController(collectionViewLayout: UICollectionViewFlowLayout())
+            self.navigationItem.backBarButtonItem = UIBarButtonItem(title: " ", style: .plain, target: nil, action: nil)
+            controller.ratings = self.classroom.ratings
+            controller.classmates = self.classroom.members
+            self.navigationController?.pushViewController(controller, animated: true)
         }
         alertController.addAction(classmatesAction)
         alertController.addAction(answersAction)

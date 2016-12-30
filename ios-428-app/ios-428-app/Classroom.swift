@@ -16,20 +16,24 @@ class Classroom {
     fileprivate var _members: [Profile] // Used to display members and their profiles
     fileprivate var _questions: [Question] // Get question number from this
     fileprivate var _classroomMessages: [ClassroomMessage]
-    fileprivate var _hasSeen: Bool
+    fileprivate var _ratings: [Rating]
+    fileprivate var _hasRated: Bool
+    fileprivate var _hasUpdates: Bool
     
     // Computed variables from questions array
     var _questionNum: Int
     var _imageName: String
     
-    init(cid: String, title: String, timeCreated: Double, members: [Profile], questions: [Question], classroomMessages: [ClassroomMessage] = [], hasSeen: Bool = false) {
+    init(cid: String, title: String, timeCreated: Double, members: [Profile], questions: [Question], classroomMessages: [ClassroomMessage] = [], ratings: [Rating] = [], hasRated: Bool = false, hasUpdates: Bool = false) {
         _cid = cid
         _title = title
         _timeCreated = timeCreated
         _members = members
         _questions = questions.sorted{$0.timestamp > $1.timestamp} // Most recent questions first
         _classroomMessages = classroomMessages
-        _hasSeen = hasSeen
+        _ratings = ratings
+        _hasRated = hasRated
+        _hasUpdates = hasUpdates
         // Compute question num and imageName to display from questions
         _questionNum = questions.count
         _imageName = _questions.count == 0 ? "" : _questions[0].imageName // Fail silently if no questions provided in init
@@ -71,9 +75,21 @@ class Classroom {
         }
     }
     
-    var hasSeen: Bool {
+    var ratings: [Rating] {
         get {
-            return _hasSeen
+            return _ratings
+        }
+    }
+    
+    var hasRated: Bool {
+        get {
+            return _hasRated
+        }
+    }
+    
+    var hasUpdates: Bool {
+        get {
+            return _hasUpdates
         }
     }
     
