@@ -28,5 +28,8 @@ class Rating {
         get {
             return _userVotedFor
         }
+        set(profile) {
+            _userVotedFor = profile
+        }
     }
 }

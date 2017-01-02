@@ -23,6 +23,11 @@ class RatingsController: UICollectionViewController, UICollectionViewDelegateFlo
         self.extendedLayoutIncludesOpaqueBars = true
         log.info("ratings: \(self.ratings.count)")
         self.setupViews()
+        NotificationCenter.default.addObserver(self, selector: #selector(selectRating), name: NOTIF_RATINGSELECTED, object: nil)
+    }
+    
+    deinit {
+        NotificationCenter.default.removeObserver(NOTIF_RATINGSELECTED)
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -71,13 +76,27 @@ class RatingsController: UICollectionViewController, UICollectionViewDelegateFlo
     
     override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         let rating = self.ratings[indexPath.item]
-        log.info("\(rating.ratingName)")
         // TODO: Have to pass over selected profile to highlight
         let modalController = ModalVoteController()
         modalController.modalPresentationStyle = .overFullScreen
         modalController.modalTransitionStyle = .crossDissolve
+        modalController.ratingName = rating.ratingName
+        modalController.userVotedFor = rating.userVotedFor
         modalController.classmates = self.classmates
         self.present(modalController, animated: true, completion: nil)
+    }
+    
+    // MARK: Rating selection
+    
+    func selectRating(notif: Notification) {
+        if let userInfo = notif.userInfo, let ratingName = userInfo["ratingName"] as? String, let userVotedFor = userInfo["userVotedFor"] as? Profile {
+            for rating in self.ratings {
+                if rating.ratingName == ratingName {
+                    rating.userVotedFor = userVotedFor
+                    self.collectionView?.reloadData()
+                }
+            }
+        }
     }
     
 }
