@@ -19,11 +19,13 @@ class RatingsController: UICollectionViewController, UICollectionViewDelegateFlo
     override func viewDidLoad() {
         super.viewDidLoad()
         self.navigationItem.title = "Ratings"
+        self.navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Submit", style: .done, target: self, action: #selector(submitRatings))
+        self.navigationItem.rightBarButtonItem?.isEnabled = false
         self.view.backgroundColor = GREEN_UICOLOR
         self.extendedLayoutIncludesOpaqueBars = true
-        log.info("ratings: \(self.ratings.count)")
         self.setupViews()
         NotificationCenter.default.addObserver(self, selector: #selector(selectRating), name: NOTIF_RATINGSELECTED, object: nil)
+        checkToEnableSubmitRating()
     }
     
     deinit {
@@ -86,7 +88,17 @@ class RatingsController: UICollectionViewController, UICollectionViewDelegateFlo
         self.present(modalController, animated: true, completion: nil)
     }
     
-    // MARK: Rating selection
+    // MARK: Ratings
+    
+    func checkToEnableSubmitRating() {
+        for rating in ratings {
+            if rating.userVotedFor == nil {
+                self.navigationItem.rightBarButtonItem?.isEnabled = false
+                return
+            }
+        }
+        self.navigationItem.rightBarButtonItem?.isEnabled = true
+    }
     
     func selectRating(notif: Notification) {
         if let userInfo = notif.userInfo, let ratingName = userInfo["ratingName"] as? String, let userVotedFor = userInfo["userVotedFor"] as? Profile {
@@ -97,6 +109,12 @@ class RatingsController: UICollectionViewController, UICollectionViewDelegateFlo
                 }
             }
         }
+        checkToEnableSubmitRating()
     }
     
+    func submitRatings() {
+        // TODO: Dismiss this controller and immediately relaunch under ResultsController
+        self.navigationController?.popViewController(animated: true)
+    }
+
 }

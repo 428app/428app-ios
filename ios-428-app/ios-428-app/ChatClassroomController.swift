@@ -28,6 +28,7 @@ class ChatClassroomController: UIViewController, UIGestureRecognizerDelegate, UI
     fileprivate var inputContainerHeightConstraint: NSLayoutConstraint!
     // Adjusted for keyboard
     fileprivate var bottomConstraintForInput: NSLayoutConstraint!
+    fileprivate var TOP_GAP: CGFloat = 0.0 // Default value of topConstraintForCollectionView, intially set in setupCollectionView
     fileprivate var topConstraintForCollectionView: NSLayoutConstraint!
     fileprivate var keyboardHeight: CGFloat = 216.0 // Default of 216.0, but reset the first time keyboard pops up
     
@@ -45,7 +46,7 @@ class ChatClassroomController: UIViewController, UIGestureRecognizerDelegate, UI
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        self.view.backgroundColor = GREEN_UICOLOR
+        self.view.backgroundColor = UIColor.white
         self.setupNavigationBar()
         self.setupPromptView()
         self.setupCollectionView()
@@ -55,7 +56,6 @@ class ChatClassroomController: UIViewController, UIGestureRecognizerDelegate, UI
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         self.extendedLayoutIncludesOpaqueBars = true
-//        self.showViewsAfterTransitioning()
         self.tabBarController?.tabBar.isHidden = true
         self.registerObservers()
     }
@@ -66,18 +66,6 @@ class ChatClassroomController: UIViewController, UIGestureRecognizerDelegate, UI
         self.unregisterObservers()
     }
     
-//    fileprivate func hideViewsBeforeTransitioning() {
-//        self.navigationController?.navigationBar.isHidden = true
-//        self.collectionView.isHidden = true
-//        self.questionBanner.isHidden = true
-//    }
-//    
-//    fileprivate func showViewsAfterTransitioning() {
-//        self.navigationController?.navigationBar.isHidden = false
-//        self.collectionView.isHidden = false
-//        self.questionBanner.isHidden = false
-//    }
-//    
     // MARK: Navigation
     
     fileprivate func setupNavigationBar() {
@@ -92,25 +80,27 @@ class ChatClassroomController: UIViewController, UIGestureRecognizerDelegate, UI
         let alertController = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
         alertController.view.tintColor = GREEN_UICOLOR
         let cancelAction = UIAlertAction(title: "Cancel", style: .cancel, handler: nil)
-        let classmatesAction = UIAlertAction(title: "View classmates", style: .default) { (action) in
+        let classmatesAction = UIAlertAction(title: "Classmates", style: .default) { (action) in
             let controller = ClassmatesController(collectionViewLayout: UICollectionViewFlowLayout())
             self.navigationItem.backBarButtonItem = UIBarButtonItem(title: " ", style: .plain, target: nil, action: nil)
             controller.classmates = self.classroom.members
             self.navigationController?.pushViewController(controller, animated: true)
         }
-        let answersAction = UIAlertAction(title: "View answers", style: .default) { (action) in
+        let answersAction = UIAlertAction(title: "Answers", style: .default) { (action) in
             let controller = AnswersController()
             self.navigationItem.backBarButtonItem = UIBarButtonItem(title: " ", style: .plain, target: nil, action: nil)
             controller.questions = self.classroom.questions
             self.navigationController?.pushViewController(controller, animated: true)
         }
-        let ratingsAction = UIAlertAction(title: "Weekly ratings", style: .default) { (action) in
+        let ratingsAction = UIAlertAction(title: "Ratings", style: .default) { (action) in
             let controller = RatingsController(collectionViewLayout: UICollectionViewFlowLayout())
             self.navigationItem.backBarButtonItem = UIBarButtonItem(title: " ", style: .plain, target: nil, action: nil)
             controller.ratings = self.classroom.ratings
             controller.classmates = self.classroom.members
             self.navigationController?.pushViewController(controller, animated: true)
         }
+        // TODO: Disable this if memberHasRated is nil
+        ratingsAction.isEnabled = true
         alertController.addAction(classmatesAction)
         alertController.addAction(answersAction)
         alertController.addAction(ratingsAction)
@@ -267,7 +257,7 @@ class ChatClassroomController: UIViewController, UIGestureRecognizerDelegate, UI
     fileprivate func resetInputContainer() {
         self.textViewHeight = 0.0
         self.inputContainerHeightConstraint.constant = 45.0
-        self.view.layoutIfNeeded()
+        self.topConstraintForCollectionView.constant = TOP_GAP
         self.sendButton.isEnabled = false
         inputTextView.text = nil
         self.placeholderLabel.isHidden = false
@@ -288,15 +278,16 @@ class ChatClassroomController: UIViewController, UIGestureRecognizerDelegate, UI
         if self.textViewHeight != newHeight {
             // Change height of message input container only if container doesn't cover too much of screen
             let screenHeight = UIScreen.main.bounds.height
-            if newHeight < 0.2 * screenHeight {
-                self.inputContainerHeightConstraint.constant = newHeight + 12.0 // Expand input container
+            let containerMaxHeight = 0.2 * screenHeight
+            if newHeight < containerMaxHeight {
+                self.inputContainerHeightConstraint.constant = newHeight + 9.5 // Expand input container
                 // Shift screen accordingly
                 let diff = newHeight - self.textViewHeight
-                if (self.isCollectionViewBlockingInput() && diff > 0) || (diff < 0 && self.topConstraintForCollectionView.constant < 0) {
-                    // Need to shift upwards if content is blocked (First conditional) OR
-                    // Only shift downwards if previously shifted upwards (Second conditional)
-                    let frame = self.collectionView.contentInset
-                    self.collectionView.contentInset = UIEdgeInsets(top: frame.top + diff, left: frame.left, bottom: frame.bottom, right: frame.right)
+                
+                if (self.isCollectionViewBlockingInput()) && self.textViewHeight < containerMaxHeight  {
+                    // Need to shift only if collection view is blocking and text view is smaller than max height.
+                    // If text view is greater than max height the container is not expanding anyway, so no point
+                    // shifting collection view upwards.
                     self.topConstraintForCollectionView.constant -= diff
                 }
                 self.view.layoutIfNeeded()
@@ -392,6 +383,7 @@ class ChatClassroomController: UIViewController, UIGestureRecognizerDelegate, UI
             self.collectionView.reloadData()
             self.collectionView.layoutIfNeeded()
             self.scrollToLastItemInCollectionView()
+            self.removeTimeLabel()
         }
     }
 
@@ -427,22 +419,47 @@ class ChatClassroomController: UIViewController, UIGestureRecognizerDelegate, UI
         }
     }
     
-    fileprivate func isCollectionViewBlockingInput() -> Bool {
-        // Find bottom of collection view
+    fileprivate func bottomOfCollectionView() -> CGFloat {
         let lastSection = self.timeBucketHeaders.count - 1
         if lastSection < 0 || lastSection >= self.messagesInTimeBuckets.count {
-            return false
+            return 0.0
         }
         let lastRow = self.messagesInTimeBuckets[lastSection].count - 1
         let indexPath = IndexPath(item: lastRow, section: lastSection)
         let attributes = self.collectionView.layoutAttributesForItem(at: indexPath)!
         let frame: CGRect = self.collectionView.convert(attributes.frame, to: self.view)
-        let bottomOfCollectionView = frame.maxY
-        
-        // Compare it with top of input container
-        let topOfInput = self.view.bounds.maxY - keyboardHeight - self.messageInputContainerView.bounds.height
-        
-        return bottomOfCollectionView >= topOfInput
+        return frame.maxY
+    }
+    
+    fileprivate func topOfInput() -> CGFloat {
+        return self.view.bounds.maxY - keyboardHeight - self.messageInputContainerView.bounds.height
+    }
+    
+    fileprivate func isCollectionViewBlockingInput() -> Bool {
+        return bottomOfCollectionView() >= topOfInput()
+    }
+    
+    fileprivate func moveViewsAboveKeyboard(isKeyboardShowing: Bool, animationDuration: TimeInterval, distanceShifted: CGFloat, keyboardHeight: CGFloat) {
+        if isKeyboardShowing {
+            
+            // Have to set this such that if the keyboard was kept when it was expanded the top constraint for collection view is set to the right value
+            self.topConstraintForCollectionView.constant = self.TOP_GAP - (self.inputContainerHeightConstraint.constant - 45.0)
+            UIView.animate(withDuration: animationDuration, animations: {
+                if self.isCollectionViewBlockingInput() {
+                    self.view.frame.origin.y = -distanceShifted
+                    // Keyboard is shifted less because view already shifts by distance
+                    self.bottomConstraintForInput.constant = -keyboardHeight + distanceShifted
+                } else {
+                    self.bottomConstraintForInput.constant = -keyboardHeight
+                    self.view.layoutIfNeeded()
+                }
+            })
+        } else {
+            UIView.animate(withDuration: animationDuration, animations: {
+                self.view.frame.origin.y = 0
+                self.bottomConstraintForInput.constant = 0
+            })
+        }
     }
     
     func handleKeyboardNotification(_ notification: Notification) {
@@ -452,23 +469,14 @@ class ChatClassroomController: UIViewController, UIGestureRecognizerDelegate, UI
             let keyboardViewEndFrame = view.convert(keyboardFrame, from: view.window)
             self.keyboardHeight = keyboardViewEndFrame.height
             
-            // TODO: Shift screen up by a bit, while keyboard all the way when keyboard only covers part of cells
-            //            let distanceShifted = min(keyboardViewEndFrame.height, abs(bottomOfCollectionView - topOfInput + SECTION_HEADER_HEIGHT))
+            let distanceShifted = min(keyboardViewEndFrame.height, abs(bottomOfCollectionView() - topOfInput() + SECTION_HEADER_HEIGHT))
             
-            
-            if isKeyboardShowing {
-                self.scrollToLastItemInCollectionView()
-                UIView.animate(withDuration: animationDuration, animations: {
-                    if self.isCollectionViewBlockingInput() {
-                        self.view.frame.origin.y = -keyboardViewEndFrame.height
-                    } else {
-                        self.bottomConstraintForInput.constant = -keyboardViewEndFrame.height
-                    }
-                })
+            // NOTE: iOS 10 works fine with this
+            if #available(iOS 10, *) {
+                self.moveViewsAboveKeyboard(isKeyboardShowing: isKeyboardShowing, animationDuration: animationDuration, distanceShifted: distanceShifted, keyboardHeight: keyboardViewEndFrame.height)
             } else {
-                UIView.animate(withDuration: animationDuration, animations: {
-                    self.view.frame.origin.y = 0
-                    self.bottomConstraintForInput.constant = 0
+                UIView.animate(withDuration: 0, animations: {}, completion: { (completed) in
+                    self.moveViewsAboveKeyboard(isKeyboardShowing: isKeyboardShowing, animationDuration: animationDuration, distanceShifted: distanceShifted, keyboardHeight: keyboardViewEndFrame.height)
                 })
             }
         }
@@ -490,11 +498,14 @@ class ChatClassroomController: UIViewController, UIGestureRecognizerDelegate, UI
         self.collectionView.dataSource = self
         self.collectionView.bounces = true
         self.collectionView.alwaysBounceVertical = true
+        self.collectionView.scrollsToTop = false
+        self.TOP_GAP = self.navigationController!.navigationBar.frame.height + 0.7*SECTION_HEADER_HEIGHT + 40.0
+        
         let layout = UICollectionViewFlowLayout()
         layout.headerReferenceSize = CGSize(width: UIScreen.main.bounds.width, height: SECTION_HEADER_HEIGHT)
         self.collectionView.setCollectionViewLayout(layout, animated: false)
         self.automaticallyAdjustsScrollViewInsets = false
-        self.collectionView.contentInset = UIEdgeInsets(top: 8.0, left: 0, bottom: 0.8*SECTION_HEADER_HEIGHT, right: 0) // Fix top and bottom padding since automaticallyAdjustScrollViewInsets set to false
+        self.collectionView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: 0.8*SECTION_HEADER_HEIGHT, right: 0) // Fix top and bottom padding since automaticallyAdjustScrollViewInsets set to false
         
         self.collectionView.register(ClassroomChatCell.self, forCellWithReuseIdentifier: CELL_ID)
         self.collectionView.register(ChatHeaderView.self, forSupplementaryViewOfKind: UICollectionElementKindSectionHeader, withReuseIdentifier: CELL_HEADER_ID)
@@ -503,7 +514,7 @@ class ChatClassroomController: UIViewController, UIGestureRecognizerDelegate, UI
         
         self.view.addConstraintsWithFormat("H:|[v0]|", views: collectionView)
         self.view.addConstraintsWithFormat("V:[v0]", views: collectionView)
-        self.topConstraintForCollectionView = NSLayoutConstraint(item: self.collectionView, attribute: .top, relatedBy: .equal, toItem: self.questionBanner, attribute: .bottom, multiplier: 1.0, constant: 0)
+        self.topConstraintForCollectionView = NSLayoutConstraint(item: self.collectionView, attribute: .top, relatedBy: .equal, toItem: self.view, attribute: .top, multiplier: 1.0, constant: self.TOP_GAP)
         self.view.addConstraint(self.topConstraintForCollectionView)
         
         self.setupEmptyPlaceholderView()
@@ -514,6 +525,7 @@ class ChatClassroomController: UIViewController, UIGestureRecognizerDelegate, UI
         self.collectionView.addGestureRecognizer(panToKeepKeyboardRecognizer)
         
         // Scroll collection view to the bottom to most recent message upon first entering screen
+        // TODO: This will be moved away to Firebase
         UIView.animate(withDuration: 0, delay: 0, options: .curveEaseOut, animations: {
             self.view.layoutIfNeeded()
             }, completion: { (completed) in
@@ -522,6 +534,7 @@ class ChatClassroomController: UIViewController, UIGestureRecognizerDelegate, UI
     }
     
     func keepKeyboard(gestureRecognizer: UIPanGestureRecognizer) {
+        self.topConstraintForCollectionView.constant = TOP_GAP
         self.inputTextView.endEditing(true)
     }
     

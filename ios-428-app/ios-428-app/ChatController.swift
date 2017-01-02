@@ -754,47 +754,6 @@ class ChatController: UIViewController, UICollectionViewDelegateFlowLayout, UITe
                 UIView.animate(withDuration: 0, animations: {}, completion: { (completed) in
                     self.moveViewsAboveKeyboard(isKeyboardShowing: isKeyboardShowing, animationDuration: animationDuration, distanceShifted: distanceShifted, keyboardHeight: keyboardViewEndFrame.height)
                 })
-//                if isKeyboardShowing {
-//                    
-//                    // Bottom constraint for input need not be moved for the full keyboard view if it is blocked because the view will already be shifted up a certain amount
-//                    let bottomMovedTo: CGFloat = isBlocking ? -keyboardViewEndFrame.height + distanceShifted : -keyboardViewEndFrame.height
-//                    
-//                    UIView.animate(withDuration: 0, animations: {
-//                        // Have to set this such that if the keyboard was kept when it was expanded the top constraint for collection view is set to the right value
-//                        self.topConstraintForCollectionView.constant = self.TOP_GAP - (self.inputContainerHeightConstraint.constant - 45.0)
-//                        self.bottomConstraintForInput.constant = bottomMovedTo
-//                        
-//                    }, completion: { (completion) in
-//                        
-//                        // Get animation duration based on how much has to be moved
-//                        let viewAnimationDuration: Double = Double(distanceShifted/keyboardViewEndFrame.height) * animationDuration
-//                        let constraintAnimationDuration: Double = Double(bottomMovedTo/keyboardViewEndFrame.height) * animationDuration
-//                        
-//                        if isBlocking {
-//                            UIView.animate(withDuration: viewAnimationDuration, animations: {
-//                                self.view.frame.origin.y = -distanceShifted
-//                            })
-//                            UIView.animate(withDuration: constraintAnimationDuration, animations: {
-//                                self.view.layoutIfNeeded()
-//                            })
-//                        } else {
-//                            UIView.animate(withDuration: constraintAnimationDuration, animations: {
-//                                self.view.layoutIfNeeded()
-//                            })
-//                        }
-//                    })
-//                    
-//                } else {
-//                    // Keep keyboard
-//                    UIView.animate(withDuration: 0, animations: {
-//                        self.bottomConstraintForInput.constant = 0
-//                    }, completion: { (completion) in
-//                        UIView.animate(withDuration: animationDuration, animations: {
-//                            self.view.frame.origin.y = 0
-//                            self.view.layoutIfNeeded()
-//                        })
-//                    })
-//                }
             }
         }
     }
