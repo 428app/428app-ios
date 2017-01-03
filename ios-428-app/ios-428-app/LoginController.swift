@@ -54,7 +54,7 @@ class LoginController: UIViewController, UIScrollViewDelegate, CLLocationManager
         button.setBackgroundColor(color: FB_BLUE_UICOLOR.withAlphaComponent(0.8), forState: .highlighted)
         button.addTarget(self, action: #selector(fbLogin), for: .touchUpInside)
         button.setTitleColor(UIColor.white, for: .normal)
-        button.layer.cornerRadius = 3.0
+        button.layer.cornerRadius = 5.0
         button.clipsToBounds = true
         return button
     }()

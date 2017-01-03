@@ -27,6 +27,7 @@
 		4031FB9A1DC04B490066E6B6 /* MyProfile.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4031FB991DC04B490066E6B6 /* MyProfile.swift */; };
 		4031FB9C1DC0691C0066E6B6 /* StorageService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4031FB9B1DC0691C0066E6B6 /* StorageService.swift */; };
 		404C22FA1DBDB86D0054FE19 /* UserDefaults.swift in Sources */ = {isa = PBXBuildFile; fileRef = 404C22F91DBDB86D0054FE19 /* UserDefaults.swift */; };
+		40525CB11E1B8ED80025E767 /* ResultsController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 40525CB01E1B8ED80025E767 /* ResultsController.swift */; };
 		4064A1B61DAC381300071383 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4064A1B51DAC381300071383 /* AppDelegate.swift */; };
 		4064A1B81DAC381300071383 /* InboxController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4064A1B71DAC381300071383 /* InboxController.swift */; };
 		4064A1C01DAC381300071383 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 4064A1BF1DAC381300071383 /* Assets.xcassets */; };
@@ -126,6 +127,7 @@
 		4031FB991DC04B490066E6B6 /* MyProfile.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MyProfile.swift; sourceTree = "<group>"; };
 		4031FB9B1DC0691C0066E6B6 /* StorageService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StorageService.swift; sourceTree = "<group>"; };
 		404C22F91DBDB86D0054FE19 /* UserDefaults.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserDefaults.swift; sourceTree = "<group>"; };
+		40525CB01E1B8ED80025E767 /* ResultsController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ResultsController.swift; sourceTree = "<group>"; };
 		4064A1B21DAC381300071383 /* ios-428-app.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "ios-428-app.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		4064A1B51DAC381300071383 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		4064A1B71DAC381300071383 /* InboxController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InboxController.swift; sourceTree = "<group>"; };
@@ -228,6 +230,7 @@
 				4072AD991E1633E30067046D /* AnswersController.swift */,
 				4072ADA11E1657D50067046D /* RatingsController.swift */,
 				4072ADA51E1662A30067046D /* ModalVoteController.swift */,
+				40525CB01E1B8ED80025E767 /* ResultsController.swift */,
 			);
 			name = Classroom;
 			sourceTree = "<group>";
@@ -629,6 +632,7 @@
 				40785D5F1E093AAF009B66E0 /* MeController.swift in Sources */,
 				40E2E1421DD3788300469B4D /* CustomActivityIndicatorView.swift in Sources */,
 				4031FB9A1DC04B490066E6B6 /* MyProfile.swift in Sources */,
+				40525CB11E1B8ED80025E767 /* ResultsController.swift in Sources */,
 				40ADEEDC1DDD12D000CE529A /* Message.swift in Sources */,
 				4064A1E41DAC590900071383 /* ChatController.swift in Sources */,
 				4064A2541DB34E4D00071383 /* ProfileController.swift in Sources */,

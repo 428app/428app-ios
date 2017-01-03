@@ -161,11 +161,19 @@ class ChatClassroomController: UIViewController, UIGestureRecognizerDelegate, UI
     }
     
     func launchRatingsController() {
-        let controller = RatingsController(collectionViewLayout: UICollectionViewFlowLayout())
-        self.navigationItem.backBarButtonItem = UIBarButtonItem(title: " ", style: .plain, target: nil, action: nil)
-        controller.ratings = self.classroom.ratings
-        controller.classmates = self.classroom.members
-        self.navigationController?.pushViewController(controller, animated: true)
+        // TODO: Switch between launch RatingsController and ResultsController
+        let userHasRated = true
+        if !userHasRated {
+            let controller = RatingsController(collectionViewLayout: UICollectionViewFlowLayout())
+            self.navigationItem.backBarButtonItem = UIBarButtonItem(title: " ", style: .plain, target: nil, action: nil)
+            controller.ratings = self.classroom.ratings
+            controller.classmates = self.classroom.members
+            self.navigationController?.pushViewController(controller, animated: true)
+        } else {
+            let controller = ResultsController()
+            self.navigationItem.backBarButtonItem = UIBarButtonItem(title: " ", style: .plain, target: nil, action: nil)
+            self.navigationController?.pushViewController(controller, animated: true)
+        }
     }
     
     // MARK: No messages view
