@@ -74,6 +74,7 @@
 		40785D631E0D981C009B66E0 /* InboxService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 40785D621E0D981C009B66E0 /* InboxService.swift */; };
 		40785D651E0D9868009B66E0 /* UserService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 40785D641E0D9868009B66E0 /* UserService.swift */; };
 		40785D671E0E5A1F009B66E0 /* RemoteService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 40785D661E0E5A1F009B66E0 /* RemoteService.swift */; };
+		40790C871E1B659700A779A6 /* RatingsAlertController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 40790C861E1B659700A779A6 /* RatingsAlertController.swift */; };
 		4081B2621E1500FF00D6E690 /* Question.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4081B2611E1500FF00D6E690 /* Question.swift */; };
 		409F05F21DD81E1D001B673F /* Upload.swift in Sources */ = {isa = PBXBuildFile; fileRef = 409F05F11DD81E1D001B673F /* Upload.swift */; };
 		40A2C0871E13D61F00D477E1 /* WebviewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 40A2C0861E13D61F00D477E1 /* WebviewController.swift */; };
@@ -174,6 +175,7 @@
 		40785D621E0D981C009B66E0 /* InboxService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = InboxService.swift; sourceTree = "<group>"; };
 		40785D641E0D9868009B66E0 /* UserService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserService.swift; sourceTree = "<group>"; };
 		40785D661E0E5A1F009B66E0 /* RemoteService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RemoteService.swift; sourceTree = "<group>"; };
+		40790C861E1B659700A779A6 /* RatingsAlertController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RatingsAlertController.swift; sourceTree = "<group>"; };
 		4081B2611E1500FF00D6E690 /* Question.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Question.swift; sourceTree = "<group>"; };
 		409F05F11DD81E1D001B673F /* Upload.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Upload.swift; sourceTree = "<group>"; };
 		40A2C0861E13D61F00D477E1 /* WebviewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WebviewController.swift; sourceTree = "<group>"; };
@@ -220,6 +222,7 @@
 			children = (
 				4024F2201DB7E2E9007819F7 /* ClassroomController.swift */,
 				4024F2281DB853F9007819F7 /* ChatClassroomController.swift */,
+				40790C861E1B659700A779A6 /* RatingsAlertController.swift */,
 				4024F2301DB88262007819F7 /* ModalQuestionController.swift */,
 				4072AD951E15FD0E0067046D /* ClassmatesController.swift */,
 				4072AD991E1633E30067046D /* AnswersController.swift */,
@@ -671,6 +674,7 @@
 				40785D671E0E5A1F009B66E0 /* RemoteService.swift in Sources */,
 				404C22FA1DBDB86D0054FE19 /* UserDefaults.swift in Sources */,
 				4072AD9C1E164A880067046D /* Rating.swift in Sources */,
+				40790C871E1B659700A779A6 /* RatingsAlertController.swift in Sources */,
 				4064A2291DB2B0B500071383 /* InboxMessage.swift in Sources */,
 				40ADEEE31DDD82E300CE529A /* Enums.swift in Sources */,
 				4024F22B1DB85C0E007819F7 /* PaddingLabel.swift in Sources */,

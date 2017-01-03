@@ -13,6 +13,7 @@ import UIKit
 let NOTIF_EXPANDINBOXCHATCELL = NSNotification.Name.init(rawValue: "expandInboxChatCell")
 let NOTIF_EXPANDCLASSROOMCHATCELL = NSNotification.Name.init(rawValue: "expandClassroomChatCell")
 let NOTIF_RATINGSELECTED = NSNotification.Name.init(rawValue: "ratingSelected")
+let NOTIF_LAUNCHRATING = NSNotification.Name.init(rawValue: "launchRating")
 let NOTIF_CHANGESETTING = NSNotification.Name.init(rawValue: "changeSetting")
 let NOTIF_EDITPROFILE = NSNotification.Name.init(rawValue: "editProfile")
 let NOTIF_OPENPROFILE = NSNotification.Name.init(rawValue: "openProfile")

@@ -51,6 +51,7 @@ class ChatClassroomController: UIViewController, UIGestureRecognizerDelegate, UI
         self.setupPromptView()
         self.setupCollectionView()
         self.setupInputComponents()
+        self.loadData()
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -64,6 +65,12 @@ class ChatClassroomController: UIViewController, UIGestureRecognizerDelegate, UI
         super.viewWillDisappear(animated)
         self.tabBarController?.tabBar.isHidden = false
         self.unregisterObservers()
+    }
+    
+    // MARK: Firebase
+    
+    func loadData() {
+        showRatingAlert()
     }
     
     // MARK: Navigation
@@ -93,11 +100,7 @@ class ChatClassroomController: UIViewController, UIGestureRecognizerDelegate, UI
             self.navigationController?.pushViewController(controller, animated: true)
         }
         let ratingsAction = UIAlertAction(title: "Ratings", style: .default) { (action) in
-            let controller = RatingsController(collectionViewLayout: UICollectionViewFlowLayout())
-            self.navigationItem.backBarButtonItem = UIBarButtonItem(title: " ", style: .plain, target: nil, action: nil)
-            controller.ratings = self.classroom.ratings
-            controller.classmates = self.classroom.members
-            self.navigationController?.pushViewController(controller, animated: true)
+            self.launchRatingsController()
         }
         // TODO: Disable this if memberHasRated is nil
         ratingsAction.isEnabled = true
@@ -145,6 +148,24 @@ class ChatClassroomController: UIViewController, UIGestureRecognizerDelegate, UI
             view.addConstraint(NSLayoutConstraint(item: questionBanner, attribute: .top, relatedBy: .equal, toItem: topLayoutGuide, attribute: .bottom, multiplier: 1.0, constant: 0.0))
            view.addConstraintsWithFormat("V:[v0(60)]", views: questionBanner)
         }
+    }
+    
+    // MARK: Rating alert
+    
+    fileprivate func showRatingAlert() {
+        let alertController = RatingsAlertController()
+        alertController.classroom = self.classroom
+        alertController.modalPresentationStyle = .overFullScreen
+        alertController.modalTransitionStyle = .crossDissolve
+        self.present(alertController, animated: true, completion: nil)
+    }
+    
+    func launchRatingsController() {
+        let controller = RatingsController(collectionViewLayout: UICollectionViewFlowLayout())
+        self.navigationItem.backBarButtonItem = UIBarButtonItem(title: " ", style: .plain, target: nil, action: nil)
+        controller.ratings = self.classroom.ratings
+        controller.classmates = self.classroom.members
+        self.navigationController?.pushViewController(controller, animated: true)
     }
     
     // MARK: No messages view
@@ -392,6 +413,7 @@ class ChatClassroomController: UIViewController, UIGestureRecognizerDelegate, UI
         NotificationCenter.default.addObserver(self, selector: #selector(handleKeyboardNotification), name: NSNotification.Name.UIKeyboardWillChangeFrame, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(expandCell), name: NOTIF_EXPANDCLASSROOMCHATCELL, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(openProfile), name: NOTIF_OPENPROFILE, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(launchRatingsController), name: NOTIF_LAUNCHRATING, object: nil)
     }
     
     private func unregisterObservers() {
@@ -399,6 +421,7 @@ class ChatClassroomController: UIViewController, UIGestureRecognizerDelegate, UI
         NotificationCenter.default.removeObserver(self, name: NSNotification.Name.UIKeyboardWillChangeFrame, object: nil)
         NotificationCenter.default.removeObserver(self, name: NOTIF_EXPANDCLASSROOMCHATCELL, object: nil)
         NotificationCenter.default.removeObserver(self, name: NOTIF_OPENPROFILE, object: nil)
+        NotificationCenter.default.removeObserver(self, name: NOTIF_LAUNCHRATING, object: nil)
     }
     
     func openProfile(notif: Notification) {

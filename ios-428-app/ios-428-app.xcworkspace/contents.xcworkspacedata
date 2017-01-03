@@ -2,9 +2,6 @@
 <Workspace
    version = "1.0">
    <FileRef
-      location = "group:RatingsController.swift">
-   </FileRef>
-   <FileRef
       location = "group:ios-428-app.xcodeproj">
    </FileRef>
    <FileRef
