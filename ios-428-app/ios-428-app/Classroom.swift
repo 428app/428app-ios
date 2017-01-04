@@ -16,15 +16,16 @@ class Classroom {
     fileprivate var _members: [Profile] // Used to display members and their profiles
     fileprivate var _questions: [Question] // Get question number from this
     fileprivate var _classroomMessages: [ClassroomMessage]
-    fileprivate var _ratings: [Rating]
-    fileprivate var _hasRated: Bool
+    fileprivate var _ratings: [Rating] // Your ratings of your classmates
+    fileprivate var _results: [Rating] // The overall ratings of all classmates downloaded from server
+    fileprivate var _hasRatingType: RatingType
     fileprivate var _hasUpdates: Bool
     
     // Computed variables from questions array
     var _questionNum: Int
     var _imageName: String
     
-    init(cid: String, title: String, timeCreated: Double, members: [Profile], questions: [Question], classroomMessages: [ClassroomMessage] = [], ratings: [Rating] = [], hasRated: Bool = false, hasUpdates: Bool = false) {
+    init(cid: String, title: String, timeCreated: Double, members: [Profile], questions: [Question], classroomMessages: [ClassroomMessage] = [], ratings: [Rating] = [], results: [Rating] = [], hasRatingType: RatingType = RatingType.NOTRATED, hasUpdates: Bool = false) {
         _cid = cid
         _title = title
         _timeCreated = timeCreated
@@ -32,7 +33,8 @@ class Classroom {
         _questions = questions.sorted{$0.timestamp > $1.timestamp} // Most recent questions first
         _classroomMessages = classroomMessages
         _ratings = ratings
-        _hasRated = hasRated
+        _results = results
+        _hasRatingType = hasRatingType
         _hasUpdates = hasUpdates
         // Compute question num and imageName to display from questions
         _questionNum = questions.count
@@ -81,9 +83,15 @@ class Classroom {
         }
     }
     
-    var hasRated: Bool {
+    var results: [Rating] {
         get {
-            return _hasRated
+            return _results
+        }
+    }
+    
+    var hasRatingType: RatingType {
+        get {
+            return _hasRatingType
         }
     }
     
