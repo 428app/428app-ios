@@ -14,6 +14,7 @@
 		4020CE1F1DBCA84C00461181 /* FBSDKCoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4020CE1B1DBCA84C00461181 /* FBSDKCoreKit.framework */; };
 		4020CE201DBCA84C00461181 /* FBSDKLoginKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4020CE1C1DBCA84C00461181 /* FBSDKLoginKit.framework */; };
 		4020CE211DBCA84C00461181 /* FBSDKShareKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4020CE1D1DBCA84C00461181 /* FBSDKShareKit.framework */; };
+		4022C7321E1D386D00363E17 /* ClassroomService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4022C7311E1D386D00363E17 /* ClassroomService.swift */; };
 		4024F2211DB7E2E9007819F7 /* ClassroomController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4024F2201DB7E2E9007819F7 /* ClassroomController.swift */; };
 		4024F2231DB7F664007819F7 /* Classroom.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4024F2221DB7F664007819F7 /* Classroom.swift */; };
 		4024F2251DB7F83F007819F7 /* ClassroomMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4024F2241DB7F83F007819F7 /* ClassroomMessage.swift */; };
@@ -113,6 +114,7 @@
 		4020CE1C1DBCA84C00461181 /* FBSDKLoginKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = FBSDKLoginKit.framework; sourceTree = "<group>"; };
 		4020CE1D1DBCA84C00461181 /* FBSDKShareKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = FBSDKShareKit.framework; sourceTree = "<group>"; };
 		4020CE221DBCADFD00461181 /* ios-428-app.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "ios-428-app.entitlements"; sourceTree = "<group>"; };
+		4022C7311E1D386D00363E17 /* ClassroomService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ClassroomService.swift; sourceTree = "<group>"; };
 		4024F2201DB7E2E9007819F7 /* ClassroomController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ClassroomController.swift; sourceTree = "<group>"; };
 		4024F2221DB7F664007819F7 /* Classroom.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Classroom.swift; sourceTree = "<group>"; };
 		4024F2241DB7F83F007819F7 /* ClassroomMessage.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ClassroomMessage.swift; sourceTree = "<group>"; };
@@ -389,6 +391,7 @@
 				4064A1CA1DAC495D00071383 /* DummyDataService.swift */,
 				40785D601E0D2C81009B66E0 /* DataService.swift */,
 				40785D641E0D9868009B66E0 /* UserService.swift */,
+				4022C7311E1D386D00363E17 /* ClassroomService.swift */,
 				40785D621E0D981C009B66E0 /* InboxService.swift */,
 				40785D661E0E5A1F009B66E0 /* RemoteService.swift */,
 				4031FB9B1DC0691C0066E6B6 /* StorageService.swift */,
@@ -682,6 +685,7 @@
 				40785D611E0D2C81009B66E0 /* DataService.swift in Sources */,
 				4072ADA61E1662A30067046D /* ModalVoteController.swift in Sources */,
 				40E2E1401DD26B8200469B4D /* Discipline.swift in Sources */,
+				4022C7321E1D386D00363E17 /* ClassroomService.swift in Sources */,
 				40785D631E0D981C009B66E0 /* InboxService.swift in Sources */,
 				4072AD981E1619BD0067046D /* ClassmatesProfileCell.swift in Sources */,
 				4064A2161DACBCDC00071383 /* Extensions.swift in Sources */,

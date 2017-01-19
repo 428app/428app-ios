@@ -76,7 +76,7 @@ extension DataService {
                 // Create new user
                 user["badgeCount"] = 0
                 user["hasNewBadge"] = false
-                user["HasNewClassroom"] = false
+                user["hasNewClassroom"] = false
                 let userSettings = ["dailyAlert": true, "inboxMessages": true, "classroomMessages": true, "inAppNotifications": true, "isLoggedIn": true]
                 
                 self.REF_BASE.updateChildValues(["/users/\(uid)": user, "/userSettings/\(uid)": userSettings], withCompletionBlock: { (err, ref) in
@@ -197,6 +197,7 @@ extension DataService {
     
     // Retrive user's profile data based on input user id.
     // View other profiles in ChatController's openProfile or own profile in Edit Profile Controllers
+    // Also used in ClassroomService to get user fields
     func getUserFields(uid: String?, completed: @escaping (_ isSuccess: Bool, _ user: Profile?) -> ()) {
         guard let uid_ = uid else {
             completed(false, nil)

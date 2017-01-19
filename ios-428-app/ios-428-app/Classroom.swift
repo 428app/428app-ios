@@ -77,6 +77,14 @@ class Classroom {
         }
     }
     
+    func addMessage(message: ClassroomMessage) {
+        _classroomMessages.append(message)
+    }
+    
+    func clearMessages() {
+        _classroomMessages = []
+    }
+    
     var ratings: [Rating] {
         get {
             return _ratings

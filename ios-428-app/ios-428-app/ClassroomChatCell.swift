@@ -87,9 +87,8 @@ class ClassroomChatCell: BaseCollectionCell {
         
     }
     
-    fileprivate func loadPosterImage() {
+    fileprivate func loadPosterImage(imageUrlString: String) {
         // Loads image asynchronously and efficiently
-        let imageUrlString = self.message.posterImageName
         self.posterImageView.af_cancelImageRequest()
         guard let imageUrl = URL(string: imageUrlString) else {
             self.posterImageView.image = #imageLiteral(resourceName: "placeholder-user")
@@ -104,17 +103,17 @@ class ClassroomChatCell: BaseCollectionCell {
         })
     }
     
-    func configureCell(messageObj: ClassroomMessage, viewWidth: CGFloat, isLastInChain: Bool) {
+    func configureCell(messageObj: ClassroomMessage, posterImageName: String, posterName: String, viewWidth: CGFloat, isLastInChain: Bool) {
         self.message = messageObj
 
         // Attributed text is crucial, normal text will screw up if emoji is sent
         let messageText = self.message.text
         self.messageTextView.attributedText = NSAttributedString(string: messageText, attributes: [NSFontAttributeName: TEXT_VIEW_FONT])
         
-        self.nameLabel.text = self.message.posterName
+        self.nameLabel.text = posterName
         
         // Download poster profile image
-        loadPosterImage()
+        loadPosterImage(imageUrlString: posterImageName)
         
         let size = CGSize(width: 250, height: CGFloat.greatestFiniteMagnitude)
         let options = NSStringDrawingOptions.usesFontLeading.union(.usesLineFragmentOrigin)

@@ -399,7 +399,7 @@ class ChatClassroomController: UIViewController, UIGestureRecognizerDelegate, UI
     func handleSend() {
         if let text = inputTextView.text {
             // Trim text before sending
-            let message = ClassroomMessage(mid: "999", parentCid: "3", posterUid: "999", posterImageName: "https://scontent-sit4-1.xx.fbcdn.net/v/t31.0-8/14115448_10210401045933593_3308068963999044390_o.jpg?oh=270c123499c84c016e9328b62127bff5&oe=59245AAB", posterName: "Yihang", text: text.trim(), date: Date(), isSentByYou: true)
+            let message = ClassroomMessage(mid: "999", parentCid: "3", posterUid: "999", text: text.trim(), date: Date(), isSentByYou: true)
             self.messages.append(message)
             self.bucketMessagesIntoTime()
             self.assembleMessageIsLastInChain()
@@ -598,7 +598,12 @@ class ChatClassroomController: UIViewController, UIGestureRecognizerDelegate, UI
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: CELL_ID, for: indexPath) as! ClassroomChatCell
         let message = self.messagesInTimeBuckets[indexPath.section][indexPath.row]
         let isLastInChain = self.messageIsLastInChain[indexPath.section][indexPath.row]
-        cell.configureCell(messageObj: message, viewWidth: view.frame.width, isLastInChain: isLastInChain)
+        
+        // Get poster image name and poster name
+        let posterUid = message.posterUid
+        let poster = classroom.members.filter({$0.uid == posterUid})[0]
+        
+        cell.configureCell(messageObj: message, posterImageName: poster.profileImageName, posterName: poster.name, viewWidth: view.frame.width, isLastInChain: isLastInChain)
         return cell
     }
     

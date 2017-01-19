@@ -122,7 +122,7 @@ extension DataService {
         
         let uid = getStoredUid() == nil ? "" : getStoredUid()!
         let inboxId: String = getInboxId(uid1: uid, uid2: inbox.uid)
-        let ref: FIRDatabaseReference = REF_INBOX.child(inboxId)
+        let ref: FIRDatabaseReference = REF_INBOXMESSAGES.child(inboxId)
         ref.keepSynced(true)
         
         let q: FIRDatabaseQuery = ref.queryOrdered(byChild: "timestamp").queryLimited(toLast: limit)
@@ -139,7 +139,7 @@ extension DataService {
     func observeChatMessagesOnce(inbox: Inbox, limit: UInt, completed: @escaping (_ isSuccess: Bool, _ inbox: Inbox?) -> ()) {
         let uid = getStoredUid() == nil ? "" : getStoredUid()!
         let inboxId: String = getInboxId(uid1: uid, uid2: inbox.uid)
-        let ref: FIRDatabaseReference = REF_INBOX.child(inboxId)
+        let ref: FIRDatabaseReference = REF_INBOXMESSAGES.child(inboxId)
         let q: FIRDatabaseQuery = ref.queryOrdered(byChild: "timestamp").queryLimited(toLast: limit)
         q.observeSingleEvent(of: .value, with: { snapshot in
             q.removeAllObservers()
