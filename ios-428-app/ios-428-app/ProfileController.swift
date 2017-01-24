@@ -122,7 +122,7 @@ class ProfileController: UIViewController, UIGestureRecognizerDelegate, UIScroll
     
     fileprivate let disciplineImageView: UIImageView = {
         let imageView = UIImageView()
-        imageView.contentMode = .scaleAspectFill
+        imageView.contentMode = .scaleAspectFit
         imageView.tintColor = GREEN_UICOLOR
         return imageView
     }()
@@ -347,8 +347,8 @@ class ProfileController: UIViewController, UIGestureRecognizerDelegate, UIScroll
         disciplineNameAgeContainer.translatesAutoresizingMaskIntoConstraints = false
         containerView.addSubview(disciplineNameAgeContainer)
         containerView.addConstraint(NSLayoutConstraint(item: disciplineNameAgeContainer, attribute: .centerX, relatedBy: .equal, toItem: containerView, attribute: .centerX, multiplier: 1.0, constant: 0))
-        disciplineNameAgeContainer.addConstraintsWithFormat("H:|[v0(20)]-5-[v1]|", views: disciplineImageView, nameAndAgeLbl)
-        disciplineNameAgeContainer.addConstraintsWithFormat("V:|[v0(20)]", views: disciplineImageView)
+        disciplineNameAgeContainer.addConstraintsWithFormat("H:|[v0(25)]-5-[v1]|", views: disciplineImageView, nameAndAgeLbl)
+        disciplineNameAgeContainer.addConstraintsWithFormat("V:|[v0(25)]", views: disciplineImageView)
         disciplineNameAgeContainer.addConstraintsWithFormat("V:|[v0(25)]|", views: nameAndAgeLbl)
         
         // Add to subviews
@@ -421,6 +421,7 @@ class ProfileController: UIViewController, UIGestureRecognizerDelegate, UIScroll
         })
         nameAndAgeLbl.text = "\(profile.name), \(profile.age)"
         disciplineImageView.image = UIImage(named: profile.disciplineIcon)
+        
         locationText.text = profile.location
         schoolText.text = profile.school
         organizationText.text = profile.org

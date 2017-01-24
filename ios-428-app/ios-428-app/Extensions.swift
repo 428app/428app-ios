@@ -172,9 +172,11 @@ public extension UIImage {
     }
     
     // Resized image to certain width
+    // Note that the tint color is GREEN in after resize
     func resizeWith(width: CGFloat) -> UIImage? {
         let imageView = UIImageView(frame: CGRect(origin: .zero, size: CGSize(width: width, height: CGFloat(ceil(width/size.width * size.height)))))
         imageView.contentMode = .scaleAspectFit
+        imageView.tintColor = GREEN_UICOLOR
         imageView.image = self
         UIGraphicsBeginImageContextWithOptions(imageView.bounds.size, false, scale)
         guard let context = UIGraphicsGetCurrentContext() else { return nil }

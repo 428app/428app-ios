@@ -237,8 +237,13 @@ extension DataService {
                     badges = [String](b.keys)
                 }
                 var classrooms = [String]()
-                if let c = userDict["classrooms"] as? [String: Bool] {
-                    classrooms = [String](c.keys)
+                if let c = userDict["classrooms"] as? [String: [String: Any]] {
+                    // Iterate through classrooms to get disciplines
+                    for (_, cidData) in c {
+                        if let classroomDiscipline = cidData["discipline"] as? String {
+                            classrooms.append(classroomDiscipline)
+                        }
+                    }
                 }
                 // Convert birthday of "MM/DD/yyyy" to age integer
                 let age = convertBirthdayToAge(birthday: birthday)

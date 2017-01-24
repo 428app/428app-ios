@@ -72,6 +72,7 @@ class EditProfessionalController: UIViewController, UITextFieldDelegate, UIPicke
         self.school = profile.school
         self.discipline = profile.discipline
         self.disciplineIcon = profile.disciplineIcon
+        self.pickerView.selectRow(getIndexGivenDiscipline(discipline: profile.discipline), inComponent: 0, animated: false)
     }
     
     func saveEdits() {
@@ -171,7 +172,8 @@ class EditProfessionalController: UIViewController, UITextFieldDelegate, UIPicke
     }()
     
     fileprivate func editDisciplineIconInTextField(imageString: String) {
-        let imageView: UIImageView = UIImageView(image: UIImage(named: imageString))
+        let image = UIImage(named: imageString)?.resizeWith(width: 20.0)
+        let imageView: UIImageView = UIImageView(image: image)
         imageView.frame = CGRect(x: 0, y: 0, width: imageView.image!.size.width + 20, height: imageView.image!.size.height)
         imageView.contentMode = .center
         disciplineTextField.leftView = imageView

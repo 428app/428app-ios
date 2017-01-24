@@ -62,6 +62,9 @@ class MeController: UIViewController, UIGestureRecognizerDelegate, UIScrollViewD
         self.nameAndAgeLbl.text = "\(profileData.name), \(profileData.age)"
         self.disciplineImageView.image = UIImage(named: profileData.disciplineIcon)
         // TODO: Badges, and classrooms
+        self.classrooms = profileData.classroomIcons
+        log.info("frontend classrooms: \(self.classrooms)")
+        self.classroomsCollectionView.reloadData()
     }
     
     fileprivate func registerObservers() {
@@ -105,6 +108,7 @@ class MeController: UIViewController, UIGestureRecognizerDelegate, UIScrollViewD
                 
             }
         }
+        
     }
     
     // MARK: Views 0 - Profile image, cover image
@@ -173,7 +177,7 @@ class MeController: UIViewController, UIGestureRecognizerDelegate, UIScrollViewD
     
     // TODO: Dummy data for icons
     fileprivate var badges = ["badge1", "badge2", "badge3", "badge4", "badge5", "badge6", "badge7", "badge8", "badge9", "badge10", "badge11", "badge12"]
-    fileprivate var classrooms = ["biology", "chemistry","computer", "eastasian", "electricengineering", "physics"]
+    fileprivate var classrooms = [String]()
     
     open static let ICON_SIZE: CGFloat = 33.0
     

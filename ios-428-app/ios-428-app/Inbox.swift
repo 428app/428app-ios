@@ -29,7 +29,7 @@ class Inbox {
         _hasNewMessages = hasNewMessages
         _messages = messages
         _dateMatched = dateMatched
-        _disciplineImageName = getDisciplineIconForDiscipline(discipline: discipline)
+        _disciplineImageName = getDisciplineIcon(discipline: discipline)
     }
     
     var uid: String {

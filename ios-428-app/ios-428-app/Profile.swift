@@ -39,10 +39,10 @@ class Profile {
         _tagline = tagline
         _badges = badges
         _classrooms = classrooms
-        _disciplineIcon = getDisciplineIconForDiscipline(discipline: _discipline)
+        _disciplineIcon = getDisciplineIcon(discipline: _discipline)
         _classroomIcons = [String]()
         for c in classrooms {
-            _classroomIcons.append(getDisciplineIconForDiscipline(discipline: c))
+            _classroomIcons.append(getDisciplineIcon(discipline: c))
         }
         
         // TODO: Convert badge icons
@@ -73,7 +73,7 @@ class Profile {
         }
         set(d) {
             _discipline = d
-            _disciplineIcon = getDisciplineIconForDiscipline(discipline: d)
+            _disciplineIcon = getDisciplineIcon(discipline: d)
         }
     }
     
