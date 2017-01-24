@@ -28,8 +28,9 @@ class MeController: UIViewController, UIGestureRecognizerDelegate, UIScrollViewD
     
     func openProfileIconModal(notif: Notification) {
         if let userInfo = notif.userInfo as? [String: String], let iconImageName = userInfo["iconImageName"] {
-            // TODO: Have to map icon image name to icon description to set in alert title
-            let controller = UIAlertController(title: iconImageName, message: "This is how you do it...", preferredStyle: .alert)
+            let discipline = getDisciplineName(iconImageName: iconImageName)
+            let disciplineDescription = getDisciplineDescription(discipline: discipline)
+            let controller = UIAlertController(title: discipline, message: disciplineDescription, preferredStyle: .alert)
             self.present(controller, animated: true, completion: {
                 controller.view.superview?.isUserInteractionEnabled = true
                 let tapToDismissModal = UITapGestureRecognizer(target: self, action: #selector(self.dismissProfileIconModal))
@@ -63,7 +64,6 @@ class MeController: UIViewController, UIGestureRecognizerDelegate, UIScrollViewD
         self.disciplineImageView.image = UIImage(named: profileData.disciplineIcon)
         // TODO: Badges, and classrooms
         self.classrooms = profileData.classroomIcons
-        log.info("frontend classrooms: \(self.classrooms)")
         self.classroomsCollectionView.reloadData()
     }
     

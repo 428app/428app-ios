@@ -49,11 +49,17 @@ let DISCIPLINE_DESCRIPTIONS = [
 func getDisciplineIcon(discipline: String) -> String {
     let ind = DISCIPLINE_OPTIONS.index(of: discipline)
     if ind != nil && ind! > 0 && ind! < DISCIPLINE_ICONS.count {
-        let icon = DISCIPLINE_ICONS[ind!]
-        log.info(icon)
         return DISCIPLINE_ICONS[ind!]
     }
     return ""; // Discipline cannot be found, return blank icon
+}
+
+func getDisciplineName(iconImageName: String) -> String {
+    let ind = DISCIPLINE_ICONS.index(of: iconImageName)
+    if ind != nil && ind! > 0 && ind! < DISCIPLINE_OPTIONS.count {
+        return DISCIPLINE_OPTIONS[ind!]
+    }
+    return ""; // Discipline name cannot be found, return empty string
 }
 
 func getDisciplineDescription(discipline: String) -> String {
