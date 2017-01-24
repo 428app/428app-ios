@@ -207,7 +207,9 @@ class IntroController: UIViewController, UIScrollViewDelegate, UITextFieldDelega
         }
         let image = UIImage(named: imageString)?.resizeWith(width: 20.0)
         let imageView: UIImageView = UIImageView(image: image)
-        imageView.frame = CGRect(x: 0, y: 0, width: imageView.image!.size.width + 20, height: imageView.image!.size.height)
+        let width = image == nil ? 20 : image!.size.width + 20
+        let height = image == nil ? 20 : image!.size.height
+        imageView.frame = CGRect(x: 0, y: 0, width: width, height: height)
         imageView.contentMode = .center
         disciplineTextField.leftView = imageView
         disciplineTextField.leftViewMode = .always
