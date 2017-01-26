@@ -1,6 +1,14 @@
-==== BACKEND ====
+Classrooms Firebase integration
 
-- Consider changing primary user key to auth_uid instead of fbid
+- Add Chat classroom Firebase
+- Import observe code from InboxChat
+
+- Test chats in classrooms
+
+
+
+// DEPRECATED
+==== BACKEND ====
 
 
 MAJOR BUGS

@@ -189,7 +189,7 @@ extension DataService {
     
     // Observes all chat messags of one classroom, used when setting up ChatClassroomController
     // The only difference between this and reobserve is that this is a one time observer and does not return the handle
-    func observeChatMessagesOnce(limit: UInt, classroom: Classroom, completed: @escaping (_ isSuccess: Bool, _ classroom: Classroom?) -> ()) {
+    func observeClassChatMessagesOnce(limit: UInt, classroom: Classroom, completed: @escaping (_ isSuccess: Bool, _ classroom: Classroom?) -> ()) {
         let uid = getStoredUid() == nil ? "" : getStoredUid()!
         let cid = classroom.cid
         let ref: FIRDatabaseReference = REF_CLASSROOMMESSAGES.child(cid)
@@ -200,6 +200,29 @@ extension DataService {
             let updatedClassroom = self.processClassChatSnapshot(snapshot: snapshot, classroom: classroom, uid: uid)
             completed(updatedClassroom != nil, updatedClassroom)
         })
+    }
+    
+    func addClassChatMessage(classroom: Classroom, text: String, completed: @escaping (_ isSuccess: Bool, _ classroom: Classroom?) -> ()) {
+        guard let posterUid = getStoredUid() else {
+            completed(false, nil)
+            return
+        }
+        let cid = classroom.cid
+        let timestamp = Date().timeIntervalSince1970
+        
+        // Add to classrooms (timeReplied)
+        REF_CLASSROOMS.child("\(cid)/timeReplied").setValue(timestamp)
+        
+        // Add to classroomMessages
+        let messageRef: FIRDatabaseReference = REF_CLASSROOMMESSAGES.child(cid).childByAutoId()
+        let mid = messageRef.key
+        let newMessage: [String: Any] = ["message": text, "poster": posterUid, "timestamp": timestamp]
+        messageRef.setValue(newMessage) { (err, ref) in
+            // Message successfully added, append to classroom
+            let msg: ClassroomMessage = ClassroomMessage(mid: mid, parentCid: cid, posterUid: posterUid, text: text, date: Date(timeIntervalSince1970: timestamp), isSentByYou: true)
+            classroom.addMessage(message: msg)
+            completed(err == nil, classroom)
+        }
     }
     
     // MARK: Ratings

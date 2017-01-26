@@ -328,7 +328,6 @@ class ChatController: UIViewController, UICollectionViewDelegateFlowLayout, UITe
             self.collectionView.reloadData()
             self.scrollToLastItemInCollectionView(animated: false)
             self.removeTimeLabel()
-            
         }
     }
     
@@ -672,7 +671,6 @@ class ChatController: UIViewController, UICollectionViewDelegateFlowLayout, UITe
             self.resetInputContainer()
             DataService.ds.addChatMessage(inbox: inbox, text: text.trim(), completed: { (isSuccess, updatedInbox) in
                 if !isSuccess || updatedInbox == nil {
-                    // Reset countdown if failure to add
                     log.error("[Error] Message failed to be posted")
                     showErrorAlert(vc: self, title: "Error", message: "Could not send message. Please try again.")
                     return

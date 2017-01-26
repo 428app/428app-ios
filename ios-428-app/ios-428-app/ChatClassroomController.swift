@@ -8,8 +8,16 @@
 
 import Foundation
 import UIKit
+import Firebase
 
 class ChatClassroomController: UIViewController, UIGestureRecognizerDelegate, UITextViewDelegate, UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
+    
+    /** FIREBASE **/
+    fileprivate var queryAndHandle: (FIRDatabaseQuery, FIRDatabaseHandle)!
+    
+    fileprivate var numMessages: UInt = 50 // Increases as user scrolls to top of collection view
+    fileprivate let NUM_INCREMENT: UInt = 10 // Downloads 10 messages per scroll
+    
     
     /** CONSTANTS **/
     fileprivate let CELL_ID = "classroomChatCell"
@@ -36,28 +44,30 @@ class ChatClassroomController: UIViewController, UIGestureRecognizerDelegate, UI
     
     var classroom: Classroom! {
         didSet {
-            self.navigationItem.title = classroom.title
-            self.questionBanner.text = "Read Question \(classroom.questionNum) here"
-            self.messages = classroom.classroomMessages
-            self.bucketMessagesIntoTime()
-            self.assembleMessageIsLastInChain()
+//            self.navigationItem.title = classroom.title
+//            self.questionBanner.text = "Read Question \(classroom.questionNum) here"
+//            self.messages = classroom.classroomMessages
+//            self.bucketMessagesIntoTime()
+//            self.assembleMessageIsLastInChain()
         }
     }
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        self.extendedLayoutIncludesOpaqueBars = true
+        self.setupFirebase()
         self.view.backgroundColor = UIColor.white
         self.setupNavigationBar()
         self.setupPromptView()
         self.setupCollectionView()
         self.setupInputComponents()
-        self.loadData()
     }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        self.extendedLayoutIncludesOpaqueBars = true
         self.tabBarController?.tabBar.isHidden = true
+        // TODO: Check if it is time to rate to show rating alert
+        //        showRatingAlert()
         self.registerObservers()
     }
 
@@ -69,13 +79,258 @@ class ChatClassroomController: UIViewController, UIGestureRecognizerDelegate, UI
     
     // MARK: Firebase
     
-    func loadData() {
-        showRatingAlert()
+    func loadMoreMessages() {
+        self.numMessages += NUM_INCREMENT
+        self.observeMore()
+    }
+    
+    /**
+     Here's why we need 3 functions for observing chat from Firebase:
+     By default reobserveMessages() which loads on every new message being added will scroll the chat to the bottom
+     of the screen. However, we don't want that on the two occasions when we first enter the screen and we pull to refresh. Hence,
+     1) initMessages is used to hide the messages first so I can scroll to the bottom before displaying them. This is a hack I invented to make a more natural transition from Private Chats to this page.
+     2) observeMore is used to change the limit of the query (pull to refresh), and at the same time NOT scroll to the bottom. By default, observeMore will scroll the table to the top.
+     NOTE the following intended behavior:
+     - When a user receives/sends a message, the scroll view is scrolled to the bottom
+     - When a user opens the keyboard the scroll view remains at the same position
+     - When a user scrolls up to load more messages and leaves this chat screen, the next time the user is back the more messages will be gone
+     **/
+    
+    // Called after entering the page
+    fileprivate func initMessages() {
+        if self.queryAndHandle != nil {
+            return
+        }
+        
+        self.activityIndicator.startAnimating()
+        // Small hack to make it not show up when the load time is less than 2 seconds
+        self.activityIndicator.isHidden = true
+        UIView.animate(withDuration: 2.0, animations: {}, completion: { (isSuccess) in
+            if self.activityIndicator.isAnimating {
+                self.activityIndicator.isHidden = false
+            }
+        })
+        
+        DataService.ds.observeClassChatMessagesOnce(limit: self.numMessages, classroom: self.classroom) { (isSuccess, updatedClassroom) in
+            self.activityIndicator.stopAnimating()
+            if (!isSuccess || updatedClassroom == nil) {
+                // No messages yet, display placeholder view in the middle
+                self.emptyPlaceholderView.isHidden = false
+                self.emptyPlaceholderView.isUserInteractionEnabled = true
+                log.info("No messages updated for private chat")
+                self.reobserveMessages()
+                return
+            }
+            
+            log.info("Class messages updated")
+            
+            // There are messages, hide and disable empty placeholder view
+            self.emptyPlaceholderView.isHidden = true
+            self.emptyPlaceholderView.isUserInteractionEnabled = false
+            
+            // Update private chat and messages
+            self.classroom = updatedClassroom
+            self.messages = self.classroom.classroomMessages
+            
+            self.organizeMessages()
+            
+            // Simple hack to load the bottom of the collection view without visually showing it
+            UIView.animate(withDuration: 0, animations: {
+                // Collection view is hidden first so the scrolling is not visible to the user
+                self.collectionView.isHidden = true
+                self.collectionView.reloadData()
+            }, completion: { (isSuccess) in
+                self.scrollToLastItemInCollectionView(animated: false)
+                self.collectionView.isHidden = false
+                self.reobserveMessages()
+            })
+        }
+    }
+    
+    // Called upon pull to refresh
+    fileprivate func observeMore() {
+        // TODO:
+        self.removeTimeLabel()
+        
+        if self.queryAndHandle != nil {
+            self.queryAndHandle.0.removeObserver(withHandle: self.queryAndHandle.1)
+        }
+        self.refreshControl.beginRefreshing()
+        self.pullToRefreshIndicator.startAnimating()
+        
+        DataService.ds.observeClassChatMessagesOnce(limit: self.numMessages, classroom: self.classroom) { (isSuccess, updatedClassroom) in
+            self.refreshControl.endRefreshing()
+            self.pullToRefreshIndicator.stopAnimating()
+            
+            if (!isSuccess || updatedClassroom == nil) {
+                // No messages yet, display placeholder view in the middle to prompt user to interact with new private chat
+                self.emptyPlaceholderView.isHidden = false
+                self.emptyPlaceholderView.isUserInteractionEnabled = true
+                log.info("No messages updated for classroom")
+                self.reobserveMessages()
+                return
+            }
+        
+        
+            log.info("More classroom messages pulled")
+            
+            // There are messages, hide and disable empty placeholder view
+            self.emptyPlaceholderView.isHidden = true
+            self.emptyPlaceholderView.isUserInteractionEnabled = false
+            
+            // Update private chat and messages
+            self.classroom = updatedClassroom
+            
+            // Logic to scroll to the right chat message upon loading more messages above
+            if self.messagesInTimeBuckets.count > 0 && self.messagesInTimeBuckets[0].count > 0 {
+                // Find the first message in the old message so we scroll to this one
+                let firstMsg = self.messagesInTimeBuckets[0][0]
+                self.messages = updatedClassroom!.classroomMessages
+                self.organizeMessages()
+                // Find this first message in the new messages to find the new row and section to scroll to
+                var messageFound = false
+                for section in 0..<self.messagesInTimeBuckets.count {
+                    for row in 0..<self.messagesInTimeBuckets[section].count {
+                        if self.messagesInTimeBuckets[section][row].mid == firstMsg.mid {
+                            
+                            // Set content offset to 1 before this spot
+                            var before_section = 0
+                            var before_row = 0
+                            if row == 0 && section > 0 {
+                                before_section = section - 1
+                                before_row = self.messagesInTimeBuckets[before_section].count - 1
+                            } else if row > 0 {
+                                before_row = row - 1
+                                before_section = section
+                            } else {
+                                break
+                            }
+                            
+                            let indexPath = IndexPath(item: before_row, section: before_section)
+                            self.collectionView.reloadData()
+                            
+                            let offset: CGFloat = self.collectionView.layoutAttributesForItem(at: indexPath)!.frame.origin.y
+                            self.collectionView.setContentOffset(CGPoint(x: 0.0, y: offset), animated: false)
+                            messageFound = true
+                            break
+                        }
+                    }
+                }
+                // If not found, which is possibly a bug, just reload anyway
+                if !messageFound {
+                    self.collectionView.reloadData()
+                }
+            }
+            
+            else {
+                // Previous messages are empty - this should very rarely happen, possibly only due to network connectivity issues
+                self.messages = updatedClassroom!.classroomMessages
+                self.organizeMessages()
+                self.collectionView.reloadData()
+            }
+            
+            // As the above is a single observe event, we need to restart the constant observer with a different numMessages set
+            self.reobserveMessages()
+        }
+    }
+    
+    fileprivate func reobserveMessages() {
+        if self.queryAndHandle != nil {
+            queryAndHandle.0.removeObserver(withHandle: queryAndHandle.1)
+        }
+        
+        queryAndHandle = DataService.ds.reobserveClassChatMessages(limit: self.numMessages, classroom: self.classroom, completed: { (isSuccess, updatedClassroom) in
+            if (!isSuccess || updatedClassroom == nil) {
+                // Rewind increment of numMessages
+                if self.numMessages > self.NUM_INCREMENT {
+                    self.numMessages -= self.NUM_INCREMENT
+                }
+                
+                // No messages yet, display placeholder view in the middle to prompt user to interact with new private chat
+                self.emptyPlaceholderView.isHidden = false
+                self.emptyPlaceholderView.isUserInteractionEnabled = true
+                log.info("No messages updated for classroom")
+                return
+            }
+            
+            // TODO: Messages seen
+//            DataService.ds.seeInboxMessages(inbox: self.inbox) { (isSuccess) in }
+            
+            // There are messages, hide and disable empty placeholder view
+            self.emptyPlaceholderView.isHidden = true
+            self.emptyPlaceholderView.isUserInteractionEnabled = false
+            
+            // Check if messages are exactly the same, if yes, then no need to update
+            if self.messages.count == updatedClassroom!.classroomMessages.count {
+                var areTheSame = true
+                let updatedMessages = updatedClassroom!.classroomMessages.sorted(by: { (m1, m2) -> Bool in
+                    return m1.date.compare(m2.date) == .orderedAscending
+                })
+                let oldMessages = self.messages.sorted(by: { (m1, m2) -> Bool in
+                    return m1.date.compare(m2.date) == .orderedAscending
+                })
+                for i in 0..<updatedMessages.count {
+                    if updatedMessages[i].mid != oldMessages[i].mid {
+                        areTheSame = false
+                        break
+                    }
+                }
+                if areTheSame {
+                    return
+                }
+            }
+            
+            // Update messages
+            self.classroom = updatedClassroom
+            self.messages = self.classroom.classroomMessages
+            self.organizeMessages()
+            self.collectionView.reloadData()
+            self.scrollToLastItemInCollectionView(animated: false)
+            self.removeTimeLabel()
+        })
+    }
+    
+    fileprivate lazy var pullToRefreshIndicator: CustomActivityIndicatorView = {
+        let image : UIImage = UIImage(named: "loading")!
+        let activityIndicatorView = CustomActivityIndicatorView(image: image)
+        return activityIndicatorView
+    }()
+    
+    fileprivate lazy var refreshControl: UIRefreshControl = {
+        let control = UIRefreshControl()
+        control.tintColor = UIColor.clear
+        control.backgroundColor = UIColor.clear
+        control.addTarget(self, action: #selector(loadMoreMessages), for: .valueChanged)
+        return control
+    }()
+    
+    fileprivate lazy var activityIndicator: CustomActivityIndicatorView = {
+        let image : UIImage = UIImage(named: "loading-large")!
+        let activityIndicatorView = CustomActivityIndicatorView(image: image)
+        return activityIndicatorView
+    }()
+    
+    fileprivate func setupFirebase() {
+        
+        // Setup empty placeholder view
+        self.setupEmptyPlaceholderView()
+        
+        // Setup activity indicator for initial load
+        self.collectionView.addSubview(activityIndicator)
+        self.activityIndicator.center = CGPoint(x: self.view.center.x, y: self.view.center.y - 0.08 * self.view.frame.height)
+        
+        // Setup refresh control for pull-to-refresh
+        self.refreshControl.addSubview(self.pullToRefreshIndicator)
+        self.pullToRefreshIndicator.center = CGPoint(x: self.view.center.x, y: self.refreshControl.center.y)
+        collectionView.addSubview(self.refreshControl)
+        
+        self.initMessages()
     }
     
     // MARK: Navigation
     
     fileprivate func setupNavigationBar() {
+        self.navigationItem.title = self.classroom.title
         let negativeSpace = UIBarButtonItem(barButtonSystemItem: .fixedSpace, target: nil, action: nil)
         negativeSpace.width = -6.0
         let moreButton = UIBarButtonItem(image: #imageLiteral(resourceName: "more"), style: .plain, target: self, action: #selector(handleNavMore))
@@ -128,6 +383,7 @@ class ChatClassroomController: UIViewController, UIGestureRecognizerDelegate, UI
         tapGestureRecognizer.delegate = self
         label.isUserInteractionEnabled = true
         label.addGestureRecognizer(tapGestureRecognizer)
+        label.text = "Read Question \(self.classroom.questionNum) here"
         return label
     }()
     
@@ -213,6 +469,11 @@ class ChatClassroomController: UIViewController, UIGestureRecognizerDelegate, UI
     // MARK: Chat
     
     // MARK: Process messages into buckets based on hourly time intervals
+    
+    fileprivate func organizeMessages() {
+        self.bucketMessagesIntoTime()
+        self.assembleMessageIsLastInChain()
+    }
     
     fileprivate func bucketMessagesIntoTime() {
         if self.messages.count == 0 {
@@ -398,16 +659,24 @@ class ChatClassroomController: UIViewController, UIGestureRecognizerDelegate, UI
     
     func handleSend() {
         if let text = inputTextView.text {
-            // Trim text before sending
-            let message = ClassroomMessage(mid: "999", parentCid: "3", posterUid: "999", text: text.trim(), date: Date(), isSentByYou: true)
-            self.messages.append(message)
-            self.bucketMessagesIntoTime()
-            self.assembleMessageIsLastInChain()
             self.resetInputContainer()
-            self.collectionView.reloadData()
-            self.collectionView.layoutIfNeeded()
-            self.scrollToLastItemInCollectionView()
-            self.removeTimeLabel()
+            DataService.ds.addClassChatMessage(classroom: self.classroom, text: text.trim(), completed: { (isSuccess, updatedClassroom) in
+                if !isSuccess || updatedClassroom == nil {
+                    log.error("[Error] Message failed to be posted")
+                    showErrorAlert(vc: self, title: "Error", message: "Could not send message. Please try again.")
+                    return
+                }
+            })
+//            let message = ClassroomMessage(mid: "999", parentCid: self.classroom.cid, posterUid: profile.uid, text: text.trim(), date: Date(), isSentByYou: true)
+//            
+//            self.messages.append(message)
+//            self.bucketMessagesIntoTime()
+//            self.assembleMessageIsLastInChain()
+//            self.resetInputContainer()
+//            self.collectionView.reloadData()
+//            self.collectionView.layoutIfNeeded()
+//            self.scrollToLastItemInCollectionView()
+//            self.removeTimeLabel()
         }
     }
 
@@ -597,12 +866,22 @@ class ChatClassroomController: UIViewController, UIGestureRecognizerDelegate, UI
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: CELL_ID, for: indexPath) as! ClassroomChatCell
         let message = self.messagesInTimeBuckets[indexPath.section][indexPath.row]
+        
+        log.info("!!")
+        log.info(self.messagesInTimeBuckets)
+        log.info(message.text)
+        
         let isLastInChain = self.messageIsLastInChain[indexPath.section][indexPath.row]
         
         // Get poster image name and poster name
         let posterUid = message.posterUid
-        let poster = classroom.members.filter({$0.uid == posterUid})[0]
+        let potentialPoster = classroom.members.filter({$0.uid == posterUid})
+        if potentialPoster.count != 1 {
+            log.error("[Error] Uid of poster not found in classroom")
+            return cell
+        }
         
+        let poster = potentialPoster[0]
         cell.configureCell(messageObj: message, posterImageName: poster.profileImageName, posterName: poster.name, viewWidth: view.frame.width, isLastInChain: isLastInChain)
         return cell
     }
