@@ -453,8 +453,6 @@ class ChatClassroomController: UIViewController, UIGestureRecognizerDelegate, UI
     
     fileprivate func setupEmptyPlaceholderView() {
         
-        self.emptyPlaceholderView.isHidden = self.messages.count != 0 // TODO: This will be shifted to the Firebase call
-        
         self.collectionView.addSubview(self.emptyPlaceholderView)
         self.emptyPlaceholderView.center = CGPoint(x: self.view.center.x, y: self.view.center.y - 0.05 * self.view.frame.height)
         self.emptyPlaceholderView.addSubview(minionImage)
@@ -866,10 +864,6 @@ class ChatClassroomController: UIViewController, UIGestureRecognizerDelegate, UI
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: CELL_ID, for: indexPath) as! ClassroomChatCell
         let message = self.messagesInTimeBuckets[indexPath.section][indexPath.row]
-        
-        log.info("!!")
-        log.info(self.messagesInTimeBuckets)
-        log.info(message.text)
         
         let isLastInChain = self.messageIsLastInChain[indexPath.section][indexPath.row]
         
