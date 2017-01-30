@@ -117,7 +117,13 @@ class ClassroomChatCell: BaseCollectionCell {
         
         let size = CGSize(width: 250, height: CGFloat.greatestFiniteMagnitude)
         let options = NSStringDrawingOptions.usesFontLeading.union(.usesLineFragmentOrigin)
-        let estimatedFrame = NSString(string: self.message.text).boundingRect(with: size, options: options, attributes: [NSFontAttributeName: TEXT_VIEW_FONT], context: nil)
+        
+        var estimatedFrame = NSString(string: self.message.text).boundingRect(with: size, options: options, attributes: [NSFontAttributeName: TEXT_VIEW_FONT], context: nil)
+        // Use the longer text as the bounding width for estimated frame
+        if !self.message.isSentByYou && self.message.text.characters.count < posterName.characters.count {
+            let testFrame = NSString(string: posterName).boundingRect(with: size, options: options, attributes: [NSFontAttributeName: FONT_HEAVY_MID], context: nil)
+            estimatedFrame = CGRect(x: estimatedFrame.origin.x, y: estimatedFrame.origin.y, width: testFrame.width, height: estimatedFrame.height)
+        }
         
         if !self.message.isSentByYou {
             
@@ -145,7 +151,7 @@ class ClassroomChatCell: BaseCollectionCell {
             
             if isLastInChain {
                 self.bubbleImageView.backgroundColor = UIColor.clear
-                self.textBubbleView.frame = CGRect(x: viewWidth - estimatedFrame.width - 16 - 8 - 16 - 8, y: 0, width: estimatedFrame.width + 20 + 8 + 8, height: estimatedFrame.height + 16 + 6)
+                self.textBubbleView.frame = CGRect(x: viewWidth - estimatedFrame.width - 16 - 8 - 16 - 8, y: -1, width: estimatedFrame.width + 20 + 8 + 8, height: estimatedFrame.height + 16 + 8)
                 self.bubbleImageView.image = BUBBLE_ME_IMAGE
                 self.bubbleImageView.tintColor = GREEN_UICOLOR
             } else {

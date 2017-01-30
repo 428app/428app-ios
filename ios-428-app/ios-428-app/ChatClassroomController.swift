@@ -15,9 +15,8 @@ class ChatClassroomController: UIViewController, UIGestureRecognizerDelegate, UI
     /** FIREBASE **/
     fileprivate var queryAndHandle: (FIRDatabaseQuery, FIRDatabaseHandle)!
     
-    fileprivate var numMessages: UInt = 50 // Increases as user scrolls to top of collection view
-    fileprivate let NUM_INCREMENT: UInt = 10 // Downloads 10 messages per scroll
-    
+    fileprivate var numMessages: UInt = 10 // Increases as user scrolls to top of collection view
+    fileprivate let NUM_INCREMENT: UInt = 5 // Downloads 10 messages per scroll
     
     /** CONSTANTS **/
     fileprivate let CELL_ID = "classroomChatCell"
@@ -944,7 +943,7 @@ class ChatClassroomController: UIViewController, UIGestureRecognizerDelegate, UI
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
         // Padding around section headers
-        return UIEdgeInsets(top: 4, left: 0, bottom: 4, right: 0)
+        return UIEdgeInsets(top: 8, left: 0, bottom: 8, right: 0)
     }
     
     func expandCell(notif: Notification) {
