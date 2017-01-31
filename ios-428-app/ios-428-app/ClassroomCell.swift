@@ -104,7 +104,7 @@ class ClassroomCell: BaseCollectionCell {
     
     func configureCell(classroom: Classroom) {
         self.classroom = classroom
-        self.updatedLbl.isHidden = classroom.hasUpdates
+        self.updatedLbl.isHidden = !classroom.hasUpdates
         self.loadImage()
         self.titleLbl.text = self.classroom.title
         self.questionNumLbl.text = "Current Question: \(self.classroom.questionNum)"

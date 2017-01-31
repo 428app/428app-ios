@@ -101,6 +101,7 @@ class ClassroomsController: UIViewController, UICollectionViewDelegate, UICollec
                         return
                     }
                     
+                    self.classrooms = self.classrooms.filter{$0.cid != cid}  // If class already added, then remove it first
                     self.classrooms.append(classroom!)
                     self.classrooms = self.classrooms.sorted{$0.timeCreated > $1.timeCreated}
                     self.collectionView.reloadData()
@@ -305,7 +306,7 @@ class ClassroomsController: UIViewController, UICollectionViewDelegate, UICollec
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         collectionView.deselectItem(at: indexPath, animated: false)
         let classroom = classrooms[indexPath.row]
-        log.info("Selected classroom: \(classroom.title)")
+        DataService.ds.seeClassroom(classroom: classroom) { (isSuccess) in }
         let controller = ChatClassroomController()
         controller.classroom = classroom
         let backItem = UIBarButtonItem()

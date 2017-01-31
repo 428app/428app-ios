@@ -1,6 +1,7 @@
 Classrooms Firebase integration
 
 - Test multi-user chats in classrooms
+    - Push notification
 
 - Code in Question/Answer backend logic
 - Code in Ratings backend logic

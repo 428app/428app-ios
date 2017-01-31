@@ -202,6 +202,7 @@ extension DataService {
         })
     }
     
+    // Add a chat message to the classroom
     func addClassChatMessage(classroom: Classroom, text: String, completed: @escaping (_ isSuccess: Bool, _ classroom: Classroom?) -> ()) {
         guard let posterUid = getStoredUid() else {
             completed(false, nil)
@@ -223,6 +224,25 @@ extension DataService {
             classroom.addMessage(message: msg)
             completed(err == nil, classroom)
         }
+        
+        // Add to other classmates' hasUpdates
+        let classmateUids = classroom.members.map { (profile) -> String in return profile.uid }.filter{$0 != posterUid}
+        
+        // Don't add when the classmate is already in the chat
+        for classmateUid in classmateUids {
+            REF_USERS.child("\(classmateUid)/classrooms/\(cid)/hasUpdates").setValue(true)
+        }
+        
+    }
+    
+    // See classroom messages so the updated label goes away
+    func seeClassroom(classroom: Classroom, completed: @escaping (_ isSuccess: Bool) -> ()) {
+        guard let uid = getStoredUid() else {
+            completed(false)
+            return
+        }
+        let cid = classroom.cid
+        REF_USERS.child("\(uid)/classrooms/\(cid)/hasUpdates").setValue(false)
     }
     
     // MARK: Ratings
