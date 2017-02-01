@@ -177,50 +177,50 @@ extension DataService {
             
             // Do push notification stuff here without a completion callback - Push notifications are not guaranteed to be delivered anyway
             
-            self.REF_INBOX.child(inboxId).observeSingleEvent(of: .value, with: { chatSnap in
-                if !chatSnap.exists() {
-                    return
-                }
-                guard let chatDict = chatSnap.value as? [String: Any], let hasNew = chatDict["hasNew:\(inbox.uid)"] as? Bool else {
-                    return
-                }
-                
-                // First check if the recipient has UserSettings - inboxMessages set to true AND user isLoggedIn. If not, don't bother queuing a push notification.
-                let settingsRef = self.REF_USERSETTINGS.child(inbox.uid)
-                
-                settingsRef.keepSynced(true) // Syncing settings is important
-                
-                settingsRef.observeSingleEvent(of: .value, with: { settingsSnap in
-                    // If the private messages setting exists, and is set to False, then terminate here
-                    if settingsSnap.exists() {
-                        // Check if /inboxMessages and /isLoggedIn are both true
-                        if let settingDict = settingsSnap.value as? [String: Bool], let acceptsInboxMessages = settingDict["inboxMessages"], let isLoggedIn = settingDict["isLoggedIn"] {
-                            if !acceptsInboxMessages || !isLoggedIn {
-                                // Not allowed to push messages. Increment badge count if necessary, then return
-                                if !hasNew {
-                                    self.adjustPushCount(isIncrement: true, uid: inbox.uid, completed: { (isSuccess) in })
-                                }
-                                self.REF_INBOX.child("\(inboxId)/hasNew:\(inbox.uid)").setValue(true)
-                                return
-                            }
-                        }
-                    }
-                    
-                    // Allowed to send push notifications
-                    
-                    if hasNew {
-                        // There are already new messages from this chat for this user, just send a notification without updating badge
-                        self.addToNotificationQueue(type: TokenType.INBOX, posterUid: uid, recipientUid: inbox.uid, cid: "", title: "Inbox", body: text)
-                        return
-                    }
-                    // No new messages for this user, set hasNew to true, and increment badge count for this user in Users table
-                    self.REF_INBOX.child("\(inboxId)/hasNew:\(inbox.uid)").setValue(true)
-                    self.adjustPushCount(isIncrement: true, uid: inbox.uid, completed: { (isSuccess) in
-                        // After badge count is incremented, then push notification. This is crucial because push notificatin reads off the badge count in the users table.
-                        self.addToNotificationQueue(type: TokenType.INBOX, posterUid: uid, recipientUid: inbox.uid, cid: "", title: "Inbox", body: text)
-                    })
-                })
-            })
+//            self.REF_INBOX.child(inboxId).observeSingleEvent(of: .value, with: { chatSnap in
+//                if !chatSnap.exists() {
+//                    return
+//                }
+//                guard let chatDict = chatSnap.value as? [String: Any], let hasNew = chatDict["hasNew:\(inbox.uid)"] as? Bool else {
+//                    return
+//                }
+//                
+//                // First check if the recipient has UserSettings - inboxMessages set to true AND user isLoggedIn. If not, don't bother queuing a push notification.
+//                let settingsRef = self.REF_USERSETTINGS.child(inbox.uid)
+//                
+//                settingsRef.keepSynced(true) // Syncing settings is important
+//                
+//                settingsRef.observeSingleEvent(of: .value, with: { settingsSnap in
+//                    // If the private messages setting exists, and is set to False, then terminate here
+//                    if settingsSnap.exists() {
+//                        // Check if /inboxMessages and /isLoggedIn are both true
+//                        if let settingDict = settingsSnap.value as? [String: Bool], let acceptsInboxMessages = settingDict["inboxMessages"], let isLoggedIn = settingDict["isLoggedIn"] {
+//                            if !acceptsInboxMessages || !isLoggedIn {
+//                                // Not allowed to push messages. Increment badge count if necessary, then return
+//                                if !hasNew {
+//                                    self.adjustPushCount(isIncrement: true, uid: inbox.uid, completed: { (isSuccess) in })
+//                                }
+//                                self.REF_INBOX.child("\(inboxId)/hasNew:\(inbox.uid)").setValue(true)
+//                                return
+//                            }
+//                        }
+//                    }
+//                    
+//                    // Allowed to send push notifications
+//                    
+//                    if hasNew {
+//                        // There are already new messages from this chat for this user, just send a notification without updating badge
+//                        self.addToNotificationQueue(type: TokenType.INBOX, posterUid: uid, recipientUid: inbox.uid, cid: "", title: "Inbox", body: text)
+//                        return
+//                    }
+//                    // No new messages for this user, set hasNew to true, and increment badge count for this user in Users table
+//                    self.REF_INBOX.child("\(inboxId)/hasNew:\(inbox.uid)").setValue(true)
+//                    self.adjustPushCount(isIncrement: true, uid: inbox.uid, completed: { (isSuccess) in
+//                        // After badge count is incremented, then push notification. This is crucial because push notificatin reads off the badge count in the users table.
+//                        self.addToNotificationQueue(type: TokenType.INBOX, posterUid: uid, recipientUid: inbox.uid, cid: "", title: "Inbox", body: text)
+//                    })
+//                })
+//            })
         }
     }
     

@@ -1,7 +1,10 @@
 Classrooms Firebase integration
 
-- Test multi-user chats in classrooms
-    - Push notification
+**Multi-user chats in classrooms
+
+- Recode Push server X
+- Write push server iOS code
+
 
 - Code in Question/Answer backend logic
 - Code in Ratings backend logic

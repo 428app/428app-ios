@@ -204,11 +204,16 @@ extension DataService {
     
     // Add a chat message to the classroom
     func addClassChatMessage(classroom: Classroom, text: String, completed: @escaping (_ isSuccess: Bool, _ classroom: Classroom?) -> ()) {
-        guard let posterUid = getStoredUid() else {
+        guard let profile = myProfile else {
             completed(false, nil)
             return
         }
+        
+        let posterUid = profile.uid
+        let posterName = profile.name
+        let posterImage = profile.profileImageName
         let cid = classroom.cid
+        let classroomTitle = classroom.title
         let timestamp = Date().timeIntervalSince1970
         
         // Add to classrooms (timeReplied)
@@ -227,11 +232,77 @@ extension DataService {
         
         // Add to other classmates' hasUpdates
         let classmateUids = classroom.members.map { (profile) -> String in return profile.uid }.filter{$0 != posterUid}
-        
-        // Don't add when the classmate is already in the chat
         for classmateUid in classmateUids {
-            REF_USERS.child("\(classmateUid)/classrooms/\(cid)/hasUpdates").setValue(true)
+            
+            self.REF_USERS.child(classmateUid).observeSingleEvent(of: .value, with: { (userSnap) in
+                if !userSnap.exists() {
+                    return
+                }
+                // Get this user's push token and badge count, and send it to push server anyway
+                guard let userDict = userSnap.value as? [String: Any], let classroomsDict = userDict["classrooms/\(cid)"] as? [String: Any], let hasUpdates = classroomsDict["hasUpdates"] as? Bool, let pushToken = userDict["pushToken"] as? String, let pushCount = userDict["pushCount"] as? Int else {
+                    return
+                }
+                
+                // Check if this user has the settings that allow message to be push notified
+                let settingsRef = self.REF_USERSETTINGS.child(classmateUid)
+                settingsRef.keepSynced(true)
+                settingsRef.observeSingleEvent(of: .value, with: { (settingsSnap) in
+                    
+                    var inAppSettings = true
+                    
+                    if settingsSnap.exists() {
+                        
+                        if let settingDict = settingsSnap.value as? [String: Bool], let inApp = settingDict["inAppNotifications"] {
+                            inAppSettings = inApp
+                        }
+                        
+                        // Check if /classroomMessages and /isLoggedIn are both true
+                        if let settingDict = settingsSnap.value as? [String: Bool], let acceptsClassroomMessages = settingDict["classroomMessages"], let isLoggedIn = settingDict["isLoggedIn"] {
+                            if !acceptsClassroomMessages || !isLoggedIn {
+                                // Not allowed to push messages. Increment badge count if necessary, then return
+                                if !hasUpdates {
+                                    self.adjustPushCount(isIncrement: true, uid: classmateUid, completed: { (isSuccess) in })
+                                }
+                                
+                                self.REF_USERS.child("\(classmateUid)/classrooms/\(cid)/hasUpdates").setValue(true)
+                                return
+                            }
+                        }
+                    }
+                    
+                    // Allowed to send push notifications
+                    
+                    if hasUpdates {
+                        // There are already new messages in this classroom for this user, just send a notification without updating badge
+                        self.addToNotificationQueue(type: TokenType.CLASSROOM, posterUid: posterUid, posterName: posterName, posterImage: posterImage, recipientUid: classmateUid, pushToken: pushToken, pushCount: pushCount, inApp: inAppSettings, cid: cid, title: classroomTitle, body: text)
+                        return
+                    }
+                    // No new messages for this user in this classroom, set hasUpdates to true, and increment push count for this user
+                    self.REF_USERS.child("\(classmateUid)/classrooms/\(cid)/hasUpdates").setValue(true)
+                    self.adjustPushCount(isIncrement: true, uid: classmateUid, completed: { (isSuccess) in
+                        // After badge count is incremented, then push notification.
+                        self.addToNotificationQueue(type: TokenType.CLASSROOM, posterUid: posterUid, posterName: posterName, posterImage: posterImage, recipientUid: classmateUid, pushToken: pushToken, pushCount: pushCount, inApp: inAppSettings, cid: cid, title: classroomTitle, body: text)
+                    })
+                })
+            })
         }
+        
+        // Do push notificaton stuff here without completion callback, because push notifications are not guaranteed to be sent anyway
+        
+        // For each user, do the following:
+        
+        
+        
+        // Check each user's settings locally
+        
+        // Do badge count on the server:
+        /*
+         - Grab user > push token
+         - Check user > classroom > hasUpdates
+         - If hasUpdates: false,
+        */
+        
+        
         
     }
     

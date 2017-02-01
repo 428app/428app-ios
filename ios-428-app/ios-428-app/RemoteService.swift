@@ -19,9 +19,9 @@ import FBSDKLoginKit
 extension DataService {
 
     // Adds message to Queue that will be picked up by push server
-    open func addToNotificationQueue(type: TokenType, posterUid: String, recipientUid: String, cid: String, title: String, body: String) {
+    open func addToNotificationQueue(type: TokenType, posterUid: String, posterName: String, posterImage: String, recipientUid: String, pushToken: String, pushCount: Int, inApp: Bool, cid: String, title: String, body: String) {
         // No need to async callback because notifications are not guaranteed anyway
-        let dict = ["type": type.rawValue, "posterUid": posterUid, "recipientUid": recipientUid, "cid": cid, "title": title, "body": body]
+        let dict: [String: Any] = ["type": type.rawValue, "posterUid": posterUid, "posterName": posterName, "posterImage": posterImage, "recipientUid": recipientUid, "pushToken": pushToken, "pushCount": pushCount, "inApp": inApp, "cid": cid, "title": title, "body": body]
         REF_QUEUE.childByAutoId().setValue(dict)
     }
     
