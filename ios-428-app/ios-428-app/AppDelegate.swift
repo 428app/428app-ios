@@ -162,12 +162,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     
     // Used to transition to the right page given valid userInfo dictionary from remote notification payload
     open func handleRemote(userInfo: [AnyHashable: Any], isForeground: Bool = false) {
-        log.info("\(userInfo)")
         /**
-         type: classroom|private|settings,
+         type: "classroom" or "inbox",
          image: "",
          uid: "",
-         tid: "",
+         cid: "",
          aps: {
             alert = {
                 body = ""; title = ""
@@ -185,7 +184,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         }
         
         if isForeground {
-            
             // First check if inApp setting is enabled or disabled
             if let canShowInApp = userInfo["inApp"] as? String {
                 // False string is used here because we can't just case String to Bool from payload
@@ -240,7 +238,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             return
         }
         
-        // Do not show popup in these screens:
+        // Do not show popup in these screens as they are modal views
         if let _ = nvc.visibleViewController as? ProfileController {
             return
         }
@@ -254,20 +252,28 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             return
         }
         
-        if let chatVC = nvc.visibleViewController as? ChatController {
-            // Only show popup if the chatVC uid is different from the uid in payload
-            if chatVC.inbox.uid != uid {
-                show(shout: announcement, to: vc, completion: {
-                    // This callback is reached when user taps, so we transition to the right page based on type, and uid/tid
-                    self.transitionToRightScreenBasedOnType(type: type, uid: uid, cid: cid)
-                })
+        // If popup is for classroom chat that user is currently in, don't show popup
+        if type == .CLASSROOM {
+            if let classroomChatVC = nvc.visibleViewController as? ChatClassroomController {
+                if classroomChatVC.classroom.cid == cid {
+                    return
+                }
             }
-        } else {
-            // Show for all other screens
-            show(shout: announcement, to: vc, completion: {
-                self.transitionToRightScreenBasedOnType(type: type, uid: uid, cid: cid)
-            })
         }
+        
+        // If popup is for inbox chat that user is currently in, don't show popup
+        if type == .INBOX {
+            if let inboxChatVC = nvc.visibleViewController as? ChatController {
+                if inboxChatVC.inbox.uid == uid {
+                    return
+                }
+            }
+        }
+        
+        show(shout: announcement, to: vc, completion: {
+            // This callback is reached when user taps, so we transition to the right page based on type, and uid/tid
+            self.transitionToRightScreenBasedOnType(type: type, uid: uid, cid: cid)
+        })
     }
     
     fileprivate func transitionToRightScreenBasedOnType(type: TokenType, uid: String, cid: String) {
@@ -280,10 +286,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             return
         }
         
-        if type == .INBOX {
-            self.findAndTransitionToInbox(uid: uid, tabBarController: tabBarController)
-        } else if type == .CLASSROOM {
+        if type == .CLASSROOM {
             self.findAndTransitionToClassroom(cid: cid, tabBarController: tabBarController)
+        } else if type == .INBOX {
+            self.findAndTransitionToInbox(uid: uid, tabBarController: tabBarController)
         }
     }
     
@@ -308,32 +314,37 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         let chatVC: ChatController = ChatController()
         chatVC.inbox = correctMessage[0].inbox
+        inboxNVC.viewControllers[0].navigationItem.backBarButtonItem = UIBarButtonItem(title: " ", style: .plain, target: nil, action: nil)
         inboxNVC.pushViewController(chatVC, animated: false)
         tabBarController.selectedIndex = 0
     }
     
-    // Open the correct classroom that matches tid
+    // Open the correct classroom that matches cid
     fileprivate func findAndTransitionToClassroom(cid: String, tabBarController: CustomTabBarController) {
-//        
-//        guard let vcs = tabBarController.viewControllers, let classroomsNVC = vcs[1] as? CustomNavigationController, let classroomsVC = classroomsNVC.viewControllers.first as? ClassroomsController else {
-//            return
-//        }
-//        if classroomsNVC.viewControllers.count > 1 {
-//            // Currently in a discuss screen or profile screen, etc., need to dismiss back to ClassroomsController before pushing DiscussController
-//            classroomsNVC.popToRootViewController(animated: false)
-//        }
-//        // Look for the correct classroom in all classrooms
-//        // Note: Because ClassroomVC is not loaded by default, the classrooms array might still be empty until the user clicks on the Classrooms tab. In that case, we just change the tab index instead of going into the individual classroom.
-//        let correctClassroom = classroomsVC.classrooms.filter() {$0.cid == cid}
-//        if correctClassroom.count != 1 {
-//            tabBarController.selectedIndex = 1
-//            log.warning("Tid could not be found in classrooms / too many of the same tid, OR page not loaded yet")
-//            return
-//        }
-//        let discussVC: DiscussController = DiscussController()
-//        discussVC.classroom = correctClassroom[0]
-//        classroomsNVC.pushViewController(discussVC, animated: false)
-//        tabBarController.selectedIndex = 1
+
+        guard let vcs = tabBarController.viewControllers, let classroomsNVC = vcs[1] as? CustomNavigationController, let classroomsVC = classroomsNVC.viewControllers.first as? ClassroomsController else {
+            return
+        }
+        if classroomsNVC.viewControllers.count > 1 {
+            // Currently in a screen on top of the ClassroomsController stack, i.e. in a Chat, etc. - need to pop back to the ClassroomsController
+            classroomsNVC.popToRootViewController(animated: false)
+        }
+        
+        // Look for the correct classroom in all classrooms
+        
+        // Note: Because ClassroomVC is not loaded by default, the classrooms array might still be empty until the user clicks on the Classrooms tab. In that case, we just change the tab index instead of going into the individual classroom.
+        
+        let correctClassroom = classroomsVC.classrooms.filter() {$0.cid == cid}
+        if correctClassroom.count != 1 {
+            tabBarController.selectedIndex = 1
+            log.warning("Cid could not be found in classrooms / too many of the same cid, OR page not loaded yet")
+            return
+        }
+        let classChatVC: ChatClassroomController = ChatClassroomController()
+        classChatVC.classroom = correctClassroom[0]
+        classroomsNVC.viewControllers[0].navigationItem.backBarButtonItem = UIBarButtonItem(title: " ", style: .plain, target: nil, action: nil)
+        classroomsNVC.pushViewController(classChatVC, animated: false)
+        tabBarController.selectedIndex = 1
     }
     
     // Received in foreground (iOS 9)
