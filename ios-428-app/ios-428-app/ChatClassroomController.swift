@@ -661,6 +661,7 @@ class ChatClassroomController: UIViewController, UIGestureRecognizerDelegate, UI
             self.resetInputContainer()
             DataService.ds.addClassChatMessage(classroom: self.classroom, text: text.trim(), completed: { (isSuccess, updatedClassroom) in
                 if !isSuccess || updatedClassroom == nil {
+                    
                     log.error("[Error] Message failed to be posted")
                     showErrorAlert(vc: self, title: "Error", message: "Could not send message. Please try again.")
                     return

@@ -20,6 +20,7 @@ extension DataService {
 
     // Adds message to Queue that will be picked up by push server
     open func addToNotificationQueue(type: TokenType, posterUid: String, posterName: String, posterImage: String, recipientUid: String, pushToken: String, pushCount: Int, inApp: Bool, cid: String, title: String, body: String) {
+        log.info("Adding to queue")
         // No need to async callback because notifications are not guaranteed anyway
         let dict: [String: Any] = ["type": type.rawValue, "posterUid": posterUid, "posterName": posterName, "posterImage": posterImage, "recipientUid": recipientUid, "pushToken": pushToken, "pushCount": pushCount, "inApp": inApp, "cid": cid, "title": title, "body": body]
         REF_QUEUE.childByAutoId().setValue(dict)
@@ -59,35 +60,50 @@ extension DataService {
             completed(false, -1)
             return
         }
-        // Look for all this user's private chats, look at all the Chats and see how many hasNew, then update pushCount, and return
-        // TODO: This will have to also look at Classrooms once those are up
-        REF_USERS.child("\(uid)/inbox").observeSingleEvent(of: .value, with: { privatesSnap in
-            if !privatesSnap.exists() {
-                completed(true, 0)
-                return
-            }
-            guard let privSnaps = privatesSnap.children.allObjects as? [FIRDataSnapshot] else {
-                completed(true, 0)
-                return
-            }
-            var privatesNum = privSnaps.count
+        
+        // Note: This is potentially unscalable because we're updating the push count whenever a user minimizes the app
+        
+        self.REF_USERS.child(uid).observeSingleEvent(of: .value, with: { (userSnap) in
             var pushCount = 0
-            for privSnap in privSnaps {
-                let uid2 = privSnap.key
-                let inboxId = self.getInboxId(uid1: uid, uid2: uid2)
-                let ref = self.REF_INBOX.child("\(inboxId)/hasNew:\(uid)")
-                ref.keepSynced(true)
-                ref.observeSingleEvent(of: .value, with: { chatSnap in
-                    if chatSnap.exists() {
-                        if let hasNew = chatSnap.value as? Bool {
-                            if hasNew {
-                                pushCount += 1
-                            }
+            
+            guard let userDict = userSnap.value as? [String: Any] else {
+                completed(true, pushCount)
+                return
+            }
+            
+            // Count all classrooms where hasUpdates is true
+            if let classroomsDict = userDict["classrooms"] as? [String: [String: Any]] {
+                for (_, v) in classroomsDict {
+                    if let hasUpdates = v["hasUpdates"] as? Bool {
+                        if hasUpdates {
+                            pushCount += 1
                         }
                     }
-                    privatesNum -= 1
-                    if privatesNum == 0 { // Done with looking at all private chats
-                        // Update push count in user table and return the updated push count
+                }
+            }
+
+            // Get all inboxes, and for each of them count all where hasNew is true
+            guard let inboxDict = userDict["inbox"] as? [String: [String: Any]] else {
+                // No inboxes
+                self.setPushCount(uid: uid, pushCount: pushCount, completed: { (isSuccess) in
+                    completed(isSuccess, pushCount)
+                })
+                return
+            }
+            
+            var numberOfInboxesLeft = inboxDict.count
+            for (k, _) in inboxDict {
+                let inboxId = self.getInboxId(uid1: uid, uid2: k)
+                let ref = self.REF_INBOX.child("\(inboxId)/hasNew:\(uid)")
+                ref.keepSynced(true)
+                ref.observeSingleEvent(of: .value, with: { (chatSnap) in
+                    if let hasNew = chatSnap.value as? Bool {
+                        if hasNew {
+                            pushCount += 1
+                        }
+                    }
+                    numberOfInboxesLeft -= 1
+                    if numberOfInboxesLeft == 0 {
                         self.setPushCount(uid: uid, pushCount: pushCount, completed: { (isSuccess) in
                             completed(isSuccess, pushCount)
                         })
@@ -96,5 +112,4 @@ extension DataService {
             }
         })
     }
-
 }

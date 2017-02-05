@@ -74,7 +74,7 @@ extension DataService {
                 
             } else {
                 // Create new user
-                user["badgeCount"] = 0
+                user["pushCount"] = 0
                 user["hasNewBadge"] = false
                 user["hasNewClassroom"] = false
                 let userSettings = ["dailyAlert": true, "inboxMessages": true, "classroomMessages": true, "inAppNotifications": true, "isLoggedIn": true]

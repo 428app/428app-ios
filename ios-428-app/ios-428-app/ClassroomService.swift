@@ -238,11 +238,17 @@ extension DataService {
                 if !userSnap.exists() {
                     return
                 }
+                
                 // Get this user's push token and badge count, and send it to push server anyway
-                guard let userDict = userSnap.value as? [String: Any], let classroomsDict = userDict["classrooms/\(cid)"] as? [String: Any], let hasUpdates = classroomsDict["hasUpdates"] as? Bool, let pushToken = userDict["pushToken"] as? String, let pushCount = userDict["pushCount"] as? Int else {
+                guard let userDict = userSnap.value as? [String: Any], let classroomsDict = userDict["classrooms"] as? [String: Any], let classroomDict = classroomsDict[cid] as? [String: Any], let hasUpdates = classroomDict["hasUpdates"] as? Bool else {
                     return
                 }
-                
+                guard let pushToken = userDict["pushToken"] as? String, let pushCount = userDict["pushCount"] as? Int else {
+                    // No push token, but user still exists in classroom, so set updates right
+                    self.REF_USERS.child("\(classmateUid)/classrooms/\(cid)/hasUpdates").setValue(true)
+                    return
+                }
+            
                 // Check if this user has the settings that allow message to be push notified
                 let settingsRef = self.REF_USERSETTINGS.child(classmateUid)
                 settingsRef.keepSynced(true)
@@ -271,7 +277,6 @@ extension DataService {
                     }
                     
                     // Allowed to send push notifications
-                    
                     if hasUpdates {
                         // There are already new messages in this classroom for this user, just send a notification without updating badge
                         self.addToNotificationQueue(type: TokenType.CLASSROOM, posterUid: posterUid, posterName: posterName, posterImage: posterImage, recipientUid: classmateUid, pushToken: pushToken, pushCount: pushCount, inApp: inAppSettings, cid: cid, title: classroomTitle, body: text)
@@ -286,24 +291,6 @@ extension DataService {
                 })
             })
         }
-        
-        // Do push notificaton stuff here without completion callback, because push notifications are not guaranteed to be sent anyway
-        
-        // For each user, do the following:
-        
-        
-        
-        // Check each user's settings locally
-        
-        // Do badge count on the server:
-        /*
-         - Grab user > push token
-         - Check user > classroom > hasUpdates
-         - If hasUpdates: false,
-        */
-        
-        
-        
     }
     
     // See classroom messages so the updated label goes away
