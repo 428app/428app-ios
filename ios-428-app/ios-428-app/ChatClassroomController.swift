@@ -356,6 +356,7 @@ class ChatClassroomController: UIViewController, UIGestureRecognizerDelegate, UI
             self.launchRatingsController()
         }
         // TODO: Disable this if memberHasRated is nil
+        answersAction.isEnabled = self.classroom.questions.count > 1 // Only enable seeing answers if there is more than 1 answer (current answer)
         ratingsAction.isEnabled = true
         alertController.addAction(classmatesAction)
         alertController.addAction(answersAction)

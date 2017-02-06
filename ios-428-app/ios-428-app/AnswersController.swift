@@ -19,6 +19,10 @@ class AnswersController: UITableViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        // Do not show the most recent answer (the first answer, as it has already been sorted)
+        questions = Array(questions.dropFirst(1))
+        
         self.navigationItem.title = "Answers"
         self.view.backgroundColor = GREEN_UICOLOR
         self.extendedLayoutIncludesOpaqueBars = true
