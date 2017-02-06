@@ -254,9 +254,6 @@ class ChatClassroomController: UIViewController, UIGestureRecognizerDelegate, UI
                 return
             }
             
-            // TODO: Messages seen
-//            DataService.ds.seeInboxMessages(inbox: self.inbox) { (isSuccess) in }
-            
             // There are messages, hide and disable empty placeholder view
             self.emptyPlaceholderView.isHidden = true
             self.emptyPlaceholderView.isUserInteractionEnabled = false

@@ -106,6 +106,18 @@ class MeController: UIViewController, UIGestureRecognizerDelegate, UIScrollViewD
                 myProfile = profile!
                 self.setProfileData()
                 
+                // Add no badges and no classrooms lbl to collection views in case there are no badges or classrooms, if necessary
+                // Note that this has to be after data is loaded above
+                if self.badges.count == 0 {
+                    self.containerView.addSubview(self.noBadgesLbl)
+                    self.containerView.addConstraint(NSLayoutConstraint(item: self.noBadgesLbl, attribute: .top, relatedBy: .equal, toItem: self.badgesLbl, attribute: .bottom, multiplier: 1.0, constant: 8.0))
+                    self.containerView.addConstraintsWithFormat("H:|-8-[v0]-8-|", views: self.noBadgesLbl)
+                }
+                if self.classrooms.count == 0 {
+                    self.containerView.addSubview(self.noClassroomsLbl)
+                    self.containerView.addConstraint(NSLayoutConstraint(item: self.noClassroomsLbl, attribute: .top, relatedBy: .equal, toItem: self.classroomsLbl, attribute: .bottom, multiplier: 1.0, constant: 8.0))
+                    self.containerView.addConstraintsWithFormat("H:|-8-[v0]-8-|", views: self.noClassroomsLbl)
+                }
             }
         }
         
@@ -176,7 +188,8 @@ class MeController: UIViewController, UIGestureRecognizerDelegate, UIScrollViewD
     //    fileprivate var classrooms = [String]() // Image names of participated classrooms
     
     // TODO: Dummy data for icons
-    fileprivate var badges = ["badge1", "badge2", "badge3", "badge4", "badge5", "badge6", "badge7", "badge8", "badge9", "badge10", "badge11", "badge12"]
+//    fileprivate var badges = ["badge1", "badge2", "badge3", "badge4", "badge5", "badge6", "badge7", "badge8", "badge9", "badge10", "badge11", "badge12"]
+    fileprivate var badges = [String]()
     fileprivate var classrooms = [String]()
     
     open static let ICON_SIZE: CGFloat = 33.0
@@ -254,6 +267,24 @@ class MeController: UIViewController, UIGestureRecognizerDelegate, UIScrollViewD
         return view
     }()
     
+    let noBadgesLbl: UILabel = {
+        let label = UILabel()
+        label.text = "No badges yet."
+        label.font = FONT_MEDIUM_MID
+        label.textColor = UIColor.gray
+        label.textAlignment = .left
+        return label
+    }()
+    
+    let noClassroomsLbl: UILabel = {
+        let label = UILabel()
+        label.text = "No classrooms yet."
+        label.font = FONT_MEDIUM_MID
+        label.textColor = UIColor.gray
+        label.textAlignment = .left
+        return label
+    }()
+    
     // MARK: Views 3 - Edit Profile and Settings buttons
     
     fileprivate func meBtnTemplate(btnText: String) -> UIButton {
@@ -305,11 +336,13 @@ class MeController: UIViewController, UIGestureRecognizerDelegate, UIScrollViewD
         }
     }
     
+    fileprivate var containerView: UIView!
+    
     fileprivate func setupViews() {
         // Set up scroll view, and close button on top of scroll view
         let views = setupScrollView()
         let scrollView = views[0] as! UIScrollView
-        let containerView = views[1]
+        containerView = views[1]
         scrollView.delegate = self // Delegate so as to disable top bounce only
         
         // Assign delegate, data source and setup cells for the badges and classrooms colletion views

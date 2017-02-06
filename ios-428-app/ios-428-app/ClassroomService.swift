@@ -300,7 +300,10 @@ extension DataService {
             return
         }
         let cid = classroom.cid
+        
         REF_USERS.child("\(uid)/classrooms/\(cid)/hasUpdates").setValue(false)
+        updatePushCount { (isSuccess, pushCount) in }
+        
     }
     
     // MARK: Ratings

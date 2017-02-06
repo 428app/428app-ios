@@ -54,6 +54,22 @@ extension DataService {
         })
     }
     
+    func getPushCount(completed: @escaping (_ pushCount: Int) -> ()) {
+        guard let uid = getStoredUid() else {
+            completed(0)
+            return
+        }
+        self.REF_USERS.child("\(uid)/pushCount").observeSingleEvent(of: .value, with: { (pushCountSnap) in
+            if pushCountSnap.exists() {
+                if let pushCount = pushCountSnap.value as? Int {
+                    completed(pushCount)
+                    return
+                }
+            }
+            completed(0)
+        })
+    }
+    
     // Called in AppDelegate whenever a user leaves the app to go to the background to update push count (keeping the state consistent as a fail safe)
     func updatePushCount(completed: @escaping (_ isSuccess: Bool, _ pushCount: Int) -> ()) {
         guard let uid = getStoredUid() else {

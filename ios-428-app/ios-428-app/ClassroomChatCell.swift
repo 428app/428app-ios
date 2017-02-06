@@ -119,8 +119,11 @@ class ClassroomChatCell: BaseCollectionCell {
         let options = NSStringDrawingOptions.usesFontLeading.union(.usesLineFragmentOrigin)
         
         var estimatedFrame = NSString(string: self.message.text).boundingRect(with: size, options: options, attributes: [NSFontAttributeName: TEXT_VIEW_FONT], context: nil)
+        
         // Use the longer text as the bounding width for estimated frame
-        if !self.message.isSentByYou && self.message.text.characters.count < posterName.characters.count {
+        let sizeOfMessage = (self.message.text as NSString).size(attributes: [NSFontAttributeName: TEXT_VIEW_FONT])
+        let sizeOfName = (posterName as NSString).size(attributes: [NSFontAttributeName: FONT_HEAVY_MID])
+        if !self.message.isSentByYou && sizeOfMessage.width < sizeOfName.width {
             let testFrame = NSString(string: posterName).boundingRect(with: size, options: options, attributes: [NSFontAttributeName: FONT_HEAVY_MID], context: nil)
             estimatedFrame = CGRect(x: estimatedFrame.origin.x, y: estimatedFrame.origin.y, width: testFrame.width, height: estimatedFrame.height)
         }

@@ -32,11 +32,14 @@ class InboxController: UICollectionViewController, UICollectionViewDelegateFlowL
         tabBarController?.tabBar.isHidden = false
     }
     
+
     deinit {
         for (ref, handle) in recentMessageRefsAndHandles {
             ref.removeObserver(withHandle: handle)
         }
-        inboxRefAndHandle.0.removeObserver(withHandle: inboxRefAndHandle.1)
+        if inboxRefAndHandle != nil {
+            inboxRefAndHandle.0.removeObserver(withHandle: inboxRefAndHandle.1)
+        }
     }
     
     // MARK: Firebase

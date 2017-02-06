@@ -2,14 +2,10 @@ Classrooms Firebase integration
 
 **Multi-user chats in classrooms
 
-- Recode Push server X
-- Write push server iOS code
-
-
 - Code in Question/Answer backend logic
 - Code in Ratings backend logic
 
-- App crashing upon user log out, isLoggedIn flag not set right
+
 
 
 

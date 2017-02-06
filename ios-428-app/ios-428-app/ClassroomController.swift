@@ -55,7 +55,9 @@ class ClassroomsController: UIViewController, UICollectionViewDelegate, UICollec
         for (ref, handle) in self.classesFirebase {
             ref.removeObserver(withHandle: handle)
         }
-        self.allClassFirebase.0.removeObserver(withHandle: allClassFirebase.1)
+        if allClassFirebase != nil {
+            self.allClassFirebase.0.removeObserver(withHandle: allClassFirebase.1)
+        }
     }
     
     // MARK: Firebase
