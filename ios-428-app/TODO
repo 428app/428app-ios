@@ -2,9 +2,12 @@ Classrooms Firebase integration
 
 **Multi-user chats in classrooms
 
+- Reinstall app changes profile picture to Facebook again
+
 - Ratings logic
 
 
+**Private messages
 
 
 
@@ -13,7 +16,6 @@ Classrooms Firebase integration
 
 
 MAJOR BUGS
-- Once logout, cannot log back in? (Unable to replicate)
 - iOS 9: Chat screen keyboard blocking on first load before collection view scroll: Try to figure out issue when coding ClassroomsController
 
 MINOR BUGS

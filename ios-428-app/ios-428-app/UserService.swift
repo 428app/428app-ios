@@ -56,7 +56,9 @@ extension DataService {
         saveName(name: name)
         
         let timeNow = Date().timeIntervalSince1970
-        var user: [String: Any] = ["fbid": fbid, "name": name, "birthday": birthday, "profilePhoto": pictureUrl, "timezone": timezone, "lastSeen": timeNow]
+        
+        // Only update profile photo if this user does not have a profile photo
+        var user: [String: Any] = ["fbid": fbid, "name": name, "birthday": birthday, "timezone": timezone, "lastSeen": timeNow]
         
         self.REF_USERS.child(uid).observeSingleEvent(of: .value, with: { snapshot in
             if snapshot.exists() {
@@ -65,6 +67,14 @@ extension DataService {
                 if let userDict = snapshot.value as? [String: Any], let _ = userDict["organization"] as? String, let _ = userDict["school"] as? String, let _ = userDict["discipline"] as? String {
                     isFirstTimeUser = false
                 }
+                
+                // Only update profile photo provided by Facebook via this login if this user does not have a profile photo
+                if let userDict = snapshot.value as? [String: Any] {
+                    if userDict["profilePhoto"] == nil {
+                        user["profilePhoto"] = pictureUrl
+                    }
+                }
+                
                 // Update user info
                 self.REF_USERS.child(uid).updateChildValues(user, withCompletionBlock: { (err, ref) in
                     completed(err == nil, isFirstTimeUser)

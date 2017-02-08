@@ -2,7 +2,7 @@
 //  RatingsAlertController.swift
 //  ios-428-app
 //
-//  Launched from ChatClassroomController when user ratings are availabe but user has not rated.
+//  Launched from ChatClassroomController when user ratings are available but user has not rated.
 //
 //  Created by Leonard Loo on 1/3/17.
 //  Copyright © 2017 428. All rights reserved.

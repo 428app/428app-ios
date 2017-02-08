@@ -66,6 +66,7 @@ class ChatClassroomController: UIViewController, UIGestureRecognizerDelegate, UI
         super.viewWillAppear(animated)
         self.tabBarController?.tabBar.isHidden = true
         // TODO: Check if it is time to rate to show rating alert
+        // Show rating alert when
         //        showRatingAlert()
         self.registerObservers()
     }
