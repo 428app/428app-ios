@@ -65,17 +65,17 @@
 		4072AD961E15FD0E0067046D /* ClassmatesController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4072AD951E15FD0E0067046D /* ClassmatesController.swift */; };
 		4072AD981E1619BD0067046D /* ClassmatesProfileCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4072AD971E1619BD0067046D /* ClassmatesProfileCell.swift */; };
 		4072AD9A1E1633E30067046D /* AnswersController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4072AD991E1633E30067046D /* AnswersController.swift */; };
-		4072AD9C1E164A880067046D /* Rating.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4072AD9B1E164A880067046D /* Rating.swift */; };
-		4072ADA21E1657D50067046D /* RatingsController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4072ADA11E1657D50067046D /* RatingsController.swift */; };
+		4072AD9C1E164A880067046D /* Superlative.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4072AD9B1E164A880067046D /* Superlative.swift */; };
+		4072ADA21E1657D50067046D /* SuperlativeController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4072ADA11E1657D50067046D /* SuperlativeController.swift */; };
 		4072ADA61E1662A30067046D /* ModalVoteController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4072ADA51E1662A30067046D /* ModalVoteController.swift */; };
-		4072ADA81E1663EB0067046D /* RatingCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4072ADA71E1663EB0067046D /* RatingCell.swift */; };
+		4072ADA81E1663EB0067046D /* SuperlativeCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4072ADA71E1663EB0067046D /* SuperlativeCell.swift */; };
 		40785D5B1E04EDCE009B66E0 /* HorizontalScrollCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 40785D5A1E04EDCE009B66E0 /* HorizontalScrollCell.swift */; };
 		40785D5F1E093AAF009B66E0 /* MeController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 40785D5E1E093AAF009B66E0 /* MeController.swift */; };
 		40785D611E0D2C81009B66E0 /* DataService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 40785D601E0D2C81009B66E0 /* DataService.swift */; };
 		40785D631E0D981C009B66E0 /* InboxService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 40785D621E0D981C009B66E0 /* InboxService.swift */; };
 		40785D651E0D9868009B66E0 /* UserService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 40785D641E0D9868009B66E0 /* UserService.swift */; };
 		40785D671E0E5A1F009B66E0 /* RemoteService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 40785D661E0E5A1F009B66E0 /* RemoteService.swift */; };
-		40790C871E1B659700A779A6 /* RatingsAlertController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 40790C861E1B659700A779A6 /* RatingsAlertController.swift */; };
+		40790C871E1B659700A779A6 /* SuperlativeAlertController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 40790C861E1B659700A779A6 /* SuperlativeAlertController.swift */; };
 		4081B2621E1500FF00D6E690 /* Question.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4081B2611E1500FF00D6E690 /* Question.swift */; };
 		409F05F21DD81E1D001B673F /* Upload.swift in Sources */ = {isa = PBXBuildFile; fileRef = 409F05F11DD81E1D001B673F /* Upload.swift */; };
 		40A2C0871E13D61F00D477E1 /* WebviewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 40A2C0861E13D61F00D477E1 /* WebviewController.swift */; };
@@ -167,17 +167,17 @@
 		4072AD951E15FD0E0067046D /* ClassmatesController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ClassmatesController.swift; sourceTree = "<group>"; };
 		4072AD971E1619BD0067046D /* ClassmatesProfileCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ClassmatesProfileCell.swift; sourceTree = "<group>"; };
 		4072AD991E1633E30067046D /* AnswersController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AnswersController.swift; sourceTree = "<group>"; };
-		4072AD9B1E164A880067046D /* Rating.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Rating.swift; sourceTree = "<group>"; };
-		4072ADA11E1657D50067046D /* RatingsController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RatingsController.swift; sourceTree = "<group>"; };
+		4072AD9B1E164A880067046D /* Superlative.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Superlative.swift; sourceTree = "<group>"; };
+		4072ADA11E1657D50067046D /* SuperlativeController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SuperlativeController.swift; sourceTree = "<group>"; };
 		4072ADA51E1662A30067046D /* ModalVoteController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ModalVoteController.swift; sourceTree = "<group>"; };
-		4072ADA71E1663EB0067046D /* RatingCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RatingCell.swift; sourceTree = "<group>"; };
+		4072ADA71E1663EB0067046D /* SuperlativeCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SuperlativeCell.swift; sourceTree = "<group>"; };
 		40785D5A1E04EDCE009B66E0 /* HorizontalScrollCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HorizontalScrollCell.swift; sourceTree = "<group>"; };
 		40785D5E1E093AAF009B66E0 /* MeController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MeController.swift; sourceTree = "<group>"; };
 		40785D601E0D2C81009B66E0 /* DataService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DataService.swift; sourceTree = "<group>"; };
 		40785D621E0D981C009B66E0 /* InboxService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = InboxService.swift; sourceTree = "<group>"; };
 		40785D641E0D9868009B66E0 /* UserService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserService.swift; sourceTree = "<group>"; };
 		40785D661E0E5A1F009B66E0 /* RemoteService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RemoteService.swift; sourceTree = "<group>"; };
-		40790C861E1B659700A779A6 /* RatingsAlertController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RatingsAlertController.swift; sourceTree = "<group>"; };
+		40790C861E1B659700A779A6 /* SuperlativeAlertController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SuperlativeAlertController.swift; sourceTree = "<group>"; };
 		4081B2611E1500FF00D6E690 /* Question.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Question.swift; sourceTree = "<group>"; };
 		409F05F11DD81E1D001B673F /* Upload.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Upload.swift; sourceTree = "<group>"; };
 		40A2C0861E13D61F00D477E1 /* WebviewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WebviewController.swift; sourceTree = "<group>"; };
@@ -224,11 +224,11 @@
 			children = (
 				4024F2201DB7E2E9007819F7 /* ClassroomController.swift */,
 				4024F2281DB853F9007819F7 /* ChatClassroomController.swift */,
-				40790C861E1B659700A779A6 /* RatingsAlertController.swift */,
+				40790C861E1B659700A779A6 /* SuperlativeAlertController.swift */,
 				4024F2301DB88262007819F7 /* ModalQuestionController.swift */,
 				4072AD951E15FD0E0067046D /* ClassmatesController.swift */,
 				4072AD991E1633E30067046D /* AnswersController.swift */,
-				4072ADA11E1657D50067046D /* RatingsController.swift */,
+				4072ADA11E1657D50067046D /* SuperlativeController.swift */,
 				4072ADA51E1662A30067046D /* ModalVoteController.swift */,
 			);
 			name = Classroom;
@@ -346,7 +346,7 @@
 				4024F2221DB7F664007819F7 /* Classroom.swift */,
 				4081B2611E1500FF00D6E690 /* Question.swift */,
 				4024F2241DB7F83F007819F7 /* ClassroomMessage.swift */,
-				4072AD9B1E164A880067046D /* Rating.swift */,
+				4072AD9B1E164A880067046D /* Superlative.swift */,
 			);
 			name = Model;
 			sourceTree = "<group>";
@@ -368,7 +368,7 @@
 				4024F22C1DB86B18007819F7 /* ClassroomChatCell.swift */,
 				40E2E1411DD3788300469B4D /* CustomActivityIndicatorView.swift */,
 				4072AD971E1619BD0067046D /* ClassmatesProfileCell.swift */,
-				4072ADA71E1663EB0067046D /* RatingCell.swift */,
+				4072ADA71E1663EB0067046D /* SuperlativeCell.swift */,
 			);
 			name = View;
 			sourceTree = "<group>";
@@ -658,7 +658,7 @@
 				4064A2271DB13FBD00071383 /* Debug.swift in Sources */,
 				4064A2211DADE67E00071383 /* ChatHeaderView.swift in Sources */,
 				40AB7FFE1DB5B89C00492788 /* Setting.swift in Sources */,
-				4072ADA81E1663EB0067046D /* RatingCell.swift in Sources */,
+				4072ADA81E1663EB0067046D /* SuperlativeCell.swift in Sources */,
 				409F05F21DD81E1D001B673F /* Upload.swift in Sources */,
 				4064A1B81DAC381300071383 /* InboxController.swift in Sources */,
 				40ADEEDD1DDD12D000CE529A /* ShoutFactory.swift in Sources */,
@@ -676,8 +676,8 @@
 				40ADEED91DDD12D000CE529A /* Config.swift in Sources */,
 				40785D671E0E5A1F009B66E0 /* RemoteService.swift in Sources */,
 				404C22FA1DBDB86D0054FE19 /* UserDefaults.swift in Sources */,
-				4072AD9C1E164A880067046D /* Rating.swift in Sources */,
-				40790C871E1B659700A779A6 /* RatingsAlertController.swift in Sources */,
+				4072AD9C1E164A880067046D /* Superlative.swift in Sources */,
+				40790C871E1B659700A779A6 /* SuperlativeAlertController.swift in Sources */,
 				4064A2291DB2B0B500071383 /* InboxMessage.swift in Sources */,
 				40ADEEE31DDD82E300CE529A /* Enums.swift in Sources */,
 				4024F22B1DB85C0E007819F7 /* PaddingLabel.swift in Sources */,
@@ -690,7 +690,7 @@
 				4072AD981E1619BD0067046D /* ClassmatesProfileCell.swift in Sources */,
 				4064A2161DACBCDC00071383 /* Extensions.swift in Sources */,
 				40AB80031DB6FAA200492788 /* PictureModalController.swift in Sources */,
-				4072ADA21E1657D50067046D /* RatingsController.swift in Sources */,
+				4072ADA21E1657D50067046D /* SuperlativeController.swift in Sources */,
 				40AB80051DB7094700492788 /* EditProfessionalController.swift in Sources */,
 				4024F2331DB9454B007819F7 /* LoginController.swift in Sources */,
 				4024F2311DB88262007819F7 /* ModalQuestionController.swift in Sources */,

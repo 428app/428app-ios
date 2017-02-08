@@ -91,19 +91,19 @@ extension DataService {
                     completed(false, nil)
                     return
                 }
-                guard let classDict = classSnap.value as? [String: Any], let classTitle = classDict["title"] as? String, let timeCreated = classDict["timeCreated"] as? Double, let classmateAndRatingType = classDict["memberHasRated"] as? [String: Int], let questionsAndTimes = classDict["questions"] as? [String: Double] else {
+                guard let classDict = classSnap.value as? [String: Any], let classTitle = classDict["title"] as? String, let timeCreated = classDict["timeCreated"] as? Double, let classmateAndSuperlativeType = classDict["memberHasVoted"] as? [String: Int], let questionsAndTimes = classDict["questions"] as? [String: Double] else {
                     log.info("Failed at classroom")
                     completed(false, nil)
                     return
                 }
                 
-                // Download profiles, and find this user's rating type
+                // Download profiles, and find this user's superlative type
                 var members: [Profile] = [Profile]()
-                var hasRatingType: RatingType = RatingType.NOTRATED
-                for (uid_, ratingType_) in classmateAndRatingType {
-                    // Find rating type of this user
+                var hasSuperlativeType: SuperlativeType = SuperlativeType.NOTRATED
+                for (uid_, superlativeType_) in classmateAndSuperlativeType {
+                    // Find superlative type of this user
                     if uid_ == uid {
-                        hasRatingType = RatingType(rawValue: ratingType_)!
+                        hasSuperlativeType = SuperlativeType(rawValue: superlativeType_)!
                     }
                     // Download all classmates' profiles
                     self.getUserFields(uid: uid_, completed: { (isSuccess, userProfile) in
@@ -115,7 +115,29 @@ extension DataService {
                         }
 
                         members.append(userProfile!)
-                        if members.count == classmateAndRatingType.count { // All classmates uid read
+                        if members.count == classmateAndSuperlativeType.count { // All classmates uid read
+                            
+                            // Form superlatives if there are
+                            var superlatives = [Superlative]();
+                            if let superlativesDict = classDict["superlatives"] as? [String: Any] { // TODO: See if these nested Strings work
+                                // For each superlative name, find this uid, and grab the uid voted for
+                                for (superlativeName, votedDictUnwrapped) in superlativesDict {
+                                    if let votedDict = votedDictUnwrapped as? [String: String] {
+                                        if let foundUid = votedDict[uid] {
+                                            if foundUid == "" {
+                                                superlatives.append(Superlative(superlativeName: superlativeName))
+                                            } else {
+                                                let foundMember = members.filter(){$0.uid == foundUid}
+                                                if foundMember.count != 1 {
+                                                    superlatives.append(Superlative(superlativeName: superlativeName))
+                                                } else {
+                                                    superlatives.append(Superlative(superlativeName: superlativeName, userVotedFor: foundMember[0]))
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
                             
                             // Download questions and answers
                             var questions: [Question] = [Question]()
@@ -129,13 +151,12 @@ extension DataService {
                                     }
                                     questions.append(question!)
                                     if questions.count == questionsAndTimes.count { // All questions qid read
-                                        // Form ratings and classroom messages in a separate call
-                                        let classroom = Classroom(cid: cid, title: classTitle, timeCreated: timeCreated, members: members, questions: questions, hasRatingType: hasRatingType, hasUpdates: hasUpdates)
+                                        // Form classroom messages in a separate call
+                                        let classroom = Classroom(cid: cid, title: classTitle, timeCreated: timeCreated, members: members, questions: questions, superlatives: superlatives, hasSuperlativeType: hasSuperlativeType, hasUpdates: hasUpdates)
                                         completed(true, classroom) // Finally!
                                     }
                                 })
                             }
-                            
                         }
                     })
                 }
@@ -306,6 +327,6 @@ extension DataService {
         
     }
     
-    // MARK: Ratings
+    // MARK: Superlatives
 
 }

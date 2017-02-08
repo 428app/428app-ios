@@ -142,23 +142,23 @@ class ClassroomsController: UIViewController, UICollectionViewDelegate, UICollec
 //        let m4 = ClassroomMessage(mid: "1", parentCid: "1", posterUid: "5", text: "That is lame.", date: minAgo(minutesAgo: 4), isSentByYou: true)
 //        let m5 = ClassroomMessage(mid: "1", parentCid: "1", posterUid: "4", text: "Oh this is lively isn't it! :)", date: minAgo(minutesAgo: 2), isSentByYou: false)
 //        
-//        // Ratings
-//        let r1 = Rating(ratingName: "Most funny", userVotedFor: prof1)
-//        let r2 = Rating(ratingName: "Most awkward", userVotedFor: prof5)
-//        let r3 = Rating(ratingName: "Most serious", userVotedFor: nil)
-//        let r4 = Rating(ratingName: "Prettiest", userVotedFor: nil)
-//        let ratings = [r1, r2, r3, r4]
+//        // Superlatives
+//        let r1 = Superlative(superlativeName: "Most funny", userVotedFor: prof1)
+//        let r2 = Superlative(superlativeName: "Most awkward", userVotedFor: prof5)
+//        let r3 = Superlative(superlativeName: "Most serious", userVotedFor: nil)
+//        let r4 = Superlative(superlativeName: "Prettiest", userVotedFor: nil)
+//        let superlatives = [r1, r2, r3, r4]
 //        
 //        // Results
-//        let re1 = Rating(ratingName: "Most funny", userVotedFor: prof1)
-//        let re2 = Rating(ratingName: "Most awkward", userVotedFor: prof5)
-//        let re3 = Rating(ratingName: "Most serious", userVotedFor: prof2)
-//        let re4 = Rating(ratingName: "Prettiest", userVotedFor: prof3)
+//        let re1 = Superlative(superlativeName: "Most funny", userVotedFor: prof1)
+//        let re2 = Superlative(superlativeName: "Most awkward", userVotedFor: prof5)
+//        let re3 = Superlative(superlativeName: "Most serious", userVotedFor: prof2)
+//        let re4 = Superlative(superlativeName: "Prettiest", userVotedFor: prof3)
 //        let results = [re1, re2, re3, re4]
 //        
 //        let messages = [m1, m2, m3, m4, m5]
 //        
-//        let room1 = Classroom(cid: "1", title: "Physics", timeCreated: 1, members: [prof1, prof2, prof3, prof4, prof5], questions: [q1, q2, q3, q4, q5], classroomMessages: messages, ratings: ratings, results: results, hasUpdates: true)
+//        let room1 = Classroom(cid: "1", title: "Physics", timeCreated: 1, members: [prof1, prof2, prof3, prof4, prof5], questions: [q1, q2, q3, q4, q5], classroomMessages: messages, superlatives: superlatives, results: results, hasUpdates: true)
 //        
 //        let room2 = Classroom(cid: "2", title: "Business", timeCreated: 2, members: [prof1, prof2, prof3, prof4], questions: [q1])
 //        let room3 = Classroom(cid: "3", title: "Computer Science", timeCreated: 3, members: [prof1, prof2, prof3, prof4], questions: [q3, q4])

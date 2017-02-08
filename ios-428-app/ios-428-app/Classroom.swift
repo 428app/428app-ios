@@ -16,25 +16,25 @@ class Classroom {
     fileprivate var _members: [Profile] // Used to display members and their profiles
     fileprivate var _questions: [Question] // Get question number from this
     fileprivate var _classroomMessages: [ClassroomMessage]
-    fileprivate var _ratings: [Rating] // Your ratings of your classmates
-    fileprivate var _results: [Rating] // The overall ratings of all classmates downloaded from server
-    fileprivate var _hasRatingType: RatingType
+    fileprivate var _superlatives: [Superlative] // Your superlatives of your classmates
+    fileprivate var _results: [Superlative] // The overall superlatives of all classmates downloaded from server
+    fileprivate var _hasSuperlativeType: SuperlativeType
     fileprivate var _hasUpdates: Bool
     
     // Computed variables from questions array
     var _questionNum: Int
     var _imageName: String
     
-    init(cid: String, title: String, timeCreated: Double, members: [Profile], questions: [Question], classroomMessages: [ClassroomMessage] = [], ratings: [Rating] = [], results: [Rating] = [], hasRatingType: RatingType = RatingType.NOTRATED, hasUpdates: Bool = false) {
+    init(cid: String, title: String, timeCreated: Double, members: [Profile], questions: [Question], classroomMessages: [ClassroomMessage] = [], superlatives: [Superlative] = [], results: [Superlative] = [], hasSuperlativeType: SuperlativeType = SuperlativeType.NOTRATED, hasUpdates: Bool = false) {
         _cid = cid
         _title = title
         _timeCreated = timeCreated
         _members = members
         _questions = questions.sorted{$0.timestamp > $1.timestamp} // Most recent questions first
         _classroomMessages = classroomMessages
-        _ratings = ratings
+        _superlatives = superlatives
         _results = results
-        _hasRatingType = hasRatingType
+        _hasSuperlativeType = hasSuperlativeType
         _hasUpdates = hasUpdates
         // Compute question num and imageName to display from questions
         _questionNum = questions.count
@@ -85,21 +85,21 @@ class Classroom {
         _classroomMessages = []
     }
     
-    var ratings: [Rating] {
+    var superlatives: [Superlative] {
         get {
-            return _ratings
+            return _superlatives
         }
     }
     
-    var results: [Rating] {
+    var results: [Superlative] {
         get {
             return _results
         }
     }
     
-    var hasRatingType: RatingType {
+    var hasSuperlativeType: SuperlativeType {
         get {
-            return _hasRatingType
+            return _hasSuperlativeType
         }
     }
     

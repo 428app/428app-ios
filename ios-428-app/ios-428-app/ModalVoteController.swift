@@ -13,7 +13,7 @@ class ModalVoteController: UIViewController, UITableViewDelegate, UITableViewDat
     
     fileprivate let CELL_ID = "voteCell"
 
-    open var ratingName: String!
+    open var superlativeName: String!
     open var userVotedFor: Profile!
     open var classmates: [Profile]!
     
@@ -40,8 +40,8 @@ class ModalVoteController: UIViewController, UITableViewDelegate, UITableViewDat
         label.textColor = GREEN_UICOLOR
         label.font = FONT_HEAVY_XLARGE
         label.textAlignment = .center
-        if let rating = self.ratingName {
-            label.text = rating
+        if let superlative = self.superlativeName {
+            label.text = superlative
         }
         return label
     }()
@@ -119,7 +119,7 @@ class ModalVoteController: UIViewController, UITableViewDelegate, UITableViewDat
         }
         tableView.selectRow(at: indexPath, animated: false, scrollPosition: .none)
         
-        NotificationCenter.default.post(name: NOTIF_RATINGSELECTED, object: nil, userInfo: ["ratingName": self.ratingName, "userVotedFor": classmate])
+        NotificationCenter.default.post(name: NOTIF_RATINGSELECTED, object: nil, userInfo: ["superlativeName": self.superlativeName, "userVotedFor": classmate])
         self.dismissScreen()
     }
     

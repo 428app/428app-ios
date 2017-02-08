@@ -1,8 +1,8 @@
 //
-//  RatingsAlertController.swift
+//  SuperlativeAlertController.swift
 //  ios-428-app
 //
-//  Launched from ChatClassroomController when user ratings are available but user has not rated.
+//  Launched from ChatClassroomController when user superlatives are available but user has not voted.
 //
 //  Created by Leonard Loo on 1/3/17.
 //  Copyright © 2017 428. All rights reserved.
@@ -11,7 +11,7 @@
 import Foundation
 import UIKit
 
-class RatingsAlertController: UIViewController {
+class SuperlativeAlertController: UIViewController {
     
     open var classroom: Classroom!
     
@@ -22,14 +22,14 @@ class RatingsAlertController: UIViewController {
         return view
     }()
     
-    fileprivate let ratingIcon: UIImageView = {
+    fileprivate let superlativeIcon: UIImageView = {
         let imageView = UIImageView(frame: CGRect(x: 0.0, y: 0.0, width: 50.0, height: 50.0))
         imageView.image = #imageLiteral(resourceName: "rateclassmates")
         imageView.contentMode = .scaleAspectFit
         return imageView
     }()
     
-    fileprivate let ratingLbl: UILabel = {
+    fileprivate let superlativeLbl: UILabel = {
         let label = UILabel()
         label.text = "It's time to rate your classmates!"
         label.font = FONT_MEDIUM_MID
@@ -84,14 +84,14 @@ class RatingsAlertController: UIViewController {
 
     fileprivate func setupViews() {
         
-        containerView.addSubview(ratingIcon)
-        containerView.addSubview(ratingLbl)
+        containerView.addSubview(superlativeIcon)
+        containerView.addSubview(superlativeLbl)
         containerView.addSubview(rateBtn)
         containerView.addSubview(cancelBtn)
-        containerView.addConstraintsWithFormat("V:|-8-[v0(50)]-8-[v1(30)]-8-[v2(40)]-8-[v3(40)]-8-|", views: ratingIcon, ratingLbl, rateBtn, cancelBtn)
-        containerView.addConstraintsWithFormat("H:[v0(50)]", views: ratingIcon)
-        containerView.addConstraint(NSLayoutConstraint(item: ratingIcon, attribute: .centerX, relatedBy: .equal, toItem: containerView, attribute: .centerX, multiplier: 1.0, constant: 0.0))
-        containerView.addConstraintsWithFormat("H:|-8-[v0]-8-|", views: ratingLbl)
+        containerView.addConstraintsWithFormat("V:|-8-[v0(50)]-8-[v1(30)]-8-[v2(40)]-8-[v3(40)]-8-|", views: superlativeIcon, superlativeLbl, rateBtn, cancelBtn)
+        containerView.addConstraintsWithFormat("H:[v0(50)]", views: superlativeIcon)
+        containerView.addConstraint(NSLayoutConstraint(item: superlativeIcon, attribute: .centerX, relatedBy: .equal, toItem: containerView, attribute: .centerX, multiplier: 1.0, constant: 0.0))
+        containerView.addConstraintsWithFormat("H:|-8-[v0]-8-|", views: superlativeLbl)
         containerView.addConstraintsWithFormat("H:|-8-[v0]-8-|", views: rateBtn)
         containerView.addConstraintsWithFormat("H:|-8-[v0]-8-|", views: cancelBtn)
         

@@ -13,6 +13,6 @@ enum TokenType: String {
     case INBOX = "inbox", CLASSROOM = "classroom"
 }
 
-enum RatingType: Int {
+enum SuperlativeType: Int {
     case NOTRATED = 0, RATED, SHARED
 }

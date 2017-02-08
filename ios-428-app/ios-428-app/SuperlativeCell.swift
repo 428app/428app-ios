@@ -1,5 +1,5 @@
 //
-//  RatingCell.swift
+//  SuperlativeCell.swift
 //  ios-428-app
 //
 //  Created by Leonard Loo on 12/30/16.
@@ -9,11 +9,11 @@
 import Foundation
 import UIKit
 
-class RatingCell: BaseCollectionCell {
+class SuperlativeCell: BaseCollectionCell {
     
-    fileprivate var rating: Rating!
+    fileprivate var superlative: Superlative!
     
-    fileprivate let ratingLbl: UILabel = {
+    fileprivate let superlativeLbl: UILabel = {
         let label = UILabel()
         label.font = FONT_HEAVY_XLARGE
         label.textColor = GREEN_UICOLOR
@@ -49,7 +49,7 @@ class RatingCell: BaseCollectionCell {
         containerView.layer.shadowRadius = 2.0
         containerView.layer.shadowOffset = CGSize(width: 0.0, height: 2.0)
         
-        containerView.addSubview(ratingLbl)
+        containerView.addSubview(superlativeLbl)
         
         // Centered profile image and name label
         let profileContainer = UIView()
@@ -62,8 +62,8 @@ class RatingCell: BaseCollectionCell {
         profileContainer.addConstraintsWithFormat("V:|[v0(80)]|", views: profileImageView)
         profileContainer.addConstraintsWithFormat("V:|-30-[v0(30)]", views: nameLbl)
         
-        containerView.addConstraintsWithFormat("V:|-8-[v0(30)]-8-[v1]-8-|", views: ratingLbl, profileContainer)
-        containerView.addConstraintsWithFormat("H:|-8-[v0]-8-|", views: ratingLbl)
+        containerView.addConstraintsWithFormat("V:|-8-[v0(30)]-8-[v1]-8-|", views: superlativeLbl, profileContainer)
+        containerView.addConstraintsWithFormat("H:|-8-[v0]-8-|", views: superlativeLbl)
         
         addSubview(containerView)
         addConstraintsWithFormat("H:|-12-[v0]-12-|", views: containerView)
@@ -89,11 +89,11 @@ class RatingCell: BaseCollectionCell {
         })
     }
     
-    func configureCell(ratingObj: Rating) {
-        self.rating = ratingObj
-        ratingLbl.text = rating.ratingName
+    func configureCell(superlativeObj: Superlative) {
+        self.superlative = superlativeObj
+        superlativeLbl.text = superlative.superlativeName
         // Get user's
-        if let user = rating.userVotedFor {
+        if let user = superlative.userVotedFor {
             loadImage(imageUrlString: user.profileImageName)
             nameLbl.text = user.name
             nameLbl.textColor = GREEN_UICOLOR

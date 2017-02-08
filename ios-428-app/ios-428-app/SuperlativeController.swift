@@ -1,5 +1,5 @@
 //
-//  RatingsController.swift
+//  SuperlativeController.swift
 //  ios-428-app
 //
 //  Created by Leonard Loo on 12/30/16.
@@ -10,20 +10,20 @@ import Foundation
 import UIKit
 import Social
 
-class RatingsController: UIViewController, UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
+class SuperlativeController: UIViewController, UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
     
-    fileprivate let CELL_ID = "ratingCell"
+    fileprivate let CELL_ID = "superlativeCell"
     
-    open var ratings: [Rating]!
-    open var results: [Rating]!
+    open var superlatives: [Superlative]!
+    open var results: [Superlative]!
     open var classmates: [Profile]!
-    open var ratingType: RatingType!
+    open var superlativeType: SuperlativeType!
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        self.navigationItem.title = "Ratings"
+        self.navigationItem.title = "Superlatives"
         self.setupViews()
-        self.toggleViews(ratingType: ratingType)
+        self.toggleViews(superlativeType: superlativeType)
         self.loadData()
     }
     
@@ -58,27 +58,27 @@ class RatingsController: UIViewController, UICollectionViewDelegate, UICollectio
         collectionView.bounces = true
         collectionView.showsVerticalScrollIndicator = false
         collectionView.showsHorizontalScrollIndicator = false
-        collectionView.register(RatingCell.self, forCellWithReuseIdentifier: self.CELL_ID)
+        collectionView.register(SuperlativeCell.self, forCellWithReuseIdentifier: self.CELL_ID)
         return collectionView
     }()
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        if ratingType == RatingType.NOTRATED {
-            return self.ratings.count
+        if superlativeType == SuperlativeType.NOTRATED {
+            return self.superlatives.count
         } else {
             return self.results.count
         }
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: CELL_ID, for: indexPath) as! RatingCell
-        var rating: Rating!
-        if ratingType == RatingType.NOTRATED {
-            rating = self.ratings[indexPath.item]
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: CELL_ID, for: indexPath) as! SuperlativeCell
+        var superlative: Superlative!
+        if superlativeType == SuperlativeType.NOTRATED {
+            superlative = self.superlatives[indexPath.item]
         } else {
-            rating = self.results[indexPath.item]
+            superlative = self.results[indexPath.item]
         }
-        cell.configureCell(ratingObj: rating)
+        cell.configureCell(superlativeObj: superlative)
         return cell
     }
     
@@ -87,16 +87,16 @@ class RatingsController: UIViewController, UICollectionViewDelegate, UICollectio
     }
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        if ratingType == RatingType.SHARED {
+        if superlativeType == SuperlativeType.SHARED {
             // Does nothing on click
             return
         }
-        let rating = self.ratings[indexPath.item]
+        let superlative = self.superlatives[indexPath.item]
         let modalController = ModalVoteController()
         modalController.modalPresentationStyle = .overFullScreen
         modalController.modalTransitionStyle = .crossDissolve
-        modalController.ratingName = rating.ratingName
-        modalController.userVotedFor = rating.userVotedFor
+        modalController.superlativeName = superlative.superlativeName
+        modalController.userVotedFor = superlative.userVotedFor
         modalController.classmates = self.classmates
         self.present(modalController, animated: true, completion: nil)
     }
@@ -150,7 +150,7 @@ class RatingsController: UIViewController, UICollectionViewDelegate, UICollectio
         label.font = FONT_MEDIUM_SMALL
         label.textColor = UIColor.darkGray
         label.textAlignment = .center
-        label.text = "Share to unlock ratings!"
+        label.text = "Share to unlock superlatives!"
         return label
     }()
     
@@ -170,7 +170,7 @@ class RatingsController: UIViewController, UICollectionViewDelegate, UICollectio
                         // Nothing happen
                         log.info("Sharing got cancelled")
                     } else if result == SLComposeViewControllerResult.done {
-                        self.toggleViews(ratingType: RatingType.SHARED)
+                        self.toggleViews(superlativeType: SuperlativeType.SHARED)
                         log.info("Reveal results")
                     }
                 }
@@ -216,11 +216,11 @@ class RatingsController: UIViewController, UICollectionViewDelegate, UICollectio
         view.addSubview(shareContainer)
     }
     
-    // MARK: Submit and select ratings
+    // MARK: Submit and select superlatives
     
-    func checkToEnableSubmitRating() {
-        for rating in ratings {
-            if rating.userVotedFor == nil {
+    func checkToEnableSubmitSuperlative() {
+        for superlative in superlatives {
+            if superlative.userVotedFor == nil {
                 self.navigationItem.rightBarButtonItem?.isEnabled = false
                 return
             }
@@ -228,20 +228,20 @@ class RatingsController: UIViewController, UICollectionViewDelegate, UICollectio
         self.navigationItem.rightBarButtonItem?.isEnabled = true
     }
     
-    func selectRating(notif: Notification) {
-        if let userInfo = notif.userInfo, let ratingName = userInfo["ratingName"] as? String, let userVotedFor = userInfo["userVotedFor"] as? Profile {
-            for rating in self.ratings {
-                if rating.ratingName == ratingName {
-                    rating.userVotedFor = userVotedFor
+    func selectSuperlative(notif: Notification) {
+        if let userInfo = notif.userInfo, let superlativeName = userInfo["superlativeName"] as? String, let userVotedFor = userInfo["userVotedFor"] as? Profile {
+            for superlative in self.superlatives {
+                if superlative.superlativeName == superlativeName {
+                    superlative.userVotedFor = userVotedFor
                     self.collectionView.reloadData()
                 }
             }
         }
-        checkToEnableSubmitRating()
+        checkToEnableSubmitSuperlative()
     }
     
-    func submitRatings() {
-        self.toggleViews(ratingType: RatingType.RATED)
+    func submitSuperlatives() {
+        self.toggleViews(superlativeType: SuperlativeType.RATED)
     }
     
     // MARK: Views
@@ -253,13 +253,13 @@ class RatingsController: UIViewController, UICollectionViewDelegate, UICollectio
         self.setupShareViews()
     }
     
-    fileprivate func toggleViews(ratingType: RatingType) {
+    fileprivate func toggleViews(superlativeType: SuperlativeType) {
         
-        self.ratingType = ratingType
+        self.superlativeType = superlativeType
         
-        if ratingType == .RATED {
+        if superlativeType == .RATED {
             // Rated but not shared, hide collection view and show share
-            self.navigationItem.title = "Ratings"
+            self.navigationItem.title = "Superlatives"
             shareContainer.isHidden = false
             collectionView.isHidden = true
             self.view.backgroundColor = UIColor.white
@@ -273,12 +273,12 @@ class RatingsController: UIViewController, UICollectionViewDelegate, UICollectio
             self.view.backgroundColor = GREEN_UICOLOR
             self.extendedLayoutIncludesOpaqueBars = true
             
-            if ratingType == .NOTRATED {
+            if superlativeType == .NOTRATED {
                 // Allow user to rate
-                self.navigationItem.title = "Ratings"
-                self.navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Submit", style: .done, target: self, action: #selector(submitRatings))
-                NotificationCenter.default.addObserver(self, selector: #selector(selectRating), name: NOTIF_RATINGSELECTED, object: nil)
-                checkToEnableSubmitRating()
+                self.navigationItem.title = "Superlatives"
+                self.navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Submit", style: .done, target: self, action: #selector(submitSuperlatives))
+                NotificationCenter.default.addObserver(self, selector: #selector(selectSuperlative), name: NOTIF_RATINGSELECTED, object: nil)
+                checkToEnableSubmitSuperlative()
             } else {
                 // Show results
                 self.navigationItem.title = "Results"

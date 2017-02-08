@@ -1,5 +1,5 @@
 //
-//  Rating.swift
+//  Superlative.swift
 //  ios-428-app
 //
 //  Created by Leonard Loo on 12/30/16.
@@ -8,19 +8,19 @@
 
 import Foundation
 
-class Rating {
+class Superlative {
     
-    fileprivate var _ratingName: String
+    fileprivate var _superlativeName: String
     fileprivate var _userVotedFor: Profile?
     
-    init(ratingName: String, userVotedFor: Profile? = nil) {
-        _ratingName = ratingName
+    init(superlativeName: String, userVotedFor: Profile? = nil) {
+        _superlativeName = superlativeName
         _userVotedFor = userVotedFor // Can be empty
     }
     
-    var ratingName: String {
+    var superlativeName: String {
         get {
-            return _ratingName
+            return _superlativeName
         }
     }
     

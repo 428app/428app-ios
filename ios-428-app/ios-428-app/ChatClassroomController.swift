@@ -65,9 +65,9 @@ class ChatClassroomController: UIViewController, UIGestureRecognizerDelegate, UI
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         self.tabBarController?.tabBar.isHidden = true
-        // TODO: Check if it is time to rate to show rating alert
-        // Show rating alert when
-        //        showRatingAlert()
+        // TODO: Check if it is time to rate to show superlative alert
+        // Show superlative alert when
+        //        showSuperlativeAlert()
         self.registerObservers()
     }
 
@@ -337,7 +337,7 @@ class ChatClassroomController: UIViewController, UIGestureRecognizerDelegate, UI
     }
     
     func handleNavMore() {
-        // Bring up alert controller to view classmates, answers or ratings
+        // Bring up alert controller to view classmates, answers or superlatives
         let alertController = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
         alertController.view.tintColor = GREEN_UICOLOR
         let cancelAction = UIAlertAction(title: "Cancel", style: .cancel, handler: nil)
@@ -353,15 +353,15 @@ class ChatClassroomController: UIViewController, UIGestureRecognizerDelegate, UI
             controller.questions = self.classroom.questions
             self.navigationController?.pushViewController(controller, animated: true)
         }
-        let ratingsAction = UIAlertAction(title: "Ratings", style: .default) { (action) in
-            self.launchRatingsController()
+        let superlativesAction = UIAlertAction(title: "Superlatives", style: .default) { (action) in
+            self.launchSuperlativeController()
         }
-        // TODO: Disable this if memberHasRated is nil
         answersAction.isEnabled = self.classroom.questions.count > 1 // Only enable seeing answers if there is more than 1 answer (current answer)
-        ratingsAction.isEnabled = true
+        // TODO: Disable this if superlatives is nil
+        superlativesAction.isEnabled = classroom.superlatives.count > 0
         alertController.addAction(classmatesAction)
         alertController.addAction(answersAction)
-        alertController.addAction(ratingsAction)
+        alertController.addAction(superlativesAction)
         alertController.addAction(cancelAction)
         self.present(alertController, animated: true, completion: nil)
     }
@@ -406,24 +406,24 @@ class ChatClassroomController: UIViewController, UIGestureRecognizerDelegate, UI
         }
     }
     
-    // MARK: Rating alert
+    // MARK: Superlative alert
     
-    fileprivate func showRatingAlert() {
-        let alertController = RatingsAlertController()
+    fileprivate func showSuperlativeAlert() {
+        let alertController = SuperlativeAlertController()
         alertController.classroom = self.classroom
         alertController.modalPresentationStyle = .overFullScreen
         alertController.modalTransitionStyle = .crossDissolve
         self.present(alertController, animated: true, completion: nil)
     }
     
-    func launchRatingsController() {
-        // TODO: Read rating type from server then load
-        let controller = RatingsController()
+    func launchSuperlativeController() {
+        // TODO: Read superlative type from server then load
+        let controller = SuperlativeController()
         self.navigationItem.backBarButtonItem = UIBarButtonItem(title: " ", style: .plain, target: nil, action: nil)
         controller.results = self.classroom.results
-        controller.ratings = self.classroom.ratings
+        controller.superlatives = self.classroom.superlatives
         controller.classmates = self.classroom.members
-        controller.ratingType = self.classroom.hasRatingType
+        controller.superlativeType = self.classroom.hasSuperlativeType
         self.navigationController?.pushViewController(controller, animated: true)
     }
     
@@ -684,7 +684,7 @@ class ChatClassroomController: UIViewController, UIGestureRecognizerDelegate, UI
         NotificationCenter.default.addObserver(self, selector: #selector(handleKeyboardNotification), name: NSNotification.Name.UIKeyboardWillChangeFrame, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(expandCell), name: NOTIF_EXPANDCLASSROOMCHATCELL, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(openProfile), name: NOTIF_OPENPROFILE, object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(launchRatingsController), name: NOTIF_LAUNCHRATING, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(launchSuperlativeController), name: NOTIF_LAUNCHRATING, object: nil)
     }
     
     private func unregisterObservers() {
