@@ -358,7 +358,7 @@ class ChatClassroomController: UIViewController, UIGestureRecognizerDelegate, UI
         }
         answersAction.isEnabled = self.classroom.questions.count > 1 // Only enable seeing answers if there is more than 1 answer (current answer)
         // TODO: Disable this if superlatives is nil
-        superlativesAction.isEnabled = classroom.superlatives.count > 0
+        superlativesAction.isEnabled = classroom.hasSuperlatives
         alertController.addAction(classmatesAction)
         alertController.addAction(answersAction)
         alertController.addAction(superlativesAction)
@@ -419,11 +419,13 @@ class ChatClassroomController: UIViewController, UIGestureRecognizerDelegate, UI
     func launchSuperlativeController() {
         // TODO: Read superlative type from server then load
         let controller = SuperlativeController()
+        controller.classroom = self.classroom
         self.navigationItem.backBarButtonItem = UIBarButtonItem(title: " ", style: .plain, target: nil, action: nil)
-        controller.results = self.classroom.results
-        controller.superlatives = self.classroom.superlatives
-        controller.classmates = self.classroom.members
-        controller.superlativeType = self.classroom.hasSuperlativeType
+        // TODO: Potentially cache these two
+//        controller.results = self.classroom.results
+//        controller.superlatives = self.classroom.superlatives
+//        controller.classmates = self.classroom.members
+//        controller.superlativeType = self.classroom.superlativeType
         self.navigationController?.pushViewController(controller, animated: true)
     }
     
@@ -684,7 +686,7 @@ class ChatClassroomController: UIViewController, UIGestureRecognizerDelegate, UI
         NotificationCenter.default.addObserver(self, selector: #selector(handleKeyboardNotification), name: NSNotification.Name.UIKeyboardWillChangeFrame, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(expandCell), name: NOTIF_EXPANDCLASSROOMCHATCELL, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(openProfile), name: NOTIF_OPENPROFILE, object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(launchSuperlativeController), name: NOTIF_LAUNCHRATING, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(launchSuperlativeController), name: NOTIF_LAUNCHVOTING, object: nil)
     }
     
     private func unregisterObservers() {
@@ -692,7 +694,7 @@ class ChatClassroomController: UIViewController, UIGestureRecognizerDelegate, UI
         NotificationCenter.default.removeObserver(self, name: NSNotification.Name.UIKeyboardWillChangeFrame, object: nil)
         NotificationCenter.default.removeObserver(self, name: NOTIF_EXPANDCLASSROOMCHATCELL, object: nil)
         NotificationCenter.default.removeObserver(self, name: NOTIF_OPENPROFILE, object: nil)
-        NotificationCenter.default.removeObserver(self, name: NOTIF_LAUNCHRATING, object: nil)
+        NotificationCenter.default.removeObserver(self, name: NOTIF_LAUNCHVOTING, object: nil)
     }
     
     func openProfile(notif: Notification) {

@@ -53,6 +53,10 @@ class ModalVoteController: UIViewController, UITableViewDelegate, UITableViewDat
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = UIColor.black.withAlphaComponent(0.85)
+        // Remove self from classmates 
+        if let myUid = getStoredUid() {
+            self.classmates = self.classmates.filter(){$0.uid != myUid}
+        }
         self.setupViews()
     }
     
@@ -119,7 +123,7 @@ class ModalVoteController: UIViewController, UITableViewDelegate, UITableViewDat
         }
         tableView.selectRow(at: indexPath, animated: false, scrollPosition: .none)
         
-        NotificationCenter.default.post(name: NOTIF_RATINGSELECTED, object: nil, userInfo: ["superlativeName": self.superlativeName, "userVotedFor": classmate])
+        NotificationCenter.default.post(name: NOTIF_VOTESELECTED, object: nil, userInfo: ["superlativeName": self.superlativeName, "userVotedFor": classmate])
         self.dismissScreen()
     }
     

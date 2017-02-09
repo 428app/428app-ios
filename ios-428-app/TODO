@@ -3,10 +3,23 @@ Classrooms Firebase integration
 **Multi-user chats in classrooms
 
 - Superlatives logic
++ Submit votes firebase code, which updates memberHasVoted, and superlatives X
++ Share firebase, which updates memberHasVoted X
++ Firebase observe code on SuperlativesController that: Figures out running results (not final vs final), page state based on memberHasVoted, and also voted for list (shift from Classroom observe to Superlatives observe)
++ Discuss with Yihang how to populate "Did you know" into Share
+
++ After submitting votes, dim the screen and disable submit button
+
++ Share screen scrolling down
++ Upon sharing, screen shifts and does not look nice
+
 - firstReplied
 
-**Private messages
+** Private messages
 
+* Video answers? Image answers?
+* Make "Type a Message" more obvious looking with a green background?
+* GIFs in text?
 
 
 // DEPRECATED

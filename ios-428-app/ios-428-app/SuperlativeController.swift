@@ -9,26 +9,23 @@
 import Foundation
 import UIKit
 import Social
+import Firebase
 
 class SuperlativeController: UIViewController, UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
     
     fileprivate let CELL_ID = "superlativeCell"
     
-    open var superlatives: [Superlative]!
-    open var results: [Superlative]!
-    open var classmates: [Profile]!
-    open var superlativeType: SuperlativeType!
+    open var classroom: Classroom!
+    fileprivate var superlativeFirebase: (FIRDatabaseReference, FIRDatabaseHandle)!
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        self.navigationItem.title = "Superlatives"
         self.setupViews()
-        self.toggleViews(superlativeType: superlativeType)
-        self.loadData()
+        self.toggleViews(superlativeType: classroom.superlativeType)
     }
     
     deinit {
-        NotificationCenter.default.removeObserver(NOTIF_RATINGSELECTED)
+        NotificationCenter.default.removeObserver(NOTIF_VOTESELECTED)
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -36,6 +33,7 @@ class SuperlativeController: UIViewController, UICollectionViewDelegate, UIColle
         self.navigationController?.navigationBar.setBackgroundImage(UIImage.init(color: GREEN_UICOLOR), for: .default)
         self.navigationController?.navigationBar.shadowImage = UIImage()
         self.tabBarController?.tabBar.isHidden = true
+        self.loadData()
     }
     
     override func viewWillDisappear(_ animated: Bool) {
@@ -43,6 +41,9 @@ class SuperlativeController: UIViewController, UICollectionViewDelegate, UIColle
         self.navigationController?.navigationBar.setBackgroundImage(nil, for: .default)
         self.navigationController?.navigationBar.shadowImage = nil
         self.tabBarController?.tabBar.isHidden = false
+        if superlativeFirebase != nil {
+            self.superlativeFirebase.0.removeObserver(withHandle: superlativeFirebase.1)
+        }
     }
     
     // MARK: Collection view
@@ -63,20 +64,20 @@ class SuperlativeController: UIViewController, UICollectionViewDelegate, UIColle
     }()
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        if superlativeType == SuperlativeType.NOTRATED {
-            return self.superlatives.count
+        if self.classroom.superlativeType == SuperlativeType.NOTRATED {
+            return self.classroom.superlatives.count
         } else {
-            return self.results.count
+            return self.classroom.results.count
         }
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: CELL_ID, for: indexPath) as! SuperlativeCell
         var superlative: Superlative!
-        if superlativeType == SuperlativeType.NOTRATED {
-            superlative = self.superlatives[indexPath.item]
+        if self.classroom.superlativeType == SuperlativeType.NOTRATED {
+            superlative = self.classroom.superlatives[indexPath.item]
         } else {
-            superlative = self.results[indexPath.item]
+            superlative = self.classroom.results[indexPath.item]
         }
         cell.configureCell(superlativeObj: superlative)
         return cell
@@ -87,17 +88,17 @@ class SuperlativeController: UIViewController, UICollectionViewDelegate, UIColle
     }
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        if superlativeType == SuperlativeType.SHARED {
+        if self.classroom.superlativeType == SuperlativeType.SHARED {
             // Does nothing on click
             return
         }
-        let superlative = self.superlatives[indexPath.item]
+        let superlative = self.classroom.superlatives[indexPath.item]
         let modalController = ModalVoteController()
         modalController.modalPresentationStyle = .overFullScreen
         modalController.modalTransitionStyle = .crossDissolve
         modalController.superlativeName = superlative.superlativeName
         modalController.userVotedFor = superlative.userVotedFor
-        modalController.classmates = self.classmates
+        modalController.classmates = self.classroom.members
         self.present(modalController, animated: true, completion: nil)
     }
     
@@ -161,17 +162,19 @@ class SuperlativeController: UIViewController, UICollectionViewDelegate, UIColle
                 socialController.add(#imageLiteral(resourceName: "logo"))
                 let url = URL(string: "http://www.428pm.com")
                 socialController.add(url)
-                self.present(socialController, animated: true, completion: {
-                    log.info("Completed")
-                    
-                })
+                self.present(socialController, animated: true, completion: {})
                 socialController.completionHandler = { (result:SLComposeViewControllerResult) in
                     if result == SLComposeViewControllerResult.cancelled {
                         // Nothing happen
                         log.info("Sharing got cancelled")
                     } else if result == SLComposeViewControllerResult.done {
-                        self.toggleViews(superlativeType: SuperlativeType.SHARED)
-                        log.info("Reveal results")
+                        DataService.ds.shareSuperlative(classroom: self.classroom, completed: { (isSuccess) in
+                            if isSuccess {
+                                self.toggleViews(superlativeType: SuperlativeType.SHARED)
+                            } else {
+                                showErrorAlert(vc: self, title: "Error", message: "There was a problem sharing.\nPlease try again.")
+                            }
+                        })
                     }
                 }
             }
@@ -219,7 +222,7 @@ class SuperlativeController: UIViewController, UICollectionViewDelegate, UIColle
     // MARK: Submit and select superlatives
     
     func checkToEnableSubmitSuperlative() {
-        for superlative in superlatives {
+        for superlative in self.classroom.superlatives {
             if superlative.userVotedFor == nil {
                 self.navigationItem.rightBarButtonItem?.isEnabled = false
                 return
@@ -230,7 +233,7 @@ class SuperlativeController: UIViewController, UICollectionViewDelegate, UIColle
     
     func selectSuperlative(notif: Notification) {
         if let userInfo = notif.userInfo, let superlativeName = userInfo["superlativeName"] as? String, let userVotedFor = userInfo["userVotedFor"] as? Profile {
-            for superlative in self.superlatives {
+            for superlative in self.classroom.superlatives {
                 if superlative.superlativeName == superlativeName {
                     superlative.userVotedFor = userVotedFor
                     self.collectionView.reloadData()
@@ -240,8 +243,15 @@ class SuperlativeController: UIViewController, UICollectionViewDelegate, UIColle
         checkToEnableSubmitSuperlative()
     }
     
-    func submitSuperlatives() {
-        self.toggleViews(superlativeType: SuperlativeType.RATED)
+    func submitSuperlatives() { // Used in NOTRATED stage, and on success transfer to RATED stage
+        // TODO: Submit superlative to the server here
+        DataService.ds.submitSuperlativeVote(classroom: self.classroom) { (isSuccess) in
+            if isSuccess {
+                self.toggleViews(superlativeType: SuperlativeType.RATED)
+            } else {
+                showErrorAlert(vc: self, title: "Error", message: "There was a problem submitting your votes.\nPlease try again.")
+            }
+        }
     }
     
     // MARK: Views
@@ -255,7 +265,7 @@ class SuperlativeController: UIViewController, UICollectionViewDelegate, UIColle
     
     fileprivate func toggleViews(superlativeType: SuperlativeType) {
         
-        self.superlativeType = superlativeType
+        self.classroom.superlativeType = superlativeType
         
         if superlativeType == .RATED {
             // Rated but not shared, hide collection view and show share
@@ -264,7 +274,7 @@ class SuperlativeController: UIViewController, UICollectionViewDelegate, UIColle
             collectionView.isHidden = true
             self.view.backgroundColor = UIColor.white
             self.navigationItem.rightBarButtonItem = nil
-            NotificationCenter.default.removeObserver(self, name: NOTIF_RATINGSELECTED, object: nil)
+            NotificationCenter.default.removeObserver(self, name: NOTIF_VOTESELECTED, object: nil)
             
         } else {
             // Shows collection view
@@ -277,13 +287,12 @@ class SuperlativeController: UIViewController, UICollectionViewDelegate, UIColle
                 // Allow user to rate
                 self.navigationItem.title = "Superlatives"
                 self.navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Submit", style: .done, target: self, action: #selector(submitSuperlatives))
-                NotificationCenter.default.addObserver(self, selector: #selector(selectSuperlative), name: NOTIF_RATINGSELECTED, object: nil)
+                NotificationCenter.default.addObserver(self, selector: #selector(selectSuperlative), name: NOTIF_VOTESELECTED, object: nil)
                 checkToEnableSubmitSuperlative()
             } else {
                 // Show results
-                self.navigationItem.title = "Results"
                 self.navigationItem.rightBarButtonItem = nil
-                NotificationCenter.default.removeObserver(self, name: NOTIF_RATINGSELECTED, object: nil)
+                NotificationCenter.default.removeObserver(self, name: NOTIF_VOTESELECTED, object: nil)
             }
             
         }
@@ -291,6 +300,17 @@ class SuperlativeController: UIViewController, UICollectionViewDelegate, UIColle
     // MARK: Firebase
     
     fileprivate func loadData() {
+        self.navigationItem.rightBarButtonItem?.isEnabled = false
+        superlativeFirebase = DataService.ds.observeSuperlatives(classroom: classroom) { (isSuccess, updatedClassroom) in
+            if isSuccess {
+                self.classroom = updatedClassroom
+                self.navigationItem.title = self.classroom.isVotingOngoing ? "Running Results" : "Final Results"
+                self.collectionView.reloadData()
+            } else {
+                log.error("[Error] Failed to update superlatives for classroom id: \(self.classroom.cid)")
+            }
+        }
+        
         // TODO: Randomly load a do you know?
         self.didYouKnowText.text = "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum."
         self.didYouKnowText.flashScrollIndicators()

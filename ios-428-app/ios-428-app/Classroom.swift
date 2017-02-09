@@ -16,16 +16,21 @@ class Classroom {
     fileprivate var _members: [Profile] // Used to display members and their profiles
     fileprivate var _questions: [Question] // Get question number from this
     fileprivate var _classroomMessages: [ClassroomMessage]
+    
+    /** Superlatives **/
+    fileprivate var _hasSuperlatives: Bool // If true, enabled superlatives button from Classroom Chat
+    fileprivate var _isVotingOngoing: Bool // If true, there are only partial results and not everyone has voted yet
     fileprivate var _superlatives: [Superlative] // Your superlatives of your classmates
     fileprivate var _results: [Superlative] // The overall superlatives of all classmates downloaded from server
-    fileprivate var _hasSuperlativeType: SuperlativeType
-    fileprivate var _hasUpdates: Bool
+    fileprivate var _superlativeType: SuperlativeType
+    
+    fileprivate var _hasUpdates: Bool // If true, there is a new message/question being posted that the user has not seen yet
     
     // Computed variables from questions array
     var _questionNum: Int
     var _imageName: String
     
-    init(cid: String, title: String, timeCreated: Double, members: [Profile], questions: [Question], classroomMessages: [ClassroomMessage] = [], superlatives: [Superlative] = [], results: [Superlative] = [], hasSuperlativeType: SuperlativeType = SuperlativeType.NOTRATED, hasUpdates: Bool = false) {
+    init(cid: String, title: String, timeCreated: Double, members: [Profile], questions: [Question], classroomMessages: [ClassroomMessage] = [], superlatives: [Superlative] = [], results: [Superlative] = [], superlativeType: SuperlativeType = SuperlativeType.NOTRATED, hasUpdates: Bool = false, hasSuperlatives: Bool = false, isVotingOngoing: Bool = false) {
         _cid = cid
         _title = title
         _timeCreated = timeCreated
@@ -34,8 +39,10 @@ class Classroom {
         _classroomMessages = classroomMessages
         _superlatives = superlatives
         _results = results
-        _hasSuperlativeType = hasSuperlativeType
+        _superlativeType = superlativeType
         _hasUpdates = hasUpdates
+        _hasSuperlatives = hasSuperlatives
+        _isVotingOngoing = isVotingOngoing
         // Compute question num and imageName to display from questions
         _questionNum = questions.count
         _imageName = _questions.count == 0 ? "" : _questions[0].imageName // Fail silently if no questions provided in init
@@ -85,9 +92,21 @@ class Classroom {
         _classroomMessages = []
     }
     
+    var hasSuperlatives: Bool {
+        get {
+            return _hasSuperlatives
+        }
+        set(hasSup) {
+            _hasSuperlatives = hasSup
+        }
+    }
+    
     var superlatives: [Superlative] {
         get {
             return _superlatives
+        }
+        set(sups) {
+            _superlatives = sups
         }
     }
     
@@ -95,11 +114,26 @@ class Classroom {
         get {
             return _results
         }
+        set(res) {
+            _results = res
+        }
     }
     
-    var hasSuperlativeType: SuperlativeType {
+    var superlativeType: SuperlativeType {
         get {
-            return _hasSuperlativeType
+            return _superlativeType
+        }
+        set(supType) {
+            _superlativeType = supType
+        }
+    }
+    
+    var isVotingOngoing: Bool {
+        get {
+            return _isVotingOngoing
+        }
+        set(ongo) {
+            _isVotingOngoing = ongo
         }
     }
     

@@ -55,7 +55,7 @@ class SuperlativeAlertController: UIViewController {
     fileprivate lazy var rateBtn: UIButton = {
         let btn = self.btnTemplate()
         btn.setTitle("Rate now", for: .normal)
-        btn.addTarget(self, action: #selector(self.rateNow), for: .touchUpInside)
+        btn.addTarget(self, action: #selector(self.voteNow), for: .touchUpInside)
         return btn
     }()
     
@@ -70,9 +70,9 @@ class SuperlativeAlertController: UIViewController {
         self.dismiss(animated: true, completion: nil)
     }
     
-    func rateNow() {
+    func voteNow() {
         self.dismiss(animated: true, completion: {
-            NotificationCenter.default.post(name: NOTIF_LAUNCHRATING, object: nil)
+            NotificationCenter.default.post(name: NOTIF_LAUNCHVOTING, object: nil)
         })
     }
     

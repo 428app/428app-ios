@@ -99,11 +99,11 @@ extension DataService {
                 
                 // Download profiles, and find this user's superlative type
                 var members: [Profile] = [Profile]()
-                var hasSuperlativeType: SuperlativeType = SuperlativeType.NOTRATED
+                var superlativeType: SuperlativeType = SuperlativeType.NOTRATED
                 for (uid_, superlativeType_) in classmateAndSuperlativeType {
                     // Find superlative type of this user
                     if uid_ == uid {
-                        hasSuperlativeType = SuperlativeType(rawValue: superlativeType_)!
+                        superlativeType = SuperlativeType(rawValue: superlativeType_)!
                     }
                     // Download all classmates' profiles
                     self.getUserFields(uid: uid_, completed: { (isSuccess, userProfile) in
@@ -117,27 +117,8 @@ extension DataService {
                         members.append(userProfile!)
                         if members.count == classmateAndSuperlativeType.count { // All classmates uid read
                             
-                            // Form superlatives if there are
-                            var superlatives = [Superlative]();
-                            if let superlativesDict = classDict["superlatives"] as? [String: Any] { // TODO: See if these nested Strings work
-                                // For each superlative name, find this uid, and grab the uid voted for
-                                for (superlativeName, votedDictUnwrapped) in superlativesDict {
-                                    if let votedDict = votedDictUnwrapped as? [String: String] {
-                                        if let foundUid = votedDict[uid] {
-                                            if foundUid == "" {
-                                                superlatives.append(Superlative(superlativeName: superlativeName))
-                                            } else {
-                                                let foundMember = members.filter(){$0.uid == foundUid}
-                                                if foundMember.count != 1 {
-                                                    superlatives.append(Superlative(superlativeName: superlativeName))
-                                                } else {
-                                                    superlatives.append(Superlative(superlativeName: superlativeName, userVotedFor: foundMember[0]))
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
-                            }
+                            // Check if there are superlatives available yet
+                            let hasSuperlatives = classDict["superlatives"] != nil
                             
                             // Download questions and answers
                             var questions: [Question] = [Question]()
@@ -152,7 +133,7 @@ extension DataService {
                                     questions.append(question!)
                                     if questions.count == questionsAndTimes.count { // All questions qid read
                                         // Form classroom messages in a separate call
-                                        let classroom = Classroom(cid: cid, title: classTitle, timeCreated: timeCreated, members: members, questions: questions, superlatives: superlatives, hasSuperlativeType: hasSuperlativeType, hasUpdates: hasUpdates)
+                                        let classroom = Classroom(cid: cid, title: classTitle, timeCreated: timeCreated, members: members, questions: questions, superlativeType: superlativeType, hasUpdates: hasUpdates, hasSuperlatives: hasSuperlatives)
                                         completed(true, classroom) // Finally!
                                     }
                                 })
@@ -328,5 +309,124 @@ extension DataService {
     }
     
     // MARK: Superlatives
+    
+    func submitSuperlativeVote(classroom: Classroom, completed: @escaping (_ isSuccess: Bool) -> ()) {
+        guard let uid = getStoredUid() else {
+            completed(false)
+            return
+        }
+        
+        // Atomic update on memberHasVoted and superlatives
+        var classUpdates: [String: Any] = ["memberHasVoted/\(uid)": 1]
+        for sup in classroom.superlatives {
+            if let uidVotedFor = sup.userVotedFor?.uid {
+                classUpdates["superlatives/\(sup.superlativeName)/\(uid)"] = uidVotedFor
+            }
+        }
+        
+        REF_CLASSROOMS.child(classroom.cid).updateChildValues(classUpdates) { (err, ref) in
+            completed(err == nil)
+        }
+    }
+    
+    func shareSuperlative(classroom: Classroom, completed: @escaping (_ isSuccess: Bool) -> ()) {
+        guard let uid = getStoredUid() else {
+            completed(false)
+            return
+        }
+        
+        // When a user shares a superlative, simply update the flag for memberHasVoted
+        let classUpdates: [String: Any] = ["memberHasVoted/\(uid)": 2]
+        REF_CLASSROOMS.child(classroom.cid).updateChildValues(classUpdates) { (err, ref) in
+            completed(err == nil)
+        }
+    }
+    
+    func observeSuperlatives(classroom: Classroom, completed: @escaping (_ isSuccess: Bool, _ classroom: Classroom?) -> ()) -> (FIRDatabaseReference, FIRDatabaseHandle) {
+        let uid = getStoredUid() == nil ? "" : getStoredUid()!
+        let cid = classroom.cid
+        let ref: FIRDatabaseReference = REF_CLASSROOMS.child("\(cid)/superlatives")
+        ref.keepSynced(true)
+        
+        let handle = ref.observe(.value, with: { snapshot in
+            if !snapshot.exists() {
+                classroom.hasSuperlatives = false
+                completed(true, classroom)
+                return
+            }
+            
+            guard let supDict = snapshot.value as? [String: Any] else {
+                classroom.hasSuperlatives = false
+                completed(true, classroom)
+                return
+            }
+            
+            var superlatives = [Superlative]()
+            var results = [Superlative]()
+            let members = classroom.members
+            
+            // Used to notify the user if voting is still ongoing or not.
+            // If there is a single user who has not voted for a single superlative, this will be flipped to true.
+            var isVotingOngoing = false
+            
+            for (supName, uidVotes_) in supDict {
+                guard let uidVotes = uidVotes_ as? [String: String] else {
+                    continue
+                }
+                
+                // Update results (the most number of votes for a certain person)
+                var voteResults = [String: Int]()
+                for (_, uidVotedFor) in uidVotes {
+                    if uidVotedFor == "" { // User has not voted yet
+                        isVotingOngoing = true
+                        continue
+                    }
+                    var currentVoteCount = voteResults[uidVotedFor]
+                    if currentVoteCount == nil || currentVoteCount == 0 {
+                        currentVoteCount = 1
+                    } else {
+                        currentVoteCount! += 1
+                    }
+                    voteResults[uidVotedFor] = currentVoteCount!
+                }
+                
+                // Find uid with max votes
+                var maxVoteCount = 0
+                var maxVotedUid = ""
+                for (uidVotedFor, voteCount) in voteResults {
+                    if voteCount > maxVoteCount {
+                        // Note: There could potentially be multiple users with the same vote, but we just choose one of them
+                        maxVoteCount = voteCount
+                        maxVotedUid = uidVotedFor
+                    }
+                }
+                // Get the user with this uid
+                var maxVotedMember = members.filter(){$0.uid == maxVotedUid}
+                if maxVotedMember.count == 1 {
+                    results.append(Superlative(superlativeName: supName, userVotedFor: maxVotedMember[0]))
+                }
+                
+                // Update superlatives (what this user voted for)
+                let uidVotedFor = uidVotes[uid]
+                if uidVotedFor == nil || uidVotedFor == "" {
+                    superlatives.append(Superlative(superlativeName: supName))
+                } else {
+                    let member = members.filter(){$0.uid == uidVotedFor!}
+                    if member.count != 1 {
+                        superlatives.append(Superlative(superlativeName: supName))
+                    } else {
+                        superlatives.append(Superlative(superlativeName: supName, userVotedFor: member[0]))
+                    }
+                }
+            }
+            
+            classroom.superlatives = superlatives
+            classroom.results = results
+            classroom.isVotingOngoing = isVotingOngoing
+
+            completed(true, classroom)
+        })
+        return (ref, handle)
+    }
 
 }
