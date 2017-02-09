@@ -30,6 +30,7 @@ class ClassmatesController: UICollectionViewController, UICollectionViewDelegate
         self.navigationController?.navigationBar.setBackgroundImage(UIImage.init(color: GREEN_UICOLOR), for: .default)
         self.navigationController?.navigationBar.shadowImage = UIImage()
         self.tabBarController?.tabBar.isHidden = true
+        NotificationCenter.default.addObserver(self, selector: #selector(sendMessageFromProfile), name: NOTIF_SENDMESSAGE, object: nil)
     }
     
     override func viewWillDisappear(_ animated: Bool) {
@@ -37,6 +38,15 @@ class ClassmatesController: UICollectionViewController, UICollectionViewDelegate
         self.navigationController?.navigationBar.setBackgroundImage(nil, for: .default)
         self.navigationController?.navigationBar.shadowImage = nil
         self.tabBarController?.tabBar.isHidden = false
+        NotificationCenter.default.removeObserver(self, name: NOTIF_SENDMESSAGE, object: nil)
+    }
+    
+    func sendMessageFromProfile(notif: Notification) {
+        if let userInfo = notif.userInfo as? [String: Inbox], let inbox = userInfo["inbox"] {
+            // Switch to Inbox tab, and let the rest of the transition happen in InboxController, based on the side effect inboxToOpen
+            inboxToOpen = inbox // This must come before setting the tab selected index, or everything will screw up
+            self.tabBarController?.selectedIndex = 2
+        }
     }
     
     fileprivate func setupViews() {

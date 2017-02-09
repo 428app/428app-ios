@@ -29,8 +29,26 @@ extension DataService {
     
     // MARK: Inbox
     
-    func getInbox(completed: @escaping (_ isSuccess: Bool, _ inboxs: [Inbox]) -> ()) {
-        
+    // Used to get inbox from a user's ProfileController to link to chat
+    func getInbox(profile2: Profile, completed: @escaping (_ isSuccess: Bool, _ inbox: Inbox) -> ()) {
+        let uid = getStoredUid() == nil ? "" : getStoredUid()!
+        let uid2 = profile2.uid
+        let inboxId = getInboxId(uid1: uid, uid2: uid2)
+        REF_INBOX.child(inboxId).observeSingleEvent(of: .value, with: { snapshot in
+            let inbox = Inbox(uid: uid2, name: profile2.name, profileImageName: profile2.profileImageName, discipline: profile2.discipline, hasNewMessages: false)
+            guard let inboxDict = snapshot.value as? [String: Any] else {
+                // Inbox does not exist with this user yet, new message!
+                completed(true, inbox)
+                return
+            }
+            // Check if there are new messages for this user
+            var hasNewMessages = false
+            if let hasNewMessages_ = inboxDict["hasNew:\(uid)"] as? Bool {
+                hasNewMessages = hasNewMessages_
+            }
+            inbox.hasNewMessages = hasNewMessages
+            completed(true, inbox)
+        })
     }
     
     // Observes the names, photos and disciplines, of all your private chats used in InboxController

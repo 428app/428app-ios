@@ -8,6 +8,11 @@ Classrooms Firebase integration
 - Chat screen
 - InboxController
 
+** Push notifications
+
++ Launching the app brings up the right screen via side effect as Notifications do not work yet
+
+
 **Multi-user chats in classrooms
 
 + Superlatives Did you knows

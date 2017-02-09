@@ -151,14 +151,16 @@ class ProfileController: UIViewController, UIGestureRecognizerDelegate, UIScroll
     }()
     
     func messageUser() {
-        // TODO: Transition to send a message
-        
-        // Fetch this users messages from server
-        
-        
-//        Inbox(uid: <#T##String#>, name: <#T##String#>, profileImageName: <#T##String#>, discipline: <#T##String#>, messages: <#T##[InboxMessage]#>, hasNewMessages: <#T##Bool#>)
-        
-        log.info("Transition to message: \(self.profile.name)")
+        // Fetch this user's inbox from server
+        DataService.ds.getInbox(profile2: profile) { (isSuccess, inbox) in
+            // NOTE: The steps to get to the chat page are a bit complicated but essentially this happens:
+            // 1) Post notification to the controller that called this modal
+            // 2) That controller switches the tab to Inbox and sets the global side effect inboxToOpen
+            // 3) InboxController reads inboxToOpen and opens the Inbox, then clears the side effect inboxToOpen
+            self.dismiss(animated: true, completion: {
+                NotificationCenter.default.post(name: NOTIF_SENDMESSAGE, object: nil, userInfo: ["inbox": inbox])
+            })
+        }
     }
     
     // MARK: Views 2 - Horizontal collection views of badge and classroom icons

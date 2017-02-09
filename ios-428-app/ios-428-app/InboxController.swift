@@ -25,13 +25,29 @@ class InboxController: UICollectionViewController, UICollectionViewDelegateFlowL
         self.extendedLayoutIncludesOpaqueBars = true
         self.setupViews()
         navigationItem.title = "Inbox"
+        
+        
+        
     }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         tabBarController?.tabBar.isHidden = false
+        
+        // Check if there is an inboxToOpen from View Profile, if there is, open inbox
+        if let inbox = inboxToOpen {
+            inboxToOpen = nil
+            let controller = ChatInboxController()
+            controller.inbox = inbox
+            self.navigationItem.backBarButtonItem = UIBarButtonItem(title: " ", style: .plain, target: nil, action: nil)
+            self.navigationController?.pushViewController(controller, animated: false)
+        }
+
     }
     
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+    }
 
     deinit {
         for (ref, handle) in recentMessageRefsAndHandles {

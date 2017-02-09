@@ -69,6 +69,7 @@ class ChatInboxController: UIViewController, UICollectionViewDelegateFlowLayout,
             self.queryAndHandle.0.removeAllObservers()
         }
         self.unregisterObservers()
+        self.tabBarController?.tabBar.isHidden = false
     }
     
     // MARK: Firebase

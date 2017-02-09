@@ -687,6 +687,7 @@ class ChatClassroomController: UIViewController, UIGestureRecognizerDelegate, UI
         NotificationCenter.default.addObserver(self, selector: #selector(expandCell), name: NOTIF_EXPANDCLASSROOMCHATCELL, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(openProfile), name: NOTIF_OPENPROFILE, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(launchSuperlativeController), name: NOTIF_LAUNCHVOTING, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(sendMessageFromProfile), name: NOTIF_SENDMESSAGE, object: nil)
     }
     
     private func unregisterObservers() {
@@ -695,6 +696,15 @@ class ChatClassroomController: UIViewController, UIGestureRecognizerDelegate, UI
         NotificationCenter.default.removeObserver(self, name: NOTIF_EXPANDCLASSROOMCHATCELL, object: nil)
         NotificationCenter.default.removeObserver(self, name: NOTIF_OPENPROFILE, object: nil)
         NotificationCenter.default.removeObserver(self, name: NOTIF_LAUNCHVOTING, object: nil)
+        NotificationCenter.default.removeObserver(self, name: NOTIF_SENDMESSAGE, object: nil)
+    }
+    
+    func sendMessageFromProfile(notif: Notification) {
+        if let userInfo = notif.userInfo as? [String: Inbox], let inbox = userInfo["inbox"] {
+            // Switch to Inbox tab, and let the rest of the transition happen in InboxController, based on the side effect inboxToOpen
+            inboxToOpen = inbox // This must come before setting the tab selected index, or everything will screw up
+            self.tabBarController?.selectedIndex = 2
+        }
     }
     
     func openProfile(notif: Notification) {

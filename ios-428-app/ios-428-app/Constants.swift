@@ -20,7 +20,7 @@ let NOTIF_OPENPROFILE = NSNotification.Name.init(rawValue: "openProfile")
 let NOTIF_MYPROFILEDOWNLOADED = NSNotification.Name.init(rawValue: "myProfileDownloaded")
 let NOTIF_MYPROFILEPICDOWNLOADED = NSNotification.Name.init(rawValue: "myProfilePicDownloaded")
 let NOTIF_PROFILEICONTAPPED = NSNotification.Name.init(rawValue: "profileIconTapped")
-
+let NOTIF_SENDMESSAGE = NSNotification.Name.init(rawValue: "sendMessage")
 
 // Colors
 let GRAY_UICOLOR: UIColor = UIColor(red: 0.95, green: 0.95, blue: 0.95, alpha: 1)

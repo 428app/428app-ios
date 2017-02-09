@@ -8,7 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		4000C37A1DD81227009C10E5 /* Download.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4000C3791DD81227009C10E5 /* Download.swift */; };
-		4020CE151DBB569000461181 /* Switches.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4020CE141DBB569000461181 /* Switches.swift */; };
+		4020CE151DBB569000461181 /* Variables.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4020CE141DBB569000461181 /* Variables.swift */; };
 		4020CE171DBCA1E900461181 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 4020CE161DBCA1E900461181 /* GoogleService-Info.plist */; };
 		4020CE1E1DBCA84C00461181 /* Bolts.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4020CE1A1DBCA84C00461181 /* Bolts.framework */; };
 		4020CE1F1DBCA84C00461181 /* FBSDKCoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4020CE1B1DBCA84C00461181 /* FBSDKCoreKit.framework */; };
@@ -32,7 +32,6 @@
 		4064A1B81DAC381300071383 /* InboxController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4064A1B71DAC381300071383 /* InboxController.swift */; };
 		4064A1C01DAC381300071383 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 4064A1BF1DAC381300071383 /* Assets.xcassets */; };
 		4064A1C31DAC381300071383 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 4064A1C11DAC381300071383 /* LaunchScreen.storyboard */; };
-		4064A1CB1DAC495D00071383 /* DummyDataService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4064A1CA1DAC495D00071383 /* DummyDataService.swift */; };
 		4064A1E41DAC590900071383 /* ChatInboxController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4064A1E31DAC590900071383 /* ChatInboxController.swift */; };
 		4064A1E61DAC7DA600071383 /* CustomTabBarController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4064A1E51DAC7DA600071383 /* CustomTabBarController.swift */; };
 		4064A1EB1DAC80F100071383 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4064A1EA1DAC80F100071383 /* Constants.swift */; };
@@ -56,7 +55,6 @@
 		4064A21A1DACC20E00071383 /* InboxCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4064A2191DACC20E00071383 /* InboxCell.swift */; };
 		4064A21F1DAD72DF00071383 /* Functions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4064A21E1DAD72DF00071383 /* Functions.swift */; };
 		4064A2211DADE67E00071383 /* ChatHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4064A2201DADE67E00071383 /* ChatHeaderView.swift */; };
-		4064A2271DB13FBD00071383 /* Debug.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4064A2261DB13FBD00071383 /* Debug.swift */; };
 		4064A2291DB2B0B500071383 /* InboxMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4064A2281DB2B0B500071383 /* InboxMessage.swift */; };
 		4064A22B1DB2B27F00071383 /* Inbox.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4064A22A1DB2B27F00071383 /* Inbox.swift */; };
 		4064A2521DB346A800071383 /* Profile.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4064A2511DB346A800071383 /* Profile.swift */; };
@@ -107,7 +105,7 @@
 		0D2BDEFFA9091FABC468335E /* Pods-ios-428-app.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ios-428-app.release.xcconfig"; path = "Pods/Target Support Files/Pods-ios-428-app/Pods-ios-428-app.release.xcconfig"; sourceTree = "<group>"; };
 		1B0A78A64649B55915C0C572 /* Pods_ios_428_app.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_ios_428_app.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		4000C3791DD81227009C10E5 /* Download.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Download.swift; sourceTree = "<group>"; };
-		4020CE141DBB569000461181 /* Switches.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Switches.swift; sourceTree = "<group>"; };
+		4020CE141DBB569000461181 /* Variables.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Variables.swift; sourceTree = "<group>"; };
 		4020CE161DBCA1E900461181 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		4020CE1A1DBCA84C00461181 /* Bolts.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Bolts.framework; sourceTree = "<group>"; };
 		4020CE1B1DBCA84C00461181 /* FBSDKCoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = FBSDKCoreKit.framework; sourceTree = "<group>"; };
@@ -134,7 +132,6 @@
 		4064A1BF1DAC381300071383 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		4064A1C21DAC381300071383 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		4064A1C41DAC381300071383 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		4064A1CA1DAC495D00071383 /* DummyDataService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DummyDataService.swift; sourceTree = "<group>"; };
 		4064A1E31DAC590900071383 /* ChatInboxController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChatInboxController.swift; sourceTree = "<group>"; };
 		4064A1E51DAC7DA600071383 /* CustomTabBarController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CustomTabBarController.swift; sourceTree = "<group>"; };
 		4064A1EA1DAC80F100071383 /* Constants.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
@@ -158,7 +155,6 @@
 		4064A2191DACC20E00071383 /* InboxCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = InboxCell.swift; sourceTree = "<group>"; };
 		4064A21E1DAD72DF00071383 /* Functions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Functions.swift; sourceTree = "<group>"; };
 		4064A2201DADE67E00071383 /* ChatHeaderView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChatHeaderView.swift; sourceTree = "<group>"; };
-		4064A2261DB13FBD00071383 /* Debug.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Debug.swift; sourceTree = "<group>"; };
 		4064A2281DB2B0B500071383 /* InboxMessage.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = InboxMessage.swift; sourceTree = "<group>"; };
 		4064A22A1DB2B27F00071383 /* Inbox.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Inbox.swift; sourceTree = "<group>"; };
 		4064A2511DB346A800071383 /* Profile.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Profile.swift; sourceTree = "<group>"; };
@@ -239,7 +235,7 @@
 			children = (
 				40ADEECE1DDD12D000CE529A /* Whisper */,
 				40E2E13F1DD26B8200469B4D /* Discipline.swift */,
-				4020CE141DBB569000461181 /* Switches.swift */,
+				4020CE141DBB569000461181 /* Variables.swift */,
 				4064A1EA1DAC80F100071383 /* Constants.swift */,
 				4064A2151DACBCDC00071383 /* Extensions.swift */,
 				4064A21E1DAD72DF00071383 /* Functions.swift */,
@@ -387,8 +383,6 @@
 		4064A21B1DACC2C600071383 /* Services */ = {
 			isa = PBXGroup;
 			children = (
-				4064A2261DB13FBD00071383 /* Debug.swift */,
-				4064A1CA1DAC495D00071383 /* DummyDataService.swift */,
 				40785D601E0D2C81009B66E0 /* DataService.swift */,
 				40785D641E0D9868009B66E0 /* UserService.swift */,
 				4022C7311E1D386D00363E17 /* ClassroomService.swift */,
@@ -635,7 +629,7 @@
 				40ADEEDC1DDD12D000CE529A /* Message.swift in Sources */,
 				4064A1E41DAC590900071383 /* ChatInboxController.swift in Sources */,
 				4064A2541DB34E4D00071383 /* ProfileController.swift in Sources */,
-				4020CE151DBB569000461181 /* Switches.swift in Sources */,
+				4020CE151DBB569000461181 /* Variables.swift in Sources */,
 				4081B2621E1500FF00D6E690 /* Question.swift in Sources */,
 				4000C37A1DD81227009C10E5 /* Download.swift in Sources */,
 				40785D5B1E04EDCE009B66E0 /* HorizontalScrollCell.swift in Sources */,
@@ -655,7 +649,6 @@
 				40ADEEDA1DDD12D000CE529A /* ColorList.swift in Sources */,
 				4024F2251DB7F83F007819F7 /* ClassroomMessage.swift in Sources */,
 				40AB80071DB7095200492788 /* EditTaglineController.swift in Sources */,
-				4064A2271DB13FBD00071383 /* Debug.swift in Sources */,
 				4064A2211DADE67E00071383 /* ChatHeaderView.swift in Sources */,
 				40AB7FFE1DB5B89C00492788 /* Setting.swift in Sources */,
 				4072ADA81E1663EB0067046D /* SuperlativeCell.swift in Sources */,
@@ -672,7 +665,6 @@
 				40ADEEDF1DDD12D000CE529A /* WhisperFactory.swift in Sources */,
 				40ADEEE11DDD12D000CE529A /* WhistleFactory.swift in Sources */,
 				4064A1B61DAC381300071383 /* AppDelegate.swift in Sources */,
-				4064A1CB1DAC495D00071383 /* DummyDataService.swift in Sources */,
 				40ADEED91DDD12D000CE529A /* Config.swift in Sources */,
 				40785D671E0E5A1F009B66E0 /* RemoteService.swift in Sources */,
 				404C22FA1DBDB86D0054FE19 /* UserDefaults.swift in Sources */,
