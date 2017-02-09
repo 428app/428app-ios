@@ -28,7 +28,9 @@ class ProfileController: UIViewController, UIGestureRecognizerDelegate, UIScroll
     func openProfileIconModal(notif: Notification) {
         if let userInfo = notif.userInfo as? [String: String], let iconImageName = userInfo["iconImageName"] {
             // TODO: Have to map icon image name to icon description to set in alert title
-            let controller = UIAlertController(title: iconImageName, message: "This is how you do it...", preferredStyle: .alert)
+            let discipline = getDisciplineName(iconImageName: iconImageName)
+            let disciplineDescription = getDisciplineDescription(discipline: discipline)
+            let controller = UIAlertController(title: discipline, message: disciplineDescription, preferredStyle: .alert)
             self.present(controller, animated: true, completion: { 
                 controller.view.superview?.isUserInteractionEnabled = true
                 let tapToDismissModal = UITapGestureRecognizer(target: self, action: #selector(self.dismissProfileIconModal))
@@ -150,6 +152,12 @@ class ProfileController: UIViewController, UIGestureRecognizerDelegate, UIScroll
     
     func messageUser() {
         // TODO: Transition to send a message
+        
+        // Fetch this users messages from server
+        
+        
+//        Inbox(uid: <#T##String#>, name: <#T##String#>, profileImageName: <#T##String#>, discipline: <#T##String#>, messages: <#T##[InboxMessage]#>, hasNewMessages: <#T##Bool#>)
+        
         log.info("Transition to message: \(self.profile.name)")
     }
     
@@ -159,10 +167,6 @@ class ProfileController: UIViewController, UIGestureRecognizerDelegate, UIScroll
     fileprivate let CLASSROOMS_CELL_ID = "classroomsCollectionCell"
     fileprivate var badges = [String]() // Image names of acquired badges
     fileprivate var classrooms = [String]() // Image names of participated classrooms
-    
-    // TODO: Dummy data for icons
-//    fileprivate var badges = ["badge1", "badge2", "badge3", "badge4", "badge5", "badge6", "badge7", "badge8", "badge9", "badge10", "badge11", "badge12"]
-//    fileprivate var classrooms = ["biology", "chemistry","computer", "eastasian", "electricengineering", "physics"]
 
     open static let ICON_SIZE: CGFloat = 33.0
     

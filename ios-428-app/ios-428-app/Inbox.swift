@@ -18,17 +18,15 @@ class Inbox {
     
     // NOTE: Most recent message is on top of messages
     fileprivate var _messages = [InboxMessage]() // Not loaded off the start, only loaded when user clicks on chat
-    fileprivate var _dateMatched: String
     fileprivate var _disciplineImageName: String // Packaged in the app's assets
     
-    init(uid: String, name: String, profileImageName: String, discipline: String, messages: [InboxMessage] = [InboxMessage](), dateMatched: String = "", hasNewMessages: Bool = false) {
+    init(uid: String, name: String, profileImageName: String, discipline: String, messages: [InboxMessage] = [InboxMessage](), hasNewMessages: Bool = false) {
         _uid = uid
         _name = name
         _profileImageName = profileImageName
         _discipline = discipline
         _hasNewMessages = hasNewMessages
         _messages = messages
-        _dateMatched = dateMatched
         _disciplineImageName = getDisciplineIcon(discipline: discipline)
     }
     
@@ -84,15 +82,4 @@ class Inbox {
     func clearMessages() {
         _messages = []
     }
-    
-    var dateMatched: String {
-        get {
-            return _dateMatched
-        }
-        set(date) {
-            _dateMatched = date
-        }
-        
-    }
-
 }

@@ -1,5 +1,5 @@
 //
-//  ChatController.swift
+//  ChatInboxController.swift
 //  ios-428-app
 //
 //  Controller for the 1-1 user chat screen. Note that this class is a bit long because of the necessary interplay 
@@ -13,7 +13,7 @@ import Foundation
 import UIKit
 import Firebase
 
-class ChatController: UIViewController, UICollectionViewDelegateFlowLayout, UITextViewDelegate, UICollectionViewDelegate, UICollectionViewDataSource, UIGestureRecognizerDelegate {
+class ChatInboxController: UIViewController, UICollectionViewDelegateFlowLayout, UITextViewDelegate, UICollectionViewDelegate, UICollectionViewDataSource, UIGestureRecognizerDelegate {
     
     /** FIREBASE **/
     fileprivate var queryAndHandle: (FIRDatabaseQuery, FIRDatabaseHandle)!
@@ -152,7 +152,7 @@ class ChatController: UIViewController, UICollectionViewDelegateFlowLayout, UITe
                 self.activityIndicator.isHidden = false
             }
         })
-        DataService.ds.observeChatMessagesOnce(inbox: self.inbox, limit: self.numMessages, completed: { (isSuccess, updatedInbox) in
+        DataService.ds.observeInboxChatMessagesOnce(inbox: self.inbox, limit: self.numMessages, completed: { (isSuccess, updatedInbox) in
             self.activityIndicator.stopAnimating()
             
             if (!isSuccess || updatedInbox == nil) {
@@ -199,7 +199,7 @@ class ChatController: UIViewController, UICollectionViewDelegateFlowLayout, UITe
         self.refreshControl.beginRefreshing()
         self.pullToRefreshIndicator.startAnimating()
         
-        DataService.ds.observeChatMessagesOnce(inbox: self.inbox, limit: self.numMessages, completed: { (isSuccess, updatedInbox) in
+        DataService.ds.observeInboxChatMessagesOnce(inbox: self.inbox, limit: self.numMessages, completed: { (isSuccess, updatedInbox) in
             self.refreshControl.endRefreshing()
             self.pullToRefreshIndicator.stopAnimating()
             
@@ -279,7 +279,7 @@ class ChatController: UIViewController, UICollectionViewDelegateFlowLayout, UITe
             queryAndHandle.0.removeObserver(withHandle: queryAndHandle.1)
         }
         
-        queryAndHandle = DataService.ds.reobserveChatMessages(limit: self.numMessages, inbox: self.inbox) { (isSuccess, updatedInbox) in
+        queryAndHandle = DataService.ds.reobserveInboxChatMessages(limit: self.numMessages, inbox: self.inbox) { (isSuccess, updatedInbox) in
             
             if (!isSuccess || updatedInbox == nil) {
                 
@@ -669,7 +669,7 @@ class ChatController: UIViewController, UICollectionViewDelegateFlowLayout, UITe
     func handleSend() {
         if let text = inputTextView.text {
             self.resetInputContainer()
-            DataService.ds.addChatMessage(inbox: inbox, text: text.trim(), completed: { (isSuccess, updatedInbox) in
+            DataService.ds.addInboxChatMessage(inbox: inbox, text: text.trim(), completed: { (isSuccess, updatedInbox) in
                 if !isSuccess || updatedInbox == nil {
                     log.error("[Error] Message failed to be posted")
                     showErrorAlert(vc: self, title: "Error", message: "Could not send message. Please try again.")

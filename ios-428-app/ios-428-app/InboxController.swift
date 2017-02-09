@@ -109,9 +109,9 @@ class InboxController: UICollectionViewController, UICollectionViewDelegateFlowL
         
         // Note that there is no pagination with private chats, as we don't expect the list to be obscenely large at the rate of up to 7 new classmates per week
         
-        self.inboxRefAndHandle = DataService.ds.observeInbox { (isSuccess, inboxs) in
+        self.inboxRefAndHandle = DataService.ds.observeInboxes { (isSuccess, inboxes) in
             
-            if inboxs.count == 0 {
+            if inboxes.count == 0 {
                 // No chats yet, display placeholder and stop animating loader
                 self.emptyPlaceholderView.isHidden = false
                 self.activityIndicator.stopAnimating()
@@ -127,13 +127,13 @@ class InboxController: UICollectionViewController, UICollectionViewDelegateFlowL
             
             self.latestMessages = []
             
-            for chat in inboxs {
+            for chat in inboxes {
                 // Register handlers for each of these
                 if !isSuccess {
                     log.error("[Error] Can't pull all private chats")
                     return
                 }
-                self.recentMessageRefsAndHandles.append(DataService.ds.observeRecentChat(inbox: chat, completed: {
+                self.recentMessageRefsAndHandles.append(DataService.ds.observeRecentInbox(inbox: chat, completed: {
                     (isSuccess, inbox) in
                     
                     self.activityIndicator.stopAnimating()
@@ -180,7 +180,7 @@ class InboxController: UICollectionViewController, UICollectionViewDelegateFlowL
     
     override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         collectionView.deselectItem(at: indexPath, animated: false)
-        let controller = ChatController()
+        let controller = ChatInboxController()
         controller.inbox = self.latestMessages[indexPath.item].inbox
         navigationController?.pushViewController(controller, animated: true)
     }

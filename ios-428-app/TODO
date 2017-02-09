@@ -1,24 +1,28 @@
 Classrooms Firebase integration
 
+** Inbox
+
+- Link of Send Message to a new chat screen with that person
++ Send message brings up the right ChatInbox
+
+- Chat screen
+- InboxController
+
 **Multi-user chats in classrooms
 
-- Superlatives logic
-+ Submit votes firebase code, which updates memberHasVoted, and superlatives X
-+ Share firebase, which updates memberHasVoted X
-+ Firebase observe code on SuperlativesController that: Figures out running results (not final vs final), page state based on memberHasVoted, and also voted for list (shift from Classroom observe to Superlatives observe)
-+ Discuss with Yihang how to populate "Did you know" into Share
++ Superlatives Did you knows
++ firstReplied
++ Input actual questions
 
-+ After submitting votes, dim the screen and disable submit button
+** Settings
 
-+ Share screen scrolling down
-+ Upon sharing, screen shifts and does not look nice
++ Link website, privacy policy and terms
 
-- firstReplied
+** Nice to haves
 
-** Private messages
-
-* Video answers? Image answers?
-* Make "Type a Message" more obvious looking with a green background?
+* Video answers? Video didyouknows?
+* Make classroom icons larger
+* Badges
 * GIFs in text?
 
 
@@ -51,8 +55,8 @@ MINOR BUGS
 
 
 !PROFILE!
-- Pre-load profile in ChatController and pass it on
-- Load in profile and pass it back to ChatController
+- Pre-load profile in ChatInboxController and pass it on
+- Load in profile and pass it back to ChatInboxController
 
 !SECURITY and INDEX SETTINGS!
 

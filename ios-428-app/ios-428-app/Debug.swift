@@ -8,7 +8,7 @@
 
 import Foundation
 
-extension ChatController {
+extension ChatInboxController {
     // Function used for testing of buckets
 //    func printMessagesArr() {
 //        for messages in messagesInTimeBuckets! {

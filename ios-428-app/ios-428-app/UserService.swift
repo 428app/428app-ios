@@ -206,7 +206,7 @@ extension DataService {
     }
     
     // Retrive user's profile data based on input user id.
-    // View other profiles in ChatController's openProfile or own profile in Edit Profile Controllers
+    // View other profiles in ChatInboxController's openProfile or own profile in Edit Profile Controllers
     // Also used in ClassroomService to get user fields
     func getUserFields(uid: String?, completed: @escaping (_ isSuccess: Bool, _ user: Profile?) -> ()) {
         guard let uid_ = uid else {

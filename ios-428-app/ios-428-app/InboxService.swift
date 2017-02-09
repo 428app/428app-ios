@@ -27,8 +27,14 @@ extension DataService {
         }
     }
     
+    // MARK: Inbox
+    
+    func getInbox(completed: @escaping (_ isSuccess: Bool, _ inboxs: [Inbox]) -> ()) {
+        
+    }
+    
     // Observes the names, photos and disciplines, of all your private chats used in InboxController
-    func observeInbox(completed: @escaping (_ isSuccess: Bool, _ inboxs: [Inbox]) -> ()) -> (FIRDatabaseReference, FIRDatabaseHandle) {
+    func observeInboxes(completed: @escaping (_ isSuccess: Bool, _ inboxes: [Inbox]) -> ()) -> (FIRDatabaseReference, FIRDatabaseHandle) {
         let uid = getStoredUid() == nil ? "" : getStoredUid()!
         let ref: FIRDatabaseReference = REF_USERS.child("\(uid)/inbox")
         
@@ -59,7 +65,7 @@ extension DataService {
     }
     
     // Observes the most recent message by one inbox chat, used in InboxController
-    func observeRecentChat(inbox: Inbox, completed: @escaping (_ isSuccess: Bool, _ inbox: Inbox?) -> ()) -> (FIRDatabaseReference, FIRDatabaseHandle) {
+    func observeRecentInbox(inbox: Inbox, completed: @escaping (_ isSuccess: Bool, _ inbox: Inbox?) -> ()) -> (FIRDatabaseReference, FIRDatabaseHandle) {
         let uid = getStoredUid() == nil ? "" : getStoredUid()!
         let inboxId: String = getInboxId(uid1: uid, uid2: inbox.uid)
         
@@ -73,12 +79,10 @@ extension DataService {
                 return
             }
             
-            guard let dict = snapshot.value as? [String: Any], let mid = dict["mid"] as? String, let text = dict["lastMessage"] as? String, let timestamp = dict["timestamp"] as? Double, let poster = dict["poster"] as? String, let dateMatched = dict["dateMatched"] as? String, let hasNewMessages = dict["hasNew:\(uid)"] as? Bool else {
+            guard let dict = snapshot.value as? [String: Any], let mid = dict["mid"] as? String, let text = dict["lastMessage"] as? String, let timestamp = dict["timestamp"] as? Double, let poster = dict["poster"] as? String, let hasNewMessages = dict["hasNew:\(uid)"] as? Bool else {
                 completed(false, nil)
                 return
             }
-            
-            inbox.dateMatched = dateMatched
             
             let date: Date = Date(timeIntervalSince1970: timestamp)
             let isSentByYou: Bool = poster == uid
@@ -93,6 +97,8 @@ extension DataService {
         })
         return (ref, handle)
     }
+    
+    // MARK: Chats
     
     // Private helper function that takes in a snapshot of all private messages between two users and outputs a Inbox model
     fileprivate func processChatSnapshot(snapshot: FIRDataSnapshot, inbox: Inbox, uid: String) -> Inbox? {
@@ -116,9 +122,9 @@ extension DataService {
         return inbox
     }
     
-    // Observes all chat messags of one private chat, used in ChatController
+    // Observes all chat messags of one private chat, used in ChatInboxController
     // Observes up till the limit, ordered by most recent timestamp
-    func reobserveChatMessages(limit: UInt, inbox: Inbox, completed: @escaping (_ isSuccess: Bool, _ inbox: Inbox?) -> ()) -> (FIRDatabaseQuery, FIRDatabaseHandle) {
+    func reobserveInboxChatMessages(limit: UInt, inbox: Inbox, completed: @escaping (_ isSuccess: Bool, _ inbox: Inbox?) -> ()) -> (FIRDatabaseQuery, FIRDatabaseHandle) {
         
         let uid = getStoredUid() == nil ? "" : getStoredUid()!
         let inboxId: String = getInboxId(uid1: uid, uid2: inbox.uid)
@@ -134,9 +140,9 @@ extension DataService {
         return (q, handle)
     }
     
-    // Observes all chat messags of one connection once, used when setting up ChatController
+    // Observes all chat messags of one connection once, used when setting up ChatInboxController
     // The only difference between this and reobserve is that this is a one time observer and does not return the handle
-    func observeChatMessagesOnce(inbox: Inbox, limit: UInt, completed: @escaping (_ isSuccess: Bool, _ inbox: Inbox?) -> ()) {
+    func observeInboxChatMessagesOnce(inbox: Inbox, limit: UInt, completed: @escaping (_ isSuccess: Bool, _ inbox: Inbox?) -> ()) {
         let uid = getStoredUid() == nil ? "" : getStoredUid()!
         let inboxId: String = getInboxId(uid1: uid, uid2: inbox.uid)
         let ref: FIRDatabaseReference = REF_INBOXMESSAGES.child(inboxId)
@@ -148,9 +154,9 @@ extension DataService {
         })
     }
     
-    // Adds a private message to the private chat, used in ChatController
+    // Adds a private message to the private chat, used in ChatInboxController
     // It's a long function mainly because we have to decide whether to push this user a notification and update the badge count
-    func addChatMessage(inbox: Inbox, text: String, completed: @escaping (_ isSuccess: Bool, _ inbox: Inbox?) -> ()) {
+    func addInboxChatMessage(inbox: Inbox, text: String, completed: @escaping (_ isSuccess: Bool, _ inbox: Inbox?) -> ()) {
         guard let uid = getStoredUid() else {
             completed(false, nil)
             return

@@ -51,7 +51,7 @@ extension UIViewController {
 
 // Special View Controller with a dismiss that drags the controller down modally. Extends all controllers that can launch view profile
 
-extension ChatController: UIViewControllerTransitioningDelegate {
+extension ChatInboxController: UIViewControllerTransitioningDelegate {
     func animationControllerForDismissedController(dismissed: UIViewController) -> UIViewControllerAnimatedTransitioning? {
         return DismissAnimator()
     }

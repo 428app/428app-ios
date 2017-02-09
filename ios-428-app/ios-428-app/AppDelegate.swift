@@ -27,7 +27,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         window?.rootViewController = LoginController()
         UINavigationBar.appearance().isOpaque = true
         FIRApp.configure()
-//        FIRDatabase.database().persistenceEnabled = true
+        FIRDatabase.database().persistenceEnabled = true
         
         // Reupload previous photo that might not have been uploaded due to network issues or user quitting the app after changing profile photo
         reuploadPhoto()
@@ -259,7 +259,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         // If popup is for inbox chat that user is currently in, don't show popup
         if type == .INBOX {
-            if let inboxChatVC = nvc.visibleViewController as? ChatController {
+            if let inboxChatVC = nvc.visibleViewController as? ChatInboxController {
                 if inboxChatVC.inbox.uid == uid {
                     return
                 }
@@ -297,7 +297,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         }
         
         if inboxNVC.viewControllers.count > 1 {
-            // Currently in a chat screen or profile screen, etc., need to dismiss back to ConnectionsController before pushing ChatController
+            // Currently in a chat screen or profile screen, etc., need to dismiss back to ConnectionsController before pushing ChatInboxController
             inboxNVC.popToRootViewController(animated: false)
         }
         
@@ -308,7 +308,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             return
         }
         
-        let chatVC: ChatController = ChatController()
+        let chatVC: ChatInboxController = ChatInboxController()
         chatVC.inbox = correctMessage[0].inbox
         inboxNVC.viewControllers[0].navigationItem.backBarButtonItem = UIBarButtonItem(title: " ", style: .plain, target: nil, action: nil)
         inboxNVC.pushViewController(chatVC, animated: false)
