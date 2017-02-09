@@ -187,6 +187,22 @@ extension DataService {
         let mid = messagesRef.key
         let newMessage: [String: Any] = ["message": text, "timestamp": timestamp, "poster": poster]
         
+        // Need to get hasNew of recipient user first
+        
+        
+        self.REF_USERS.child(uid2).observeSingleEvent(of: .value, with: { recipientSnap in
+            guard let recipient = recipientSnap.value as? [String: Any] else {
+                return
+            }
+            
+            
+            
+            guard let pushToken = recipient["pushToken"] as? String, let pushCount = recipient["pushCount"] as? Int else {
+                return
+            }
+            
+        })
+        
         // Creates new message in two places: Inbox Messages and Inbox (lastMessage)
         // Do a multipath update to preserve atomicity, even for offline updates
         REF_BASE.updateChildValues(["inboxMessages/\(inboxId)/\(mid)": newMessage, "inbox/\(inboxId)/mid": mid, "inbox/\(inboxId)/lastMessage": text, "inbox/\(inboxId)/timestamp": timestamp, "inbox/\(inboxId)/poster": poster, "inbox/\(inboxId)/hasNew:\(uid)": false]) { (err, ref) in
@@ -214,9 +230,32 @@ extension DataService {
             inbox.addMessage(message: msg)
             completed(true, inbox)
             
-            
-            
             // Do push notification stuff here without a completion callback - Push notifications are not guaranteed to be delivered anyway
+            
+            // Get recipient's settings first
+            let settingsRef = self.REF_USERSETTINGS.child(uid2)
+            settingsRef.keepSynced(true)
+            settingsRef.observeSingleEvent(of: .value, with: { settingsSnap in
+                var inAppSettings = true
+                if let settingDict = settingsSnap.value as? [String: Bool], let inApp = settingDict["inAppNotifications"] {
+                    inAppSettings = inApp
+                }
+                // Check if /privateMessages and /isLoggedIn are both true
+                if let settingDict = settingsSnap.value as? [String: Bool], let acceptsPrivateMessages = settingDict["privateMessages"], let isLoggedIn = settingDict["isLoggedIn"] {
+                    if !acceptsPrivateMessages || !isLoggedIn {
+                        // Not allowed to push messages. Increment badge count if necessary, then return
+                        if !hasUpdates {
+                            self.adjustPushCount(isIncrement: true, uid: uid2, completed: { (isSuccess) in })
+                        }
+                        
+                        self.REF_USERS.child("\(classmateUid)/classrooms/\(cid)/hasUpdates").setValue(true)
+                        return
+                    }
+                }
+            })
+            
+
+            
             
 //            self.REF_INBOX.child(inboxId).observeSingleEvent(of: .value, with: { chatSnap in
 //                if !chatSnap.exists() {

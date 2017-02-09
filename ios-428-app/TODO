@@ -3,9 +3,8 @@ Classrooms Firebase integration
 ** Inbox
 
 - ChatInboxController
-+ Navigation bar elements
-+ Viewing profile and clicking send message just dismissing
-+ Firebase chat
++ Push notifications
++ Offline push notifications directing to the right chat message by using side effect
 
 - InboxController
 
