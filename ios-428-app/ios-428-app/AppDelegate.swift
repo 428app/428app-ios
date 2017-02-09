@@ -27,7 +27,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         window?.rootViewController = LoginController()
         UINavigationBar.appearance().isOpaque = true
         FIRApp.configure()
-        FIRDatabase.database().persistenceEnabled = true
+//        FIRDatabase.database().persistenceEnabled = true
         
         // Reupload previous photo that might not have been uploaded due to network issues or user quitting the app after changing profile photo
         reuploadPhoto()

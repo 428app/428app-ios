@@ -71,6 +71,8 @@ extension DataService {
     func observeSingleClassroom(cid: String, completed: @escaping (_ isSuccess: Bool, _ classroom: Classroom?) -> ()) -> (FIRDatabaseReference, FIRDatabaseHandle) {
         let uid = getStoredUid() == nil ? "" : getStoredUid()!
         let ref: FIRDatabaseReference = REF_USERS.child("\(uid)/classrooms/\(cid)")
+        ref.keepSynced(true)
+        REF_CLASSROOMS.child("\(cid)/memberHasVoted/\(uid)").keepSynced(true)
         
         // Primarily observe on changes in classroom's question number and image
         let handle = ref.observe(.value, with: { snapshot in
@@ -340,6 +342,18 @@ extension DataService {
         REF_CLASSROOMS.child(classroom.cid).updateChildValues(classUpdates) { (err, ref) in
             completed(err == nil)
         }
+    }
+    
+    func getSuperlativeState(classroom: Classroom, completed: @escaping (_ isSuccess: Bool, _ superlativeState: SuperlativeType) -> ()) {
+        let uid = getStoredUid() == nil ? "" : getStoredUid()!
+        let cid = classroom.cid
+        REF_CLASSROOMS.child("\(cid)/memberHasVoted/\(uid)").observeSingleEvent(of: .value, with: { snapshot in
+            if let superlativeState = snapshot.value as? Int {
+                completed(true, SuperlativeType(rawValue: superlativeState)!)
+            } else {
+                completed(false, SuperlativeType(rawValue: 0)!)
+            }
+        })
     }
     
     func observeSuperlatives(classroom: Classroom, completed: @escaping (_ isSuccess: Bool, _ classroom: Classroom?) -> ()) -> (FIRDatabaseReference, FIRDatabaseHandle) {

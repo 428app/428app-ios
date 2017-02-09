@@ -21,7 +21,7 @@ class SuperlativeController: UIViewController, UICollectionViewDelegate, UIColle
     override func viewDidLoad() {
         super.viewDidLoad()
         self.setupViews()
-        self.toggleViews(superlativeType: classroom.superlativeType)
+        self.toggleViews(superlativeType: self.classroom.superlativeType)
     }
     
     deinit {
@@ -168,9 +168,15 @@ class SuperlativeController: UIViewController, UICollectionViewDelegate, UIColle
                         // Nothing happen
                         log.info("Sharing got cancelled")
                     } else if result == SLComposeViewControllerResult.done {
+                        showLoader(message: "Retrieving superlative results")
                         DataService.ds.shareSuperlative(classroom: self.classroom, completed: { (isSuccess) in
+                            hideLoader()
                             if isSuccess {
                                 self.toggleViews(superlativeType: SuperlativeType.SHARED)
+                                self.navigationItem.title = self.classroom.isVotingOngoing ? "Running Results" : "Final Results"
+                                // Hack: Adjust the screen
+                                self.view.frame = CGRect(x: 0, y: 0, width: UIScreen.main.bounds.width, height: UIScreen.main.bounds.height)
+                                self.topConstraintForCollectionView.constant = self.navigationController!.navigationBar.frame.size.height + 15.0
                             } else {
                                 showErrorAlert(vc: self, title: "Error", message: "There was a problem sharing.\nPlease try again.")
                             }
@@ -182,7 +188,7 @@ class SuperlativeController: UIViewController, UICollectionViewDelegate, UIColle
     }
     
     fileprivate lazy var shareContainer: UIView = {
-        let view = UIView(frame: CGRect(x: 0, y: self.navigationController!.navigationBar.frame.size.height + 15.0, width: UIScreen.main.bounds.width, height: UIScreen.main.bounds.height))
+        let view = UIView(frame: CGRect(x: 0, y: 0, width: UIScreen.main.bounds.width, height: UIScreen.main.bounds.height))
         view.isUserInteractionEnabled = true
         return view
     }()
@@ -244,10 +250,13 @@ class SuperlativeController: UIViewController, UICollectionViewDelegate, UIColle
     }
     
     func submitSuperlatives() { // Used in NOTRATED stage, and on success transfer to RATED stage
-        // TODO: Submit superlative to the server here
+        showLoader(message: "Submitting your votes...")
         DataService.ds.submitSuperlativeVote(classroom: self.classroom) { (isSuccess) in
+            hideLoader()
             if isSuccess {
                 self.toggleViews(superlativeType: SuperlativeType.RATED)
+                // Hack: Increase share frame
+                self.shareContainer.frame = CGRect(x: 0, y: self.navigationController!.navigationBar.frame.size.height + 15.0, width: UIScreen.main.bounds.width, height: UIScreen.main.bounds.height)
             } else {
                 showErrorAlert(vc: self, title: "Error", message: "There was a problem submitting your votes.\nPlease try again.")
             }
@@ -256,10 +265,13 @@ class SuperlativeController: UIViewController, UICollectionViewDelegate, UIColle
     
     // MARK: Views
     
+    var topConstraintForCollectionView: NSLayoutConstraint!
     fileprivate func setupViews() {
         self.view.addSubview(self.collectionView)
         self.view.addConstraintsWithFormat("H:|[v0]|", views: self.collectionView)
-        self.view.addConstraintsWithFormat("V:|[v0]|", views: self.collectionView)
+        topConstraintForCollectionView = NSLayoutConstraint(item: self.collectionView, attribute: .top, relatedBy: .equal, toItem: self.view, attribute: .top, multiplier: 1.0, constant: 0.0)
+        self.view.addConstraint(topConstraintForCollectionView)
+        self.view.addConstraintsWithFormat("V:[v0]|", views: self.collectionView)
         self.setupShareViews()
     }
     
@@ -294,7 +306,6 @@ class SuperlativeController: UIViewController, UICollectionViewDelegate, UIColle
                 self.navigationItem.rightBarButtonItem = nil
                 NotificationCenter.default.removeObserver(self, name: NOTIF_VOTESELECTED, object: nil)
             }
-            
         }
     }
     // MARK: Firebase
@@ -304,7 +315,9 @@ class SuperlativeController: UIViewController, UICollectionViewDelegate, UIColle
         superlativeFirebase = DataService.ds.observeSuperlatives(classroom: classroom) { (isSuccess, updatedClassroom) in
             if isSuccess {
                 self.classroom = updatedClassroom
-                self.navigationItem.title = self.classroom.isVotingOngoing ? "Running Results" : "Final Results"
+                if self.classroom.superlativeType == .SHARED {
+                    self.navigationItem.title = self.classroom.isVotingOngoing ? "Running Results" : "Final Results"
+                }
                 self.collectionView.reloadData()
             } else {
                 log.error("[Error] Failed to update superlatives for classroom id: \(self.classroom.cid)")
