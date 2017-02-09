@@ -21,13 +21,11 @@ class InboxController: UICollectionViewController, UICollectionViewDelegateFlowL
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        self.loadFromFirebase()
+        self.loadData()
         self.extendedLayoutIncludesOpaqueBars = true
         self.setupViews()
         navigationItem.title = "Inbox"
-        
-        
-        
+        loadData()
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -59,12 +57,70 @@ class InboxController: UICollectionViewController, UICollectionViewDelegateFlowL
     }
     
     // MARK: Firebase
+
+    fileprivate func loadData() {
+        
+        self.activityIndicator.startAnimating()
+        
+        // Note that there is no pagination with private chats, as we don't expect the list to be obscenely large
+        
+        self.inboxRefAndHandle = DataService.ds.observeInboxes { (isSuccess, inboxes) in
+            
+            if inboxes.count == 0 {
+                // No chats yet, display placeholder and stop animating loader
+                self.emptyPlaceholderView.isHidden = false
+                self.activityIndicator.stopAnimating()
+                return
+            }
+            
+            self.emptyPlaceholderView.isHidden = true
+            
+            // Remove all recent chat observers and reappend
+            for (ref, handle) in self.recentMessageRefsAndHandles {
+                ref.removeObserver(withHandle: handle)
+            }
+            
+            self.latestMessages = []
+            
+            for chat in inboxes {
+                // Register handlers for each of these
+                if !isSuccess {
+                    log.error("[Error] Can't pull all private chats")
+                    return
+                }
+                self.recentMessageRefsAndHandles.append(DataService.ds.observeRecentInbox(inbox: chat, completed: {
+                    (isSuccess, inbox) in
+                    
+                    self.activityIndicator.stopAnimating()
+                    
+                    if !isSuccess || inbox == nil {
+                        log.error("[Error] Can't pull a certain connection")
+                        return
+                    }
+                    
+                    // Find the messages belonging to this private chat, remove them, then add this
+                    self.latestMessages = self.latestMessages.filter() {$0.inbox.uid != inbox!.uid}
+                    
+                    // Log new messages coming in
+                    self.latestMessages.append(contentsOf: inbox!.messages)
+                    
+                    // Sort latest messages based on time
+                    // I know, not the most efficient. Could have done a binary search and insert, but frontend
+                    // efficiency is not a concern given the limited number of connections.
+                    self.latestMessages.sort(by: { (m1, m2) -> Bool in
+                        return m1.date.compare(m2.date) == .orderedDescending
+                    })
+                    self.collectionView?.reloadData()
+                }))
+            }
+        }
+    }
+
     
     lazy private var activityIndicator : CustomActivityIndicatorView = {
         let image : UIImage = UIImage(named: "loading-large")!
         return CustomActivityIndicatorView(image: image)
     }()
-    
     
     // MARK: Views for no chats
     
@@ -119,64 +175,6 @@ class InboxController: UICollectionViewController, UICollectionViewDelegateFlowL
         activityIndicator.center = CGPoint(x: self.view.center.x, y: self.view.center.y - 0.08 * self.view.frame.height)
     }
     
-    fileprivate func loadFromFirebase() {
-
-        self.activityIndicator.startAnimating()
-        
-        // Note that there is no pagination with private chats, as we don't expect the list to be obscenely large at the rate of up to 7 new classmates per week
-        
-        self.inboxRefAndHandle = DataService.ds.observeInboxes { (isSuccess, inboxes) in
-            
-            if inboxes.count == 0 {
-                // No chats yet, display placeholder and stop animating loader
-                self.emptyPlaceholderView.isHidden = false
-                self.activityIndicator.stopAnimating()
-                return
-            }
-            
-            self.emptyPlaceholderView.isHidden = true
-            
-            // Remove all recent chat observers and reappend
-            for (ref, handle) in self.recentMessageRefsAndHandles {
-                ref.removeObserver(withHandle: handle)
-            }
-            
-            self.latestMessages = []
-            
-            for chat in inboxes {
-                // Register handlers for each of these
-                if !isSuccess {
-                    log.error("[Error] Can't pull all private chats")
-                    return
-                }
-                self.recentMessageRefsAndHandles.append(DataService.ds.observeRecentInbox(inbox: chat, completed: {
-                    (isSuccess, inbox) in
-                    
-                    self.activityIndicator.stopAnimating()
-                    
-                    if !isSuccess || inbox == nil {
-                        log.error("[Error] Can't pull a certain connection")
-                        return
-                    }
-                    
-                    // Find the messages belonging to this private chat, remove them, then add this
-                    self.latestMessages = self.latestMessages.filter() {$0.inbox.uid != inbox!.uid}
-                    
-                    // Log new messages coming in
-                    self.latestMessages.append(contentsOf: inbox!.messages)
-                    
-                    // Sort latest messages based on time
-                    // I know, not the most efficient. Could have done a binary search and insert, but frontend 
-                    // efficiency is not a concern given the limited number of connections.
-                    self.latestMessages.sort(by: { (m1, m2) -> Bool in
-                        return m1.date.compare(m2.date) == .orderedDescending
-                    })
-                    self.collectionView?.reloadData()
-                }))
-            }
-        }
-    }
-    
     // MARK: Collection view 
     
     override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
@@ -197,7 +195,8 @@ class InboxController: UICollectionViewController, UICollectionViewDelegateFlowL
     override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         collectionView.deselectItem(at: indexPath, animated: false)
         let controller = ChatInboxController()
-        controller.inbox = self.latestMessages[indexPath.item].inbox
+        let inbox = self.latestMessages[indexPath.item].inbox
+        controller.inbox = inbox
         navigationController?.pushViewController(controller, animated: true)
     }
 }

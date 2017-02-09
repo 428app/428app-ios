@@ -12,7 +12,7 @@ import UIKit
 
 class ProfileController: UIViewController, UIGestureRecognizerDelegate, UIScrollViewDelegate, UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
     
-    var profile: Profile!
+    open var profile: Profile!
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -27,7 +27,6 @@ class ProfileController: UIViewController, UIGestureRecognizerDelegate, UIScroll
     
     func openProfileIconModal(notif: Notification) {
         if let userInfo = notif.userInfo as? [String: String], let iconImageName = userInfo["iconImageName"] {
-            // TODO: Have to map icon image name to icon description to set in alert title
             let discipline = getDisciplineName(iconImageName: iconImageName)
             let disciplineDescription = getDisciplineDescription(discipline: discipline)
             let controller = UIAlertController(title: discipline, message: disciplineDescription, preferredStyle: .alert)
@@ -152,7 +151,7 @@ class ProfileController: UIViewController, UIGestureRecognizerDelegate, UIScroll
     
     func messageUser() {
         // Fetch this user's inbox from server
-        DataService.ds.getInbox(profile2: profile) { (isSuccess, inbox) in
+        DataService.ds.getInbox(profile2: profile!) { (isSuccess, inbox) in
             // NOTE: The steps to get to the chat page are a bit complicated but essentially this happens:
             // 1) Post notification to the controller that called this modal
             // 2) That controller switches the tab to Inbox and sets the global side effect inboxToOpen

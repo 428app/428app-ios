@@ -50,7 +50,7 @@ class ChatInboxController: UIViewController, UICollectionViewDelegateFlowLayout,
         self.extendedLayoutIncludesOpaqueBars = true
         self.setupFirebase()
         self.view.backgroundColor = UIColor.white
-        self.setupNavigationBar()
+        self.setupNavTitleView()
         self.setupCollectionView()
         self.setupInputComponents()
     }
@@ -100,6 +100,12 @@ class ChatInboxController: UIViewController, UICollectionViewDelegateFlowLayout,
         return imageView
     }()
     
+    fileprivate func emptyPlaceholderGenerator() -> String {
+        let placeholders = ["Hey! Why don't you talk to \(self.inbox.name) about ", "Don't be shy. \(self.inbox.name) is friendly. Why don't you talk to him about ", "\(self.inbox.name) is waiting for you to say Hi. Do you know anything about ", "\(self.inbox.name) asks you: Do you know why I love "]
+        let randomIndex = Int(arc4random_uniform(UInt32(placeholders.count)))
+        return placeholders[randomIndex]
+    }
+    
     fileprivate lazy var emptyPlaceholderLabel: UILabel = {
        let label = UILabel()
         label.font = FONT_MEDIUM_LARGE
@@ -109,7 +115,7 @@ class ChatInboxController: UIViewController, UICollectionViewDelegateFlowLayout,
         let paragraphStyle = NSMutableParagraphStyle()
         paragraphStyle.lineSpacing = 6
         paragraphStyle.alignment = .center
-        let preStr = NSMutableAttributedString(string: "Hey! Why don't you talk to \(self.inbox.name) about ", attributes: [NSForegroundColorAttributeName: UIColor.darkGray, NSParagraphStyleAttributeName: paragraphStyle])
+        let preStr = NSMutableAttributedString(string: self.emptyPlaceholderGenerator(), attributes: [NSForegroundColorAttributeName: UIColor.darkGray, NSParagraphStyleAttributeName: paragraphStyle])
         let disciplineStr = NSMutableAttributedString(string: "\(self.inbox.discipline)?", attributes: [NSParagraphStyleAttributeName: paragraphStyle, NSForegroundColorAttributeName: GREEN_UICOLOR])
         preStr.append(disciplineStr)
         label.attributedText = preStr
@@ -449,28 +455,26 @@ class ChatInboxController: UIViewController, UICollectionViewDelegateFlowLayout,
         return button
     }()
     
-    fileprivate var profile: Profile?
+    open var profile: Profile?
     
     fileprivate func downloadProfile() { // Profile is also downloaded here to prepare for potential next screen
-        DataService.ds.getUserFields(uid: inbox.uid) { (isSuccess, downloadedProfile) in
-            if isSuccess && downloadedProfile != nil {
-                self.profile = downloadedProfile
+        if profile == nil {
+            DataService.ds.getUserFields(uid: inbox.uid) { (isSuccess, downloadedProfile) in
+                if isSuccess && downloadedProfile != nil {
+                    self.profile = downloadedProfile
+                }
             }
         }
     }
     
     func openProfile() {
-        let controller = ProfileController()
-//        controller.connection = connection
-        // TODO: Have to set profile right
-
-        controller.transitioningDelegate = self
-        
-        controller.interactor = interactor
-        
-        if profile != nil {
-            controller.profile = profile
+        if profile == nil {
+            return
         }
+        let controller = ProfileController()
+        controller.transitioningDelegate = self
+        controller.interactor = interactor
+        controller.profile = profile!
         controller.modalTransitionStyle = .coverVertical
         controller.modalPresentationStyle = .overFullScreen
         self.present(controller, animated: true, completion: nil)
@@ -501,7 +505,7 @@ class ChatInboxController: UIViewController, UICollectionViewDelegateFlowLayout,
     
     fileprivate func setupNavTitleView() {
         navButton.setTitle(self.inbox.name, for: .normal)
-        navButton.setTitleColor(UIColor.black, for: .normal)
+        navButton.setTitleColor(UIColor.white, for: .normal)
         navDisciplineImageView.image = UIImage(named: self.inbox.disciplineImageName)
         
         navTitleView.addTarget(self, action: #selector(openProfile), for: .touchUpInside)
@@ -519,31 +523,6 @@ class ChatInboxController: UIViewController, UICollectionViewDelegateFlowLayout,
         navContainerView.addConstraintsWithFormat("V:|[v0(20)]", views: navDisciplineImageView)
         navContainerView.addConstraintsWithFormat("V:|-1-[v0(22)]|", views: navButton)
         self.navigationItem.titleView = navTitleView
-    }
-    
-    fileprivate func setupNavigationBar() {
-        let negativeSpace = UIBarButtonItem(barButtonSystemItem: .fixedSpace, target: nil, action: nil)
-        negativeSpace.width = -6.0
-        let moreButton = UIBarButtonItem(image: #imageLiteral(resourceName: "more"), style: .plain, target: self, action: #selector(handleNavMore))
-        self.navigationItem.rightBarButtonItems = [negativeSpace, moreButton]
-        self.setupNavTitleView()
-    }
-    
-    func handleNavMore() {
-        // Bring up alert controller to Mute or Report person
-        let alertController = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
-        alertController.view.tintColor = GREEN_UICOLOR
-        let cancelAction = UIAlertAction(title: "Cancel", style: .cancel, handler: nil)
-        let rateAction = UIAlertAction(title: "Rate \(self.inbox.name)", style: .default) { (action) in
-            // TODO: Rate user
-        }
-        let reportAction = UIAlertAction(title: "Report \(self.inbox.name)", style: .default) { (action) in
-            // TODO: Report user
-        }
-        alertController.addAction(rateAction)
-        alertController.addAction(reportAction)
-        alertController.addAction(cancelAction)
-        self.present(alertController, animated: true, completion: nil)
     }
     
     // MARK: Input text view

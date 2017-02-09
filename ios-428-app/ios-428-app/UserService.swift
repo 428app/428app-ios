@@ -356,40 +356,4 @@ extension DataService {
             completed(settings)
         })
     }
-    
-    // Test function to connect all users with private chats
-    func connectWithAll() {
-        // Get all uids first
-        guard let uid1 = getStoredUid() else {
-            return
-        }
-        REF_USERS.observeSingleEvent(of: .value, with: { snapshot in
-            let snaps = snapshot.children.allObjects as! [FIRDataSnapshot]
-            let uids = snaps.map({ (snap) -> String in
-                return snap.key
-            })
-            // Get uid1 details
-            self.REF_USERS.child(uid1).observeSingleEvent(of: .value, with: { snapshot2 in
-                let dict = snapshot2.value as! [String: Any]
-                let myDiscipline = dict["discipline"] as! String
-                let myName = dict["name"] as! String
-                let myProfilePhoto = dict["profilePhoto"] as! String
-                for uid2 in uids {
-                    // Grab their info
-                    if uid2 == uid1 { continue }
-                    self.REF_USERS.child(uid2).observeSingleEvent(of: .value, with: { snapshot3 in
-                        let otherDict = snapshot3.value as! [String: Any]
-                        let otherDiscipline = otherDict["discipline"] as! String
-                        let otherName = otherDict["name"] as! String
-                        let otherProfilePhoto = otherDict["profilePhoto"] as! String
-                        self.REF_USERS.child("\(uid1)/inbox/\(uid2)").setValue(["discipline": otherDiscipline, "name": otherName, "profilePhoto": otherProfilePhoto])
-                        self.REF_USERS.child("\(uid2)/inbox/\(uid1)").setValue(["discipline": myDiscipline, "name": myName, "profilePhoto": myProfilePhoto])
-                        let inboxId = self.getInboxId(uid1: uid1, uid2: uid2)
-                        self.REF_INBOX.child(inboxId).setValue(["hasNew:\(uid1)": true, "hasNew:\(uid2)": true, "lastMessage": "", "mid": "", "poster": "", "timestamp": Date().timeIntervalSince1970])
-                    })
-                }
-            })
-        })
-    }
-    
 }

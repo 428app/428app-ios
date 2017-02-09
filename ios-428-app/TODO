@@ -2,11 +2,13 @@ Classrooms Firebase integration
 
 ** Inbox
 
-- Link of Send Message to a new chat screen with that person
-+ Send message brings up the right ChatInbox
+- ChatInboxController
++ Navigation bar elements
++ Viewing profile and clicking send message just dismissing
++ Firebase chat
 
-- Chat screen
 - InboxController
+
 
 ** Push notifications
 
@@ -16,6 +18,7 @@ Classrooms Firebase integration
 **Multi-user chats in classrooms
 
 + Superlatives Did you knows
++ Discipline icons at the bottom right of classmate pictures
 + firstReplied
 + Input actual questions
 

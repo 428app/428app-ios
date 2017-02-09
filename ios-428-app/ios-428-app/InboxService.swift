@@ -180,24 +180,41 @@ extension DataService {
             return
         }
         let poster = uid
-        let inboxId: String = getInboxId(uid1: uid, uid2: inbox.uid)
+        let uid2 = inbox.uid
+        let inboxId: String = getInboxId(uid1: uid, uid2: uid2)
         let timestamp = Date().timeIntervalSince1970
         let messagesRef: FIRDatabaseReference = REF_INBOX.child(inboxId).childByAutoId()
         let mid = messagesRef.key
         let newMessage: [String: Any] = ["message": text, "timestamp": timestamp, "poster": poster]
         
-        // Creates new message in two places: Messages and Chats (lastMessage)
+        // Creates new message in two places: Inbox Messages and Inbox (lastMessage)
         // Do a multipath update to preserve atomicity, even for offline updates
-        REF_BASE.updateChildValues(["inboxMessages/\(inboxId)/\(mid)": newMessage, "inboxs/\(inboxId)/mid": mid, "inboxs/\(inboxId)/lastMessage": text, "inboxs/\(inboxId)/timestamp": timestamp, "inboxs/\(inboxId)/poster": poster, "inboxs/\(inboxId)/hasNew:\(uid)": false]) { (err, ref) in
+        REF_BASE.updateChildValues(["inboxMessages/\(inboxId)/\(mid)": newMessage, "inbox/\(inboxId)/mid": mid, "inbox/\(inboxId)/lastMessage": text, "inbox/\(inboxId)/timestamp": timestamp, "inbox/\(inboxId)/poster": poster, "inbox/\(inboxId)/hasNew:\(uid)": false]) { (err, ref) in
             if (err != nil) {
                 completed(false, nil)
                 return
             }
             
+            // Add to the inbox cache on both users' profiles, just in case this is the first time both have talked to each other
+            if myProfile == nil {
+                DataService.ds.getUserFields(uid: uid, completed: { (isSuccess, profile_) in
+                    if !isSuccess {
+                        return
+                    }
+                    myProfile = profile_
+                    self.REF_BASE.updateChildValues(["users/\(uid)/inbox/\(uid2)/discipline": inbox.discipline, "users/\(uid)/inbox/\(uid2)/name": inbox.name, "users/\(uid)/inbox/\(uid2)/profilePhoto": inbox.profileImageName, "users/\(uid2)/inbox/\(uid)/discipline": myProfile!.discipline, "users/\(uid2)/inbox/\(uid)/name": myProfile!.name, "users/\(uid2)/inbox/\(uid)/profilePhoto": myProfile!.profileImageName])
+                })
+            } else {
+                self.REF_BASE.updateChildValues(["users/\(uid)/inbox/\(uid2)/discipline": inbox.discipline, "users/\(uid)/inbox/\(uid2)/name": inbox.name, "users/\(uid)/inbox/\(uid2)/profilePhoto": inbox.profileImageName, "users/\(uid2)/inbox/\(uid)/discipline": myProfile!.discipline, "users/\(uid2)/inbox/\(uid)/name": myProfile!.name, "users/\(uid2)/inbox/\(uid)/profilePhoto": myProfile!.profileImageName])
+            }
+
+            
             // Populate front end with chat message - this is done before push notification logic because this has to be done fast!
             let msg = InboxMessage(mid: mid, text: text, inbox: inbox, date: Date(timeIntervalSince1970: timestamp), isSentByYou: true)
             inbox.addMessage(message: msg)
             completed(true, inbox)
+            
+            
             
             // Do push notification stuff here without a completion callback - Push notifications are not guaranteed to be delivered anyway
             
