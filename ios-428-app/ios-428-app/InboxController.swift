@@ -82,13 +82,13 @@ class InboxController: UICollectionViewController, UICollectionViewDelegateFlowL
             
             self.latestMessages = []
             
-            for chat in inboxes {
+            for inbox in inboxes {
                 // Register handlers for each of these
                 if !isSuccess {
                     log.error("[Error] Can't pull all private chats")
                     return
                 }
-                self.recentMessageRefsAndHandles.append(DataService.ds.observeRecentInbox(inbox: chat, completed: {
+                self.recentMessageRefsAndHandles.append(DataService.ds.observeRecentInbox(inbox: inbox, completed: {
                     (isSuccess, inbox) in
                     
                     self.activityIndicator.stopAnimating()
@@ -197,6 +197,7 @@ class InboxController: UICollectionViewController, UICollectionViewDelegateFlowL
         let controller = ChatInboxController()
         let inbox = self.latestMessages[indexPath.item].inbox
         controller.inbox = inbox
+        self.navigationItem.backBarButtonItem = UIBarButtonItem(title: " ", style: .plain, target: nil, action: nil)
         navigationController?.pushViewController(controller, animated: true)
     }
 }

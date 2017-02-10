@@ -2,12 +2,13 @@ Classrooms Firebase integration
 
 ** Inbox
 
-- ChatInboxController
+- Private Chats
 + Push notifications
+    + Transfer to the right screen
++ Check if changing profile pic changes pic in classroom and private chats
 + Offline push notifications directing to the right chat message by using side effect
 
-- InboxController
-
++ Investigate user settings not being set? Why? Is it because of log out clearing settings? Or settings simply do not get set at registration?
 
 ** Push notifications
 

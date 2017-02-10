@@ -455,7 +455,7 @@ class ChatInboxController: UIViewController, UICollectionViewDelegateFlowLayout,
         return button
     }()
     
-    open var profile: Profile?
+    open var profile: Profile? // Profile of recipient
     
     fileprivate func downloadProfile() { // Profile is also downloaded here to prepare for potential next screen
         if profile == nil {
@@ -649,8 +649,8 @@ class ChatInboxController: UIViewController, UICollectionViewDelegateFlowLayout,
     func handleSend() {
         if let text = inputTextView.text {
             self.resetInputContainer()
-            DataService.ds.addInboxChatMessage(inbox: inbox, text: text.trim(), completed: { (isSuccess, updatedInbox) in
-                if !isSuccess || updatedInbox == nil {
+            DataService.ds.addInboxChatMessage(inbox: inbox, text: text.trim(), completed: { (isSuccess) in
+                if !isSuccess {
                     log.error("[Error] Message failed to be posted")
                     showErrorAlert(vc: self, title: "Error", message: "Could not send message. Please try again.")
                     return

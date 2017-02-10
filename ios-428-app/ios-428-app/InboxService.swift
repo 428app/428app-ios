@@ -93,6 +93,7 @@ extension DataService {
         
         let handle = ref.observe(.value, with: { snapshot in
             if !snapshot.exists() {
+                
                 completed(false, nil)
                 return
             }
@@ -174,65 +175,37 @@ extension DataService {
     
     // Adds a private message to the private chat, used in ChatInboxController
     // It's a long function mainly because we have to decide whether to push this user a notification and update the badge count
-    func addInboxChatMessage(inbox: Inbox, text: String, completed: @escaping (_ isSuccess: Bool, _ inbox: Inbox?) -> ()) {
-        guard let uid = getStoredUid() else {
-            completed(false, nil)
+    func addInboxChatMessage(inbox: Inbox, text: String, completed: @escaping (_ isSuccess: Bool) -> ()) {
+        guard let uid = getStoredUid(), let profile = myProfile else {
+            completed(false)
             return
         }
         let poster = uid
         let uid2 = inbox.uid
         let inboxId: String = getInboxId(uid1: uid, uid2: uid2)
         let timestamp = Date().timeIntervalSince1970
-        let messagesRef: FIRDatabaseReference = REF_INBOX.child(inboxId).childByAutoId()
+        
+        // Append message to inbox messages first and send complete
+        let messagesRef: FIRDatabaseReference = REF_INBOXMESSAGES.child(inboxId).childByAutoId()
         let mid = messagesRef.key
         let newMessage: [String: Any] = ["message": text, "timestamp": timestamp, "poster": poster]
+        messagesRef.setValue(newMessage) { (err, ref) in
+            completed(err == nil)
+        }
         
         // Need to get hasNew of recipient user first
-        
-        
-        self.REF_USERS.child(uid2).observeSingleEvent(of: .value, with: { recipientSnap in
-            guard let recipient = recipientSnap.value as? [String: Any] else {
-                return
-            }
-            
-            
-            
-            guard let pushToken = recipient["pushToken"] as? String, let pushCount = recipient["pushCount"] as? Int else {
-                return
-            }
-            
-        })
-        
-        // Creates new message in two places: Inbox Messages and Inbox (lastMessage)
-        // Do a multipath update to preserve atomicity, even for offline updates
-        REF_BASE.updateChildValues(["inboxMessages/\(inboxId)/\(mid)": newMessage, "inbox/\(inboxId)/mid": mid, "inbox/\(inboxId)/lastMessage": text, "inbox/\(inboxId)/timestamp": timestamp, "inbox/\(inboxId)/poster": poster, "inbox/\(inboxId)/hasNew:\(uid)": false]) { (err, ref) in
-            if (err != nil) {
-                completed(false, nil)
-                return
-            }
-            
-            // Add to the inbox cache on both users' profiles, just in case this is the first time both have talked to each other
-            if myProfile == nil {
-                DataService.ds.getUserFields(uid: uid, completed: { (isSuccess, profile_) in
-                    if !isSuccess {
-                        return
-                    }
-                    myProfile = profile_
-                    self.REF_BASE.updateChildValues(["users/\(uid)/inbox/\(uid2)/discipline": inbox.discipline, "users/\(uid)/inbox/\(uid2)/name": inbox.name, "users/\(uid)/inbox/\(uid2)/profilePhoto": inbox.profileImageName, "users/\(uid2)/inbox/\(uid)/discipline": myProfile!.discipline, "users/\(uid2)/inbox/\(uid)/name": myProfile!.name, "users/\(uid2)/inbox/\(uid)/profilePhoto": myProfile!.profileImageName])
-                })
-            } else {
-                self.REF_BASE.updateChildValues(["users/\(uid)/inbox/\(uid2)/discipline": inbox.discipline, "users/\(uid)/inbox/\(uid2)/name": inbox.name, "users/\(uid)/inbox/\(uid2)/profilePhoto": inbox.profileImageName, "users/\(uid2)/inbox/\(uid)/discipline": myProfile!.discipline, "users/\(uid2)/inbox/\(uid)/name": myProfile!.name, "users/\(uid2)/inbox/\(uid)/profilePhoto": myProfile!.profileImageName])
+        self.REF_INBOX.child("\(inboxId)/hasNew:\(uid2)").observeSingleEvent(of: .value, with: { hasNewSnap in
+            var hasNew = false
+            if let hasNew_ = hasNewSnap.value as? Bool {
+                hasNew = hasNew_
             }
 
+            // Also set joint Inbox, and each other's Inbox
+            self.REF_BASE.updateChildValues(["inbox/\(inboxId)/hasNew:\(uid)": false, "inbox/\(inboxId)/hasNew:\(uid2)": true, "inbox/\(inboxId)/lastMessage": text, "inbox/\(inboxId)/mid": mid, "inbox/\(inboxId)/poster": poster, "inbox/\(inboxId)/timestamp": timestamp, "users/\(uid)/inbox/\(uid2)/discipline": inbox.discipline, "users/\(uid)/inbox/\(uid2)/name": inbox.name, "users/\(uid)/inbox/\(uid2)/profilePhoto": inbox.profileImageName, "users/\(uid2)/inbox/\(uid)/discipline": profile.discipline, "users/\(uid2)/inbox/\(uid)/name": profile.name, "users/\(uid2)/inbox/\(uid)/profilePhoto": profile.profileImageName])
             
-            // Populate front end with chat message - this is done before push notification logic because this has to be done fast!
-            let msg = InboxMessage(mid: mid, text: text, inbox: inbox, date: Date(timeIntervalSince1970: timestamp), isSentByYou: true)
-            inbox.addMessage(message: msg)
-            completed(true, inbox)
+            // Decide if push notification should be sent
             
-            // Do push notification stuff here without a completion callback - Push notifications are not guaranteed to be delivered anyway
-            
-            // Get recipient's settings first
+            // Grab recipient user settings first
             let settingsRef = self.REF_USERSETTINGS.child(uid2)
             settingsRef.keepSynced(true)
             settingsRef.observeSingleEvent(of: .value, with: { settingsSnap in
@@ -240,68 +213,35 @@ extension DataService {
                 if let settingDict = settingsSnap.value as? [String: Bool], let inApp = settingDict["inAppNotifications"] {
                     inAppSettings = inApp
                 }
-                // Check if /privateMessages and /isLoggedIn are both true
-                if let settingDict = settingsSnap.value as? [String: Bool], let acceptsPrivateMessages = settingDict["privateMessages"], let isLoggedIn = settingDict["isLoggedIn"] {
-                    if !acceptsPrivateMessages || !isLoggedIn {
+                // Check if /inboxMessages and /isLoggedIn are both true
+                if let settingDict = settingsSnap.value as? [String: Bool], let acceptsInboxMessages = settingDict["inboxMessages"], let isLoggedIn = settingDict["isLoggedIn"] {
+                    if !acceptsInboxMessages || !isLoggedIn {
                         // Not allowed to push messages. Increment badge count if necessary, then return
-                        if !hasUpdates {
+                        if !hasNew {
                             self.adjustPushCount(isIncrement: true, uid: uid2, completed: { (isSuccess) in })
                         }
-                        
-                        self.REF_USERS.child("\(classmateUid)/classrooms/\(cid)/hasUpdates").setValue(true)
                         return
                     }
                 }
+                
+                // Allowed to push notification, grab push token and push count, then add to notification queue
+                self.REF_USERS.child(uid2).observeSingleEvent(of: .value, with: { userSnap in
+                    guard let userDict = userSnap.value as? [String: Any], let pushToken = userDict["pushToken"] as? String, let pushCount = userDict["pushCount"] as? Int else {
+                        return
+                    }
+                    if hasNew {
+                        // There are already new push notifications for this user, just send notification without incrementing badge
+                        self.addToNotificationQueue(type: .INBOX, posterUid: uid, posterName: profile.name, posterImage: profile.profileImageName, recipientUid: uid2, pushToken: pushToken, pushCount: pushCount, inApp: inAppSettings, cid: "", title: "Inbox", body: text)
+                    } else {
+                        self.adjustPushCount(isIncrement: true, uid: uid2, completed: { (isSuccessAdjusted) in
+                            if isSuccessAdjusted {
+                                self.addToNotificationQueue(type: .INBOX, posterUid: uid, posterName: profile.name, posterImage: profile.profileImageName, recipientUid: uid2, pushToken: pushToken, pushCount: pushCount, inApp: inAppSettings, cid: "", title: "Inbox", body: text)
+                            }
+                        })
+                    }
+                })
             })
-            
-
-            
-            
-//            self.REF_INBOX.child(inboxId).observeSingleEvent(of: .value, with: { chatSnap in
-//                if !chatSnap.exists() {
-//                    return
-//                }
-//                guard let chatDict = chatSnap.value as? [String: Any], let hasNew = chatDict["hasNew:\(inbox.uid)"] as? Bool else {
-//                    return
-//                }
-//                
-//                // First check if the recipient has UserSettings - inboxMessages set to true AND user isLoggedIn. If not, don't bother queuing a push notification.
-//                let settingsRef = self.REF_USERSETTINGS.child(inbox.uid)
-//                
-//                settingsRef.keepSynced(true) // Syncing settings is important
-//                
-//                settingsRef.observeSingleEvent(of: .value, with: { settingsSnap in
-//                    // If the private messages setting exists, and is set to False, then terminate here
-//                    if settingsSnap.exists() {
-//                        // Check if /inboxMessages and /isLoggedIn are both true
-//                        if let settingDict = settingsSnap.value as? [String: Bool], let acceptsInboxMessages = settingDict["inboxMessages"], let isLoggedIn = settingDict["isLoggedIn"] {
-//                            if !acceptsInboxMessages || !isLoggedIn {
-//                                // Not allowed to push messages. Increment badge count if necessary, then return
-//                                if !hasNew {
-//                                    self.adjustPushCount(isIncrement: true, uid: inbox.uid, completed: { (isSuccess) in })
-//                                }
-//                                self.REF_INBOX.child("\(inboxId)/hasNew:\(inbox.uid)").setValue(true)
-//                                return
-//                            }
-//                        }
-//                    }
-//                    
-//                    // Allowed to send push notifications
-//                    
-//                    if hasNew {
-//                        // There are already new messages from this chat for this user, just send a notification without updating badge
-//                        self.addToNotificationQueue(type: TokenType.INBOX, posterUid: uid, recipientUid: inbox.uid, cid: "", title: "Inbox", body: text)
-//                        return
-//                    }
-//                    // No new messages for this user, set hasNew to true, and increment badge count for this user in Users table
-//                    self.REF_INBOX.child("\(inboxId)/hasNew:\(inbox.uid)").setValue(true)
-//                    self.adjustPushCount(isIncrement: true, uid: inbox.uid, completed: { (isSuccess) in
-//                        // After badge count is incremented, then push notification. This is crucial because push notificatin reads off the badge count in the users table.
-//                        self.addToNotificationQueue(type: TokenType.INBOX, posterUid: uid, recipientUid: inbox.uid, cid: "", title: "Inbox", body: text)
-//                    })
-//                })
-//            })
-        }
+        })
     }
     
     // Called whenever a user clicks on a private chat that is not previously seen to update the private chat's
@@ -311,6 +251,7 @@ extension DataService {
             completed(false)
             return
         }
+        
         let inboxId: String = getInboxId(uid1: uid, uid2: inbox.uid)
         
         // Get hasNew value, if it is not hasNew: false already then do not adjust badge count
