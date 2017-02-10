@@ -34,8 +34,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
  
         // Note that if a remote notification launches the app, we will NOT support directing it to the right page because the data has likely not been loaded and it can very tricky to wait for data to load before pushing the right page (even worse under bad network conditions!)
         setupRemoteNotifications(application: application)
-        
-        
 
         return FBSDKApplicationDelegate.sharedInstance()
             .application(application, didFinishLaunchingWithOptions: launchOptions)
@@ -291,22 +289,23 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         }
     }
     
-    // Open the correct connection that matches uid
+    // Open the correct private chat that matches uid
     fileprivate func findAndTransitionToInbox(uid: String, tabBarController: CustomTabBarController) {
         
-        guard let vcs = tabBarController.viewControllers, let inboxNVC = vcs[0] as? CustomNavigationController, let inboxVC = inboxNVC.viewControllers.first as? InboxController else {
+        guard let vcs = tabBarController.viewControllers, let inboxNVC = vcs[2] as? CustomNavigationController, let inboxVC = inboxNVC.viewControllers.first as? InboxController else {
             return
         }
         
         if inboxNVC.viewControllers.count > 1 {
-            // Currently in a chat screen or profile screen, etc., need to dismiss back to ConnectionsController before pushing ChatInboxController
+            // Currently in a chat screen or profile screen, etc., need to dismiss back to InboxController before pushing ChatInboxController
             inboxNVC.popToRootViewController(animated: false)
         }
         
-        // Look for the correct connection in latest messages
+        // Look for the correct private message in latest messages
         let correctMessage = inboxVC.latestMessages.filter() {$0.inbox.uid == uid}
         if correctMessage.count != 1 {
-            log.warning("Uid could not be found in private chats / too many of the same uid")
+            tabBarController.selectedIndex = 2
+            log.warning("Inbox not loaded yet")
             return
         }
         
@@ -314,7 +313,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         chatVC.inbox = correctMessage[0].inbox
         inboxNVC.viewControllers[0].navigationItem.backBarButtonItem = UIBarButtonItem(title: " ", style: .plain, target: nil, action: nil)
         inboxNVC.pushViewController(chatVC, animated: false)
-        tabBarController.selectedIndex = 0
+        tabBarController.selectedIndex = 2
     }
     
     // Open the correct classroom that matches cid
@@ -331,11 +330,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // Look for the correct classroom in all classrooms
         
         // Note: Because ClassroomVC is not loaded by default, the classrooms array might still be empty until the user clicks on the Classrooms tab. In that case, we just change the tab index instead of going into the individual classroom.
-        
         let correctClassroom = classroomsVC.classrooms.filter() {$0.cid == cid}
         if correctClassroom.count != 1 {
             tabBarController.selectedIndex = 1
-            log.warning("Cid could not be found in classrooms / too many of the same cid, OR page not loaded yet")
+            log.warning("Classrooms not loaded yet")
             return
         }
         let classChatVC: ChatClassroomController = ChatClassroomController()

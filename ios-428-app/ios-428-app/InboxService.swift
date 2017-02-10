@@ -231,11 +231,11 @@ extension DataService {
                     }
                     if hasNew {
                         // There are already new push notifications for this user, just send notification without incrementing badge
-                        self.addToNotificationQueue(type: .INBOX, posterUid: uid, posterName: profile.name, posterImage: profile.profileImageName, recipientUid: uid2, pushToken: pushToken, pushCount: pushCount, inApp: inAppSettings, cid: "", title: "Inbox", body: text)
+                        self.addToNotificationQueue(type: .INBOX, posterUid: uid, posterName: profile.name, posterImage: profile.profileImageName, recipientUid: uid2, pushToken: pushToken, pushCount: pushCount, inApp: inAppSettings, cid: "", title: "Private Message", body: text)
                     } else {
                         self.adjustPushCount(isIncrement: true, uid: uid2, completed: { (isSuccessAdjusted) in
                             if isSuccessAdjusted {
-                                self.addToNotificationQueue(type: .INBOX, posterUid: uid, posterName: profile.name, posterImage: profile.profileImageName, recipientUid: uid2, pushToken: pushToken, pushCount: pushCount, inApp: inAppSettings, cid: "", title: "Inbox", body: text)
+                                self.addToNotificationQueue(type: .INBOX, posterUid: uid, posterName: profile.name, posterImage: profile.profileImageName, recipientUid: uid2, pushToken: pushToken, pushCount: pushCount, inApp: inAppSettings, cid: "", title: "Private Message", body: text)
                             }
                         })
                     }
