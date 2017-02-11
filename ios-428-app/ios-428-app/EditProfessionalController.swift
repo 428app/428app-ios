@@ -234,11 +234,8 @@ class EditProfessionalController: UIViewController, UITextFieldDelegate, UIPicke
     }
     
     fileprivate func allFieldsValid() -> Bool {
-        // Makes sure none of the fields are empty
-        if disciplineTextField.text == nil || schoolTextField.text == nil || orgTextField.text == nil {
-            return false
-        }
-        return disciplineTextField.text?.trim() != "" && schoolTextField.text?.trim() != "" && orgTextField.text?.trim() != ""
+        // Make sure discipline is not empty
+        return disciplineTextField.text != nil && disciplineTextField.text?.trim() != ""
     }
     
     // MARK: Pickerview for discipline

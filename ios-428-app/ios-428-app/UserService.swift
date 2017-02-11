@@ -266,7 +266,7 @@ extension DataService {
                 if let l = userDict["location"] as? String {
                     location = l
                 }
-                // TODO: Test if badges and classrooms work
+                // TODO: Badges
                 var badges = [String]()
                 if let b = userDict["badges"] as? [String: Bool] {
                     badges = [String](b.keys)

@@ -428,12 +428,12 @@ class ProfileController: UIViewController, UIGestureRecognizerDelegate, UIScroll
         disciplineImageView.image = UIImage(named: profile.disciplineIcon)
         
         locationText.text = profile.location
-        schoolText.text = profile.school
-        organizationText.text = profile.org
+        schoolText.text = profile.school.isEmpty ? "TOO LAZY to fill this in." : profile.school
+        organizationText.text = profile.org.isEmpty ? "TOO LAZY to fill this in." : profile.org
         let paragraphStyle = NSMutableParagraphStyle()
         paragraphStyle.lineSpacing = 6
         paragraphStyle.alignment = .left
-        let taglineString = NSMutableAttributedString(string: profile.tagline, attributes: [NSForegroundColorAttributeName: UIColor.gray, NSParagraphStyleAttributeName: paragraphStyle])
+        let taglineString = NSMutableAttributedString(string: profile.tagline.isEmpty ? "TOO LAZY to fill this in." : profile.tagline, attributes: [NSForegroundColorAttributeName: UIColor.gray, NSParagraphStyleAttributeName: paragraphStyle])
         taglineText.attributedText = taglineString
         
         self.badges = profile.badgeIcons
