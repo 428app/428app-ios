@@ -115,7 +115,7 @@ extension DataService {
                 var memberIds: [String] = [String]()
                 let totalMemberIds: [String] = Array(classmateAndSuperlativeType.keys)
                 
-                var superlativeType: SuperlativeType = SuperlativeType.NOTRATED
+                var superlativeType: SuperlativeType = SuperlativeType.NOTVOTED
                 for (uid_, superlativeType_) in classmateAndSuperlativeType {
                     
                     // Find superlative type of this user

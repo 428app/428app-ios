@@ -31,7 +31,7 @@ class SuperlativeAlertController: UIViewController {
     
     fileprivate let superlativeLbl: UILabel = {
         let label = UILabel()
-        label.text = "It's time to rate your classmates!"
+        label.text = "It's time to vote for superlatives!"
         label.font = FONT_MEDIUM_MID
         label.textAlignment = .center
         label.numberOfLines = 0
@@ -52,9 +52,9 @@ class SuperlativeAlertController: UIViewController {
         return btn
     }
     
-    fileprivate lazy var rateBtn: UIButton = {
+    fileprivate lazy var voteBtn: UIButton = {
         let btn = self.btnTemplate()
-        btn.setTitle("Rate now", for: .normal)
+        btn.setTitle("Vote now", for: .normal)
         btn.addTarget(self, action: #selector(self.voteNow), for: .touchUpInside)
         return btn
     }()
@@ -86,13 +86,13 @@ class SuperlativeAlertController: UIViewController {
         
         containerView.addSubview(superlativeIcon)
         containerView.addSubview(superlativeLbl)
-        containerView.addSubview(rateBtn)
+        containerView.addSubview(voteBtn)
         containerView.addSubview(cancelBtn)
-        containerView.addConstraintsWithFormat("V:|-8-[v0(50)]-8-[v1(30)]-8-[v2(40)]-8-[v3(40)]-8-|", views: superlativeIcon, superlativeLbl, rateBtn, cancelBtn)
+        containerView.addConstraintsWithFormat("V:|-8-[v0(50)]-8-[v1(30)]-8-[v2(40)]-8-[v3(40)]-8-|", views: superlativeIcon, superlativeLbl, voteBtn, cancelBtn)
         containerView.addConstraintsWithFormat("H:[v0(50)]", views: superlativeIcon)
         containerView.addConstraint(NSLayoutConstraint(item: superlativeIcon, attribute: .centerX, relatedBy: .equal, toItem: containerView, attribute: .centerX, multiplier: 1.0, constant: 0.0))
         containerView.addConstraintsWithFormat("H:|-8-[v0]-8-|", views: superlativeLbl)
-        containerView.addConstraintsWithFormat("H:|-8-[v0]-8-|", views: rateBtn)
+        containerView.addConstraintsWithFormat("H:|-8-[v0]-8-|", views: voteBtn)
         containerView.addConstraintsWithFormat("H:|-8-[v0]-8-|", views: cancelBtn)
         
         view.addSubview(containerView)

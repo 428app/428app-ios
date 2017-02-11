@@ -64,7 +64,7 @@ func convertBirthdayToAge(birthday: String) -> Int {
 // Converts <lat>, <lon> String to <Country>, <City> String
 func convertLocationToCityAndCountry(location: String, completed: @escaping (_ cityCountry: String) -> ()) {
     let latlon = location.components(separatedBy: ",")
-    let errorLocation: String = "Location Unknown"
+    let errorLocation: String = "Unknown"
     if latlon.count != 2 {
         completed(errorLocation)
         return

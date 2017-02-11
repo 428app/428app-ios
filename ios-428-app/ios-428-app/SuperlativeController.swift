@@ -64,7 +64,7 @@ class SuperlativeController: UIViewController, UICollectionViewDelegate, UIColle
     }()
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        if self.classroom.superlativeType == SuperlativeType.NOTRATED {
+        if self.classroom.superlativeType == SuperlativeType.NOTVOTED {
             return self.classroom.superlatives.count
         } else {
             return self.classroom.results.count
@@ -74,7 +74,7 @@ class SuperlativeController: UIViewController, UICollectionViewDelegate, UIColle
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: CELL_ID, for: indexPath) as! SuperlativeCell
         var superlative: Superlative!
-        if self.classroom.superlativeType == SuperlativeType.NOTRATED {
+        if self.classroom.superlativeType == SuperlativeType.NOTVOTED {
             superlative = self.classroom.superlatives[indexPath.item]
         } else {
             superlative = self.classroom.results[indexPath.item]
@@ -249,12 +249,12 @@ class SuperlativeController: UIViewController, UICollectionViewDelegate, UIColle
         checkToEnableSubmitSuperlative()
     }
     
-    func submitSuperlatives() { // Used in NOTRATED stage, and on success transfer to RATED stage
+    func submitSuperlatives() { // Used in NOTVOTED stage, and on success transfer to VOTED stage
         showLoader(message: "Submitting your votes...")
         DataService.ds.submitSuperlativeVote(classroom: self.classroom) { (isSuccess) in
             hideLoader()
             if isSuccess {
-                self.toggleViews(superlativeType: SuperlativeType.RATED)
+                self.toggleViews(superlativeType: SuperlativeType.VOTED)
                 // Hack: Increase share frame
                 self.shareContainer.frame = CGRect(x: 0, y: self.navigationController!.navigationBar.frame.size.height + 15.0, width: UIScreen.main.bounds.width, height: UIScreen.main.bounds.height)
             } else {
@@ -279,7 +279,7 @@ class SuperlativeController: UIViewController, UICollectionViewDelegate, UIColle
         
         self.classroom.superlativeType = superlativeType
         
-        if superlativeType == .RATED {
+        if superlativeType == .VOTED {
             // Rated but not shared, hide collection view and show share
             self.navigationItem.title = "Superlatives"
             shareContainer.isHidden = false
@@ -295,7 +295,7 @@ class SuperlativeController: UIViewController, UICollectionViewDelegate, UIColle
             self.view.backgroundColor = GREEN_UICOLOR
             self.extendedLayoutIncludesOpaqueBars = true
             
-            if superlativeType == .NOTRATED {
+            if superlativeType == .NOTVOTED {
                 // Allow user to rate
                 self.navigationItem.title = "Superlatives"
                 self.navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Submit", style: .done, target: self, action: #selector(submitSuperlatives))

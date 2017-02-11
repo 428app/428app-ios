@@ -409,14 +409,20 @@ class ProfileController: UIViewController, UIGestureRecognizerDelegate, UIScroll
         // Add no badges and no classrooms lbl to collection views in case there are no badges or classrooms, if necessary
         // Note that this has to be after data is loaded above
         if badges.count == 0 {
+            self.noBadgesLbl.isHidden = false
             containerView.addSubview(noBadgesLbl)
             containerView.addConstraint(NSLayoutConstraint(item: noBadgesLbl, attribute: .top, relatedBy: .equal, toItem: badgesLbl, attribute: .bottom, multiplier: 1.0, constant: 8.0))
             containerView.addConstraintsWithFormat("H:|-8-[v0]-8-|", views: noBadgesLbl)
+        } else {
+            self.noBadgesLbl.isHidden = true
         }
         if classrooms.count == 0 {
+            self.noClassroomsLbl.isHidden = false
             containerView.addSubview(noClassroomsLbl)
             containerView.addConstraint(NSLayoutConstraint(item: noClassroomsLbl, attribute: .top, relatedBy: .equal, toItem: classroomsLbl, attribute: .bottom, multiplier: 1.0, constant: 8.0))
             containerView.addConstraintsWithFormat("H:|-8-[v0]-8-|", views: noClassroomsLbl)
+        } else {
+            self.noClassroomsLbl.isHidden = true
         }
     }
     
@@ -427,7 +433,7 @@ class ProfileController: UIViewController, UIGestureRecognizerDelegate, UIScroll
         nameAndAgeLbl.text = "\(profile.name), \(profile.age)"
         disciplineImageView.image = UIImage(named: profile.disciplineIcon)
         
-        locationText.text = profile.location
+        locationText.text = profile.location.isEmpty ? "Unknown" : profile.location
         schoolText.text = profile.school.isEmpty ? "TOO LAZY to fill this in." : profile.school
         organizationText.text = profile.org.isEmpty ? "TOO LAZY to fill this in." : profile.org
         let paragraphStyle = NSMutableParagraphStyle()

@@ -30,7 +30,7 @@ class Classroom {
     var _questionNum: Int
     var _imageName: String
     
-    init(cid: String, title: String, timeCreated: Double, members: [Profile], questions: [Question], classroomMessages: [ClassroomMessage] = [], superlatives: [Superlative] = [], results: [Superlative] = [], superlativeType: SuperlativeType = SuperlativeType.NOTRATED, hasUpdates: Bool = false, hasSuperlatives: Bool = false, isVotingOngoing: Bool = false) {
+    init(cid: String, title: String, timeCreated: Double, members: [Profile], questions: [Question], classroomMessages: [ClassroomMessage] = [], superlatives: [Superlative] = [], results: [Superlative] = [], superlativeType: SuperlativeType = SuperlativeType.NOTVOTED, hasUpdates: Bool = false, hasSuperlatives: Bool = false, isVotingOngoing: Bool = false) {
         _cid = cid
         _title = title
         _timeCreated = timeCreated

@@ -14,5 +14,5 @@ enum TokenType: String {
 }
 
 enum SuperlativeType: Int {
-    case NOTRATED = 0, RATED, SHARED
+    case NOTVOTED = 0, VOTED, SHARED
 }

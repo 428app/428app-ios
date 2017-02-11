@@ -52,6 +52,7 @@ class StorageService {
                             log.error("[Error] Failed to update cached details in all connections")
                         }
                     })
+
                     DataService.ds.updateUserPhoto(profilePhotoUrl: imageUrl, completed: { (isSuccess) in
                         // Also update the profile pic in all of user's connections' connections. This one need not be checked for completion.
                         completed(isSuccess)

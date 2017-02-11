@@ -75,7 +75,6 @@ extension DataService {
             
             for snap in snaps {
                 if let dict = snap.value as? [String: Any], let discipline = dict["discipline"] as? String, let name = dict["name"] as? String, let photo = dict["profilePhoto"] as? String {
-                    log.info("Value has changed: \(photo)")
                     let chat: Inbox = Inbox(uid: snap.key, name: name, profileImageName: photo, discipline: discipline)
                     chats.append(chat)
                 }
@@ -217,8 +216,6 @@ extension DataService {
             self.REF_USERS.child("\(uid)/inbox/\(uid2)").updateChildValues(uidValues)
             let uid2Values: [String: Any] = ["discipline": profile.discipline, "name": profile.name, "profilePhoto": profile.profileImageName]
             self.REF_USERS.child("\(uid2)/inbox/\(uid)").updateChildValues(uid2Values)
-            
-//            self.REF_BASE.updateChildValues(["inbox/\(inboxId)/hasNew:\(uid)": false, "inbox/\(inboxId)/hasNew:\(uid2)": true, "inbox/\(inboxId)/lastMessage": text, "inbox/\(inboxId)/mid": mid, "inbox/\(inboxId)/poster": poster, "inbox/\(inboxId)/timestamp": timestamp, "users/\(uid)/inbox/\(uid2)/discipline": inbox.discipline, "users/\(uid)/inbox/\(uid2)/name": inbox.name, "users/\(uid)/inbox/\(uid2)/profilePhoto": inbox.profileImageName, "users/\(uid2)/inbox/\(uid)/discipline": profile.discipline, "users/\(uid2)/inbox/\(uid)/name": profile.name, "users/\(uid2)/inbox/\(uid)/profilePhoto": profile.profileImageName])
             
             // Decide if push notification should be sent
             

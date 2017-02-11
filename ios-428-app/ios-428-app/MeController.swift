@@ -109,14 +109,20 @@ class MeController: UIViewController, UIGestureRecognizerDelegate, UIScrollViewD
                 // Add no badges and no classrooms lbl to collection views in case there are no badges or classrooms, if necessary
                 // Note that this has to be after data is loaded above
                 if self.badges.count == 0 {
+                    self.noBadgesLbl.isHidden = false
                     self.containerView.addSubview(self.noBadgesLbl)
                     self.containerView.addConstraint(NSLayoutConstraint(item: self.noBadgesLbl, attribute: .top, relatedBy: .equal, toItem: self.badgesLbl, attribute: .bottom, multiplier: 1.0, constant: 8.0))
                     self.containerView.addConstraintsWithFormat("H:|-8-[v0]-8-|", views: self.noBadgesLbl)
+                } else {
+                    self.noBadgesLbl.isHidden = true
                 }
                 if self.classrooms.count == 0 {
+                    self.noClassroomsLbl.isHidden = false
                     self.containerView.addSubview(self.noClassroomsLbl)
                     self.containerView.addConstraint(NSLayoutConstraint(item: self.noClassroomsLbl, attribute: .top, relatedBy: .equal, toItem: self.classroomsLbl, attribute: .bottom, multiplier: 1.0, constant: 8.0))
                     self.containerView.addConstraintsWithFormat("H:|-8-[v0]-8-|", views: self.noClassroomsLbl)
+                } else {
+                    self.noClassroomsLbl.isHidden = true
                 }
             }
         }

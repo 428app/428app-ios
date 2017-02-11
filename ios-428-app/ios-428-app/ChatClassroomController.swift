@@ -41,15 +41,7 @@ class ChatClassroomController: UIViewController, UIGestureRecognizerDelegate, UI
     
     let interactor = Interactor() // Used for transitioning to and from ProfileController
     
-    var classroom: Classroom! {
-        didSet {
-//            self.navigationItem.title = classroom.title
-//            self.questionBanner.text = "Read Question \(classroom.questionNum) here"
-//            self.messages = classroom.classroomMessages
-//            self.bucketMessagesIntoTime()
-//            self.assembleMessageIsLastInChain()
-        }
-    }
+    var classroom: Classroom!
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -65,9 +57,10 @@ class ChatClassroomController: UIViewController, UIGestureRecognizerDelegate, UI
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         self.tabBarController?.tabBar.isHidden = true
-        // TODO: Check if it is time to rate to show superlative alert
-        // Show superlative alert when
-        //        showSuperlativeAlert()
+        // Show superlative alert when there are superlatives and user has not voted
+        if classroom.hasSuperlatives && classroom.superlativeType == SuperlativeType.NOTVOTED {
+            showSuperlativeAlert()
+        }
         self.registerObservers()
     }
 
@@ -124,8 +117,6 @@ class ChatClassroomController: UIViewController, UIGestureRecognizerDelegate, UI
                 return
             }
             
-            log.info("Class messages updated")
-            
             // There are messages, hide and disable empty placeholder view
             self.emptyPlaceholderView.isHidden = true
             self.emptyPlaceholderView.isUserInteractionEnabled = false
@@ -151,7 +142,7 @@ class ChatClassroomController: UIViewController, UIGestureRecognizerDelegate, UI
     
     // Called upon pull to refresh
     fileprivate func observeMore() {
-        // TODO:
+
         self.removeTimeLabel()
         
         if self.queryAndHandle != nil {
@@ -172,8 +163,6 @@ class ChatClassroomController: UIViewController, UIGestureRecognizerDelegate, UI
                 self.reobserveMessages()
                 return
             }
-        
-        
             log.info("More classroom messages pulled")
             
             // There are messages, hide and disable empty placeholder view
@@ -408,7 +397,7 @@ class ChatClassroomController: UIViewController, UIGestureRecognizerDelegate, UI
         }
     }
     
-    // MARK: Superlative alert
+    // MARK: Superlatives
     
     fileprivate func showSuperlativeAlert() {
         let alertController = SuperlativeAlertController()
@@ -421,15 +410,9 @@ class ChatClassroomController: UIViewController, UIGestureRecognizerDelegate, UI
     }
     
     func launchSuperlativeController() {
-        // TODO: Read superlative type from server then load
         let controller = SuperlativeController()
         controller.classroom = self.classroom
         self.navigationItem.backBarButtonItem = UIBarButtonItem(title: " ", style: .plain, target: nil, action: nil)
-        // TODO: Potentially cache these two
-//        controller.results = self.classroom.results
-//        controller.superlatives = self.classroom.superlatives
-//        controller.classmates = self.classroom.members
-//        controller.superlativeType = self.classroom.superlativeType
         self.navigationController?.pushViewController(controller, animated: true)
     }
     
@@ -672,16 +655,6 @@ class ChatClassroomController: UIViewController, UIGestureRecognizerDelegate, UI
                     return
                 }
             })
-//            let message = ClassroomMessage(mid: "999", parentCid: self.classroom.cid, posterUid: profile.uid, text: text.trim(), date: Date(), isSentByYou: true)
-//            
-//            self.messages.append(message)
-//            self.bucketMessagesIntoTime()
-//            self.assembleMessageIsLastInChain()
-//            self.resetInputContainer()
-//            self.collectionView.reloadData()
-//            self.collectionView.layoutIfNeeded()
-//            self.scrollToLastItemInCollectionView()
-//            self.removeTimeLabel()
         }
     }
 
