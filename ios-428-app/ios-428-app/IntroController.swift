@@ -63,12 +63,6 @@ class IntroController: UIViewController, UIScrollViewDelegate, UITextFieldDelega
         return view
     }()
     
-    fileprivate let slider2View: UIView = {
-        let view = UIView()
-        view.backgroundColor = GRAY_UICOLOR
-        return view
-    }()
-    
     fileprivate let slider3View: UIView = {
         let view = UIView()
         view.backgroundColor = GRAY_UICOLOR
@@ -83,7 +77,14 @@ class IntroController: UIViewController, UIScrollViewDelegate, UITextFieldDelega
         scrollView.setContentOffset(CGPoint(x: x, y: 0), animated: true)
     }
     
-    // Delegate function that changes pageControl when scrollView scrolls
+    
+    // MARK: Scroll view delegates
+    
+    func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        self.keepKeyboard()
+    }
+    
+    // Delegate function that changes pageControl when scrollView finishes scrolling
     func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
         let pageNumber = round(scrollView.contentOffset.x / scrollView.frame.size.width)
         pageControl.currentPage = Int(pageNumber)
@@ -92,7 +93,6 @@ class IntroController: UIViewController, UIScrollViewDelegate, UITextFieldDelega
     fileprivate func setupViews() {
         
         sliderViews.append(slider1View)
-        sliderViews.append(slider2View)
         sliderViews.append(slider3View)
         
         view.addSubview(scrollView)
@@ -116,7 +116,6 @@ class IntroController: UIViewController, UIScrollViewDelegate, UITextFieldDelega
         view.addConstraintsWithFormat("V:[v0][v1(30)]-15-|", views: scrollView, pageControl)
         
         self.setupSlider1()
-        self.setupSlider2()
         self.setupSlider3()
  
     }
@@ -283,101 +282,9 @@ class IntroController: UIViewController, UIScrollViewDelegate, UITextFieldDelega
         slider1View.addConstraintsWithFormat("H:|-15-[v0]-15-|", views: disciplineTextField)
         slider1View.addConstraintsWithFormat("H:|-15-[v0]-15-|", views: slider1FillInNow)
         
-        let margin: CGFloat = max((UIScreen.main.bounds.height - 450) / 2.0, 0.0)
+        let margin: CGFloat = max((UIScreen.main.bounds.height - 500) / 2.0, 0.0)
         
         slider1View.addConstraintsWithFormat("V:|-\(margin)-[v0(40)]-15-[v1(20)]-5-[v2(45)]-25-[v3(20)]-5-[v4(45)]-25-[v5(20)]-5-[v6(45)]-10-[v7(20)]", views: firstTellUsLabel, disciplineTitleLabel, disciplineTextField, schoolTitleLabel, schoolTextField, orgTitleLabel, orgTextField, slider1FillInNow)
-    }
-    
-    // MARK: Slider 2 - I am working on text view
-    
-    fileprivate func placeholderTemplate() -> UILabel {
-        let label = UILabel()
-        label.numberOfLines = 0
-        label.font = UIFont.systemFont(ofSize: 16.0)
-        label.textColor = UIColor.lightGray
-        label.sizeToFit()
-        label.isHidden = false
-        return label
-    }
-    
-    fileprivate lazy var taglinePlaceholder: UILabel = {
-        let label: UILabel = self.placeholderTemplate()
-        label.text = "At 4:28pm, you can find me..."
-        return label
-    }()
-    
-    fileprivate func textViewTemplate() -> UITextView {
-        let textView = UITextView()
-        textView.font = UIFont.systemFont(ofSize: 16.0)
-        textView.textColor = UIColor.darkGray
-        textView.backgroundColor = UIColor.white
-        textView.delegate = self
-        textView.textAlignment = .left
-        textView.tintColor = GREEN_UICOLOR
-        return textView
-    }
-    
-    fileprivate lazy var taglineTextView: UITextView = {
-        let textView: UITextView = self.textViewTemplate()
-        return textView
-    }()
-    
-    fileprivate lazy var taglineLabel: UILabel = {
-        let label = UILabel()
-        label.font = FONT_HEAVY_LARGE
-        label.textColor = UIColor.black
-        label.textAlignment = .left
-        label.text = "What I do at 4:28pm:"
-        return label
-    }()
-    
-    fileprivate func countLabelTemplate() -> PaddingLabel {
-        let label = PaddingLabel()
-        label.font = FONT_HEAVY_SMALL
-        label.textColor = UIColor.gray
-        label.textAlignment = .right
-        label.backgroundColor = UIColor.white
-        return label
-    }
-    
-    fileprivate lazy var taglineCountLabel: UILabel = {
-        let label: UILabel = self.countLabelTemplate()
-        label.text = "\(self.MAX_TEXTVIEW_CHARACTERS)"
-        return label
-    }()
-    
-    fileprivate let taglineFillInLater: UILabel = {
-        let label = UILabel()
-        label.text = "You may fill this in later."
-        label.font = FONT_HEAVY_SMALL
-        label.textColor = GREEN_UICOLOR
-        label.textAlignment = .center
-        return label
-    }()
-    
-    fileprivate func setupSlider2() {
-        slider2View.addSubview(taglineLabel)
-        slider2View.addSubview(taglineTextView)
-        slider2View.addSubview(taglinePlaceholder)
-        slider2View.addSubview(taglineCountLabel)
-        slider2View.addSubview(taglineFillInLater)
-        
-        slider2View.addConstraintsWithFormat("H:|-8-[v0]", views: taglineLabel)
-        slider2View.addConstraintsWithFormat("H:|-8-[v0]-8-|", views: taglineTextView)
-        slider2View.addConstraintsWithFormat("H:|-8-[v0]-8-|", views: taglineCountLabel)
-        slider2View.addConstraintsWithFormat("H:|-8-[v0]-8-|", views: taglineFillInLater)
-        
-        let margin: CGFloat = max((UIScreen.main.bounds.height - 350) / 2.0, 0.0)
-        
-        // Each text view is 0.3 * screenSize
-        let textviewHeight = 0.28 * UIScreen.main.bounds.height
-        slider2View.addConstraintsWithFormat("V:|-\(margin)-[v0(20)]-8-[v1(\(textviewHeight))][v2(20)]-8-[v3(20)]", views: taglineLabel, taglineTextView, taglineCountLabel, taglineFillInLater)
-        
-        // Align placeholders to text views
-        slider2View.addConstraintsWithFormat("H:|-13-[v0]-13-|", views: taglinePlaceholder)
-        slider2View.addConstraintsWithFormat("V:[v0(100)]", views: taglinePlaceholder)
-        
-        slider2View.addConstraint(NSLayoutConstraint(item: taglinePlaceholder, attribute: .top, relatedBy: .equal, toItem: taglineLabel, attribute: .bottom, multiplier: 1.0, constant: -24.0))
     }
     
     // MARK: Slider 3 - Segue to main app
@@ -386,7 +293,7 @@ class IntroController: UIViewController, UIScrollViewDelegate, UITextFieldDelega
         let label = UILabel()
         label.font = FONT_MEDIUM_XLARGE
         label.textColor = UIColor.darkGray
-        label.text = "One new a classroom a week, and one new question a day at"
+        label.text = "1 classroom a week. \n 1 question a day. \n\n Given to you at: "
         label.textAlignment = .center
         label.numberOfLines = 0
         return label
@@ -396,7 +303,7 @@ class IntroController: UIViewController, UIScrollViewDelegate, UITextFieldDelega
         let label = UILabel()
         label.font = FONT_HEAVY_XXLARGE
         label.textColor = GREEN_UICOLOR
-        label.text = "4:28 pm"
+        label.text = "4:28pm"
         label.textAlignment = .center
         return label
     }()
@@ -437,7 +344,7 @@ class IntroController: UIViewController, UIScrollViewDelegate, UITextFieldDelega
     // Enter main app after updating user profile data
     func goIntoApp() {
         // Set environment variable, then dismiss to Login
-        DataService.ds.updateUserFields(discipline: disciplineTextField.text, school: schoolTextField.text, organization: orgTextField.text, tagline: taglineTextView.text, completed: { (isSuccess) in
+        DataService.ds.updateUserFields(discipline: disciplineTextField.text, school: schoolTextField.text, organization: orgTextField.text, completed: { (isSuccess) in
             if !isSuccess {
                 showErrorAlert(vc: self, title: "Unable to proceed", message: "We apologize. We seem to be unable to log you in at this time. Please try again later.")
             } else {
@@ -460,28 +367,8 @@ class IntroController: UIViewController, UIScrollViewDelegate, UITextFieldDelega
         slider3View.addConstraintsWithFormat("H:|-15-[v0]-15-|", views: goButton)
         slider3View.addConstraintsWithFormat("H:|-15-[v0]-15-|", views: cautionText)
         
-        let margin: CGFloat = max((UIScreen.main.bounds.height - 300) / 2.0, 0.0)
-        slider3View.addConstraintsWithFormat("V:|-\(margin)-[v0(80)]-8-[v1(40)]-8-[v2(40)]-8-[v3(30)]", views: descriptionLabel, _428Label, goButton, cautionText)
-    }
-    
-    // MARK: Text view
-    
-    func textViewDidChange(_ textView: UITextView) {
-        if textView == taglineTextView {
-            self.taglinePlaceholder.isHidden = !textView.text.isEmpty
-        }
-    }
-    
-    func textView(_ textView: UITextView, shouldChangeTextIn range: NSRange, replacementText text: String) -> Bool {
-        let newText = (textView.text as NSString).replacingCharacters(in: range, with: text)
-        let numberOfChars = newText.characters.count
-        
-        if numberOfChars <= MAX_TEXTVIEW_CHARACTERS {
-            if textView == taglineTextView {
-                taglineCountLabel.text = "\(max(MAX_TEXTVIEW_CHARACTERS - numberOfChars, 0))"
-            }
-        }
-        return numberOfChars < MAX_TEXTVIEW_CHARACTERS
+        let margin: CGFloat = max((UIScreen.main.bounds.height - 350) / 2.0, 0.0)
+        slider3View.addConstraintsWithFormat("V:|-\(margin)-[v0(100)]-(-10)-[v1(60)]-8-[v2(40)]-8-[v3(30)]", views: descriptionLabel, _428Label, goButton, cautionText)
     }
     
     // MARK: Text field
@@ -540,13 +427,6 @@ class IntroController: UIViewController, UIScrollViewDelegate, UITextFieldDelega
         return nil
     }
     
-    fileprivate func getActiveTextViewFrame() -> CGRect? {
-        if self.taglineTextView.isFirstResponder {
-            return slider2View.convert(taglineTextView.frame, to: view)
-        }
-        return nil
-    }
-    
     func handleKeyboardNotification(_ notification: Notification) {
         if let userInfo = notification.userInfo, let keyboardFrame = (userInfo[UIKeyboardFrameEndUserInfoKey] as? NSValue)?.cgRectValue, let animationDuration = userInfo[UIKeyboardAnimationDurationUserInfoKey] as? TimeInterval {
             let isKeyboardShowing = notification.name != Notification.Name.UIKeyboardWillHide
@@ -554,23 +434,24 @@ class IntroController: UIViewController, UIScrollViewDelegate, UITextFieldDelega
             let keyboardHeight = keyboardViewEndFrame.height
             
             let activeTextFieldFrame = getActiveTextFieldFrame()
-            let activeTextViewFrame = getActiveTextViewFrame()
-            if activeTextFieldFrame == nil && activeTextViewFrame == nil {
+            if activeTextFieldFrame == nil {
                 return
             }
             
             var bottomOfView: CGFloat = 0.0
             if activeTextFieldFrame != nil {
                 bottomOfView = activeTextFieldFrame!.maxY
-            } else if activeTextViewFrame != nil {
-                bottomOfView = activeTextViewFrame!.maxY + 60
             }
             let topOfKeyboard = self.view.bounds.maxY - keyboardHeight
+            log.info("Top of keyboard: \(topOfKeyboard)")
+            log.info("Bottom of view: \(bottomOfView)")
             UIView.animate(withDuration: animationDuration, animations: {
                 if isKeyboardShowing && bottomOfView >= topOfKeyboard {
+                    log.info("A")
                     let distanceShifted = min(keyboardHeight, abs(bottomOfView - topOfKeyboard))
                     self.view.frame.origin.y = -distanceShifted
                 } else {
+                    log.info("B")
                     self.view.frame.origin.y = 0
                     self.scrollView.frame = CGRect(x: 20.0, y: 28.0, width: self.frame.width, height: self.frame.height + 27.0)
                 }

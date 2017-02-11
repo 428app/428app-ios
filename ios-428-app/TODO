@@ -4,15 +4,14 @@ Classrooms Firebase integration
 
 - Private Chats
 
-+ Prevent user from deleting profession info
++ Make school and organization not compulsory
+
+
 + Set up classmates again, and test flow
-
-
++ Test negative cases (disallow notifications, etc.)
 
 + Check if changing profile pic changes pic in classroom and private chats
     - Make it change in classroom too?
-
-
 
 
 + New classroom, time to rate logic
