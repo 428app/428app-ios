@@ -356,14 +356,16 @@ class ChatClassroomController: UIViewController, UIGestureRecognizerDelegate, UI
         let superlativesAction = UIAlertAction(title: "Superlatives", style: .default) { (action) in
             self.launchSuperlativeController()
         }
+        
         answersAction.isEnabled = self.classroom.questions.count > 1 // Only enable seeing answers if there is more than 1 answer (current answer)
-        // TODO: Disable this if superlatives is nil
         superlativesAction.isEnabled = classroom.hasSuperlatives
         alertController.addAction(classmatesAction)
         alertController.addAction(answersAction)
         alertController.addAction(superlativesAction)
         alertController.addAction(cancelAction)
-        self.present(alertController, animated: true, completion: nil)
+        self.present(alertController, animated: true, completion: {
+            alertController.view.tintColor = GREEN_UICOLOR
+        })
     }
     
     // MARK: Question banner on top

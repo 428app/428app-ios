@@ -30,7 +30,8 @@ func downloadImage(imageUrlString: String, completed: @escaping (_ image: UIImag
                 completed(nil)
                 return
             }
-            completed(image)
             imageCache.add(image, withIdentifier: imageUrlString)
+            completed(image)
+            return
     }
 }

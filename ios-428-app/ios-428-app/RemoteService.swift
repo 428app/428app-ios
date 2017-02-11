@@ -44,6 +44,7 @@ extension DataService {
             return FIRTransactionResult.success(withValue: currentData)
         }) { (error, committed, snapshot) in
             completed(error == nil)
+            return
         }
     }
     
@@ -51,6 +52,7 @@ extension DataService {
     fileprivate func setPushCount(uid: String, pushCount: Int, completed: @escaping (_ isSuccess: Bool) -> ()) {
         REF_USERS.child("\(uid)/pushCount").setValue(pushCount, withCompletionBlock: { (err, ref) in
             completed(err == nil)
+            return
         })
     }
     
@@ -67,6 +69,7 @@ extension DataService {
                 }
             }
             completed(0)
+            return
         })
     }
     
@@ -103,6 +106,7 @@ extension DataService {
                 // No inboxes
                 self.setPushCount(uid: uid, pushCount: pushCount, completed: { (isSuccess) in
                     completed(isSuccess, pushCount)
+                    return
                 })
                 return
             }
@@ -122,6 +126,7 @@ extension DataService {
                     if numberOfInboxesLeft == 0 {
                         self.setPushCount(uid: uid, pushCount: pushCount, completed: { (isSuccess) in
                             completed(isSuccess, pushCount)
+                            return
                         })
                     }
                 })

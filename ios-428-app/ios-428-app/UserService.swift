@@ -27,10 +27,13 @@ extension DataService {
             FBSDKLoginManager().logOut()
             setIsLoggedIn(isLoggedIn: false, completed: { (isSuccess) in
                 completed(isSuccess)
+                return
             })
             return
+        } else {
+            completed(false)
+            return
         }
-        completed(false)
     }
     
     // Maintaining user's logged in state allows us to deliver our remote notifications correctly
@@ -39,8 +42,9 @@ extension DataService {
             completed(false)
             return
         }
-        REF_USERSETTINGS.child("\(uid)/isLoggedIn").setValue(isLoggedIn, withCompletionBlock: { (err, ref) in
+        REF_USERSETTINGS.child("\(uid)").updateChildValues(["isLoggedIn": isLoggedIn], withCompletionBlock: { (err, ref) in
             completed(err == nil)
+            return
         })
     }
     
@@ -61,6 +65,7 @@ extension DataService {
         var user: [String: Any] = ["fbid": fbid, "name": name, "birthday": birthday, "timezone": timezone, "lastSeen": timeNow]
         
         self.REF_USERS.child(uid).observeSingleEvent(of: .value, with: { snapshot in
+            
             if snapshot.exists() {
                 // Check if user has already filled in at least org, school and discipline, if not label first time user
                 var isFirstTimeUser = true
@@ -75,12 +80,14 @@ extension DataService {
                     }
                 }
                 
+                // Update isLoggedIn in user settings
+                self.setIsLoggedIn(isLoggedIn: true, completed: { (loginSuccess) in })
+                
                 // Update user info
                 self.REF_USERS.child(uid).updateChildValues(user, withCompletionBlock: { (err, ref) in
                     completed(err == nil, isFirstTimeUser)
+                    return
                 })
-                // Update isLoggedIn in user settings
-                self.setIsLoggedIn(isLoggedIn: true, completed: { (loginSuccess) in })
                 
             } else {
                 // Create new user
@@ -91,6 +98,7 @@ extension DataService {
                 
                 self.REF_BASE.updateChildValues(["/users/\(uid)": user, "/userSettings/\(uid)": userSettings], withCompletionBlock: { (err, ref) in
                     completed(err == nil, true)
+                    return
                 })
             }
         })
@@ -109,10 +117,12 @@ extension DataService {
                 // Location is in the format "lat, lon"
                 self.REF_USERS.child(uid).updateChildValues(["location": "\(lat),\(lon)", "lastSeen": timeNow], withCompletionBlock: { (error, ref) in
                     completed(error == nil)
+                    return
                 })
             } else {
                 // User does not exist. Error.
                 completed(false)
+                return
             }
         })
     }
@@ -142,10 +152,12 @@ extension DataService {
             if snapshot.exists() {
                 self.REF_USERS.child(uid).updateChildValues(["lastSeen": timeNow], withCompletionBlock: { (error, ref) in
                     completed(error == nil)
+                    return
                 })
             } else {
                 // User does not exist. Error
                 completed(false)
+                return
             }
         })
     }
@@ -179,10 +191,12 @@ extension DataService {
             if snapshot.exists() {
                 self.REF_USERS.child(uid).updateChildValues(userFields, withCompletionBlock: { (error, ref) in
                     completed(error == nil)
+                    return
                 })
             } else {
                 // User does not exist. Error
                 completed(false)
+                return
             }
         })
     }
@@ -195,12 +209,14 @@ extension DataService {
         }
         self.REF_USERS.child(uid).observeSingleEvent(of: .value, with: { snapshot in
             if snapshot.exists() {
-                self.REF_USERS.child(uid).updateChildValues(["profilePhoto": profilePhotoUrl], withCompletionBlock: { (error, ref) in
+                self.REF_USERS.child("\(uid)/profilePhoto").setValue(profilePhotoUrl, withCompletionBlock: { (error, ref) in
                     completed(error == nil)
+                    return
                 })
             } else {
                 // User does not exist. Error
                 completed(false)
+                return
             }
         })
     }
@@ -215,9 +231,11 @@ extension DataService {
         }
         
         let ref = self.REF_USERS.child(uid_)
+        
         ref.keepSynced(true)
         
         ref.observeSingleEvent(of: .value, with: { snapshot in
+            log.info("observed user")
             if snapshot.exists() {
                 
                 // Name, birthday, discipline, profile photo are compulsory fields
@@ -261,22 +279,25 @@ extension DataService {
                     // User disabled location, return here without location
                     let user = Profile(uid: uid_, name: name, profileImageName: profilePhotoUrl, discipline: discipline, age: age, location: "", school: school, org: org, tagline: tagline, badges: badges, classrooms: classrooms)
                     completed(true, user)
+                    return
                 }
                 // Convert "<lat>,<lon>" to "<City>, <State>, <Country>"
                 convertLocationToCityAndCountry(location: location) { (cityCountry) in
                     // User has city country here
                     let user = Profile(uid: uid_, name: name, profileImageName: profilePhotoUrl, discipline: discipline, age: age, location: cityCountry, school: school, org: org, tagline: tagline, badges: badges, classrooms: classrooms)
                     completed(true, user)
+                    return
                 }
             } else {
                 // User does not exist. Error
                 completed(false, nil)
+                return
             }
         })
     }
     
     // Whenever a user updates his details, be it picture in StorageService or textual info in EditProfessionalController, the changes are updated in the cache of the people he private messages
-    func updateCachedDetailsInPrivates(profilePhoto: String? = nil, discipline: String? = nil, completed: @escaping (_ isSuccess: Bool) -> ()) {
+    func updateCachedDetailsInInboxes(profilePhoto: String? = nil, discipline: String? = nil, completed: @escaping (_ isSuccess: Bool) -> ()) {
         guard let uid = getStoredUid() else {
             completed(false)
             return
@@ -294,7 +315,7 @@ extension DataService {
             var hasError = false
             for snap in snaps {
                 
-                // For each private, edit your profile pic/discipline in their list of privates
+                // For each inbox, edit your profile pic/discipline in their list of inboxes
                 let uid2 = snap.key
                 var updates: [String: Any] = [:]
                 if profilePhoto != nil {
@@ -309,6 +330,7 @@ extension DataService {
                     hasError = err != nil
                     if snapsLeft <= 0 {
                         completed(!hasError)
+                        return
                     }
                 })
             }
@@ -328,6 +350,7 @@ extension DataService {
         
         REF_USERSETTINGS.child(uid).updateChildValues(settings, withCompletionBlock: { (err, ref) in
             completed(err == nil)
+            return
         })
     }
     
@@ -354,6 +377,7 @@ extension DataService {
             // Note: The keys must be named exactly as you want them to appear on the frontend
             let settings = ["Daily alert": dailyAlert, "Private messages": inboxMessages, "Classroom messages": classroomMessages, "In-app notifications": inAppNotifications]
             completed(settings)
+            return
         })
     }
 }

@@ -42,6 +42,7 @@ extension DataService {
                 cids.append(snap.key)
             }
             completed(true, cids)
+            return
         })
         return (ref, handle)
     }
@@ -63,7 +64,14 @@ extension DataService {
             
             let qn = Question(qid: qid, timestamp: timestamp, imageName: imageName, question: question, answer: answer)
             completed(true, qn)
+            return
         })
+    }
+    
+    fileprivate func isIdenticalArrays(arr1: [Any], arr2: [Any]) -> Bool {
+        let set1 = NSCountedSet(array: arr1)
+        let set2 = NSCountedSet(array: arr2)
+        return set1 == set2
     }
     
     // Observes changes in a single classroom's meta information such as question number, etc., used in ClassroomController
@@ -88,6 +96,7 @@ extension DataService {
             
             // Grab the other details relevant to form a Classroom model
             self.REF_CLASSROOMS.child(cid).observeSingleEvent(of: .value, with: { classSnap in
+                
                 if !classSnap.exists() {
                     log.info("Failed at classroom-0")
                     completed(false, nil)
@@ -101,24 +110,33 @@ extension DataService {
                 
                 // Download profiles, and find this user's superlative type
                 var members: [Profile] = [Profile]()
+                
+                // Used as comparison to know if async task is done
+                var memberIds: [String] = [String]()
+                let totalMemberIds: [String] = Array(classmateAndSuperlativeType.keys)
+                
                 var superlativeType: SuperlativeType = SuperlativeType.NOTRATED
                 for (uid_, superlativeType_) in classmateAndSuperlativeType {
+                    
                     // Find superlative type of this user
                     if uid_ == uid {
                         superlativeType = SuperlativeType(rawValue: superlativeType_)!
                     }
                     // Download all classmates' profiles
                     self.getUserFields(uid: uid_, completed: { (isSuccess, userProfile) in
+                        
                         if !isSuccess || userProfile == nil {
                             // There was a problem getting a user's profile, so return false
                             log.info("Failed at user profiles")
                             completed(false, nil)
                             return
                         }
-
+                        
                         members.append(userProfile!)
-                        if members.count == classmateAndSuperlativeType.count { // All classmates uid read
-                            
+                        memberIds.append(userProfile!.uid)
+                        
+                        if self.isIdenticalArrays(arr1: memberIds, arr2: totalMemberIds) { // All classmates read
+                        
                             // Check if there are superlatives available yet
                             let hasSuperlatives = classDict["superlatives"] != nil
                             
@@ -137,6 +155,7 @@ extension DataService {
                                         // Form classroom messages in a separate call
                                         let classroom = Classroom(cid: cid, title: classTitle, timeCreated: timeCreated, members: members, questions: questions, superlativeType: superlativeType, hasUpdates: hasUpdates, hasSuperlatives: hasSuperlatives)
                                         completed(true, classroom) // Finally!
+                                        return
                                     }
                                 })
                             }
@@ -187,6 +206,7 @@ extension DataService {
         let handle = q.observe(.value, with: { snapshot in
             let updatedClassroom = self.processClassChatSnapshot(snapshot: snapshot, classroom: classroom, uid: uid)
             completed(updatedClassroom != nil, updatedClassroom)
+            return
         })
         return (q, handle)
     }
@@ -203,6 +223,7 @@ extension DataService {
             q.removeAllObservers()
             let updatedClassroom = self.processClassChatSnapshot(snapshot: snapshot, classroom: classroom, uid: uid)
             completed(updatedClassroom != nil, updatedClassroom)
+            return
         })
     }
     
@@ -232,6 +253,7 @@ extension DataService {
             let msg: ClassroomMessage = ClassroomMessage(mid: mid, parentCid: cid, posterUid: posterUid, text: text, date: Date(timeIntervalSince1970: timestamp), isSentByYou: true)
             classroom.addMessage(message: msg)
             completed(err == nil, classroom)
+            // NOTE: We do not return here, but also note that there are no more completed calls below
         }
         
         // Add to other classmates' hasUpdates
@@ -328,6 +350,7 @@ extension DataService {
         
         REF_CLASSROOMS.child(classroom.cid).updateChildValues(classUpdates) { (err, ref) in
             completed(err == nil)
+            return
         }
     }
     
@@ -341,6 +364,7 @@ extension DataService {
         let classUpdates: [String: Any] = ["memberHasVoted/\(uid)": 2]
         REF_CLASSROOMS.child(classroom.cid).updateChildValues(classUpdates) { (err, ref) in
             completed(err == nil)
+            return
         }
     }
     
@@ -350,8 +374,10 @@ extension DataService {
         REF_CLASSROOMS.child("\(cid)/memberHasVoted/\(uid)").observeSingleEvent(of: .value, with: { snapshot in
             if let superlativeState = snapshot.value as? Int {
                 completed(true, SuperlativeType(rawValue: superlativeState)!)
+                return
             } else {
                 completed(false, SuperlativeType(rawValue: 0)!)
+                return
             }
         })
     }
@@ -439,6 +465,7 @@ extension DataService {
             classroom.isVotingOngoing = isVotingOngoing
 
             completed(true, classroom)
+            return
         })
         return (ref, handle)
     }

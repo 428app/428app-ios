@@ -48,6 +48,7 @@ extension DataService {
             }
             inbox.hasNewMessages = hasNewMessages
             completed(true, inbox)
+            return
         })
     }
     
@@ -60,6 +61,7 @@ extension DataService {
         
         // Observed on value as not childAdded, as profile pic can change
         let handle = ref.observe(.value, with: { snapshot in
+            
             if !snapshot.exists() {
                 completed(false, [])
                 return
@@ -73,11 +75,13 @@ extension DataService {
             
             for snap in snaps {
                 if let dict = snap.value as? [String: Any], let discipline = dict["discipline"] as? String, let name = dict["name"] as? String, let photo = dict["profilePhoto"] as? String {
+                    log.info("Value has changed: \(photo)")
                     let chat: Inbox = Inbox(uid: snap.key, name: name, profileImageName: photo, discipline: discipline)
                     chats.append(chat)
                 }
             }
             completed(true, chats)
+            return
         })
         return (ref, handle)
     }
@@ -113,6 +117,7 @@ extension DataService {
             inbox.addMessage(message: msg)
             
             completed(true, inbox)
+            return
         })
         return (ref, handle)
     }
@@ -155,6 +160,7 @@ extension DataService {
         let handle = q.observe(.value, with: { snapshot in
             let chat = self.processChatSnapshot(snapshot: snapshot, inbox: inbox, uid: uid)
             completed(chat != nil, chat)
+            return
         })
         return (q, handle)
     }
@@ -170,6 +176,7 @@ extension DataService {
             q.removeAllObservers()
             let chat = self.processChatSnapshot(snapshot: snapshot, inbox: inbox, uid: uid)
             completed(chat != nil, chat)
+            return
         })
     }
     
@@ -191,6 +198,7 @@ extension DataService {
         let newMessage: [String: Any] = ["message": text, "timestamp": timestamp, "poster": poster]
         messagesRef.setValue(newMessage) { (err, ref) in
             completed(err == nil)
+            // NOTE: We do not return here because there is also no more completes down below this function
         }
         
         // Need to get hasNew of recipient user first
@@ -282,6 +290,7 @@ extension DataService {
                 }
                 self.adjustPushCount(isIncrement: false, uid: uid, completed: { (isSuccess) in
                     completed(isSuccess)
+                    return
                 })
             }
         })

@@ -166,6 +166,8 @@ class LoginController: UIViewController, UIScrollViewDelegate, CLLocationManager
             }
             
             let authuid = user!.uid
+            
+            log.info("AUTH UID: \(authuid)")
             let fbid = user!.providerData[0].uid // Use FBID as the key for users
             
             // Grab only the first part of the display name
@@ -180,6 +182,8 @@ class LoginController: UIViewController, UIScrollViewDelegate, CLLocationManager
             
             // Create/Update Firebase user with details
             DataService.ds.loginFirebaseUser(fbid: fbid, name: displayName, birthday: birthdayString, pictureUrl: pictureUrl, timezone: timezone, completed: { (isSuccess, isFirstTimeUser) in
+                log.info("Logged in user to our own Firebase")
+                
                 hideLoader()
                 if !isSuccess {
                     log.error("[Error] Login to Firebase failed")

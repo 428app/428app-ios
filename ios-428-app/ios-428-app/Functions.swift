@@ -108,5 +108,6 @@ func convertLocationToCityAndCountry(location: String, completed: @escaping (_ c
             cityCountry += ", \(country)"
         }
         completed(cityCountry)
+        return
     }
 }

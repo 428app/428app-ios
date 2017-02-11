@@ -3,16 +3,21 @@ Classrooms Firebase integration
 ** Inbox
 
 - Private Chats
-+ Push notifications
-    + Transfer to the right screen
+
++ Set up classmates again
+
++ For a completely new user - no profile pic downloaded from FB? And profile is frozen? Why?
++ Matcher code matching multiple Helens and Davids?
+
++ Logout blue tint
 + Check if changing profile pic changes pic in classroom and private chats
-+ Offline push notifications directing to the right chat message by using side effect
+    - Make it change in classroom too?
 
-+ Investigate user settings not being set? Why? Is it because of log out clearing settings? Or settings simply do not get set at registration?
 
-** Push notifications
 
-+ Launching the app brings up the right screen via side effect as Notifications do not work yet
+
++ New classroom, time to rate logic
+
 
 
 **Multi-user chats in classrooms

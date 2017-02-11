@@ -86,7 +86,7 @@ class EditProfessionalController: UIViewController, UITextFieldDelegate, UIPicke
             
             // If discipline has changed, update it in cached details of connections
             if myProfile?.discipline != disciplineSaved {
-                DataService.ds.updateCachedDetailsInPrivates(discipline: disciplineSaved, completed: { (isSuccess) in
+                DataService.ds.updateCachedDetailsInInboxes(discipline: disciplineSaved, completed: { (isSuccess) in
                     if !isSuccess {
                         log.error("[Error] Updating discipline in cached details of connections failed")
                     }
