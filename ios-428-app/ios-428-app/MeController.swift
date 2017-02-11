@@ -22,7 +22,7 @@ class MeController: UIViewController, UIGestureRecognizerDelegate, UIScrollViewD
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         tabBarController?.tabBar.isHidden = false
-        self.populateData()
+        self.loadData()
         self.registerObservers()
     }
     
@@ -62,7 +62,7 @@ class MeController: UIViewController, UIGestureRecognizerDelegate, UIScrollViewD
         }
         self.nameAndAgeLbl.text = "\(profileData.name), \(profileData.age)"
         self.disciplineImageView.image = UIImage(named: profileData.disciplineIcon)
-        // TODO: Badges, and classrooms
+        // TODO: Badges
         self.classrooms = profileData.classroomIcons
         self.classroomsCollectionView.reloadData()
     }
@@ -80,7 +80,7 @@ class MeController: UIViewController, UIGestureRecognizerDelegate, UIScrollViewD
     // MARK: Firebase
     
     // Grabs server settings, user profile from Firebase, then downloads profile image
-    fileprivate func populateData() {
+    fileprivate func loadData() {
         
         // Triggered when changes are made in EditProfileController/EditProfessionController and user goes back to MeController
         self.setProfilePic()

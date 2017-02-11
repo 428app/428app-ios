@@ -4,12 +4,11 @@ Classrooms Firebase integration
 
 - Private Chats
 
-+ Set up classmates again
++ Prevent user from deleting profession info
++ Set up classmates again, and test flow
 
-+ For a completely new user - no profile pic downloaded from FB? And profile is frozen? Why?
-+ Matcher code matching multiple Helens and Davids?
 
-+ Logout blue tint
+
 + Check if changing profile pic changes pic in classroom and private chats
     - Make it change in classroom too?
 

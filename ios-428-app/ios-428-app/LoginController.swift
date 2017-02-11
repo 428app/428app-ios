@@ -36,6 +36,8 @@ class LoginController: UIViewController, UIScrollViewDelegate, CLLocationManager
         super.viewDidAppear(animated)
         // These have to be in viewDidAppear, or they will not work
         if FIRAuth.auth()?.currentUser != nil && FBSDKAccessToken.current() != nil {
+            log.info("View did appear in Login")
+            
             if getStoredUid() == nil {
                 return
             }
@@ -173,12 +175,14 @@ class LoginController: UIViewController, UIScrollViewDelegate, CLLocationManager
             // Grab only the first part of the display name
             let fullDisplayName = user!.providerData[0].displayName!
             let displayName = fullDisplayName.components(separatedBy: " ")[0]
-            saveUid(uid: authuid) // Saving uid here is crucial for the rest of the app to function right
+            saveUid(uid: authuid) // Saving uid here is crucial so that loginFirebaseUser will return isSuccess
             
             
             // Get timezone
             let secondsFromGMT: Double = Double(NSTimeZone.local.secondsFromGMT())
             let timezone: Double = secondsFromGMT*1.0 / (60.0*60.0)
+            
+            log.info("Before logging in firebase with pictureUrl: \(pictureUrl)")
             
             // Create/Update Firebase user with details
             DataService.ds.loginFirebaseUser(fbid: fbid, name: displayName, birthday: birthdayString, pictureUrl: pictureUrl, timezone: timezone, completed: { (isSuccess, isFirstTimeUser) in
@@ -196,6 +200,8 @@ class LoginController: UIViewController, UIScrollViewDelegate, CLLocationManager
                 if isFirstTimeUser {
                     setHasToFillInfo(hasToFill: true)
                 }
+                
+                log.info("Before going to introcontroller")
                 
                 // Successfully updated user info in DB, get user's location, and log user in!
                 self.startLocationManager()

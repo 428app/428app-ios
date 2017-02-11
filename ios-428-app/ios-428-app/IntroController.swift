@@ -259,7 +259,6 @@ class IntroController: UIViewController, UIScrollViewDelegate, UITextFieldDelega
     }
     
     func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
-        log.info("Picker picked row: \(row)")
         disciplineTextField.text = DISCIPLINE_OPTIONS[row]
         enableGo(yes: orgTextField.text!.characters.count > 0 && schoolTextField.text!.characters.count > 0)
         editDisciplineIconInTextField(imageString: DISCIPLINE_ICONS[row])
@@ -387,7 +386,7 @@ class IntroController: UIViewController, UIScrollViewDelegate, UITextFieldDelega
         let label = UILabel()
         label.font = FONT_MEDIUM_XLARGE
         label.textColor = UIColor.darkGray
-        label.text = "You get a classroom a week, and a new question a day at"
+        label.text = "One new a classroom a week, and one new question a day at"
         label.textAlignment = .center
         label.numberOfLines = 0
         return label
@@ -442,6 +441,7 @@ class IntroController: UIViewController, UIScrollViewDelegate, UITextFieldDelega
             if !isSuccess {
                 showErrorAlert(vc: self, title: "Unable to proceed", message: "We apologize. We seem to be unable to log you in at this time. Please try again later.")
             } else {
+                log.info("Going into the app")
                 justFinishedIntro = true
                 setHasToFillInfo(hasToFill: false)
                 self.dismiss(animated: true, completion: nil)
@@ -461,7 +461,7 @@ class IntroController: UIViewController, UIScrollViewDelegate, UITextFieldDelega
         slider3View.addConstraintsWithFormat("H:|-15-[v0]-15-|", views: cautionText)
         
         let margin: CGFloat = max((UIScreen.main.bounds.height - 300) / 2.0, 0.0)
-        slider3View.addConstraintsWithFormat("V:|-\(margin)-[v0(60)]-8-[v1(40)]-8-[v2(40)]-8-[v3(30)]", views: descriptionLabel, _428Label, goButton, cautionText)
+        slider3View.addConstraintsWithFormat("V:|-\(margin)-[v0(80)]-8-[v1(40)]-8-[v2(40)]-8-[v3(30)]", views: descriptionLabel, _428Label, goButton, cautionText)
     }
     
     // MARK: Text view

@@ -208,8 +208,17 @@ extension DataService {
                 hasNew = hasNew_
             }
 
-            // Also set joint Inbox, and each other's Inbox
-            self.REF_BASE.updateChildValues(["inbox/\(inboxId)/hasNew:\(uid)": false, "inbox/\(inboxId)/hasNew:\(uid2)": true, "inbox/\(inboxId)/lastMessage": text, "inbox/\(inboxId)/mid": mid, "inbox/\(inboxId)/poster": poster, "inbox/\(inboxId)/timestamp": timestamp, "users/\(uid)/inbox/\(uid2)/discipline": inbox.discipline, "users/\(uid)/inbox/\(uid2)/name": inbox.name, "users/\(uid)/inbox/\(uid2)/profilePhoto": inbox.profileImageName, "users/\(uid2)/inbox/\(uid)/discipline": profile.discipline, "users/\(uid2)/inbox/\(uid)/name": profile.name, "users/\(uid2)/inbox/\(uid)/profilePhoto": profile.profileImageName])
+            // Set joint inbox
+            let inboxValues: [String: Any] = ["hasNew:\(uid)": false, "hasNew:\(uid2)": true, "lastMessage": text, "mid": mid, "poster": poster, "timestamp": timestamp]
+            self.REF_INBOX.child(inboxId).updateChildValues(inboxValues)
+            
+            // Set each other's inbox
+            let uidValues: [String: Any] = ["discipline": inbox.discipline, "name": inbox.name, "profilePhoto": inbox.profileImageName]
+            self.REF_USERS.child("\(uid)/inbox/\(uid2)").updateChildValues(uidValues)
+            let uid2Values: [String: Any] = ["discipline": profile.discipline, "name": profile.name, "profilePhoto": profile.profileImageName]
+            self.REF_USERS.child("\(uid2)/inbox/\(uid)").updateChildValues(uid2Values)
+            
+//            self.REF_BASE.updateChildValues(["inbox/\(inboxId)/hasNew:\(uid)": false, "inbox/\(inboxId)/hasNew:\(uid2)": true, "inbox/\(inboxId)/lastMessage": text, "inbox/\(inboxId)/mid": mid, "inbox/\(inboxId)/poster": poster, "inbox/\(inboxId)/timestamp": timestamp, "users/\(uid)/inbox/\(uid2)/discipline": inbox.discipline, "users/\(uid)/inbox/\(uid2)/name": inbox.name, "users/\(uid)/inbox/\(uid2)/profilePhoto": inbox.profileImageName, "users/\(uid2)/inbox/\(uid)/discipline": profile.discipline, "users/\(uid2)/inbox/\(uid)/name": profile.name, "users/\(uid2)/inbox/\(uid)/profilePhoto": profile.profileImageName])
             
             // Decide if push notification should be sent
             

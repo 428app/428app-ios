@@ -190,7 +190,9 @@ class SettingsController: UIViewController, UITableViewDelegate, UITableViewData
         }
         alertController.addAction(logoutAction)
         alertController.addAction(cancelAction)
-        self.present(alertController, animated: true, completion: nil)
+        self.present(alertController, animated: true, completion: {
+            alertController.view.tintColor = GREEN_UICOLOR
+        })
     }
 
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {

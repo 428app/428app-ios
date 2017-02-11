@@ -415,7 +415,9 @@ class ChatClassroomController: UIViewController, UIGestureRecognizerDelegate, UI
         alertController.classroom = self.classroom
         alertController.modalPresentationStyle = .overFullScreen
         alertController.modalTransitionStyle = .crossDissolve
-        self.present(alertController, animated: true, completion: nil)
+        self.present(alertController, animated: true, completion: {
+            alertController.view.tintColor = GREEN_UICOLOR
+        })
     }
     
     func launchSuperlativeController() {

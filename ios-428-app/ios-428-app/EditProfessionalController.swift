@@ -53,13 +53,14 @@ class EditProfessionalController: UIViewController, UITextFieldDelegate, UIPicke
         self.extendedLayoutIncludesOpaqueBars = true
         self.loadProfileData()
         self.registerObservers()
+        self.navigationItem.hidesBackButton = !allFieldsValid()
     }
     
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         // Only send to server if fields have changed so as not to overload server with requests
-        if hasFieldsChanged {
-            saveEdits() // Save edits on pressing back button
+        if hasFieldsChanged && allFieldsValid() {
+            saveEditsToServer()
         }
         self.unregisterObservers()
     }
@@ -75,7 +76,7 @@ class EditProfessionalController: UIViewController, UITextFieldDelegate, UIPicke
         self.pickerView.selectRow(getIndexGivenDiscipline(discipline: profile.discipline), inComponent: 0, animated: false)
     }
     
-    func saveEdits() {
+    func saveEditsToServer() {
         if let orgSaved = orgTextField.text?.trim(), let schoolSaved = schoolTextField.text?.trim(), let disciplineSaved = disciplineTextField.text?.trim() {
             
             hasFieldsChanged = false
@@ -218,9 +219,11 @@ class EditProfessionalController: UIViewController, UITextFieldDelegate, UIPicke
             } else if textField == schoolTextField {
                 hasFieldsChanged = newString != school
             }
+            self.navigationItem.hidesBackButton = newLength == 0
             
             return newLength <= MAX_CHARACTERS
         }
+        
         hasFieldsChanged = false
         return false
     }
@@ -228,6 +231,14 @@ class EditProfessionalController: UIViewController, UITextFieldDelegate, UIPicke
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         self.view.endEditing(true)
         return true
+    }
+    
+    fileprivate func allFieldsValid() -> Bool {
+        // Makes sure none of the fields are empty
+        if disciplineTextField.text == nil || schoolTextField.text == nil || orgTextField.text == nil {
+            return false
+        }
+        return disciplineTextField.text?.trim() != "" && schoolTextField.text?.trim() != "" && orgTextField.text?.trim() != ""
     }
     
     // MARK: Pickerview for discipline

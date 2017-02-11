@@ -94,11 +94,19 @@ extension DataService {
                 user["pushCount"] = 0
                 user["hasNewBadge"] = false
                 user["hasNewClassroom"] = false
+                user["profilePhoto"] = pictureUrl
                 let userSettings = ["dailyAlert": true, "inboxMessages": true, "classroomMessages": true, "inAppNotifications": true, "isLoggedIn": true]
                 
-                self.REF_BASE.updateChildValues(["/users/\(uid)": user, "/userSettings/\(uid)": userSettings], withCompletionBlock: { (err, ref) in
+                self.REF_USERS.child(uid).updateChildValues(user, withCompletionBlock: { (err, ref) in
                     completed(err == nil, true)
                     return
+                })
+                
+                // Updating user settings does not have callback because it is less important than user info
+                self.REF_USERSETTINGS.child(uid).updateChildValues(userSettings, withCompletionBlock: { (err, ref) in
+                    if err != nil {
+                        log.error("[Error] Error updating settings during login")
+                    }
                 })
             }
         })
@@ -235,7 +243,6 @@ extension DataService {
         ref.keepSynced(true)
         
         ref.observeSingleEvent(of: .value, with: { snapshot in
-            log.info("observed user")
             if snapshot.exists() {
                 
                 // Name, birthday, discipline, profile photo are compulsory fields
