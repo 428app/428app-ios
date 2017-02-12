@@ -69,7 +69,6 @@ class ChatClassroomController: UIViewController, UIGestureRecognizerDelegate, UI
         super.viewWillDisappear(animated)
         self.tabBarController?.tabBar.isHidden = false
         self.unregisterObservers()
-        log.info("View is disappearing")
         // See this classroom before leaving, so isUpdated will be gone upon leaving
         DataService.ds.seeClassroom(classroom: self.classroom) { (isSuccess) in }
     }

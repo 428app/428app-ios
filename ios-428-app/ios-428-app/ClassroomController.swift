@@ -31,6 +31,7 @@ class ClassroomsController: UIViewController, UICollectionViewDelegate, UICollec
         collectionView.backgroundColor = GRAY_UICOLOR
         collectionView.showsVerticalScrollIndicator = false
         collectionView.showsHorizontalScrollIndicator = false
+        collectionView.alwaysBounceVertical = true
         collectionView.register(ClassroomCell.self, forCellWithReuseIdentifier: self.CELL_ID)
         return collectionView
     }()
@@ -260,7 +261,7 @@ class ClassroomsController: UIViewController, UICollectionViewDelegate, UICollec
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         // Fixed height
-        return CGSize(width: view.frame.width, height: 262.0)
+        return CGSize(width: view.frame.width, height: 282.0)
     }
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
@@ -268,10 +269,21 @@ class ClassroomsController: UIViewController, UICollectionViewDelegate, UICollec
         let classroom = classrooms[indexPath.row]
         let controller = ChatClassroomController()
         controller.classroom = classroom
-        let backItem = UIBarButtonItem()
-        backItem.title = " "
-        navigationItem.backBarButtonItem = backItem
+        navigationItem.backBarButtonItem = UIBarButtonItem(title: " ", style: .plain, target: nil, action: nil)
         self.navigationController?.pushViewController(controller, animated: true)
     }
+    
+    func collectionView(_ collectionView: UICollectionView, didHighlightItemAt indexPath: IndexPath) {
+        let cell = collectionView.cellForItem(at: indexPath) as! ClassroomCell
+        log.info("Highlighting cell: \(cell)")
+        cell.setSelectedColors(isSelected: true)
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, didUnhighlightItemAt indexPath: IndexPath) {
+        let cell = collectionView.cellForItem(at: indexPath) as! ClassroomCell
+        log.info("UnHighlighting cell: \(cell)")
+        cell.setSelectedColors(isSelected: false)
+    }
+
     
 }
