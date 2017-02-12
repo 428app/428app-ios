@@ -19,15 +19,13 @@ class Profile {
     fileprivate var _school: String
     fileprivate var _org: String
     fileprivate var _tagline: String // What I do at 4:28pm
-    fileprivate var _badges: [String]
     fileprivate var _classrooms: [String]
     
     // Calculated variable
     fileprivate var _disciplineIcon: String
     fileprivate var _classroomIcons: [String]
-    fileprivate var _badgeIcons: [String]
     
-    init(uid: String, name: String, profileImageName: String, discipline: String, age: Int, location: String, school: String, org: String, tagline: String, badges: [String], classrooms: [String]) {
+    init(uid: String, name: String, profileImageName: String, discipline: String, age: Int, location: String, school: String, org: String, tagline: String, classrooms: [String]) {
         _uid = uid
         _name = name
         _profileImageName = profileImageName
@@ -37,16 +35,12 @@ class Profile {
         _school = school
         _org = org
         _tagline = tagline
-        _badges = badges
         _classrooms = classrooms
         _disciplineIcon = getDisciplineIcon(discipline: _discipline)
         _classroomIcons = [String]()
         for c in classrooms {
             _classroomIcons.append(getDisciplineIcon(discipline: c))
         }
-        
-        // TODO: Convert badge icons
-        _badgeIcons = [String]()
     }
     
     var uid: String {
@@ -125,12 +119,6 @@ class Profile {
     var classroomIcons: [String] {
         get {
             return _classroomIcons
-        }
-    }
-    
-    var badgeIcons: [String] {
-        get {
-            return _badgeIcons
         }
     }
 }

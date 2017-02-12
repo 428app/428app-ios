@@ -162,16 +162,14 @@ class ProfileController: UIViewController, UIGestureRecognizerDelegate, UIScroll
         }
     }
     
-    // MARK: Views 2 - Horizontal collection views of badge and classroom icons
+    // MARK: Views 2 - Horizontal collection views of classroom icons
     
-    fileprivate let BADGES_CELL_ID = "badgesCollectionCell"
     fileprivate let CLASSROOMS_CELL_ID = "classroomsCollectionCell"
-    fileprivate var badges = [String]() // Image names of acquired badges
     fileprivate var classrooms = [String]() // Image names of participated classrooms
 
     open static let ICON_SIZE: CGFloat = 33.0
     
-    fileprivate func collectionViewTemplate() -> UICollectionView {
+    fileprivate lazy var classroomsCollectionView: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
         let collectionView = UICollectionView(frame: UIScreen.main.bounds, collectionViewLayout: layout)
         collectionView.backgroundColor = UIColor.white
@@ -179,14 +177,6 @@ class ProfileController: UIViewController, UIGestureRecognizerDelegate, UIScroll
         collectionView.showsVerticalScrollIndicator = false
         collectionView.bounces = true
         return collectionView
-    }
-    
-    fileprivate lazy var badgesCollectionView: UICollectionView = {
-        return self.collectionViewTemplate()
-    }()
-    
-    fileprivate lazy var classroomsCollectionView: UICollectionView = {
-        return self.collectionViewTemplate()
     }()
     
     fileprivate func sectionLabelTemplate(labelText: String) -> UILabel {
@@ -198,20 +188,13 @@ class ProfileController: UIViewController, UIGestureRecognizerDelegate, UIScroll
         return label
     }
     
-    fileprivate lazy var badgesLbl: UILabel = {
-        return self.sectionLabelTemplate(labelText: "Badges")
-    }()
-    
     fileprivate lazy var classroomsLbl: UILabel = {
         return self.sectionLabelTemplate(labelText: "Classrooms")
     }()
     
-    fileprivate func setupCollectionViews() {
-        self.badgesCollectionView.delegate = self
-        self.badgesCollectionView.dataSource = self
+    fileprivate func setupCollectionView() {
         self.classroomsCollectionView.delegate = self
         self.classroomsCollectionView.dataSource = self
-        self.badgesCollectionView.register(HorizontalScrollCell.self, forCellWithReuseIdentifier: BADGES_CELL_ID)
         self.classroomsCollectionView.register(HorizontalScrollCell.self, forCellWithReuseIdentifier: CLASSROOMS_CELL_ID)
     }
     
@@ -221,17 +204,11 @@ class ProfileController: UIViewController, UIGestureRecognizerDelegate, UIScroll
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        if collectionView == badgesCollectionView {
-            // Return badges collection view
-            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: BADGES_CELL_ID, for: indexPath) as! HorizontalScrollCell
-            cell.configureCell(icons: badges)
-            return cell
-        } else {
-            // Return classrooms collection view
-            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: CLASSROOMS_CELL_ID, for: indexPath) as! HorizontalScrollCell
-            cell.configureCell(icons: classrooms)
-            return cell
-        }
+        // Return classrooms collection view
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: CLASSROOMS_CELL_ID, for: indexPath) as! HorizontalScrollCell
+        cell.configureCell(icons: classrooms)
+        return cell
+        
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
@@ -245,15 +222,6 @@ class ProfileController: UIViewController, UIGestureRecognizerDelegate, UIScroll
     }()
     
     // Empty view
-    
-    let noBadgesLbl: UILabel = {
-       let label = UILabel()
-        label.text = "No badges yet."
-        label.font = FONT_MEDIUM_MID
-        label.textColor = UIColor.gray
-        label.textAlignment = .left
-        return label
-    }()
     
     let noClassroomsLbl: UILabel = {
         let label = UILabel()
@@ -333,8 +301,8 @@ class ProfileController: UIViewController, UIGestureRecognizerDelegate, UIScroll
         let containerView = views[1]
         scrollView.delegate = self // Delegate so as to disable top bounce only
         
-        // Assign delegate, data source and setup cells for the badges and classrooms colletion views
-        self.setupCollectionViews()
+        // Assign delegate, data source and setup cells for classrooms collection view
+        self.setupCollectionView()
         
         // Add close button on top of scroll view
         view.addSubview(closeButtonBg)
@@ -360,8 +328,6 @@ class ProfileController: UIViewController, UIGestureRecognizerDelegate, UIScroll
         containerView.addSubview(coverImageView)
         containerView.addSubview(profileImageView)
         containerView.addSubview(messageBtn)
-        containerView.addSubview(badgesLbl)
-        containerView.addSubview(badgesCollectionView)
         containerView.addSubview(classroomsLbl)
         containerView.addSubview(classroomsCollectionView)
         containerView.addSubview(dividerLineForCollectionView)
@@ -380,11 +346,9 @@ class ProfileController: UIViewController, UIGestureRecognizerDelegate, UIScroll
         // Define main constraints
         
         containerView.addConstraintsWithFormat("H:|[v0]|", views: coverImageView)
-        containerView.addConstraintsWithFormat("V:|[v0(250)]-14-[v1]-8-[v2(40)]-8-[v3(20)]-8-[v4(\(ProfileController.ICON_SIZE))]-8-[v5(20)]-8-[v6(\(ProfileController.ICON_SIZE))]-13-[v7(0.5)]-12-[v8(20)]-4-[v9(20)]-8-[v10(20)]-4-[v11(20)]-8-[v12(20)]-4-[v13(20)]-12-[v14(0.5)]-12-[v15(20)]-4-[v16]-\(bottomMargin)-|", views: coverImageView, disciplineNameAgeContainer, messageBtn, badgesLbl, badgesCollectionView, classroomsLbl, classroomsCollectionView, dividerLineForCollectionView, locationLbl, locationText, schoolLbl, schoolText, organizationLbl, organizationText, dividerLineForProfileInfo, taglineLbl, taglineText)
+        containerView.addConstraintsWithFormat("V:|[v0(250)]-14-[v1]-8-[v2(40)]-8-[v3(20)]-8-[v4(\(ProfileController.ICON_SIZE))]-13-[v5(0.5)]-12-[v6(20)]-4-[v7(20)]-8-[v8(20)]-4-[v9(20)]-8-[v10(20)]-4-[v11(20)]-12-[v12(0.5)]-12-[v13(20)]-4-[v14]-\(bottomMargin)-|", views: coverImageView, disciplineNameAgeContainer, messageBtn, classroomsLbl, classroomsCollectionView, dividerLineForCollectionView, locationLbl, locationText, schoolLbl, schoolText, organizationLbl, organizationText, dividerLineForProfileInfo, taglineLbl, taglineText)
         
         containerView.addConstraintsWithFormat("H:|-8-[v0]-8-|", views: messageBtn)
-        containerView.addConstraintsWithFormat("H:|-8-[v0]-8-|", views: badgesLbl)
-        containerView.addConstraintsWithFormat("H:|[v0]|", views: badgesCollectionView)
         containerView.addConstraintsWithFormat("H:|-8-[v0]-8-|", views: classroomsLbl)
         containerView.addConstraintsWithFormat("H:|[v0]|", views: classroomsCollectionView)
         containerView.addConstraintsWithFormat("H:|-8-[v0]-8-|", views: dividerLineForCollectionView)
@@ -406,16 +370,8 @@ class ProfileController: UIViewController, UIGestureRecognizerDelegate, UIScroll
         
         loadData()
         
-        // Add no badges and no classrooms lbl to collection views in case there are no badges or classrooms, if necessary
+        // Add no classrooms lbl to collection views in case there are no classrooms
         // Note that this has to be after data is loaded above
-        if badges.count == 0 {
-            self.noBadgesLbl.isHidden = false
-            containerView.addSubview(noBadgesLbl)
-            containerView.addConstraint(NSLayoutConstraint(item: noBadgesLbl, attribute: .top, relatedBy: .equal, toItem: badgesLbl, attribute: .bottom, multiplier: 1.0, constant: 8.0))
-            containerView.addConstraintsWithFormat("H:|-8-[v0]-8-|", views: noBadgesLbl)
-        } else {
-            self.noBadgesLbl.isHidden = true
-        }
         if classrooms.count == 0 {
             self.noClassroomsLbl.isHidden = false
             containerView.addSubview(noClassroomsLbl)
@@ -442,9 +398,7 @@ class ProfileController: UIViewController, UIGestureRecognizerDelegate, UIScroll
         let taglineString = NSMutableAttributedString(string: profile.tagline.isEmpty ? "TOO LAZY to fill this in." : profile.tagline, attributes: [NSForegroundColorAttributeName: UIColor.gray, NSParagraphStyleAttributeName: paragraphStyle])
         taglineText.attributedText = taglineString
         
-        self.badges = profile.badgeIcons
         self.classrooms = profile.classroomIcons
-        self.badgesCollectionView.reloadData()
         self.classroomsCollectionView.reloadData()
     }
     

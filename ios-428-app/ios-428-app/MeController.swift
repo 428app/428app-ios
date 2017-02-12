@@ -176,7 +176,7 @@ class MeController: UIViewController, UIGestureRecognizerDelegate, UIScrollViewD
         return imageView
     }()
     
-    // MARK: Views 2 - Horizontal collection views of badge and classroom icons
+    // MARK: Views 2 - Horizontal collection views of classroom icons
     
     fileprivate let CLASSROOMS_CELL_ID = "classroomsCollectionCell"
     fileprivate var classrooms = [String]()
@@ -304,7 +304,7 @@ class MeController: UIViewController, UIGestureRecognizerDelegate, UIScrollViewD
         containerView = views[1]
         scrollView.delegate = self // Delegate so as to disable top bounce only
         
-        // Assign delegate, data source and setup cells for the badges and classrooms colletion views
+        // Assign delegate, data source and setup cells for and classrooms collection view
         self.setupCollectionView()
         
         // Centered discipline icon and name label

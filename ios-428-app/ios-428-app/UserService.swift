@@ -265,11 +265,6 @@ extension DataService {
                 if let l = userDict["location"] as? String {
                     location = l
                 }
-                // TODO: Badges
-                var badges = [String]()
-                if let b = userDict["badges"] as? [String: Bool] {
-                    badges = [String](b.keys)
-                }
                 var classrooms = [String]()
                 if let c = userDict["classrooms"] as? [String: [String: Any]] {
                     // Iterate through classrooms to get disciplines
@@ -283,14 +278,14 @@ extension DataService {
                 let age = convertBirthdayToAge(birthday: birthday)
                 if location == "" {
                     // User disabled location, return here without location
-                    let user = Profile(uid: uid_, name: name, profileImageName: profilePhotoUrl, discipline: discipline, age: age, location: "", school: school, org: org, tagline: tagline, badges: badges, classrooms: classrooms)
+                    let user = Profile(uid: uid_, name: name, profileImageName: profilePhotoUrl, discipline: discipline, age: age, location: "", school: school, org: org, tagline: tagline, classrooms: classrooms)
                     completed(true, user)
                     return
                 }
                 // Convert "<lat>,<lon>" to "<City>, <State>, <Country>"
                 convertLocationToCityAndCountry(location: location) { (cityCountry) in
                     // User has city country here
-                    let user = Profile(uid: uid_, name: name, profileImageName: profilePhotoUrl, discipline: discipline, age: age, location: cityCountry, school: school, org: org, tagline: tagline, badges: badges, classrooms: classrooms)
+                    let user = Profile(uid: uid_, name: name, profileImageName: profilePhotoUrl, discipline: discipline, age: age, location: cityCountry, school: school, org: org, tagline: tagline, classrooms: classrooms)
                     completed(true, user)
                     return
                 }

@@ -180,7 +180,7 @@ extension DataService {
     }
     
     // Adds a private message to the private chat, used in ChatInboxController
-    // It's a long function mainly because we have to decide whether to push this user a notification and update the badge count
+    // It's a long function mainly because we have to decide whether to push this user a notification and update the push count
     func addInboxChatMessage(inbox: Inbox, text: String, completed: @escaping (_ isSuccess: Bool) -> ()) {
         guard let uid = getStoredUid(), let profile = myProfile else {
             completed(false)
@@ -230,7 +230,7 @@ extension DataService {
                 // Check if /inboxMessages and /isLoggedIn are both true
                 if let settingDict = settingsSnap.value as? [String: Bool], let acceptsInboxMessages = settingDict["inboxMessages"], let isLoggedIn = settingDict["isLoggedIn"] {
                     if !acceptsInboxMessages || !isLoggedIn {
-                        // Not allowed to push messages. Increment badge count if necessary, then return
+                        // Not allowed to push messages. Increment push count if necessary, then return
                         if !hasNew {
                             self.adjustPushCount(isIncrement: true, uid: uid2, completed: { (isSuccess) in })
                         }
@@ -244,7 +244,7 @@ extension DataService {
                         return
                     }
                     if hasNew {
-                        // There are already new push notifications for this user, just send notification without incrementing badge
+                        // There are already new push notifications for this user, just send notification without incrementing push count
                         self.addToNotificationQueue(type: .INBOX, posterUid: uid, posterName: profile.name, posterImage: profile.profileImageName, recipientUid: uid2, pushToken: pushToken, pushCount: pushCount, inApp: inAppSettings, cid: "", title: "Private Message", body: text)
                     } else {
                         self.adjustPushCount(isIncrement: true, uid: uid2, completed: { (isSuccessAdjusted) in
@@ -259,7 +259,7 @@ extension DataService {
     }
     
     // Called whenever a user clicks on a private chat that is not previously seen to update the private chat's
-    // message to seen. Also decrements badge count. Used in InboxController.
+    // message to seen. Also decrements push count. Used in InboxController.
     func seeInboxMessages(inbox: Inbox, completed: @escaping (_ isSuccess: Bool) -> ()) {
         guard let uid = getStoredUid() else {
             completed(false)
