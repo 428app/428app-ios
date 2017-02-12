@@ -367,7 +367,7 @@ class ChatClassroomController: UIViewController, UIGestureRecognizerDelegate, UI
     fileprivate lazy var questionBanner: UILabel = {
         let label = UILabel()
         label.backgroundColor = GREEN_UICOLOR
-        label.font = FONT_HEAVY_MID
+        label.font = FONT_HEAVY_LARGE
         label.textColor = UIColor.white
         label.textAlignment = .center
         label.numberOfLines = 1
@@ -391,7 +391,7 @@ class ChatClassroomController: UIViewController, UIGestureRecognizerDelegate, UI
         view.addSubview(questionBanner)
         view.addConstraintsWithFormat("H:|[v0]|", views: questionBanner)
         if let navHeight = navigationController?.navigationBar.frame.height {
-           view.addConstraintsWithFormat("V:|-\(navHeight * 1.45)-[v0(40)]", views: questionBanner)
+           view.addConstraintsWithFormat("V:|-\(navHeight * 1.45)-[v0(50)]", views: questionBanner)
         } else {
             view.addConstraint(NSLayoutConstraint(item: questionBanner, attribute: .top, relatedBy: .equal, toItem: topLayoutGuide, attribute: .bottom, multiplier: 1.0, constant: 0.0))
            view.addConstraintsWithFormat("V:[v0(60)]", views: questionBanner)
@@ -783,7 +783,7 @@ class ChatClassroomController: UIViewController, UIGestureRecognizerDelegate, UI
         self.collectionView.bounces = true
         self.collectionView.alwaysBounceVertical = true
         self.collectionView.scrollsToTop = false
-        self.TOP_GAP = self.navigationController!.navigationBar.frame.height + 0.7*SECTION_HEADER_HEIGHT + 40.0
+        self.TOP_GAP = self.navigationController!.navigationBar.frame.height + 0.7*SECTION_HEADER_HEIGHT + 50.0
         
         let layout = UICollectionViewFlowLayout()
         layout.headerReferenceSize = CGSize(width: UIScreen.main.bounds.width, height: SECTION_HEADER_HEIGHT)
