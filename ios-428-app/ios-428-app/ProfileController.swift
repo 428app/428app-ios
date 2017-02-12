@@ -135,7 +135,7 @@ class ProfileController: UIViewController, UIGestureRecognizerDelegate, UIScroll
         button.setTitle("Send message", for: .normal)
         button.setTitleColor(GREEN_UICOLOR, for: .normal)
         button.setTitleColor(UIColor.white, for: .highlighted)
-        button.titleLabel?.font = FONT_HEAVY_MID
+        button.titleLabel?.font = FONT_HEAVY_LARGE
         button.imageEdgeInsets = UIEdgeInsets(top: -1, left: 0, bottom: 0, right: 6)
         button.titleEdgeInsets = UIEdgeInsets(top: 0, left: 6, bottom: 0, right: 0)
         button.imageView?.contentMode = .scaleAspectFit
@@ -167,7 +167,7 @@ class ProfileController: UIViewController, UIGestureRecognizerDelegate, UIScroll
     fileprivate let CLASSROOMS_CELL_ID = "classroomsCollectionCell"
     fileprivate var classrooms = [String]() // Image names of participated classrooms
 
-    open static let ICON_SIZE: CGFloat = 33.0
+    open static let ICON_SIZE: CGFloat = 43.0
     
     fileprivate lazy var classroomsCollectionView: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
@@ -182,7 +182,7 @@ class ProfileController: UIViewController, UIGestureRecognizerDelegate, UIScroll
     fileprivate func sectionLabelTemplate(labelText: String) -> UILabel {
         let label = UILabel()
         label.text = labelText
-        label.font = FONT_HEAVY_MID
+        label.font = FONT_HEAVY_LARGE
         label.textColor = UIColor.darkGray
         label.textAlignment = .left
         return label
@@ -346,7 +346,7 @@ class ProfileController: UIViewController, UIGestureRecognizerDelegate, UIScroll
         // Define main constraints
         
         containerView.addConstraintsWithFormat("H:|[v0]|", views: coverImageView)
-        containerView.addConstraintsWithFormat("V:|[v0(250)]-14-[v1]-8-[v2(40)]-8-[v3(20)]-8-[v4(\(ProfileController.ICON_SIZE))]-13-[v5(0.5)]-12-[v6(20)]-4-[v7(20)]-8-[v8(20)]-4-[v9(20)]-8-[v10(20)]-4-[v11(20)]-12-[v12(0.5)]-12-[v13(20)]-4-[v14]-\(bottomMargin)-|", views: coverImageView, disciplineNameAgeContainer, messageBtn, classroomsLbl, classroomsCollectionView, dividerLineForCollectionView, locationLbl, locationText, schoolLbl, schoolText, organizationLbl, organizationText, dividerLineForProfileInfo, taglineLbl, taglineText)
+        containerView.addConstraintsWithFormat("V:|[v0(250)]-14-[v1]-8-[v2(50)]-8-[v3(20)]-8-[v4(\(ProfileController.ICON_SIZE))]-13-[v5(0.5)]-12-[v6(20)]-4-[v7(20)]-12-[v8(20)]-4-[v9(20)]-12-[v10(20)]-4-[v11(20)]-16-[v12(0.5)]-16-[v13(20)]-4-[v14]-\(bottomMargin)-|", views: coverImageView, disciplineNameAgeContainer, messageBtn, classroomsLbl, classroomsCollectionView, dividerLineForCollectionView, locationLbl, locationText, schoolLbl, schoolText, organizationLbl, organizationText, dividerLineForProfileInfo, taglineLbl, taglineText)
         
         containerView.addConstraintsWithFormat("H:|-8-[v0]-8-|", views: messageBtn)
         containerView.addConstraintsWithFormat("H:|-8-[v0]-8-|", views: classroomsLbl)

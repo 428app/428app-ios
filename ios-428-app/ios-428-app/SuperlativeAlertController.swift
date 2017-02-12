@@ -32,15 +32,16 @@ class SuperlativeAlertController: UIViewController {
     fileprivate let superlativeLbl: UILabel = {
         let label = UILabel()
         label.text = "It's time to vote for superlatives!"
-        label.font = FONT_MEDIUM_MID
+        label.font = FONT_MEDIUM_LARGE
         label.textAlignment = .center
-        label.numberOfLines = 0
+        label.minimumScaleFactor = 0.6
+        label.numberOfLines = 1
         return label
     }()
     
     fileprivate func btnTemplate() -> UIButton {
         let btn = UIButton()
-        btn.titleLabel?.font = FONT_HEAVY_MID
+        btn.titleLabel?.font = FONT_HEAVY_LARGE
         btn.setTitleColor(GREEN_UICOLOR, for: .normal)
         btn.setTitleColor(UIColor.white, for: .highlighted)
         btn.setBackgroundColor(color: UIColor.white, forState: .normal)
@@ -88,7 +89,7 @@ class SuperlativeAlertController: UIViewController {
         containerView.addSubview(superlativeLbl)
         containerView.addSubview(voteBtn)
         containerView.addSubview(cancelBtn)
-        containerView.addConstraintsWithFormat("V:|-8-[v0(50)]-8-[v1(30)]-8-[v2(40)]-8-[v3(40)]-8-|", views: superlativeIcon, superlativeLbl, voteBtn, cancelBtn)
+        containerView.addConstraintsWithFormat("V:|-8-[v0(50)]-8-[v1(30)]-8-[v2(50)]-8-[v3(50)]-8-|", views: superlativeIcon, superlativeLbl, voteBtn, cancelBtn)
         containerView.addConstraintsWithFormat("H:[v0(50)]", views: superlativeIcon)
         containerView.addConstraint(NSLayoutConstraint(item: superlativeIcon, attribute: .centerX, relatedBy: .equal, toItem: containerView, attribute: .centerX, multiplier: 1.0, constant: 0.0))
         containerView.addConstraintsWithFormat("H:|-8-[v0]-8-|", views: superlativeLbl)

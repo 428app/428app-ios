@@ -126,13 +126,15 @@ class MeController: UIViewController, UIGestureRecognizerDelegate, UIScrollViewD
         imageView.contentMode = .scaleAspectFill
         imageView.autoresizesSubviews = true
         imageView.clipsToBounds = true
-        imageView.image = UIImage(color: GRAY_UICOLOR)
+        imageView.image = UIImage(color: UIColor.white)
         return imageView
     }()
     
     fileprivate lazy var profileImageView: UIImageView = {
         let imageView = UIImageView()
         imageView.contentMode = .scaleAspectFill
+        imageView.layer.borderColor = RED_UICOLOR.cgColor
+        imageView.layer.borderWidth = 4.0
         imageView.layer.cornerRadius = 90.0 // Actual image size is 180.0 so this is /2
         imageView.clipsToBounds = true
         imageView.isUserInteractionEnabled = false
@@ -172,7 +174,7 @@ class MeController: UIViewController, UIGestureRecognizerDelegate, UIScrollViewD
     fileprivate let disciplineImageView: UIImageView = {
         let imageView = UIImageView()
         imageView.contentMode = .scaleAspectFill
-        imageView.tintColor = GREEN_UICOLOR
+        imageView.tintColor = RED_UICOLOR
         return imageView
     }()
     
@@ -196,7 +198,7 @@ class MeController: UIViewController, UIGestureRecognizerDelegate, UIScrollViewD
     fileprivate func sectionLabelTemplate(labelText: String) -> UILabel {
         let label = UILabel()
         label.text = labelText
-        label.font = FONT_HEAVY_MID
+        label.font = FONT_HEAVY_LARGE
         label.textColor = UIColor.darkGray
         label.textAlignment = .left
         return label
@@ -248,13 +250,13 @@ class MeController: UIViewController, UIGestureRecognizerDelegate, UIScrollViewD
     
     fileprivate func meBtnTemplate(btnText: String) -> UIButton {
         let button = UIButton()
-        button.titleLabel?.font = FONT_HEAVY_MID
+        button.titleLabel?.font = FONT_HEAVY_LARGE
         button.titleLabel?.textAlignment = .center
         button.setTitle(btnText, for: .normal)
         button.setTitleColor(UIColor.white, for: .normal)
-        button.setTitleColor(UIColor.darkGray, for: .highlighted)
+        button.setTitleColor(UIColor.white, for: .highlighted)
         button.setBackgroundColor(color: GREEN_UICOLOR, forState: .normal)
-        button.setBackgroundColor(color: GRAY_UICOLOR, forState: .highlighted)
+        button.setBackgroundColor(color: RED_UICOLOR, forState: .highlighted)
         button.layer.cornerRadius = 5.0
         button.layer.masksToBounds = true
         return button
@@ -314,27 +316,17 @@ class MeController: UIViewController, UIGestureRecognizerDelegate, UIScrollViewD
         disciplineNameAgeContainer.translatesAutoresizingMaskIntoConstraints = false
         containerView.addSubview(disciplineNameAgeContainer)
         containerView.addConstraint(NSLayoutConstraint(item: disciplineNameAgeContainer, attribute: .centerX, relatedBy: .equal, toItem: containerView, attribute: .centerX, multiplier: 1.0, constant: 0))
-        disciplineNameAgeContainer.addConstraintsWithFormat("H:|[v0(20)]-5-[v1]|", views: disciplineImageView, nameAndAgeLbl)
-        disciplineNameAgeContainer.addConstraintsWithFormat("V:|[v0(20)]", views: disciplineImageView)
+        disciplineNameAgeContainer.addConstraintsWithFormat("H:|[v0(25)]-5-[v1]|", views: disciplineImageView, nameAndAgeLbl)
+        disciplineNameAgeContainer.addConstraintsWithFormat("V:|[v0(25)]", views: disciplineImageView)
         disciplineNameAgeContainer.addConstraintsWithFormat("V:|[v0(25)]|", views: nameAndAgeLbl)
-        
-        // Button container
-        let buttonContainer = UIView()
-        buttonContainer.addSubview(editProfileBtn)
-        buttonContainer.addSubview(settingsBtn)
-        buttonContainer.translatesAutoresizingMaskIntoConstraints = false
-        containerView.addSubview(buttonContainer)
-        let buttonWidth: CGFloat = (UIScreen.main.bounds.width - 6 * 8.0) / 2.0
-        buttonContainer.addConstraintsWithFormat("H:|-8-[v0(\(buttonWidth))]", views: editProfileBtn)
-        buttonContainer.addConstraintsWithFormat("H:[v0(\(buttonWidth))]-8-|", views: settingsBtn)
-        buttonContainer.addConstraintsWithFormat("V:|-[v0(50)]-|", views: editProfileBtn)
-        buttonContainer.addConstraintsWithFormat("V:|-[v0(50)]-|", views: settingsBtn)
         
         // Add to subviews
         containerView.addSubview(coverImageView)
         containerView.addSubview(profileImageView)
         containerView.addSubview(classroomsLbl)
         containerView.addSubview(classroomsCollectionView)
+        containerView.addSubview(editProfileBtn)
+        containerView.addSubview(settingsBtn)
         containerView.addSubview(dividerLineForCollectionView)
         
         let bottomMargin = CGFloat(self.view.frame.height / 2.5) // Set large bottom margin so user can scroll up and read bottom tagline
@@ -343,12 +335,13 @@ class MeController: UIViewController, UIGestureRecognizerDelegate, UIScrollViewD
         let navBarHeight: CGFloat = self.navigationController!.navigationBar.frame.height
         
         containerView.addConstraintsWithFormat("H:|[v0]|", views: coverImageView)
-        containerView.addConstraintsWithFormat("V:|-\(navBarHeight)-[v0(250)]-14-[v1]-8-[v2(20)]-8-[v3(\(ProfileController.ICON_SIZE))]-13-[v4(0.5)]-12-[v5]-\(bottomMargin)-|", views: coverImageView, disciplineNameAgeContainer, classroomsLbl, classroomsCollectionView, dividerLineForCollectionView, buttonContainer)
+        containerView.addConstraintsWithFormat("V:|-\(navBarHeight)-[v0(220)][v1]-8-[v2(20)]-8-[v3(\(ProfileController.ICON_SIZE))]-13-[v4(0.5)]-12-[v5(50)]-[v6(50)]-\(bottomMargin)-|", views: coverImageView, disciplineNameAgeContainer, classroomsLbl, classroomsCollectionView, dividerLineForCollectionView, editProfileBtn, settingsBtn)
         
         containerView.addConstraintsWithFormat("H:|-8-[v0]-8-|", views: classroomsLbl)
         containerView.addConstraintsWithFormat("H:|[v0]|", views: classroomsCollectionView)
         containerView.addConstraintsWithFormat("H:|-8-[v0]-8-|", views: dividerLineForCollectionView)
-        containerView.addConstraintsWithFormat("H:|-8-[v0]-8-|", views: buttonContainer)
+        containerView.addConstraintsWithFormat("H:|-8-[v0]-8-|", views: editProfileBtn)
+        containerView.addConstraintsWithFormat("H:|-8-[v0]-8-|", views: settingsBtn)
         
         containerView.addConstraintsWithFormat("H:[v0(180)]", views: profileImageView)
         containerView.addConstraint(NSLayoutConstraint(item: profileImageView, attribute: .centerX, relatedBy: .equal, toItem: containerView, attribute: .centerX, multiplier: 1.0, constant: 0))

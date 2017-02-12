@@ -31,7 +31,7 @@ class InboxController: UICollectionViewController, UICollectionViewDelegateFlowL
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         tabBarController?.tabBar.isHidden = false
-        
+        self.navigationController?.navigationBar.barTintColor = GREEN_UICOLOR
         // Check if there is an inboxToOpen from View Profile, if there is, open inbox
         if let inbox = inboxToOpen {
             inboxToOpen = nil

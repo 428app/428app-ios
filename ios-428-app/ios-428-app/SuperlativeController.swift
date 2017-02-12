@@ -30,7 +30,8 @@ class SuperlativeController: UIViewController, UICollectionViewDelegate, UIColle
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        self.navigationController?.navigationBar.setBackgroundImage(UIImage.init(color: GREEN_UICOLOR), for: .default)
+        let color = classroom.superlativeType == .SHARED ? RED_UICOLOR : GREEN_UICOLOR
+        self.navigationController?.navigationBar.setBackgroundImage(UIImage.init(color: color), for: .default)
         self.navigationController?.navigationBar.shadowImage = UIImage()
         self.tabBarController?.tabBar.isHidden = true
         self.loadData()
@@ -55,7 +56,7 @@ class SuperlativeController: UIViewController, UICollectionViewDelegate, UIColle
         let collectionView = UICollectionView(frame: UIScreen.main.bounds, collectionViewLayout: layout)
         collectionView.delegate = self
         collectionView.dataSource = self
-        collectionView.backgroundColor = GREEN_UICOLOR
+        collectionView.backgroundColor = self.classroom.superlativeType == .SHARED ? RED_UICOLOR : GREEN_UICOLOR
         collectionView.bounces = true
         collectionView.showsVerticalScrollIndicator = false
         collectionView.showsHorizontalScrollIndicator = false
@@ -80,6 +81,14 @@ class SuperlativeController: UIViewController, UICollectionViewDelegate, UIColle
             superlative = self.classroom.results[indexPath.item]
         }
         cell.configureCell(superlativeObj: superlative)
+    
+        // Green background for not voted, Red background for results
+        if self.classroom.superlativeType == SuperlativeType.NOTVOTED {
+            cell.setColorOfViews(color: GREEN_UICOLOR)
+        } else if self.classroom.superlativeType == SuperlativeType.SHARED {
+            cell.setColorOfViews(color: RED_UICOLOR)
+        }
+        
         return cell
     }
     
@@ -176,7 +185,6 @@ class SuperlativeController: UIViewController, UICollectionViewDelegate, UIColle
                                 self.navigationItem.title = self.classroom.isVotingOngoing ? "Running Results" : "Final Results"
                                 // Hack: Adjust the screen
                                 self.view.frame = CGRect(x: 0, y: 0, width: UIScreen.main.bounds.width, height: UIScreen.main.bounds.height)
-                                self.topConstraintForCollectionView.constant = self.navigationController!.navigationBar.frame.size.height + 15.0
                             } else {
                                 showErrorAlert(vc: self, title: "Error", message: "There was a problem sharing.\nPlease try again.")
                             }
@@ -292,20 +300,24 @@ class SuperlativeController: UIViewController, UICollectionViewDelegate, UIColle
             // Shows collection view
             shareContainer.isHidden = true
             collectionView.isHidden = false
-            self.view.backgroundColor = GREEN_UICOLOR
             self.extendedLayoutIncludesOpaqueBars = true
             
             if superlativeType == .NOTVOTED {
                 // Allow user to rate
                 self.navigationItem.title = "Superlatives"
+                collectionView.backgroundColor = GREEN_UICOLOR
+                self.navigationController?.navigationBar.setBackgroundImage(UIImage.init(color: GREEN_UICOLOR), for: .default)
                 self.navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Submit", style: .done, target: self, action: #selector(submitSuperlatives))
                 NotificationCenter.default.addObserver(self, selector: #selector(selectSuperlative), name: NOTIF_VOTESELECTED, object: nil)
                 checkToEnableSubmitSuperlative()
             } else {
                 // Show results
+                collectionView.backgroundColor = RED_UICOLOR
+                self.navigationController?.navigationBar.setBackgroundImage(UIImage.init(color: RED_UICOLOR), for: .default)
                 self.navigationItem.rightBarButtonItem = nil
                 NotificationCenter.default.removeObserver(self, name: NOTIF_VOTESELECTED, object: nil)
             }
+            self.collectionView.reloadData()
         }
     }
     // MARK: Firebase

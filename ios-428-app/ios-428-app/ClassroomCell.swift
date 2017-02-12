@@ -24,7 +24,7 @@ class ClassroomCell: BaseCollectionCell {
     
     fileprivate let updatedLbl: UILabel = {
         let label = UILabel()
-        label.backgroundColor = GREEN_UICOLOR
+        label.backgroundColor = RED_UICOLOR
         label.text = "Updated"
         label.font = FONT_HEAVY_SMALL
         label.textAlignment = .center
@@ -36,7 +36,7 @@ class ClassroomCell: BaseCollectionCell {
     fileprivate let titleLbl: UILabel = {
        let label = UILabel()
         label.font = FONT_MEDIUM_XLARGE
-        label.textColor = UIColor.darkGray
+        label.textColor = UIColor.white
         label.textAlignment = .center
         return label
     }()
@@ -44,7 +44,7 @@ class ClassroomCell: BaseCollectionCell {
     fileprivate let questionNumLbl: UILabel = {
         let label = UILabel()
         label.font = FONT_MEDIUM_LARGE
-        label.textColor = UIColor.darkGray
+        label.textColor = UIColor.white
         label.textAlignment = .center
         return label
     }()
@@ -52,16 +52,16 @@ class ClassroomCell: BaseCollectionCell {
     override func setupViews() {
         
         let containerView = UIView()
-        containerView.layer.cornerRadius = 4.0
+        containerView.layer.cornerRadius = 7.0
         let SHADOW_COLOR: CGFloat =  157.0 / 255.0
         containerView.layer.shadowColor = UIColor(red: SHADOW_COLOR, green: SHADOW_COLOR, blue: SHADOW_COLOR, alpha: 0.5).cgColor
         containerView.layer.shadowOpacity = 0.6
-        containerView.layer.shadowRadius = 2.0
+        containerView.layer.shadowRadius = 4.0
         containerView.layer.shadowOffset = CGSize(width: 0.0, height: 2.0)
         
         self.backgroundColor = GRAY_UICOLOR
         contentView.backgroundColor = GRAY_UICOLOR
-        containerView.backgroundColor = UIColor.white
+        containerView.backgroundColor = RED_UICOLOR
         containerView.translatesAutoresizingMaskIntoConstraints = false
         contentView.addSubview(containerView)
         contentView.addConstraintsWithFormat("H:|-8-[v0]-8-|", views: containerView)

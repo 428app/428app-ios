@@ -37,6 +37,12 @@ class SuperlativeCell: BaseCollectionCell {
         return label
     }()
     
+    open func setColorOfViews(color: UIColor) {
+        backgroundColor = color
+        nameLbl.textColor = color
+        superlativeLbl.textColor = color
+    }
+    
     override func setupViews() {
         backgroundColor = GREEN_UICOLOR
         

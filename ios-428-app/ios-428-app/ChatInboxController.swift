@@ -57,6 +57,7 @@ class ChatInboxController: UIViewController, UICollectionViewDelegateFlowLayout,
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+        self.navigationController?.navigationBar.barTintColor = RED_UICOLOR
         self.navigationController?.navigationBar.isHidden = false
         self.collectionView.isHidden = false
         self.tabBarController?.tabBar.isHidden = true
@@ -65,6 +66,7 @@ class ChatInboxController: UIViewController, UICollectionViewDelegateFlowLayout,
     
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
+        self.navigationController?.navigationBar.barTintColor = RED_UICOLOR
         DataService.ds.seeInboxMessages(inbox: self.inbox) { (isSuccess) in }
         if self.queryAndHandle != nil {
             self.queryAndHandle.0.removeAllObservers()
@@ -489,8 +491,8 @@ class ChatInboxController: UIViewController, UICollectionViewDelegateFlowLayout,
     fileprivate let navButton: UIButton = {
        let button = UIButton()
         button.titleLabel?.font = FONT_HEAVY_LARGE
-        button.setTitleColor(UIColor.black, for: .normal)
-        button.setTitleColor(GREEN_UICOLOR, for: .highlighted)
+        button.setTitleColor(UIColor.white, for: .normal)
+        button.setTitleColor(UIColor.white, for: .highlighted)
         button.titleLabel?.textAlignment = .center
         return button
     }()

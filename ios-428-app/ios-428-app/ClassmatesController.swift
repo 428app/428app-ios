@@ -20,14 +20,14 @@ class ClassmatesController: UICollectionViewController, UICollectionViewDelegate
     override func viewDidLoad() {
         super.viewDidLoad()
         self.navigationItem.title = "Classmates"
-        self.view.backgroundColor = GREEN_UICOLOR
+        self.view.backgroundColor = RED_UICOLOR
         self.extendedLayoutIncludesOpaqueBars = true
         self.setupViews()
     }
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        self.navigationController?.navigationBar.setBackgroundImage(UIImage.init(color: GREEN_UICOLOR), for: .default)
+        self.navigationController?.navigationBar.setBackgroundImage(UIImage.init(color: RED_UICOLOR), for: .default)
         self.navigationController?.navigationBar.shadowImage = UIImage()
         self.tabBarController?.tabBar.isHidden = true
         NotificationCenter.default.addObserver(self, selector: #selector(sendMessageFromProfile), name: NOTIF_SENDMESSAGE, object: nil)
@@ -56,7 +56,7 @@ class ClassmatesController: UICollectionViewController, UICollectionViewDelegate
         collectionView?.collectionViewLayout = layout
         collectionView?.delegate = self
         collectionView?.dataSource = self
-        collectionView?.backgroundColor = GREEN_UICOLOR
+        collectionView?.backgroundColor = RED_UICOLOR
         collectionView?.bounces = true
         collectionView?.showsVerticalScrollIndicator = false
         collectionView?.showsHorizontalScrollIndicator = false

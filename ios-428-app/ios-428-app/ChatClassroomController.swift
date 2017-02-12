@@ -57,6 +57,7 @@ class ChatClassroomController: UIViewController, UIGestureRecognizerDelegate, UI
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         self.tabBarController?.tabBar.isHidden = true
+        self.navigationController?.navigationBar.barTintColor = RED_UICOLOR
         // Show superlative alert when there are superlatives and user has not voted
         if classroom.hasSuperlatives && classroom.superlativeType == SuperlativeType.NOTVOTED {
             showSuperlativeAlert()
@@ -366,9 +367,9 @@ class ChatClassroomController: UIViewController, UIGestureRecognizerDelegate, UI
     
     fileprivate lazy var questionBanner: UILabel = {
         let label = UILabel()
-        label.backgroundColor = GRAY_UICOLOR
+        label.backgroundColor = GREEN_UICOLOR
         label.font = FONT_HEAVY_MID
-        label.textColor = UIColor.black
+        label.textColor = UIColor.white
         label.textAlignment = .center
         label.numberOfLines = 1
         let tapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(openDescription))

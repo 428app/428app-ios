@@ -16,7 +16,7 @@ open class ShoutView: UIView {
   open fileprivate(set) lazy var backgroundView: UIView = {
     let view = UIView()
 //    view.backgroundColor = ColorList.Shout.background
-    view.backgroundColor = GREEN_UICOLOR
+    view.backgroundColor = RED_UICOLOR
     view.alpha = 0.98
     view.clipsToBounds = true
 

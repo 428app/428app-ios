@@ -31,12 +31,39 @@ class ClassmatesProfileCell: BaseCollectionCell {
         return label
     }()
     
+    fileprivate let disciplineBg: UIView = {
+        let view = UIView()
+        view.backgroundColor = GREEN_UICOLOR
+        view.layer.borderWidth = 3.0
+        view.layer.borderColor = UIColor.white.cgColor
+        view.layer.cornerRadius = 20.0
+        view.clipsToBounds = true
+        return view
+    }()
+    
+    fileprivate let disciplineIcon: UIImageView = {
+        let imageView = UIImageView()
+        imageView.tintColor = UIColor.white
+        imageView.contentMode = .scaleAspectFit
+        return imageView
+    }()
+    
     override func setupViews() {
-        backgroundColor = GREEN_UICOLOR
+        backgroundColor = RED_UICOLOR
         addSubview(profileImageView)
+        addSubview(disciplineBg)
+        addSubview(disciplineIcon)
         addSubview(nameLbl)
         addConstraintsWithFormat("H:[v0(120)]", views: profileImageView)
         addConstraint(NSLayoutConstraint(item: profileImageView, attribute: .centerX, relatedBy: .equal, toItem: self, attribute: .centerX, multiplier: 1.0, constant: 0.0))
+        addConstraint(NSLayoutConstraint(item: disciplineBg, attribute: .bottom, relatedBy: .equal, toItem: profileImageView, attribute: .bottom, multiplier: 1.0, constant: 0.0))
+        addConstraint(NSLayoutConstraint(item: disciplineBg, attribute: .right, relatedBy: .equal, toItem: profileImageView, attribute: .right, multiplier: 1.0, constant: 0.0))
+        addConstraint(NSLayoutConstraint(item: disciplineIcon, attribute: .centerX, relatedBy: .equal, toItem: disciplineBg, attribute: .centerX, multiplier: 1.0, constant: 0.0))
+        addConstraint(NSLayoutConstraint(item: disciplineIcon, attribute: .centerY, relatedBy: .equal, toItem: disciplineBg, attribute: .centerY, multiplier: 1.0, constant: 0.0))
+        addConstraintsWithFormat("H:[v0(40)]", views: disciplineBg)
+        addConstraintsWithFormat("V:[v0(40)]", views: disciplineBg)
+        addConstraintsWithFormat("H:[v0(20)]", views: disciplineIcon)
+        addConstraintsWithFormat("V:[v0(20)]", views: disciplineIcon)
         addConstraintsWithFormat("H:|-8-[v0]-8-|", views: nameLbl)
         addConstraintsWithFormat("V:|-8-[v0(120)]-8-[v1]-8-|", views: profileImageView, nameLbl)
     }
@@ -61,6 +88,7 @@ class ClassmatesProfileCell: BaseCollectionCell {
     
     func configureCell(profileObj: Profile) {
         self.profile = profileObj
+        disciplineIcon.image = UIImage(named: getDisciplineIcon(discipline: self.profile.discipline))
         loadImage()
         self.nameLbl.text = profile.name
     }

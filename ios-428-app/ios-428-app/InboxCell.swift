@@ -16,27 +16,15 @@ class InboxCell: BaseCollectionCell {
     // NOTE: If message has an empty text, it means this is a new connection because we disallow empty 
     // messages from being sent to the server
     
-    fileprivate var message: InboxMessage! {
-        didSet {
-            self.isNewConnection = self.message.text.isEmpty
-        }
-    }
-    fileprivate var isNewConnection: Bool = false
+    fileprivate var message: InboxMessage!
     
     override var isHighlighted: Bool {
         didSet {
-
             nameLabel.textColor = isHighlighted ? UIColor.white : UIColor.black
             timeLabel.textColor = isHighlighted ? UIColor.white : UIColor.lightGray
             messageLabel.textColor = isHighlighted ? UIColor.white : UIColor.lightGray
-            
-            if isNewConnection {
-                backgroundColor = isHighlighted ? RED_UICOLOR : UIColor.white
-                disciplineImageView.tintColor = isHighlighted ? UIColor.white : RED_UICOLOR
-            } else {
-                backgroundColor = isHighlighted ? GREEN_UICOLOR : UIColor.white
-                disciplineImageView.tintColor = isHighlighted ? UIColor.white : GREEN_UICOLOR
-            }
+            backgroundColor = isHighlighted ? RED_UICOLOR : UIColor.white
+            disciplineImageView.tintColor = isHighlighted ? UIColor.white : RED_UICOLOR
             
             repliedImageView.tintColor = isHighlighted ? UIColor.white : UIColor.lightGray
         }
@@ -90,7 +78,7 @@ class InboxCell: BaseCollectionCell {
     fileprivate let disciplineImageView: UIImageView = {
         let imageView = UIImageView()
         imageView.contentMode = .scaleAspectFit
-        imageView.tintColor = GREEN_UICOLOR
+        imageView.tintColor = RED_UICOLOR
         return imageView
     }()
     
@@ -186,16 +174,7 @@ class InboxCell: BaseCollectionCell {
         
         self.nameLabel.text = self.message.inbox.name
         self.disciplineImageView.image = UIImage(named: self.message.inbox.disciplineImageName)
-        
-        if isNewConnection {
-            // New connection
-            self.messageLabel.text = "New connection!"
-            self.disciplineImageView.tintColor = RED_UICOLOR
-        } else {
-            self.messageLabel.text = self.message.text
-            self.disciplineImageView.tintColor = GREEN_UICOLOR
-        }
-        
+        self.messageLabel.text = self.message.text
         self.timeLabel.text = formatDateToText(date: self.message.date)
         
         containerView.removeConstraints(constraintsToDelete)

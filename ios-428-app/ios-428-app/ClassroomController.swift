@@ -47,6 +47,7 @@ class ClassroomsController: UIViewController, UICollectionViewDelegate, UICollec
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+        self.navigationController?.navigationBar.barTintColor = GREEN_UICOLOR
         self.tabBarController?.tabBar.isHidden = false
         DataService.ds.getUserHasNewClassroom { (classroomTitle) in
             if classroomTitle != nil {

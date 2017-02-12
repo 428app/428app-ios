@@ -248,7 +248,7 @@ class EditProfileController: UIViewController, UIScrollViewDelegate, UIGestureRe
         button.setTitle(title, for: .normal)
         button.setTitleColor(GREEN_UICOLOR, for: .normal)
         button.setTitleColor(UIColor.white, for: .highlighted)
-        button.titleLabel?.font = FONT_HEAVY_MID
+        button.titleLabel?.font = FONT_HEAVY_LARGE
         button.imageEdgeInsets = UIEdgeInsets(top: -1, left: 0, bottom: 0, right: 6)
         button.titleEdgeInsets = UIEdgeInsets(top: 0, left: 6, bottom: 0, right: 0)
         button.imageView?.contentMode = .scaleAspectFit
@@ -279,7 +279,7 @@ class EditProfileController: UIViewController, UIScrollViewDelegate, UIGestureRe
     fileprivate func sectionLabelTemplate(labelText: String) -> UILabel {
         let label = UILabel()
         label.text = labelText
-        label.font = FONT_HEAVY_MID
+        label.font = FONT_HEAVY_LARGE
         label.textColor = UIColor.darkGray
         label.textAlignment = .left
         return label
@@ -376,8 +376,8 @@ class EditProfileController: UIViewController, UIScrollViewDelegate, UIGestureRe
         disciplineNameAgeContainer.translatesAutoresizingMaskIntoConstraints = false
         containerView.addSubview(disciplineNameAgeContainer)
         containerView.addConstraint(NSLayoutConstraint(item: disciplineNameAgeContainer, attribute: .centerX, relatedBy: .equal, toItem: containerView, attribute: .centerX, multiplier: 1.0, constant: 0))
-        disciplineNameAgeContainer.addConstraintsWithFormat("H:|[v0(20)]-5-[v1]|", views: disciplineImageView, nameAndAgeLbl)
-        disciplineNameAgeContainer.addConstraintsWithFormat("V:|[v0(20)]", views: disciplineImageView)
+        disciplineNameAgeContainer.addConstraintsWithFormat("H:|[v0(25)]-5-[v1]|", views: disciplineImageView, nameAndAgeLbl)
+        disciplineNameAgeContainer.addConstraintsWithFormat("V:|[v0(25)]", views: disciplineImageView)
         disciplineNameAgeContainer.addConstraintsWithFormat("V:|[v0(25)]|", views: nameAndAgeLbl)
         
         containerView.addSubview(coverImageView)
@@ -400,7 +400,7 @@ class EditProfileController: UIViewController, UIScrollViewDelegate, UIGestureRe
         let bottomMargin = CGFloat(self.view.frame.height / 2.5) // Set large bottom margin so user can scroll up and read bottom tagline
         let navBarHeight: CGFloat = self.navigationController!.navigationBar.frame.height
         
-        containerView.addConstraintsWithFormat("V:|-\(navBarHeight)-[v0(250)]-14-[v1(25)]-8-[v2(40)]-8-[v3(20)]-8-[v4(20)]-8-[v5(20)]-8-[v6(20)]-8-[v7(20)]-8-[v8(20)]-8-[v9(0.5)]-12-[v10(40)]-8-[v11(20)]-8-[v12]-\(bottomMargin)-|", views: coverImageView, disciplineNameAgeContainer, editProfessionalInfoButton ,disciplineLbl, disciplineText, schoolLbl, schoolText, organizationLbl, organizationText, dividerLineView, editTaglineButton, taglineLbl, taglineText)
+        containerView.addConstraintsWithFormat("V:|-\(navBarHeight)-[v0(250)]-14-[v1(25)]-12-[v2(50)]-8-[v3(20)]-4-[v4(20)]-12-[v5(20)]-4-[v6(20)]-12-[v7(20)]-4-[v8(20)]-12-[v9(0.5)]-16-[v10(50)]-12-[v11(20)]-4-[v12]-\(bottomMargin)-|", views: coverImageView, disciplineNameAgeContainer, editProfessionalInfoButton ,disciplineLbl, disciplineText, schoolLbl, schoolText, organizationLbl, organizationText, dividerLineView, editTaglineButton, taglineLbl, taglineText)
         
         containerView.addConstraintsWithFormat("H:|[v0]|", views: coverImageView)
         containerView.addConstraintsWithFormat("H:[v0(180)]", views: profileImageView)
