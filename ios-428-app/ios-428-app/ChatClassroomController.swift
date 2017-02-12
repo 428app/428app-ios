@@ -15,8 +15,8 @@ class ChatClassroomController: UIViewController, UIGestureRecognizerDelegate, UI
     /** FIREBASE **/
     fileprivate var queryAndHandle: (FIRDatabaseQuery, FIRDatabaseHandle)!
     
-    fileprivate var numMessages: UInt = 10 // Increases as user scrolls to top of collection view
-    fileprivate let NUM_INCREMENT: UInt = 5 // Downloads 10 messages per scroll
+    fileprivate var numMessages: UInt = 30 // Increases as user scrolls to top of collection view
+    fileprivate let NUM_INCREMENT: UInt = 10 // Downloads 10 messages per scroll
     
     /** CONSTANTS **/
     fileprivate let CELL_ID = "classroomChatCell"
@@ -68,6 +68,7 @@ class ChatClassroomController: UIViewController, UIGestureRecognizerDelegate, UI
         super.viewWillDisappear(animated)
         self.tabBarController?.tabBar.isHidden = false
         self.unregisterObservers()
+        log.info("View is disappearing")
         // See this classroom before leaving, so isUpdated will be gone upon leaving
         DataService.ds.seeClassroom(classroom: self.classroom) { (isSuccess) in }
     }

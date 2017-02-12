@@ -18,7 +18,7 @@ class ChatInboxController: UIViewController, UICollectionViewDelegateFlowLayout,
     /** FIREBASE **/
     fileprivate var queryAndHandle: (FIRDatabaseQuery, FIRDatabaseHandle)!
     
-    fileprivate var numMessages: UInt = 50 // Increases as user scrolls to top of collection view
+    fileprivate var numMessages: UInt = 30 // Increases as user scrolls to top of collection view
     fileprivate let NUM_INCREMENT: UInt = 10 // Downloads 10 messages per scroll
     
     /** CONSTANTS **/
@@ -65,6 +65,7 @@ class ChatInboxController: UIViewController, UICollectionViewDelegateFlowLayout,
     
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
+        DataService.ds.seeInboxMessages(inbox: self.inbox) { (isSuccess) in }
         if self.queryAndHandle != nil {
             self.queryAndHandle.0.removeAllObservers()
         }
@@ -301,9 +302,6 @@ class ChatInboxController: UIViewController, UICollectionViewDelegateFlowLayout,
                 log.info("No messages updated for private chat")
                 return
             }
-            
-            // Messages seen
-            DataService.ds.seeInboxMessages(inbox: self.inbox) { (isSuccess) in }
             
             // There are messages, hide and disable empty placeholder view
             self.emptyPlaceholderView.isHidden = true

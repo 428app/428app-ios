@@ -10,7 +10,7 @@ import Foundation
 
 
 enum TokenType: String {
-    case INBOX = "inbox", CLASSROOM = "classroom"
+    case INBOX = "inbox", CLASSROOM = "classroom", ALERT = "alert"
 }
 
 enum SuperlativeType: Int {

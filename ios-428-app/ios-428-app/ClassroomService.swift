@@ -81,6 +81,7 @@ extension DataService {
         let ref: FIRDatabaseReference = REF_USERS.child("\(uid)/classrooms/\(cid)")
         ref.keepSynced(true)
         REF_CLASSROOMS.child("\(cid)/memberHasVoted/\(uid)").keepSynced(true)
+        REF_CLASSROOMS.child("\(cid)/questions").keepSynced(true)
         
         // Primarily observe on changes in classroom's question number and image
         let handle = ref.observe(.value, with: { snapshot in

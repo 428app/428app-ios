@@ -267,39 +267,8 @@ extension DataService {
         }
         
         let inboxId: String = getInboxId(uid1: uid, uid2: inbox.uid)
-        
-        // Get hasNew value, if it is not hasNew: false already then do not adjust badge count
-        
-        let ref = REF_INBOX.child("\(inboxId)/hasNew:\(uid)")
-        ref.keepSynced(true)
-        
-        // Don't need a transaction here because the user is the only one updating this table for "seeing"
-        ref.observeSingleEvent(of: .value, with: { snapshot in
-            if !snapshot.exists() {
-                completed(false)
-                return
-            }
-            guard let hasNew = snapshot.value as? Bool else {
-                completed(false)
-                return
-            }
-            if !hasNew {
-                // There is already no hasNew for this user for this chat, so no need to decrement badge count
-                completed(true)
-                return
-            }
-            // Set hasNew to false and decrement badge count
-            ref.setValue(false) { (err, ref) in
-                if err != nil {
-                    completed(false)
-                    return
-                }
-                self.adjustPushCount(isIncrement: false, uid: uid, completed: { (isSuccess) in
-                    completed(isSuccess)
-                    return
-                })
-            }
-        })
+        REF_INBOX.child("\(inboxId)/hasNew:\(uid)").setValue(false)
+        updatePushCount { (isSuccess, pushCount) in }
     }
     
 }

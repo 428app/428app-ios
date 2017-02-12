@@ -29,7 +29,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         FIRApp.configure()
         FIRDatabase.database().persistenceEnabled = true
         
-        // Reupload previous photo that might not have been uploaded due to network issues or user quitting the app after changing profile photo
+        // Reupload previous photo that might not have been uploaded due to nLogetwork issues or user quitting the app after changing profile photo
         reuploadPhoto()
  
         // Note that if a remote notification launches the app, we will NOT support directing it to the right page because the data has likely not been loaded and it can very tricky to wait for data to load before pushing the right page (even worse under bad network conditions!)
@@ -159,7 +159,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     // Used to transition to the right page given valid userInfo dictionary from remote notification payload
     open func handleRemote(userInfo: [AnyHashable: Any], isForeground: Bool = false) {
         /**
-         type: "classroom" or "inbox",
+         type: "classroom" or "inbox" or "alert",
          image: "",
          uid: "",
          cid: "",
@@ -273,7 +273,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
     
     fileprivate func transitionToRightScreenBasedOnType(type: TokenType, uid: String, cid: String) {
-        
         guard let rootVC = self.window?.rootViewController as? LoginController else {
             return
         }
@@ -286,12 +285,13 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             self.findAndTransitionToClassroom(cid: cid, tabBarController: tabBarController)
         } else if type == .INBOX {
             self.findAndTransitionToInbox(uid: uid, tabBarController: tabBarController)
+        } else if type == .ALERT {
+            self.transitionToClassroomPageForAlert(tabBarController: tabBarController)
         }
     }
     
     // Open the correct private chat that matches uid
     fileprivate func findAndTransitionToInbox(uid: String, tabBarController: CustomTabBarController) {
-        
         guard let vcs = tabBarController.viewControllers, let inboxNVC = vcs[2] as? CustomNavigationController, let inboxVC = inboxNVC.viewControllers.first as? InboxController else {
             return
         }
@@ -340,6 +340,18 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         classChatVC.classroom = correctClassroom[0]
         classroomsNVC.viewControllers[0].navigationItem.backBarButtonItem = UIBarButtonItem(title: " ", style: .plain, target: nil, action: nil)
         classroomsNVC.pushViewController(classChatVC, animated: false)
+        tabBarController.selectedIndex = 1
+    }
+    
+    // Transition to classroom tab upon receiving any alert
+    fileprivate func transitionToClassroomPageForAlert(tabBarController: CustomTabBarController) {
+        guard let vcs = tabBarController.viewControllers, let classroomsNVC = vcs[1] as? CustomNavigationController, let _ = classroomsNVC.viewControllers.first as? ClassroomsController else {
+            return
+        }
+        if classroomsNVC.viewControllers.count > 1 {
+            // Currently in a screen on top of the ClassroomsController stack, i.e. in a Chat, etc. - need to pop back to the ClassroomsController
+            classroomsNVC.popToRootViewController(animated: false)
+        }
         tabBarController.selectedIndex = 1
     }
     

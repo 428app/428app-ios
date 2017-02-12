@@ -95,6 +95,7 @@
 		40ADEEE01DDD12D000CE529A /* WhisperView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 40ADEED71DDD12D000CE529A /* WhisperView.swift */; };
 		40ADEEE11DDD12D000CE529A /* WhistleFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 40ADEED81DDD12D000CE529A /* WhistleFactory.swift */; };
 		40ADEEE31DDD82E300CE529A /* Enums.swift in Sources */ = {isa = PBXBuildFile; fileRef = 40ADEEE21DDD82E300CE529A /* Enums.swift */; };
+		40BC2E931E4EF2B300017253 /* NewClassroomAlertController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 40BC2E921E4EF2B300017253 /* NewClassroomAlertController.swift */; };
 		40E2E1401DD26B8200469B4D /* Discipline.swift in Sources */ = {isa = PBXBuildFile; fileRef = 40E2E13F1DD26B8200469B4D /* Discipline.swift */; };
 		40E2E1421DD3788300469B4D /* CustomActivityIndicatorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 40E2E1411DD3788300469B4D /* CustomActivityIndicatorView.swift */; };
 		FED3D2F8E9831031BBFFDBEB /* Pods_ios_428_app.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1B0A78A64649B55915C0C572 /* Pods_ios_428_app.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
@@ -195,6 +196,7 @@
 		40ADEED71DDD12D000CE529A /* WhisperView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WhisperView.swift; sourceTree = "<group>"; };
 		40ADEED81DDD12D000CE529A /* WhistleFactory.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WhistleFactory.swift; sourceTree = "<group>"; };
 		40ADEEE21DDD82E300CE529A /* Enums.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Enums.swift; sourceTree = "<group>"; };
+		40BC2E921E4EF2B300017253 /* NewClassroomAlertController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NewClassroomAlertController.swift; sourceTree = "<group>"; };
 		40E2E13F1DD26B8200469B4D /* Discipline.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Discipline.swift; sourceTree = "<group>"; };
 		40E2E1411DD3788300469B4D /* CustomActivityIndicatorView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CustomActivityIndicatorView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -220,6 +222,7 @@
 			children = (
 				4024F2201DB7E2E9007819F7 /* ClassroomController.swift */,
 				4024F2281DB853F9007819F7 /* ChatClassroomController.swift */,
+				40BC2E921E4EF2B300017253 /* NewClassroomAlertController.swift */,
 				40790C861E1B659700A779A6 /* SuperlativeAlertController.swift */,
 				4024F2301DB88262007819F7 /* ModalQuestionController.swift */,
 				4072AD951E15FD0E0067046D /* ClassmatesController.swift */,
@@ -499,7 +502,7 @@
 			isa = PBXProject;
 			attributes = {
 				LastSwiftUpdateCheck = 0800;
-				LastUpgradeCheck = 0800;
+				LastUpgradeCheck = 0820;
 				ORGANIZATIONNAME = 428;
 				TargetAttributes = {
 					4064A1B11DAC381300071383 = {
@@ -658,6 +661,7 @@
 				40AB80001DB5FDB100492788 /* EditProfileController.swift in Sources */,
 				4064A21F1DAD72DF00071383 /* Functions.swift in Sources */,
 				4064A22B1DB2B27F00071383 /* Inbox.swift in Sources */,
+				40BC2E931E4EF2B300017253 /* NewClassroomAlertController.swift in Sources */,
 				40A2C0871E13D61F00D477E1 /* WebviewController.swift in Sources */,
 				4072AD961E15FD0E0067046D /* ClassmatesController.swift in Sources */,
 				40ADEEDE1DDD12D000CE529A /* Showing.swift in Sources */,
@@ -806,6 +810,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 04E3B82C0B8AC7357CE89687 /* Pods-ios-428-app.debug.xcconfig */;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = "ios-428-app/ios-428-app.entitlements";
 				DEVELOPMENT_TEAM = EUUML7WPQP;
@@ -826,6 +831,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 0D2BDEFFA9091FABC468335E /* Pods-ios-428-app.release.xcconfig */;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = "ios-428-app/ios-428-app.entitlements";
 				DEVELOPMENT_TEAM = EUUML7WPQP;

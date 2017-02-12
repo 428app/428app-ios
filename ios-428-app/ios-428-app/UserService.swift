@@ -92,12 +92,11 @@ extension DataService {
             } else {
                 // Create new user
                 user["pushCount"] = 0
-                user["hasNewBadge"] = false
-                user["hasNewClassroom"] = false
                 user["profilePhoto"] = pictureUrl
                 let userSettings = ["dailyAlert": true, "inboxMessages": true, "classroomMessages": true, "inAppNotifications": true, "isLoggedIn": true]
                 
                 self.REF_USERS.child(uid).updateChildValues(user, withCompletionBlock: { (err, ref) in
+                    
                     completed(err == nil, true)
                     return
                 })
@@ -120,7 +119,7 @@ extension DataService {
         }
         let timeNow = Date().timeIntervalSince1970
         self.REF_USERS.child(uid).observeSingleEvent(of: .value, with: { snapshot in
-            if snapshot.exists() {
+            if snapshot.exists() && snapshot.value != nil {
                 // Might as well update last seen as well
                 // Location is in the format "lat, lon"
                 self.REF_USERS.child(uid).updateChildValues(["location": "\(lat),\(lon)", "lastSeen": timeNow], withCompletionBlock: { (error, ref) in
@@ -157,7 +156,7 @@ extension DataService {
         }
         let timeNow = Date().timeIntervalSince1970
         self.REF_USERS.child(uid).observeSingleEvent(of: .value, with: { snapshot in
-            if snapshot.exists() {
+            if snapshot.exists() && snapshot.value != nil {
                 self.REF_USERS.child(uid).updateChildValues(["lastSeen": timeNow], withCompletionBlock: { (error, ref) in
                     completed(error == nil)
                     return
@@ -386,5 +385,28 @@ extension DataService {
             completed(settings)
             return
         })
+    }
+    
+    // Used in ClassroomsController to check if a user has new classrooms, so as to show alert
+    func getUserHasNewClassroom(completed: @escaping (_ classroomTitle: String?) -> ()) {
+        guard let uid = getStoredUid() else {
+            completed(nil)
+            return
+        }
+        REF_USERS.child("\(uid)/hasNewClassroom").observeSingleEvent(of: .value, with: { snapshot in
+            if let classroomTitle = snapshot.value as? String {
+                completed(classroomTitle)
+                return
+            }
+            completed(nil)
+            return
+        })
+    }
+    
+    // Used upon dismissing NewClassroomAlertController, so the alert does not show again
+    func removeUserHasNewClassroom() { // No need for callback
+        if let uid = getStoredUid() {
+            REF_USERS.child("\(uid)/hasNewClassroom").removeValue()
+        }
     }
 }

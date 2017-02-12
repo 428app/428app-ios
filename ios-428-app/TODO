@@ -1,41 +1,26 @@
-Classrooms Firebase integration
-
-** Inbox
-
-- Private Chats
-
-+ New classroom, time to rate logic
-
-+ Red icon below Inbox for number of new messages
+TODO:
++ Remove badges
++ Videos
+- Question/Answer
+- Better looking Share/Didyouknow
 
 
+
+
+BUGS:
+
+
+
+
+DO LATER:
++ Discipline icons at the bottom right of classmate pictures
++ Better background for superlative results
++ firstReplied
++ Link terms and privacy policy from login
 + Test negative cases (disallow notifications, etc.)
 
 
-
-
-**Multi-user chats in classrooms
-
-+ Superlatives Did you knows
-+ Discipline icons at the bottom right of classmate pictures
-+ firstReplied
-+ Input actual questions
-
-** Settings
-
-+ Link website, privacy policy and terms
-
-** Nice to haves
-
-* Video answers? Video didyouknows?
-* Make classroom icons larger
-* Badges
-* GIFs in text?
-
-
 // DEPRECATED
-==== BACKEND ====
-
 
 MAJOR BUGS
 - iOS 9: Chat screen keyboard blocking on first load before collection view scroll: Try to figure out issue when coding ClassroomsController
@@ -43,40 +28,6 @@ MAJOR BUGS
 MINOR BUGS
 - Only allow copy of whole ChatCell: Wait for reply on stack overflow
 
-
-!TOPICS!
-- Store name and discipline in NSUSerDefaults - store this during sign up
-- getUserFields upon opening app, and already set profileImage on coverImage etc. from Settings. After getting, reupdate name and discipline in NSUserDefaults
-
-
-- observeClassrooms(uid)
-- observeRecentClassroom(tid)
-- observeClassroomMessages(tid)
-- addClassroomMessage(msg, uid, name, discipline, timestamp)
-
-
-!SETTINGS!
-- Settings table
-- Settings: Unselect cell upon cancel
-- Mute, etc.
-
-
-!PROFILE!
-- Pre-load profile in ChatInboxController and pass it on
-- Load in profile and pass it back to ChatInboxController
-
-!SECURITY and INDEX SETTINGS!
-
-!MODULARIZE CODE!
-- Break down DataService into multiple services, delete DummyDataService
-
-!TEST, TEST, TEST!
-
-
-==== FRONTEND ====
-USER COMMENTS:
-- Organization for students?
-- I want to eventually sounds kinda weird
 
 
 

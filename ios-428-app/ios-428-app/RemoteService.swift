@@ -30,17 +30,18 @@ extension DataService {
     // Used by other services such as InboxService and ClassroomService
     open func adjustPushCount(isIncrement: Bool, uid: String, completed: @escaping (_ isSuccess: Bool) -> ()) {
         // Note: Transaction blocks only work when persistence is set to True
-        self.REF_USERS.child(uid).runTransactionBlock({ (currentData) -> FIRTransactionResult in
+        self.REF_USERS.child("\(uid)/pushCount").runTransactionBlock({ (currentData) -> FIRTransactionResult in
             
-            guard var user = currentData.value as? [String: Any] else {
-                return FIRTransactionResult.abort()
+            guard let pushCount = currentData.value as? Int else {
+                return FIRTransactionResult.abort() 
             }
-            if let currentPushCount = user["pushCount"] as? Int {
-                user["pushCount"] = max(isIncrement ? currentPushCount + 1 : currentPushCount - 1, 0)
+            var newPushCount = pushCount
+            if isIncrement {
+                newPushCount += 1
             } else {
-                user["pushCount"] = isIncrement ? 1 : 0
+                newPushCount = max(newPushCount - 1, 0)
             }
-            currentData.value = user
+            currentData.value = newPushCount
             return FIRTransactionResult.success(withValue: currentData)
         }) { (error, committed, snapshot) in
             completed(error == nil)
@@ -73,7 +74,7 @@ extension DataService {
         })
     }
     
-    // Called in AppDelegate whenever a user leaves the app to go to the background to update push count (keeping the state consistent as a fail safe)
+    // Called in Classroom and Inbox chat's viewWillDisappear to update push count
     func updatePushCount(completed: @escaping (_ isSuccess: Bool, _ pushCount: Int) -> ()) {
         guard let uid = getStoredUid() else {
             completed(false, -1)
