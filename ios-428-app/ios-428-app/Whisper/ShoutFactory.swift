@@ -59,7 +59,7 @@ open class ShoutView: UIView {
 
   open fileprivate(set) lazy var subtitleLabel: UILabel = {
     let label = UILabel()
-    label.font = FONT_MEDIUM_MID
+    label.font = UIFont.systemFont(ofSize: 16.0)
     label.textColor = UIColor.white
     label.numberOfLines = 2
 
@@ -171,7 +171,7 @@ open class ShoutView: UIView {
         $0.frame.size.width = totalWidth - imageSize - (Dimensions.imageOffset * 2)
         $0.sizeToFit()
     }
-
+        
     Dimensions.height += subtitleLabel.frame.height
 
     backgroundView.frame.size = CGSize(width: totalWidth, height: Dimensions.height)
