@@ -137,10 +137,10 @@ class InboxCell: BaseCollectionCell {
         containerView.addSubview(disciplineImageView)
         containerView.addSubview(messageLabel)
         containerView.addSubview(timeLabel)
-        containerView.addConstraintsWithFormat("H:|[v0(16)]-5-[v1][v2(100)]-12-|", views: disciplineImageView, nameLabel, timeLabel)
-        containerView.addConstraintsWithFormat("V:|[v0]-(-14)-[v1(24)]-3-|", views: nameLabel, messageLabel)
-        containerView.addConstraintsWithFormat("V:|-13-[v0(24)]", views: timeLabel)
-        containerView.addConstraintsWithFormat("V:|-14-[v0(16)]", views: disciplineImageView)
+        containerView.addConstraintsWithFormat("H:|[v0(25)]-5-[v1][v2(100)]-12-|", views: disciplineImageView, nameLabel, timeLabel)
+        containerView.addConstraintsWithFormat("V:|-12-[v0]-4-[v1(24)]", views: nameLabel, messageLabel)
+        containerView.addConstraintsWithFormat("V:|-11-[v0(24)]", views: timeLabel)
+        containerView.addConstraintsWithFormat("V:|-8-[v0(25)]", views: disciplineImageView)
     }
     
     fileprivate var constraintsToDelete = [NSLayoutConstraint]()
