@@ -19,7 +19,6 @@ class ModalQuestionController: UIViewController {
                 self.questionImageView.image = image
             })
             self.questionText.text = question.question
-            self.questionText.text = "Why is Jet lag worse after you've traveled east? Why is Jet lag worse after you've traveled east? Why is Jet lag worse after you've traveled east? Why is Jet lag worse after you've traveled east? Why is Jet lag worse after you've traveled east? Why is Jet lag worse after you've traveled east? Why is Jet lag worse after you've traveled east?"
         }
     }
     
