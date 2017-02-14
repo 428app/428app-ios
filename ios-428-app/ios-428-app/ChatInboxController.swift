@@ -519,9 +519,9 @@ class ChatInboxController: UIViewController, UICollectionViewDelegateFlowLayout,
         
         navContainerView.addSubview(navDisciplineImageView)
         navContainerView.addSubview(navButton)
-        navContainerView.addConstraintsWithFormat("H:|[v0(20)]-8-[v1]|", views: navDisciplineImageView, navButton)
-        navContainerView.addConstraintsWithFormat("V:|[v0(20)]", views: navDisciplineImageView)
-        navContainerView.addConstraintsWithFormat("V:|-1-[v0(22)]|", views: navButton)
+        navContainerView.addConstraintsWithFormat("H:|[v0(25)]-5-[v1]|", views: navDisciplineImageView, navButton)
+        navContainerView.addConstraintsWithFormat("V:|[v0(25)]", views: navDisciplineImageView)
+        navContainerView.addConstraintsWithFormat("V:|-3-[v0(22)]|", views: navButton)
         self.navigationItem.titleView = navTitleView
     }
     

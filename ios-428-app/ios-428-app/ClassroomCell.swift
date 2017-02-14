@@ -74,8 +74,8 @@ class ClassroomCell: BaseCollectionCell {
         contentView.addConstraintsWithFormat("V:|-8-[v0]-8-|", views: containerView)
         
         containerView.addSubview(classroomImageView)
-        containerView.addSubview(updatedLbl)
         containerView.addSubview(titleLbl)
+        containerView.addSubview(updatedLbl)
         containerView.addSubview(questionNumLbl)
         
         containerView.addConstraintsWithFormat("V:|[v0(175)][v1(35)]-8-[v2]-|", views: classroomImageView, questionNumLbl, titleLbl)
@@ -83,10 +83,9 @@ class ClassroomCell: BaseCollectionCell {
         containerView.addConstraintsWithFormat("H:|[v0]|", views: titleLbl)
         containerView.addConstraintsWithFormat("H:|[v0]|", views: questionNumLbl)
         
-        containerView.addConstraint(NSLayoutConstraint(item: updatedLbl, attribute: .bottom, relatedBy: .equal, toItem: classroomImageView, attribute: .bottom, multiplier: 1.0, constant: -8.0))
-        containerView.addConstraint(NSLayoutConstraint(item: updatedLbl, attribute: .right, relatedBy: .equal, toItem: classroomImageView, attribute: .right, multiplier: 1.0, constant: -8.0))
-        containerView.addConstraintsWithFormat("V:[v0(25)]", views: updatedLbl)
-        containerView.addConstraintsWithFormat("H:[v0(80)]", views: updatedLbl)
+        containerView.addConstraint(NSLayoutConstraint(item: updatedLbl, attribute: .centerY, relatedBy: .equal, toItem: titleLbl, attribute: .centerY, multiplier: 1.0, constant: 0.0))
+        containerView.addConstraintsWithFormat("V:[v0(35)]", views: updatedLbl)
+        containerView.addConstraintsWithFormat("H:[v0(80)]-8-|", views: updatedLbl)
 
     }
     

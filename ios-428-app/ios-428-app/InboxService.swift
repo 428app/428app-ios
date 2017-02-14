@@ -57,8 +57,6 @@ extension DataService {
         let uid = getStoredUid() == nil ? "" : getStoredUid()!
         let ref: FIRDatabaseReference = REF_USERS.child("\(uid)/inbox")
         
-        ref.keepSynced(true)
-        
         // Observed on value as not childAdded, as profile pic can change
         let handle = ref.observe(.value, with: { snapshot in
             

@@ -1,8 +1,9 @@
 TODO:
-+ Profile photo, discipline is not being updated
-    - When chat is being sent, photo and discipline get disrupted
++ Transfer updated next to title
 
 + Better question modal view
+
+
 + Faster speed for loading classrooms, don't load everything up front?
 
 BUGS:
