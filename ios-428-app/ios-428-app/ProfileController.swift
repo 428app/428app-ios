@@ -146,6 +146,13 @@ class ProfileController: UIViewController, UIGestureRecognizerDelegate, UIScroll
         button.setBackgroundColor(color: UIColor.white, forState: .normal)
         button.setBackgroundColor(color: GREEN_UICOLOR, forState: .highlighted)
         button.addTarget(self, action: #selector(messageUser), for: .touchUpInside)
+        if let myUid = myProfile?.uid {
+            if self.profile.uid == myUid {
+                // Not allowed to message yourself
+                button.setTitle("Can't message self", for: .normal)
+                button.isEnabled = false
+            }
+        }
         return button
     }()
     
