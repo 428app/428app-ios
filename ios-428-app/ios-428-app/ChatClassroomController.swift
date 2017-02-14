@@ -56,6 +56,7 @@ class ChatClassroomController: UIViewController, UIGestureRecognizerDelegate, UI
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+        DataService.ds.seeClassroomMessages(classroom: self.classroom) { (isSuccess) in }
         self.tabBarController?.tabBar.isHidden = true
         self.navigationController?.navigationBar.barTintColor = RED_UICOLOR
         // Show superlative alert when there are superlatives and user has not voted
@@ -67,10 +68,9 @@ class ChatClassroomController: UIViewController, UIGestureRecognizerDelegate, UI
 
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
+        DataService.ds.seeClassroomMessages(classroom: self.classroom) { (isSuccess) in }
         self.tabBarController?.tabBar.isHidden = false
         self.unregisterObservers()
-        // See this classroom before leaving, so isUpdated will be gone upon leaving
-        DataService.ds.seeClassroom(classroom: self.classroom) { (isSuccess) in }
     }
     
     // MARK: Firebase

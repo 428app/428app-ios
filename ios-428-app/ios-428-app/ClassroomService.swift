@@ -323,15 +323,17 @@ extension DataService {
     }
     
     // See classroom messages so the updated label goes away
-    func seeClassroom(classroom: Classroom, completed: @escaping (_ isSuccess: Bool) -> ()) {
+    func seeClassroomMessages(classroom: Classroom, completed: @escaping (_ isSuccess: Bool) -> ()) {
+        log.info("Seeing classroom messages")
         guard let uid = getStoredUid() else {
             completed(false)
             return
         }
         let cid = classroom.cid
         
-        REF_USERS.child("\(uid)/classrooms/\(cid)/hasUpdates").setValue(false)
-        updatePushCount { (isSuccess, pushCount) in }
+        REF_USERS.child("\(uid)/classrooms/\(cid)/hasUpdates").setValue(false) { (err, ref) in
+            self.updatePushCount { (isSuccess, pushCount) in }
+        }
         
     }
     

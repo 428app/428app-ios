@@ -1,27 +1,31 @@
 TODO TONIGHT:
-+ Profile updates: Concurrent chat messages cause it to fail
-
 
 + Change login screen demos
-+ Fix badge count completely
-
 + Faster speed for loading classrooms, don't load everything up front?
++ Test server, and test setup!!
++ Look at app store submission, FB app permissions
 
 BUGS:
 
 
-
-
 DO LATER:
-+ firstReplied
 + Link terms and privacy policy from login
 + Test negative cases (disallow notifications, etc.)
-
-TO TEST:
-+ Server components
 
 
 TASKS FOR YIHANG:
 + Come up with questions, put them in a .tsv file
 + Come up with did you knows, put them one by one
 
+
+
+Push notifications to test:
+
+Repeat the following tests with different user settings: Toggling in app and messages
+1. Receive outside of app when app is in background: New + No new
+2. Receive when app is killed: New + No new
+3. Receive when user is in the chat: New + No new
+4. Receive when user is on the app: New + No new
+
+
+BUGS:

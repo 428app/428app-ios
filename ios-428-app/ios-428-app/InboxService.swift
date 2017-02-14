@@ -258,7 +258,7 @@ extension DataService {
                     } else {
                         self.adjustPushCount(isIncrement: true, uid: uid2, completed: { (isSuccessAdjusted) in
                             if isSuccessAdjusted {
-                                self.addToNotificationQueue(type: .INBOX, posterUid: uid, posterName: profile.name, posterImage: profile.profileImageName, recipientUid: uid2, pushToken: pushToken, pushCount: pushCount, inApp: inAppSettings, cid: "", title: "Private Message", body: text)
+                                self.addToNotificationQueue(type: .INBOX, posterUid: uid, posterName: profile.name, posterImage: profile.profileImageName, recipientUid: uid2, pushToken: pushToken, pushCount: pushCount + 1, inApp: inAppSettings, cid: "", title: "Private Message", body: text)
                             }
                         })
                     }
@@ -270,14 +270,16 @@ extension DataService {
     // Called whenever a user clicks on a private chat that is not previously seen to update the private chat's
     // message to seen. Also decrements push count. Used in InboxController.
     func seeInboxMessages(inbox: Inbox, completed: @escaping (_ isSuccess: Bool) -> ()) {
+        log.info("Seeing inbox messages")
         guard let uid = getStoredUid() else {
             completed(false)
             return
         }
         
         let inboxId: String = getInboxId(uid1: uid, uid2: inbox.uid)
-        REF_INBOX.child("\(inboxId)/hasNew:\(uid)").setValue(false)
-        updatePushCount { (isSuccess, pushCount) in }
+        REF_INBOX.child("\(inboxId)/hasNew:\(uid)").setValue(false) { (err, ref) in
+            self.updatePushCount { (isSuccess, pushCount) in }
+        }
     }
     
 }

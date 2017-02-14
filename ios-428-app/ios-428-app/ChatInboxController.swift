@@ -57,6 +57,7 @@ class ChatInboxController: UIViewController, UICollectionViewDelegateFlowLayout,
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+        DataService.ds.seeInboxMessages(inbox: self.inbox) { (isSuccess) in }
         self.navigationController?.navigationBar.barTintColor = RED_UICOLOR
         self.navigationController?.navigationBar.isHidden = false
         self.collectionView.isHidden = false

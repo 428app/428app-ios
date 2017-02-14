@@ -24,11 +24,11 @@ class InboxController: UICollectionViewController, UICollectionViewDelegateFlowL
         self.extendedLayoutIncludesOpaqueBars = true
         self.setupViews()
         navigationItem.title = "Inbox"
+        self.loadData()
     }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        self.loadData()
         tabBarController?.tabBar.isHidden = false
         self.navigationController?.navigationBar.barTintColor = GREEN_UICOLOR
         // Check if there is an inboxToOpen from View Profile, if there is, open inbox
@@ -39,11 +39,9 @@ class InboxController: UICollectionViewController, UICollectionViewDelegateFlowL
             self.navigationItem.backBarButtonItem = UIBarButtonItem(title: " ", style: .plain, target: nil, action: nil)
             self.navigationController?.pushViewController(controller, animated: false)
         }
-
     }
     
-    override func viewWillDisappear(_ animated: Bool) {
-        super.viewWillDisappear(animated)
+    deinit {
         for (ref, handle) in recentMessageRefsAndHandles {
             ref.removeObserver(withHandle: handle)
         }

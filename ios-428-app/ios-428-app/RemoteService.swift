@@ -115,7 +115,6 @@ extension DataService {
             for (k, _) in inboxDict {
                 let inboxId = self.getInboxId(uid1: uid, uid2: k)
                 let ref = self.REF_INBOX.child("\(inboxId)/hasNew:\(uid)")
-                ref.keepSynced(true)
                 ref.observeSingleEvent(of: .value, with: { (chatSnap) in
                     if let hasNew = chatSnap.value as? Bool {
                         if hasNew {
