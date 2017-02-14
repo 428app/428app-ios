@@ -42,21 +42,24 @@ class StorageService {
         REF_USER.child("\(uid)/\(filePath)").put(data, metadata: metadata) { (metadata, error) in
             if error != nil || metadata == nil {
                 log.error("[Error] Fail to store image in cloud storage")
+                completed(false)
+                return
             } else {
                  if let imageUrl = metadata?.downloadURL()?.absoluteString {
                     log.info("url of uploaded: \(imageUrl)")
                     
-                    // This does not need to complete
-                    DataService.ds.updateCachedDetailsInInboxes(profilePhoto: imageUrl, completed: { (isSuccess) in
-                        if !isSuccess {
-                            log.error("[Error] Failed to update cached details in all connections")
-                        }
-                    })
-
                     DataService.ds.updateUserPhoto(profilePhotoUrl: imageUrl, completed: { (isSuccess) in
-                        // Also update the profile pic in all of user's connections' connections. This one need not be checked for completion.
-                        completed(isSuccess)
-                        return
+                        if !isSuccess {
+                            completed(isSuccess)
+                            return
+                        }
+                        DataService.ds.updateCachedDetailsInInboxes(profilePhoto: imageUrl, completed: { (isCachedSuccess) in
+                            if !isCachedSuccess {
+                                log.error("[Error] Failed to update cached details in all connections")
+                            }
+                            completed(isCachedSuccess)
+                            return
+                        })
                     })
                     
                  } else {
