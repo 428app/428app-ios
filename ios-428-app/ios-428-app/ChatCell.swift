@@ -11,19 +11,6 @@ import UIKit
 import Alamofire
 
 class CustomTextView: UITextView {
-    
-    // Override the touches because I don't want any funky behavior from them
-    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
-//        log.info("Touches began")
-    }
-    
-    override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?) {
-//        log.info("Touches moved")
-    }
-    
-    override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
-//        log.info("Touches ended")
-    }
 
     override var canBecomeFirstResponder: Bool {
         return true

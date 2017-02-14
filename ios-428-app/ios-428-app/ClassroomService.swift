@@ -51,17 +51,13 @@ extension DataService {
     fileprivate func getQuestion(discipline: String, qid: String, timestamp: Double, completed: @escaping (_ isSuccess: Bool, _ question: Question?) -> ()) {
         self.REF_QUESTIONS.child("\(discipline)/\(qid)").observeSingleEvent(of: .value, with: { questionSnap in
             if !questionSnap.exists() {
-                log.info("Failed at qid:\(qid)")
                 completed(false, nil)
                 return
             }
-            
             guard let qDict = questionSnap.value as? [String: Any], let imageName = qDict["image"] as? String, let question = qDict["question"] as? String, let answer = qDict["answer"] as? String else {
-                log.info("Failed at question fields not correct")
                 completed(false, nil)
                 return
             }
-            
             let qn = Question(qid: qid, timestamp: timestamp, imageName: imageName, question: question, answer: answer)
             completed(true, qn)
             return

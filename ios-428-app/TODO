@@ -1,13 +1,15 @@
-TODO:
+TODO TONIGHT:
++ Profile updates: Concurrent chat messages cause it to fail
 
-+ Better question modal view
 
++ Change login screen demos
++ Fix badge count completely
 
 + Faster speed for loading classrooms, don't load everything up front?
 
 BUGS:
 
-+ Badge count still incorrect
+
 
 
 DO LATER:

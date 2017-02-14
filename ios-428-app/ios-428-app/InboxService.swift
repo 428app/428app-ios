@@ -177,6 +177,20 @@ extension DataService {
         })
     }
     
+    // Private helper function used by addInboxChatMessage to update both sides' users' inbox details only if it is a new chat
+    fileprivate func initUsersInbox(uid1: String, uid2: String, discipline1: String, name1: String, profilePhoto1: String, discipline2: String, name2: String, profilePhoto2: String) {
+        self.REF_USERS.child("\(uid1)/inbox/\(uid2)").observeSingleEvent(of: .value, with: { snap in
+            if snap.exists() {
+                return
+            }
+            // New chat, so initialize inboxes of both sides
+            let uidValues: [String: Any] = ["discipline": discipline2, "name": name2, "profilePhoto": profilePhoto2]
+            self.REF_USERS.child("\(uid1)/inbox/\(uid2)").updateChildValues(uidValues)
+            let uid2Values: [String: Any] = ["discipline": discipline1, "name": name1, "profilePhoto": profilePhoto1]
+            self.REF_USERS.child("\(uid2)/inbox/\(uid1)").updateChildValues(uid2Values)
+        })
+    }
+    
     // Adds a private message to the private chat, used in ChatInboxController
     // It's a long function mainly because we have to decide whether to push this user a notification and update the push count
     func addInboxChatMessage(inbox: Inbox, text: String, completed: @escaping (_ isSuccess: Bool) -> ()) {
@@ -209,12 +223,9 @@ extension DataService {
             let inboxValues: [String: Any] = ["hasNew:\(uid)": false, "hasNew:\(uid2)": true, "lastMessage": text, "mid": mid, "poster": poster, "timestamp": timestamp]
             self.REF_INBOX.child(inboxId).updateChildValues(inboxValues)
             
-            // Set each other's inbox
-            let uidValues: [String: Any] = ["discipline": inbox.discipline, "name": inbox.name, "profilePhoto": inbox.profileImageName]
-            self.REF_USERS.child("\(uid)/inbox/\(uid2)").updateChildValues(uidValues)
-            let uid2Values: [String: Any] = ["discipline": profile.discipline, "name": profile.name, "profilePhoto": profile.profileImageName]
-            self.REF_USERS.child("\(uid2)/inbox/\(uid)").updateChildValues(uid2Values)
-            
+            // Set each other's inbox if there were no inbox
+            self.initUsersInbox(uid1: uid, uid2: uid2, discipline1: profile.discipline, name1: profile.name, profilePhoto1: profile.profileImageName, discipline2: inbox.discipline, name2: inbox.name, profilePhoto2: inbox.profileImageName)
+
             // Decide if push notification should be sent
             
             // Grab recipient user settings first

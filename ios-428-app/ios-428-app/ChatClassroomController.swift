@@ -383,7 +383,7 @@ class ChatClassroomController: UIViewController, UIGestureRecognizerDelegate, UI
         let modalController = ModalQuestionController()
         modalController.classroom = self.classroom
         modalController.modalPresentationStyle = .overFullScreen
-        modalController.modalTransitionStyle = .crossDissolve
+        modalController.modalTransitionStyle = .flipHorizontal
         self.present(modalController, animated: true, completion: nil)
     }
     

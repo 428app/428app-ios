@@ -31,7 +31,6 @@ extension DataService {
     open func adjustPushCount(isIncrement: Bool, uid: String, completed: @escaping (_ isSuccess: Bool) -> ()) {
         // Note: Transaction blocks only work when persistence is set to True
         self.REF_USERS.child("\(uid)/pushCount").runTransactionBlock({ (currentData) -> FIRTransactionResult in
-            
             guard let pushCount = currentData.value as? Int else {
                 return FIRTransactionResult.abort() 
             }

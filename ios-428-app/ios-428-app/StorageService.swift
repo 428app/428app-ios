@@ -50,7 +50,7 @@ class StorageService {
                     
                     DataService.ds.updateUserPhoto(profilePhotoUrl: imageUrl, completed: { (isSuccess) in
                         if !isSuccess {
-                            completed(isSuccess)
+                            completed(false)
                             return
                         }
                         DataService.ds.updateCachedDetailsInInboxes(profilePhoto: imageUrl, completed: { (isCachedSuccess) in

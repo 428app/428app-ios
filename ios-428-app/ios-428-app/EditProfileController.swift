@@ -161,7 +161,6 @@ class EditProfileController: UIViewController, UIScrollViewDelegate, UIGestureRe
         picker.dismiss(animated: true, completion: nil)
         if picker == profilePhotoPicker {
             profileImageView.image = info[UIImagePickerControllerOriginalImage] as? UIImage
-            log.info("Set profile image view to correct image")
             self.uploadImageForImageView(imageView: self.profileImageView)
         }
     }

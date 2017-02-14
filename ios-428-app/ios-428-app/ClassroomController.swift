@@ -275,13 +275,11 @@ class ClassroomsController: UIViewController, UICollectionViewDelegate, UICollec
     
     func collectionView(_ collectionView: UICollectionView, didHighlightItemAt indexPath: IndexPath) {
         let cell = collectionView.cellForItem(at: indexPath) as! ClassroomCell
-        log.info("Highlighting cell: \(cell)")
         cell.setSelectedColors(isSelected: true)
     }
     
     func collectionView(_ collectionView: UICollectionView, didUnhighlightItemAt indexPath: IndexPath) {
         let cell = collectionView.cellForItem(at: indexPath) as! ClassroomCell
-        log.info("UnHighlighting cell: \(cell)")
         cell.setSelectedColors(isSelected: false)
     }
 

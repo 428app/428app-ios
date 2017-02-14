@@ -21,15 +21,14 @@ class InboxController: UICollectionViewController, UICollectionViewDelegateFlowL
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        self.loadData()
         self.extendedLayoutIncludesOpaqueBars = true
         self.setupViews()
         navigationItem.title = "Inbox"
-        loadData()
     }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+        self.loadData()
         tabBarController?.tabBar.isHidden = false
         self.navigationController?.navigationBar.barTintColor = GREEN_UICOLOR
         // Check if there is an inboxToOpen from View Profile, if there is, open inbox
@@ -45,9 +44,6 @@ class InboxController: UICollectionViewController, UICollectionViewDelegateFlowL
     
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
-    }
-
-    deinit {
         for (ref, handle) in recentMessageRefsAndHandles {
             ref.removeObserver(withHandle: handle)
         }

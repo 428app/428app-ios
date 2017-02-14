@@ -36,8 +36,6 @@ class LoginController: UIViewController, UIScrollViewDelegate, CLLocationManager
         super.viewDidAppear(animated)
         // These have to be in viewDidAppear, or they will not work
         if FIRAuth.auth()?.currentUser != nil && FBSDKAccessToken.current() != nil {
-            log.info("View did appear in Login")
-            
             if getStoredUid() == nil {
                 return
             }
