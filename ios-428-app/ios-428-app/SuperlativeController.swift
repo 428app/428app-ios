@@ -11,7 +11,7 @@ import UIKit
 import Social
 import Firebase
 
-class SuperlativeController: UIViewController, UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
+class SuperlativeController: UIViewController, UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout, UIWebViewDelegate {
     
     fileprivate let CELL_ID = "superlativeCell"
     
@@ -122,19 +122,54 @@ class SuperlativeController: UIViewController, UICollectionViewDelegate, UIColle
         return lbl
     }()
     
-    fileprivate let didYouKnowText: UITextView = {
-        let textView = UITextView()
-        textView.showsHorizontalScrollIndicator = false
-        textView.font = FONT_MEDIUM_MID
-        textView.textColor = UIColor.black
-        textView.isEditable = false
-        textView.isSelectable = true
-        textView.isScrollEnabled = true
-        textView.tintColor = RED_UICOLOR
-        textView.dataDetectorTypes = .all
-        return textView
+    fileprivate lazy var didYouKnowVideo: UIWebView = {
+        let webView = UIWebView()
+        webView.delegate = self
+        webView.allowsInlineMediaPlayback = true
+        webView.scrollView.bounces = false
+        webView.scrollView.isScrollEnabled = false
+        webView.scrollView.showsHorizontalScrollIndicator = false
+        webView.scrollView.showsVerticalScrollIndicator = false
+        return webView
     }()
     
+    fileprivate lazy var placeHolderVideo: UIView = {
+        let view = UIView()
+        view.backgroundColor = GRAY_UICOLOR
+        return view
+    }()
+    
+    fileprivate lazy var activityIndicator: CustomActivityIndicatorView = {
+        let image : UIImage = UIImage(named: "loading")!.maskWithColor(color: GREEN_UICOLOR)!
+        let activityIndicatorView = CustomActivityIndicatorView(image: image)
+        activityIndicatorView.isHidden = true
+        return activityIndicatorView
+    }()
+    
+    // MARK: Web view delegates for Share
+    
+    func webViewDidFinishLoad(_ webView: UIWebView) {
+        log.info("Finish loading")
+        activityIndicator.isHidden = true
+        activityIndicator.stopAnimating()
+        placeHolderVideo.isHidden = true
+    }
+    
+    func webViewDidStartLoad(_ webView: UIWebView) {
+        log.info("Starting to load")
+        // Padding to remove the ugly default left padding of UIWebViews
+        let negativePadding = "document.body.style.margin='0';document.body.style.padding = '0'"
+        didYouKnowVideo.stringByEvaluatingJavaScript(from: negativePadding)
+        activityIndicator.isHidden = false
+        activityIndicator.startAnimating()
+        placeHolderVideo.isHidden = false
+    }
+    
+    func webView(_ webView: UIWebView, didFailLoadWithError error: Error) {
+        log.info("Fail to load with error: \(error)")
+        activityIndicator.stopAnimating()
+    }
+
     fileprivate lazy var fbButton: UIButton = {
         let btn = UIButton()
         btn.setTitleColor(UIColor.white, for: .normal)
@@ -205,12 +240,22 @@ class SuperlativeController: UIViewController, UICollectionViewDelegate, UIColle
         
         let didYouKnowContainer = UIView()
         didYouKnowContainer.addSubview(didYouKnowLbl)
-        didYouKnowContainer.addSubview(didYouKnowText)
-        didYouKnowContainer.backgroundColor = GRAY_UICOLOR
-        didYouKnowContainer.addConstraintsWithFormat("V:|-8-[v0(25)]-8-[v1]-8-|", views: didYouKnowLbl, didYouKnowText)
+        didYouKnowContainer.addSubview(didYouKnowVideo)
+        didYouKnowContainer.backgroundColor = UIColor.white
+        didYouKnowContainer.addConstraintsWithFormat("V:|-8-[v0(25)]-8-[v1(250)]-8-|", views: didYouKnowLbl, didYouKnowVideo)
         didYouKnowContainer.addConstraintsWithFormat("H:|-8-[v0]-8-|", views: didYouKnowLbl)
-        didYouKnowContainer.addConstraintsWithFormat("H:|-8-[v0]-8-|", views: didYouKnowText)
+        didYouKnowContainer.addConstraintsWithFormat("H:|-8-[v0]-8-|", views: didYouKnowVideo)
         didYouKnowContainer.layer.cornerRadius = 5.0
+        
+        didYouKnowVideo.addSubview(placeHolderVideo)
+        didYouKnowVideo.addConstraintsWithFormat("H:|[v0]|", views: placeHolderVideo)
+        didYouKnowVideo.addConstraintsWithFormat("V:|[v0]|", views: placeHolderVideo)
+        
+        didYouKnowVideo.addSubview(activityIndicator)
+        let topMargin = (250/2.0) - activityIndicator.frame.height/2.0 - 4.0
+        didYouKnowVideo.addConstraintsWithFormat("V:|-\(topMargin)-[v0]", views: activityIndicator)
+        let leftMargin = (UIScreen.main.bounds.width - 8.0*4)/2.0 - activityIndicator.frame.width/2.0 - 8.0
+        didYouKnowVideo.addConstraintsWithFormat("H:|-\(leftMargin)-[v0]", views: activityIndicator)
         
         let instructionsContainer = UIView()
         instructionsContainer.addSubview(instructionsIcon)
@@ -228,7 +273,7 @@ class SuperlativeController: UIViewController, UICollectionViewDelegate, UIColle
         
         shareContainer.addConstraintsWithFormat("H:|-12-[v0]-12-|", views: didYouKnowContainer)
         shareContainer.addConstraintsWithFormat("H:|-12-[v0]-12-|", views: fbButton)
-        shareContainer.addConstraintsWithFormat("V:|-12-[v0(250)]-12-[v1(40)]-8-[v2(40)]", views: didYouKnowContainer, fbButton, instructionsContainer)
+        shareContainer.addConstraintsWithFormat("V:|-12-[v0]-12-[v1(40)]-8-[v2(40)]", views: didYouKnowContainer, fbButton, instructionsContainer)
         
         view.addSubview(shareContainer)
     }
@@ -336,9 +381,14 @@ class SuperlativeController: UIViewController, UICollectionViewDelegate, UIColle
             }
         }
         
-        // TODO: Randomly load a do you know?
-        self.didYouKnowText.text = "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum."
-        self.didYouKnowText.flashScrollIndicators()
+        // Load did you know
+        DataService.ds.getDidYouKnow(discipline: classroom.title, did: classroom.didYouKnowId) { (didSuccess, videoLink_) in
+            let videoLink = videoLink_.trim() + "?&playsinline=1"
+            self.didYouKnowVideo.stopLoading()
+            let videoWidth = UIScreen.main.bounds.width - 8.0 * 4 // Double margin from outside cell and within cell
+            let videoHeight = 250.0 // This matches the constraints defined above
+            self.didYouKnowVideo.loadHTMLString("<iframe width=\"\(videoWidth)\" height=\"\(videoHeight)\" src=\"\(videoLink)\" frameborder=\"0\" allowfullscreen></iframe>", baseURL: nil)
+        }
     }
 
 }

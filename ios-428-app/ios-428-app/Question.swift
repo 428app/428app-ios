@@ -15,6 +15,7 @@ class Question {
     fileprivate var _imageName: String
     fileprivate var _question: String
     fileprivate var _answer: String
+    fileprivate var _isVideo: Bool
     
     init(qid: String, timestamp: Double, imageName: String, question: String, answer: String) {
         _qid = qid
@@ -22,6 +23,7 @@ class Question {
         _imageName = imageName
         _question = question
         _answer = answer
+        _isVideo = answer.hasPrefix("https://www.youtube.com/")
     }
     
     var timestamp: Double {
@@ -45,6 +47,12 @@ class Question {
     var answer: String {
         get {
             return _answer
+        }
+    }
+    
+    var isVideo: Bool {
+        get {
+            return _isVideo
         }
     }
 }

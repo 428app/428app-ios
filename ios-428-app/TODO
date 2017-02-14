@@ -1,11 +1,13 @@
 TODO:
-
 + Videos
-- Question/Answer
 - Better looking Share/Didyouknow
 
++ Better question modal view
++ Faster speed for loading classrooms, don't load everything up front?
 
 BUGS:
++ Profile photo, discipline is not being updated
++ Badge count still incorrect
 
 
 DO LATER:
@@ -13,15 +15,11 @@ DO LATER:
 + Link terms and privacy policy from login
 + Test negative cases (disallow notifications, etc.)
 
-
-// DEPRECATED
-
-MAJOR BUGS
-- iOS 9: Chat screen keyboard blocking on first load before collection view scroll: Try to figure out issue when coding ClassroomsController
-
-MINOR BUGS
-- Only allow copy of whole ChatCell: Wait for reply on stack overflow
+TO TEST:
++ Server components
 
 
-
+TASKS FOR YIHANG:
++ Come up with questions, put them in a .tsv file
++ Come up with did you knows, put them one by one
 

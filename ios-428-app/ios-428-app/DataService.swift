@@ -31,6 +31,7 @@ class DataService {
     fileprivate var _REF_CLASSROOMS = FIRDatabase.database().reference().child("\(DB_ROOT)/classrooms")
     fileprivate var _REF_CLASSROOMMESSAGES = FIRDatabase.database().reference().child("\(DB_ROOT)/classroomMessages")
     fileprivate var _REF_QUESTIONS = FIRDatabase.database().reference().child("\(DB_ROOT)/questions")
+    fileprivate var _REF_DIDYOUKNOWS = FIRDatabase.database().reference().child("\(DB_ROOT)/didyouknows")
     fileprivate var _REF_QUEUE = FIRDatabase.database().reference().child("\(DB_ROOT)/queue/tasks") // Queue for notifications to be sent out
     
     var REF_BASE: FIRDatabaseReference {
@@ -81,6 +82,12 @@ class DataService {
         }
     }
     
+    var REF_DIDYOUKNOWS: FIRDatabaseReference {
+        get {
+            return _REF_DIDYOUKNOWS
+        }
+    }
+    
     var REF_QUEUE: FIRDatabaseReference {
         get {
             return _REF_QUEUE
@@ -97,6 +104,7 @@ class DataService {
         _REF_CLASSROOMS.removeAllObservers()
         _REF_CLASSROOMMESSAGES.removeAllObservers()
         _REF_QUESTIONS.removeAllObservers()
+        _REF_DIDYOUKNOWS.removeAllObservers()
         _REF_QUEUE.removeAllObservers()
     }
 }

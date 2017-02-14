@@ -116,7 +116,13 @@ extension DataService {
                 var memberIds: [String] = [String]()
                 let totalMemberIds: [String] = Array(classmateAndSuperlativeType.keys)
                 
+                var didYouKnowId = ""
+                if let did = classDict["didYouKnow"] as? String {
+                    didYouKnowId = did
+                }
+                
                 var superlativeType: SuperlativeType = SuperlativeType.NOTVOTED
+                
                 for (uid_, superlativeType_) in classmateAndSuperlativeType {
                     
                     // Find superlative type of this user
@@ -154,7 +160,7 @@ extension DataService {
                                     questions.append(question!)
                                     if questions.count == questionsAndTimes.count { // All questions qid read
                                         // Form classroom messages in a separate call
-                                        let classroom = Classroom(cid: cid, title: classTitle, timeCreated: timeCreated, members: members, questions: questions, superlativeType: superlativeType, hasUpdates: hasUpdates, hasSuperlatives: hasSuperlatives)
+                                        let classroom = Classroom(cid: cid, title: classTitle, timeCreated: timeCreated, members: members, questions: questions, superlativeType: superlativeType, hasUpdates: hasUpdates, hasSuperlatives: hasSuperlatives, didYouKnowId: didYouKnowId)
                                         completed(true, classroom) // Finally!
                                         return
                                     }
@@ -470,5 +476,14 @@ extension DataService {
         })
         return (ref, handle)
     }
-
+    
+    func getDidYouKnow(discipline: String, did: String, completed: @escaping (_ isSuccess: Bool, _ videoLink: String) -> ()) {
+        REF_DIDYOUKNOWS.child("\(discipline)/\(did)").observeSingleEvent(of: .value, with: { snap in
+            if let videoLink = snap.value as? String {
+                completed(true, videoLink)
+                return
+            }
+            completed(false, "")
+        })
+    }
 }

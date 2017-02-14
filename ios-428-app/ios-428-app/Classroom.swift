@@ -23,6 +23,7 @@ class Classroom {
     fileprivate var _superlatives: [Superlative] // Your superlatives of your classmates
     fileprivate var _results: [Superlative] // The overall superlatives of all classmates downloaded from server
     fileprivate var _superlativeType: SuperlativeType
+    fileprivate var _didYouKnowId: String
     
     fileprivate var _hasUpdates: Bool // If true, there is a new message/question being posted that the user has not seen yet
     
@@ -30,7 +31,7 @@ class Classroom {
     var _questionNum: Int
     var _imageName: String
     
-    init(cid: String, title: String, timeCreated: Double, members: [Profile], questions: [Question], classroomMessages: [ClassroomMessage] = [], superlatives: [Superlative] = [], results: [Superlative] = [], superlativeType: SuperlativeType = SuperlativeType.NOTVOTED, hasUpdates: Bool = false, hasSuperlatives: Bool = false, isVotingOngoing: Bool = false) {
+    init(cid: String, title: String, timeCreated: Double, members: [Profile], questions: [Question], classroomMessages: [ClassroomMessage] = [], superlatives: [Superlative] = [], results: [Superlative] = [], superlativeType: SuperlativeType = SuperlativeType.NOTVOTED, hasUpdates: Bool = false, hasSuperlatives: Bool = false, isVotingOngoing: Bool = false, didYouKnowId: String = "") {
         _cid = cid
         _title = title
         _timeCreated = timeCreated
@@ -40,6 +41,7 @@ class Classroom {
         _superlatives = superlatives
         _results = results
         _superlativeType = superlativeType
+        _didYouKnowId = didYouKnowId
         _hasUpdates = hasUpdates
         _hasSuperlatives = hasSuperlatives
         _isVotingOngoing = isVotingOngoing
@@ -125,6 +127,12 @@ class Classroom {
         }
         set(supType) {
             _superlativeType = supType
+        }
+    }
+    
+    var didYouKnowId: String {
+        get {
+            return _didYouKnowId
         }
     }
     

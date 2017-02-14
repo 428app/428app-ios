@@ -13,10 +13,11 @@ class AnswersController: UITableViewController {
     
     // Tableview instead of collectionview used as we need dynamic height of cells
     
-    fileprivate let CELL_ID = "answerCell"
+    fileprivate let ANSWERCELL_ID = "answerCell"
+    fileprivate let VIDEOANSWERCELL_ID = "videoAnswerCell"
     
     open var questions: [Question]!
-    
+
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -55,7 +56,8 @@ class AnswersController: UITableViewController {
         tableView.showsVerticalScrollIndicator = false
         tableView.separatorStyle = .none
         tableView.allowsSelection = false
-        tableView.register(AnswerCell.self, forCellReuseIdentifier: CELL_ID)
+        tableView.register(VideoAnswerCell.self, forCellReuseIdentifier: VIDEOANSWERCELL_ID)
+        tableView.register(AnswerCell.self, forCellReuseIdentifier: ANSWERCELL_ID)
         tableView.contentInset.top = 12.0
         // Table view cells with dynamic heights
         tableView.rowHeight = UITableViewAutomaticDimension
@@ -73,10 +75,147 @@ class AnswersController: UITableViewController {
     }
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: CELL_ID, for: indexPath) as! AnswerCell
         let question = questions[indexPath.item]
-        cell.configureCell(questionObj: question)
-        return cell
+        if question.isVideo {
+            let cell = tableView.dequeueReusableCell(withIdentifier: VIDEOANSWERCELL_ID, for: indexPath) as! VideoAnswerCell
+            cell.configureCell(questionObj: question)
+            return cell
+        } else {
+            let cell = tableView.dequeueReusableCell(withIdentifier: ANSWERCELL_ID, for: indexPath) as! AnswerCell
+            cell.configureCell(questionObj: question)
+            return cell
+        }
+    }
+    
+}
+
+
+class VideoAnswerCell: BaseTableViewCell, UIWebViewDelegate {
+    
+    fileprivate var question: Question!
+    
+    fileprivate let questionLbl: UILabel = {
+        let label = UILabel()
+        label.text = "Question"
+        label.font = FONT_HEAVY_LARGE
+        label.textColor = GREEN_UICOLOR
+        label.textAlignment = .left
+        return label
+    }()
+    
+    fileprivate let questionText: UILabel = {
+        let label = UILabel()
+        label.font = UIFont.boldSystemFont(ofSize: 16.0)
+        label.textColor = UIColor.darkGray
+        label.textAlignment = .left
+        label.numberOfLines = 0
+        return label
+    }()
+    
+    fileprivate let answerLbl: UILabel = {
+        let label = UILabel()
+        label.text = "Answer"
+        label.font = FONT_HEAVY_LARGE
+        label.textColor = RED_UICOLOR
+        label.textAlignment = .left
+        return label
+    }()
+    
+    fileprivate lazy var answerVideo: UIWebView = {
+        let webView = UIWebView()
+        webView.delegate = self
+        webView.allowsInlineMediaPlayback = true
+        webView.scrollView.bounces = false
+        webView.scrollView.isScrollEnabled = false
+        webView.scrollView.showsHorizontalScrollIndicator = false
+        webView.scrollView.showsVerticalScrollIndicator = false
+        return webView
+    }()
+    
+    fileprivate lazy var placeHolderVideo: UIView = {
+        let view = UIView()
+        view.backgroundColor = GRAY_UICOLOR
+        return view
+    }()
+    
+    fileprivate lazy var activityIndicator: CustomActivityIndicatorView = {
+        let image : UIImage = UIImage(named: "loading")!.maskWithColor(color: RED_UICOLOR)!
+        let activityIndicatorView = CustomActivityIndicatorView(image: image)
+        activityIndicatorView.isHidden = true
+        return activityIndicatorView
+    }()
+    
+    // MARK: Web view delegates
+    
+    func webViewDidFinishLoad(_ webView: UIWebView) {
+        log.info("Finish loading")
+        activityIndicator.isHidden = true
+        activityIndicator.stopAnimating()
+        placeHolderVideo.isHidden = true
+    }
+    
+    func webViewDidStartLoad(_ webView: UIWebView) {
+        log.info("Starting to load")
+        // Padding to remove the ugly default left padding of UIWebViews
+        let negativePadding = "document.body.style.margin='0';document.body.style.padding = '0'"
+        answerVideo.stringByEvaluatingJavaScript(from: negativePadding)
+        activityIndicator.isHidden = false
+        activityIndicator.startAnimating()
+        placeHolderVideo.isHidden = false
+    }
+    
+    func webView(_ webView: UIWebView, didFailLoadWithError error: Error) {
+        log.info("Fail to load with error: \(error)")
+        activityIndicator.stopAnimating()
+    }
+    
+    override func setupViews() {
+        backgroundColor = GREEN_UICOLOR
+        
+        let containerView = UIView()
+        containerView.backgroundColor = UIColor.white
+        containerView.layer.cornerRadius = 4.0
+        let SHADOW_COLOR: CGFloat =  157.0 / 255.0
+        containerView.layer.shadowColor = UIColor(red: SHADOW_COLOR, green: SHADOW_COLOR, blue: SHADOW_COLOR, alpha: 0.5).cgColor
+        containerView.layer.shadowOpacity = 0.6
+        containerView.layer.shadowRadius = 2.0
+        containerView.layer.shadowOffset = CGSize(width: 0.0, height: 2.0)
+        
+        containerView.addSubview(questionLbl)
+        containerView.addSubview(questionText)
+        containerView.addSubview(answerLbl)
+        containerView.addSubview(answerVideo)
+        
+        containerView.addConstraintsWithFormat("V:|-8-[v0(20)]-8-[v1]-8-[v2(20)]-8-[v3(250)]-8-|", views: questionLbl, questionText,  answerLbl, answerVideo)
+        containerView.addConstraintsWithFormat("H:|-8-[v0]-8-|", views: questionLbl)
+        containerView.addConstraintsWithFormat("H:|-8-[v0]-8-|", views: questionText)
+        containerView.addConstraintsWithFormat("H:|-8-[v0]-8-|", views: answerLbl)
+        containerView.addConstraintsWithFormat("H:|-8-[v0]-8-|", views: answerVideo)
+        
+        answerVideo.addSubview(placeHolderVideo)
+        answerVideo.addConstraintsWithFormat("H:|[v0]|", views: placeHolderVideo)
+        answerVideo.addConstraintsWithFormat("V:|[v0]|", views: placeHolderVideo)
+        
+        answerVideo.addSubview(activityIndicator)
+        answerVideo.translatesAutoresizingMaskIntoConstraints = false
+        let topMargin = (250/2.0) - activityIndicator.frame.height/2.0 - 4.0
+        answerVideo.addConstraintsWithFormat("V:|-\(topMargin)-[v0]", views: activityIndicator)
+        let leftMargin = (UIScreen.main.bounds.width - 8.0*4)/2.0 - activityIndicator.frame.width/2.0 - 8.0
+        answerVideo.addConstraintsWithFormat("H:|-\(leftMargin)-[v0]", views: activityIndicator)
+        
+        addSubview(containerView)
+        addConstraintsWithFormat("H:|-12-[v0]-12-|", views: containerView)
+        addConstraintsWithFormat("V:|-8-[v0]-8-|", views: containerView)
+    }
+    
+    func configureCell(questionObj: Question) {
+        self.question = questionObj
+        questionText.text = question.question
+        let answerLink: String = question.answer.trim() + "?&playsinline=1"
+        self.answerVideo.stopLoading()
+        let videoWidth = UIScreen.main.bounds.width - 8.0 * 4 // Double margin from outside cell and within cell
+        let videoHeight = 250.0 // This matches the constraints defined above
+        self.answerVideo.loadHTMLString("<iframe width=\"\(videoWidth)\" height=\"\(videoHeight)\" src=\"\(answerLink)\" frameborder=\"0\" allowfullscreen></iframe>", baseURL: nil)
     }
     
 }
@@ -96,7 +235,7 @@ class AnswerCell: BaseTableViewCell {
     
     fileprivate let questionText: UILabel = {
        let label = UILabel()
-        label.font = UIFont.systemFont(ofSize: 16.0)
+        label.font = UIFont.boldSystemFont(ofSize: 16.0)
         label.textColor = UIColor.darkGray
         label.textAlignment = .left
         label.numberOfLines = 0
@@ -107,7 +246,7 @@ class AnswerCell: BaseTableViewCell {
         let label = UILabel()
         label.text = "Answer"
         label.font = FONT_HEAVY_LARGE
-        label.textColor = GREEN_UICOLOR
+        label.textColor = RED_UICOLOR
         label.textAlignment = .left
         return label
     }()
