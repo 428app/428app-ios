@@ -1,8 +1,12 @@
 TODO TONIGHT:
++ Setup TestFlight
+
 
 + Change login screen demos
-+ Faster speed for loading classrooms, don't load everything up front?
++ Faster speed for loading classrooms, don't load everything up front, check if observing the right thing.
 + Test server, and test setup!!
++ Test negative cases (disallow notifications, etc.)
+
 + Look at app store submission, FB app permissions
 
 BUGS:
@@ -10,7 +14,7 @@ BUGS:
 
 DO LATER:
 + Link terms and privacy policy from login
-+ Test negative cases (disallow notifications, etc.)
+
 
 
 TASKS FOR YIHANG:
@@ -20,12 +24,8 @@ TASKS FOR YIHANG:
 
 
 Push notifications to test:
-
 Repeat the following tests with different user settings: Toggling in app and messages
 1. Receive outside of app when app is in background: New + No new
 2. Receive when app is killed: New + No new
 3. Receive when user is in the chat: New + No new
 4. Receive when user is on the app: New + No new
-
-
-BUGS:
