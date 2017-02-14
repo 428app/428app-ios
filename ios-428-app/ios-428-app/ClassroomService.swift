@@ -477,13 +477,15 @@ extension DataService {
         return (ref, handle)
     }
     
-    func getDidYouKnow(discipline: String, did: String, completed: @escaping (_ isSuccess: Bool, _ videoLink: String) -> ()) {
+    func getDidYouKnow(discipline: String, did: String, completed: @escaping (_ isSuccess: Bool, _ videoLink: String, _ shareLink: String) -> ()) {
         REF_DIDYOUKNOWS.child("\(discipline)/\(did)").observeSingleEvent(of: .value, with: { snap in
-            if let videoLink = snap.value as? String {
-                completed(true, videoLink)
+            log.info(snap.value)
+            guard let didDict = snap.value as? [String: String], let videoLink = didDict["videoLink"], let shareLink = didDict["shareLink"] else {
+                completed(false, "", "")
                 return
             }
-            completed(false, "")
+            completed(true, videoLink, shareLink)
+            return
         })
     }
 }

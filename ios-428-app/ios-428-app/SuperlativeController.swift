@@ -22,6 +22,7 @@ class SuperlativeController: UIViewController, UICollectionViewDelegate, UIColle
         super.viewDidLoad()
         self.setupViews()
         self.toggleViews(superlativeType: self.classroom.superlativeType)
+        self.loadData()
     }
     
     deinit {
@@ -34,7 +35,6 @@ class SuperlativeController: UIViewController, UICollectionViewDelegate, UIColle
         self.navigationController?.navigationBar.setBackgroundImage(UIImage.init(color: color), for: .default)
         self.navigationController?.navigationBar.shadowImage = UIImage()
         self.tabBarController?.tabBar.isHidden = true
-        self.loadData()
     }
     
     override func viewWillDisappear(_ animated: Bool) {
@@ -199,12 +199,14 @@ class SuperlativeController: UIViewController, UICollectionViewDelegate, UIColle
         return label
     }()
     
+    fileprivate var shareLink = ""
+    
     func shareOnFb() {
         if(SLComposeViewController.isAvailable(forServiceType: SLServiceTypeFacebook)) {
             
             if let socialController = SLComposeViewController(forServiceType: SLServiceTypeFacebook) {
                 socialController.add(#imageLiteral(resourceName: "logo"))
-                let url = URL(string: "http://www.428pm.com")
+                let url = URL(string: shareLink)
                 socialController.add(url)
                 self.present(socialController, animated: true, completion: {})
                 socialController.completionHandler = { (result:SLComposeViewControllerResult) in
@@ -382,12 +384,17 @@ class SuperlativeController: UIViewController, UICollectionViewDelegate, UIColle
         }
         
         // Load did you know
-        DataService.ds.getDidYouKnow(discipline: classroom.title, did: classroom.didYouKnowId) { (didSuccess, videoLink_) in
+        DataService.ds.getDidYouKnow(discipline: classroom.title, did: classroom.didYouKnowId) { (didSuccess, videoLink_, shareLink_) in
+            if !didSuccess {
+                showErrorAlert(vc: self, title: "Error", message: "There's an error loading the video. Please try again later.")
+                return
+            }
             let videoLink = videoLink_.trim() + "?&playsinline=1"
             self.didYouKnowVideo.stopLoading()
             let videoWidth = UIScreen.main.bounds.width - 8.0 * 4 // Double margin from outside cell and within cell
             let videoHeight = 250.0 // This matches the constraints defined above
             self.didYouKnowVideo.loadHTMLString("<iframe width=\"\(videoWidth)\" height=\"\(videoHeight)\" src=\"\(videoLink)\" frameborder=\"0\" allowfullscreen></iframe>", baseURL: nil)
+            self.shareLink = shareLink_
         }
     }
 
