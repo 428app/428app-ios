@@ -1,19 +1,26 @@
 TODO TONIGHT:
-+ Setup TestFlight
-
-
 + Change login screen demos
-+ Faster speed for loading classrooms, don't load everything up front, check if observing the right thing.
-+ Test server, and test setup!!
++ Slide down Read Question here
++ Resync classrooms: Load some stuff after
++ Click on profile picture on inbox also open up profile
++ Tweet on Question
+
+
+
++ Look through server code again to make sure they make sense
 + Test negative cases (disallow notifications, etc.)
 
-+ Look at app store submission, FB app permissions
++ Fill in app store details
++ FB App permissions
 
 BUGS:
 
 
 DO LATER:
 + Link terms and privacy policy from login
++ Analytics
++ Database backup
++ How to update incrementally on app store
 
 
 

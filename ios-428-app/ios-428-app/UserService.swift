@@ -42,10 +42,10 @@ extension DataService {
             completed(false)
             return
         }
-        REF_USERSETTINGS.child("\(uid)").updateChildValues(["isLoggedIn": isLoggedIn], withCompletionBlock: { (err, ref) in
+        REF_USERSETTINGS.child("\(uid)/isLoggedIn").setValue(isLoggedIn) { (err, ref) in
             completed(err == nil)
             return
-        })
+        }
     }
     
     // Called in LoginController to create new user or log existing user in

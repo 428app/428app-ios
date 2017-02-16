@@ -6,6 +6,8 @@
 //  Copyright © 2016 428. All rights reserved.
 //
 
+// TODO: Download from TestFlight does not refresh push token
+
 import UIKit
 import UserNotifications
 
@@ -106,6 +108,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         DataService.ds.updateUserPushToken()
         
         if #available(iOS 10.0, *) {
+            writeToDebug(line: "Enter setup remote notif")
             let authOptions: UNAuthorizationOptions = [.alert, .badge, .sound]
             
             UNUserNotificationCenter.current().requestAuthorization(options: authOptions, completionHandler: { (granted, error) in })
@@ -131,7 +134,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     
     // This is only called whenever the user gets a new token, and is triggered by the observer
     func tokenRefreshNotification(_ notification: Notification) {
+        
         if let refreshedToken = FIRInstanceID.instanceID().token() {
+            writeToDebug(line: refreshedToken)
             log.info("User push token: \(refreshedToken)")
             savePushToken(token: refreshedToken)
             DataService.ds.updateUserPushToken()
@@ -152,6 +157,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func application(_ application: UIApplication, didFailToRegisterForRemoteNotificationsWithError error: Error) {
         log.error("[Error] Fail to register for remote notifications with error: \(error)")
+        writeToDebug(line: "failed to update with error: \(error)")
         // Try again
         connectToFcm()
     }
@@ -366,7 +372,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
     
     func application(_ application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data) {
-        FIRInstanceID.instanceID().setAPNSToken(deviceToken, type: FIRInstanceIDAPNSTokenType.sandbox)
+        FIRInstanceID.instanceID().setAPNSToken(deviceToken, type: FIRInstanceIDAPNSTokenType.prod)
+//        FIRInstanceID.instanceID().setAPNSToken(deviceToken, type: FIRInstanceIDAPNSTokenType.sandbox)
     }
 
 }

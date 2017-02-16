@@ -95,6 +95,7 @@
 		40ADEEE01DDD12D000CE529A /* WhisperView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 40ADEED71DDD12D000CE529A /* WhisperView.swift */; };
 		40ADEEE11DDD12D000CE529A /* WhistleFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 40ADEED81DDD12D000CE529A /* WhistleFactory.swift */; };
 		40ADEEE31DDD82E300CE529A /* Enums.swift in Sources */ = {isa = PBXBuildFile; fileRef = 40ADEEE21DDD82E300CE529A /* Enums.swift */; };
+		40B90DA31E54ECFF00ABB3ED /* Debug.swift in Sources */ = {isa = PBXBuildFile; fileRef = 40B90DA21E54ECFF00ABB3ED /* Debug.swift */; };
 		40BC2E931E4EF2B300017253 /* NewClassroomAlertController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 40BC2E921E4EF2B300017253 /* NewClassroomAlertController.swift */; };
 		40E2E1401DD26B8200469B4D /* Discipline.swift in Sources */ = {isa = PBXBuildFile; fileRef = 40E2E13F1DD26B8200469B4D /* Discipline.swift */; };
 		40E2E1421DD3788300469B4D /* CustomActivityIndicatorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 40E2E1411DD3788300469B4D /* CustomActivityIndicatorView.swift */; };
@@ -196,6 +197,7 @@
 		40ADEED71DDD12D000CE529A /* WhisperView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WhisperView.swift; sourceTree = "<group>"; };
 		40ADEED81DDD12D000CE529A /* WhistleFactory.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WhistleFactory.swift; sourceTree = "<group>"; };
 		40ADEEE21DDD82E300CE529A /* Enums.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Enums.swift; sourceTree = "<group>"; };
+		40B90DA21E54ECFF00ABB3ED /* Debug.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Debug.swift; sourceTree = "<group>"; };
 		40BC2E921E4EF2B300017253 /* NewClassroomAlertController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NewClassroomAlertController.swift; sourceTree = "<group>"; };
 		40E2E13F1DD26B8200469B4D /* Discipline.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Discipline.swift; sourceTree = "<group>"; };
 		40E2E1411DD3788300469B4D /* CustomActivityIndicatorView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CustomActivityIndicatorView.swift; sourceTree = "<group>"; };
@@ -392,6 +394,7 @@
 				40785D621E0D981C009B66E0 /* InboxService.swift */,
 				40785D661E0E5A1F009B66E0 /* RemoteService.swift */,
 				4031FB9B1DC0691C0066E6B6 /* StorageService.swift */,
+				40B90DA21E54ECFF00ABB3ED /* Debug.swift */,
 			);
 			name = Services;
 			sourceTree = "<group>";
@@ -507,9 +510,8 @@
 				TargetAttributes = {
 					4064A1B11DAC381300071383 = {
 						CreatedOnToolsVersion = 8.0;
-						DevelopmentTeam = EUUML7WPQP;
 						LastSwiftMigration = 0800;
-						ProvisioningStyle = Automatic;
+						ProvisioningStyle = Manual;
 						SystemCapabilities = {
 							com.apple.BackgroundModes = {
 								enabled = 1;
@@ -634,6 +636,7 @@
 				4064A2541DB34E4D00071383 /* ProfileController.swift in Sources */,
 				4020CE151DBB569000461181 /* Variables.swift in Sources */,
 				4081B2621E1500FF00D6E690 /* Question.swift in Sources */,
+				40B90DA31E54ECFF00ABB3ED /* Debug.swift in Sources */,
 				4000C37A1DD81227009C10E5 /* Download.swift in Sources */,
 				40785D5B1E04EDCE009B66E0 /* HorizontalScrollCell.swift in Sources */,
 				40AB7FF81DB59C9600492788 /* SettingsController.swift in Sources */,
@@ -813,8 +816,9 @@
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = "ios-428-app/ios-428-app.entitlements";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
-				DEVELOPMENT_TEAM = EUUML7WPQP;
+				CODE_SIGN_IDENTITY = "iPhone Developer: Leonard Loo (PKZXQVF2C7)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Leonard Loo (PKZXQVF2C7)";
+				DEVELOPMENT_TEAM = "";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)",
@@ -824,6 +828,8 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "com.428app.ios-428-app";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "";
+				PROVISIONING_PROFILE_SPECIFIER = 428dev;
 				SWIFT_VERSION = 3.0;
 			};
 			name = Debug;
@@ -835,9 +841,10 @@
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = "ios-428-app/ios-428-app.entitlements";
-				CODE_SIGN_IDENTITY = "iPhone Distribution";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";
-				DEVELOPMENT_TEAM = EUUML7WPQP;
+				"CODE_SIGN_ENTITLEMENTS[sdk=*]" = "ios-428-app/ios-428-app.entitlements";
+				CODE_SIGN_IDENTITY = "iPhone Distribution: Leonard Loo (EUUML7WPQP)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: Leonard Loo (EUUML7WPQP)";
+				DEVELOPMENT_TEAM = "";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)",
@@ -847,6 +854,8 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "com.428app.ios-428-app";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "";
+				PROVISIONING_PROFILE_SPECIFIER = 428prod;
 				SWIFT_VERSION = 3.0;
 			};
 			name = Release;

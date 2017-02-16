@@ -11,6 +11,10 @@ import UIKit
 
 class ModalQuestionController: UIViewController {
     
+    let CORNER_RADIUS: CGFloat = 15.0
+    let HORIZONTAL_MARGIN: CGFloat = 28.0
+    let VERTICAL_MARGIN: CGFloat = 200.0
+    
     var classroom: Classroom! {
         didSet {
             // Set modal info
@@ -22,20 +26,24 @@ class ModalQuestionController: UIViewController {
         }
     }
     
-    fileprivate let containerView: UIView = {
+    fileprivate lazy var containerView: UIView = {
         let view = UIView()
         view.backgroundColor = GREEN_UICOLOR
-        view.layer.cornerRadius = 15.0
+        view.layer.cornerRadius = self.CORNER_RADIUS
         return view
     }()
     
-    fileprivate let questionImageView: UIImageView = {
-       let imageView = UIImageView()
+    fileprivate lazy var questionImageView: UIImageView = {
+        let frame = CGRect(x: 0.0, y: 0.0, width: UIScreen.main.bounds.width - self.HORIZONTAL_MARGIN * 2, height: 150)
+       let imageView = UIImageView(frame: frame)
         imageView.contentMode = .scaleAspectFill
-        imageView.clipsToBounds = true
-//        imageView.layer.cornerRadius = 15.0 
+        let maskLayer = CAShapeLayer()
+        let path = UIBezierPath(roundedRect: imageView.bounds, byRoundingCorners: [.topLeft, .topRight], cornerRadii: CGSize(width: self.CORNER_RADIUS, height: self.CORNER_RADIUS)).cgPath
+        maskLayer.path = path
+        imageView.layer.mask = maskLayer
         return imageView
     }()
+    
     
     fileprivate let questionText: UITextView = {
        let textView = UITextView()
@@ -80,8 +88,8 @@ class ModalQuestionController: UIViewController {
     
     fileprivate func setupViews() {
         view.addSubview(containerView)
-        view.addConstraintsWithFormat("H:|-28-[v0]-28-|", views: containerView)
-        view.addConstraintsWithFormat("V:|-200-[v0]-200-|", views: containerView)
+        view.addConstraintsWithFormat("H:|-\(self.HORIZONTAL_MARGIN)-[v0]-\(self.HORIZONTAL_MARGIN)-|", views: containerView)
+        view.addConstraintsWithFormat("V:|-\(self.VERTICAL_MARGIN)-[v0]-\(self.VERTICAL_MARGIN)-|", views: containerView)
         
         containerView.addSubview(questionImageView)
         containerView.addSubview(questionText)

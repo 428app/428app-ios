@@ -18,6 +18,14 @@ class ProfileController: UIViewController, UIGestureRecognizerDelegate, UIScroll
         super.viewDidLoad()
         self.view.backgroundColor = UIColor.white
         self.setupViews()
+        self.roundViewController()
+    }
+    
+    fileprivate func roundViewController() {
+        let maskLayer = CAShapeLayer()
+        let path = UIBezierPath(roundedRect: self.view.bounds, byRoundingCorners: [.topLeft, .topRight], cornerRadii: CGSize(width: 40, height: 40)).cgPath
+        maskLayer.path = path
+        self.view.layer.mask = maskLayer
     }
     
     override func viewWillAppear(_ animated: Bool) {
