@@ -1001,7 +1001,7 @@ class ChatClassroomController: UIViewController, UIGestureRecognizerDelegate, UI
         self.cellTimeLabel.removeFromSuperview()
         // Find index path and set unchecked
         if tappedIndexPath != nil {
-            if let cell = collectionView(self.collectionView, cellForItemAt: tappedIndexPath!) as? ChatCell {
+            if let cell = collectionView(self.collectionView, cellForItemAt: tappedIndexPath!) as? ClassroomChatCell {
                 self.tappedIndexPath = nil
                 cell.shouldExpand = false
             }

@@ -51,7 +51,7 @@
 		4064A20F1DACB62500071383 /* TODO in Resources */ = {isa = PBXBuildFile; fileRef = 4064A20E1DACB62500071383 /* TODO */; };
 		4064A2141DACBCAA00071383 /* BaseCollectionCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4064A2131DACBCAA00071383 /* BaseCollectionCell.swift */; };
 		4064A2161DACBCDC00071383 /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4064A2151DACBCDC00071383 /* Extensions.swift */; };
-		4064A2181DACC1B700071383 /* ChatCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4064A2171DACC1B700071383 /* ChatCell.swift */; };
+		4064A2181DACC1B700071383 /* InboxChatCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4064A2171DACC1B700071383 /* InboxChatCell.swift */; };
 		4064A21A1DACC20E00071383 /* InboxCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4064A2191DACC20E00071383 /* InboxCell.swift */; };
 		4064A21F1DAD72DF00071383 /* Functions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4064A21E1DAD72DF00071383 /* Functions.swift */; };
 		4064A2211DADE67E00071383 /* ChatHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4064A2201DADE67E00071383 /* ChatHeaderView.swift */; };
@@ -153,7 +153,7 @@
 		4064A20E1DACB62500071383 /* TODO */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = TODO; sourceTree = "<group>"; };
 		4064A2131DACBCAA00071383 /* BaseCollectionCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BaseCollectionCell.swift; sourceTree = "<group>"; };
 		4064A2151DACBCDC00071383 /* Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
-		4064A2171DACC1B700071383 /* ChatCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChatCell.swift; sourceTree = "<group>"; };
+		4064A2171DACC1B700071383 /* InboxChatCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = InboxChatCell.swift; sourceTree = "<group>"; };
 		4064A2191DACC20E00071383 /* InboxCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = InboxCell.swift; sourceTree = "<group>"; };
 		4064A21E1DAD72DF00071383 /* Functions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Functions.swift; sourceTree = "<group>"; };
 		4064A2201DADE67E00071383 /* ChatHeaderView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChatHeaderView.swift; sourceTree = "<group>"; };
@@ -360,7 +360,7 @@
 				4024F22A1DB85C0E007819F7 /* PaddingLabel.swift */,
 				4064A2131DACBCAA00071383 /* BaseCollectionCell.swift */,
 				40AB7FFB1DB5B09700492788 /* BaseTableViewCell.swift */,
-				4064A2171DACC1B700071383 /* ChatCell.swift */,
+				4064A2171DACC1B700071383 /* InboxChatCell.swift */,
 				4064A2201DADE67E00071383 /* ChatHeaderView.swift */,
 				4064A2191DACC20E00071383 /* InboxCell.swift */,
 				4064A2551DB3E5E800071383 /* ProfileCell.swift */,
@@ -647,7 +647,7 @@
 				4024F22D1DB86B18007819F7 /* ClassroomChatCell.swift in Sources */,
 				4024F2211DB7E2E9007819F7 /* ClassroomController.swift in Sources */,
 				4024F2271DB82239007819F7 /* ClassroomCell.swift in Sources */,
-				4064A2181DACC1B700071383 /* ChatCell.swift in Sources */,
+				4064A2181DACC1B700071383 /* InboxChatCell.swift in Sources */,
 				4064A1E61DAC7DA600071383 /* CustomTabBarController.swift in Sources */,
 				4064A2521DB346A800071383 /* Profile.swift in Sources */,
 				4064A2561DB3E5E800071383 /* ProfileCell.swift in Sources */,

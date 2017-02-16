@@ -98,7 +98,6 @@ class ClassroomsController: UIViewController, UICollectionViewDelegate, UICollec
                 self.classesFirebase[cid]!.0.removeObserver(withHandle: self.classesFirebase[cid]!.1)
             }
             self.classesFirebase[cid] = DataService.ds.observeClassroomUpdates(cid: cid, completed: { (isSuccess2, classroom_) in
-                
                 self.activityIndicator.stopAnimating()
                 if !isSuccess2 || classroom_ == nil {
                     return

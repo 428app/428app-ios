@@ -172,6 +172,25 @@ class SettingsController: UIViewController, UITableViewDelegate, UITableViewData
         tableView.deselectRow(at: indexPath, animated: true)
     }
     
+    func tableView(_ tableView: UITableView, didHighlightRowAt indexPath: IndexPath) {
+        let cell = tableView.cellForRow(at: indexPath) as! SettingCell
+//        cell.contentView.backgroundColor = GREEN_UICOLOR
+//        cell.backgroundColor = GREEN_UICOLOR
+        let cellView = UIView(frame: cell.frame)
+        cellView.backgroundColor = GREEN_UICOLOR
+        cell.backgroundView = cellView
+    }
+    
+    func tableView(_ tableView: UITableView, didUnhighlightRowAt indexPath: IndexPath) {
+        let cell = tableView.cellForRow(at: indexPath) as! SettingCell
+//        cell.contentView.backgroundColor = UIColor.white
+//        cell.backgroundColor = UIColor.white
+        let cellView = UIView(frame: cell.frame)
+        cellView.backgroundColor = UIColor.white
+        cell.backgroundView = cellView
+        
+    }
+    
     fileprivate func logout() {
         let alertController = UIAlertController(title: "Are you sure?", message: "You will not be notified of all the juicy questions and fun conversation!", preferredStyle: .actionSheet)
         alertController.view.tintColor = GREEN_UICOLOR

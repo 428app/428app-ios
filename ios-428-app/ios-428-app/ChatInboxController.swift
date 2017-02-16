@@ -22,7 +22,7 @@ class ChatInboxController: UIViewController, UICollectionViewDelegateFlowLayout,
     fileprivate let NUM_INCREMENT: UInt = 10 // Downloads 10 messages per scroll
     
     /** CONSTANTS **/
-    fileprivate let CELL_ID = "chatCell"
+    fileprivate let CELL_ID = "inboxChatCell"
     fileprivate let CELL_HEADER_ID = "chatHeaderView"
     fileprivate let SECTION_HEADER_HEIGHT: CGFloat = 30.0
     
@@ -666,12 +666,14 @@ class ChatInboxController: UIViewController, UICollectionViewDelegateFlowLayout,
         NotificationCenter.default.addObserver(self, selector: #selector(handleKeyboardNotification), name: NSNotification.Name.UIKeyboardWillHide, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(handleKeyboardNotification), name: NSNotification.Name.UIKeyboardWillChangeFrame, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(expandCell), name: NOTIF_EXPANDINBOXCHATCELL, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(openProfile), name: NOTIF_OPENPROFILE, object: nil)
     }
     
     private func unregisterObservers() {
         NotificationCenter.default.removeObserver(self, name: NSNotification.Name.UIKeyboardWillHide, object: nil)
         NotificationCenter.default.removeObserver(self, name: NSNotification.Name.UIKeyboardWillChangeFrame, object: nil)
         NotificationCenter.default.removeObserver(self, name: NOTIF_EXPANDINBOXCHATCELL, object: nil)
+        NotificationCenter.default.removeObserver(self, name: NOTIF_OPENPROFILE, object: nil)
     }
     
     fileprivate func bottomOfCollectionView() -> CGFloat {
@@ -761,7 +763,7 @@ class ChatInboxController: UIViewController, UICollectionViewDelegateFlowLayout,
         self.automaticallyAdjustsScrollViewInsets = false
         self.collectionView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: 0.8*SECTION_HEADER_HEIGHT, right: 0) // Fix top and bottom padding since automaticallyAdjustScrollViewInsets set to false
         
-        self.collectionView.register(ChatCell.self, forCellWithReuseIdentifier: CELL_ID)
+        self.collectionView.register(InboxChatCell.self, forCellWithReuseIdentifier: CELL_ID)
         self.collectionView.register(ChatHeaderView.self, forSupplementaryViewOfKind: UICollectionElementKindSectionHeader, withReuseIdentifier: CELL_HEADER_ID)
         
         self.view.addSubview(collectionView)
@@ -813,7 +815,7 @@ class ChatInboxController: UIViewController, UICollectionViewDelegateFlowLayout,
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: CELL_ID, for: indexPath) as! ChatCell
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: CELL_ID, for: indexPath) as! InboxChatCell
         cell.request?.cancel()
         let message = self.messagesInTimeBuckets[indexPath.section][indexPath.row]
         let isLastInChain = self.messageIsLastInChain[indexPath.section][indexPath.row]
@@ -835,7 +837,7 @@ class ChatInboxController: UIViewController, UICollectionViewDelegateFlowLayout,
         
         let defaultHeight = estimatedFrame.height + 17
         
-        if let cell = self.collectionView.cellForItem(at: indexPath) as? ChatCell {
+        if let cell = self.collectionView.cellForItem(at: indexPath) as? InboxChatCell {
             
             if cell.shouldExpand {
                 // Insert timeLabel here
@@ -895,7 +897,7 @@ class ChatInboxController: UIViewController, UICollectionViewDelegateFlowLayout,
     }
     
     func expandCell(notif: Notification) {
-        // Called by ChatCell's messageTextView to invalidate layout
+        // Called by InboxChatCell's messageTextView to invalidate layout
         UIView.performWithoutAnimation {
             self.collectionView.collectionViewLayout.invalidateLayout()
         }
@@ -906,7 +908,7 @@ class ChatInboxController: UIViewController, UICollectionViewDelegateFlowLayout,
         self.cellTimeLabel.removeFromSuperview()
         // Find index path and set unchecked
         if tappedIndexPath != nil {
-            if let cell = collectionView(self.collectionView, cellForItemAt: tappedIndexPath!) as? ChatCell {
+            if let cell = collectionView(self.collectionView, cellForItemAt: tappedIndexPath!) as? InboxChatCell {
                 self.tappedIndexPath = nil
                 cell.shouldExpand = false
             }

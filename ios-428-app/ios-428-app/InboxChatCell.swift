@@ -1,5 +1,5 @@
 //
-//  ChatCell.swift
+//  InboxChatCell.swift
 //  ios-428-app
 //
 //  Created by Leonard Loo on 10/11/16.
@@ -10,44 +10,15 @@ import Foundation
 import UIKit
 import Alamofire
 
-class CustomTextView: UITextView {
-
-    override var canBecomeFirstResponder: Bool {
-        return true
-    }
-    
-    override func canPerformAction(_ action: Selector, withSender sender: Any?) -> Bool {
-        if action == #selector(copyAll(_:)) {
-            return true
-        }
-        return false
-    }
-    
-    // Function called by selector in the superclass
-    func showMenu(location: CGPoint) {
-        self.becomeFirstResponder()
-        let menuController = UIMenuController.shared
-        let copyItem = UIMenuItem(title: "Copy", action: #selector(CustomTextView.copyAll(_:)))
-        menuController.menuItems = [copyItem]
-        let rect = CGRect(x: location.x - 35, y: self.frame.origin.y, width: 50, height: self.frame.height)
-        menuController.setTargetRect(rect, in: self)
-        menuController.setMenuVisible(true, animated: true)
-    }
-    
-    func copyAll(_ sender: Any?) {
-        UIPasteboard.general.string = self.text
-    }
-}
-
-class ChatCell: BaseCollectionCell, UITextViewDelegate {
+class InboxChatCell: BaseCollectionCell {
     
     fileprivate var message: InboxMessage!
     open var shouldExpand = false
     fileprivate let TEXT_VIEW_FONT = UIFont.systemFont(ofSize: 16.0)
     open var request: Request?
     
-    fileprivate lazy var messageTextView: CustomTextView = {
-        var textView = CustomTextView()
+    fileprivate let messageTextView: UITextView = {
+        var textView = UITextView()
         textView.backgroundColor = UIColor.clear
         textView.showsHorizontalScrollIndicator = false
         textView.showsVerticalScrollIndicator = false
@@ -56,28 +27,9 @@ class ChatCell: BaseCollectionCell, UITextViewDelegate {
         textView.tintColor = RED_UICOLOR
         textView.dataDetectorTypes = .all
         textView.isUserInteractionEnabled = true
-        textView.delegate = self
         textView.isScrollEnabled = false
-        
-        textView.font = self.TEXT_VIEW_FONT
-        let longPress = UILongPressGestureRecognizer(target: self, action: #selector(selectAllOfTextView))
-        textView.addGestureRecognizer(longPress)
-        let tap = UITapGestureRecognizer(target: self, action: #selector(notifyControllerToExpand))
-        textView.addGestureRecognizer(tap)
         return textView
     }()
-    
-    func textViewDidChangeSelection(_ textView: UITextView) {
-        // TODO: How to disable magnifying glass?
-        if !NSEqualRanges(textView.selectedRange, NSMakeRange(0, 0)) {
-            textView.selectedRange = NSMakeRange(0, 0);
-        }
-    }
-    
-    func selectAllOfTextView(recognizer: UIGestureRecognizer) {
-        let loc = recognizer.location(in: self.messageTextView)
-        self.messageTextView.showMenu(location: loc)
-    }
 
     fileprivate let textBubbleView: UIView = {
         let view = UIView()
@@ -87,13 +39,20 @@ class ChatCell: BaseCollectionCell, UITextViewDelegate {
         return view
     }()
     
-    fileprivate let profileImageView: UIImageView = {
+    fileprivate lazy var profileImageView: UIImageView = {
         let imageView = UIImageView()
         imageView.contentMode = .scaleAspectFill
         imageView.layer.cornerRadius = 15
         imageView.layer.masksToBounds = true
+        imageView.isUserInteractionEnabled = true
+        let tap = UITapGestureRecognizer(target: self, action: #selector(self.openProfile))
+        imageView.addGestureRecognizer(tap)
         return imageView
     }()
+    
+    func openProfile() {
+        NotificationCenter.default.post(name: NOTIF_OPENPROFILE, object: nil)
+    }
     
     fileprivate let BUBBLE_RECIPIENT_IMAGE = UIImage(named: "bubble_recipient")?.resizableImage(withCapInsets: UIEdgeInsets(top: 23, left: 26, bottom: 23, right: 26))
     fileprivate let BUBBLE_ME_IMAGE = UIImage(named: "bubble_me")?.resizableImage(withCapInsets: UIEdgeInsets(top: 23, left: 26, bottom: 23, right: 26))
