@@ -156,6 +156,7 @@ class ChatInboxController: UIViewController, UICollectionViewDelegateFlowLayout,
             return
         }
         self.activityIndicator.startAnimating()
+        self.collectionView.isScrollEnabled = false
         // Small hack to make it not show up when the load time is less than 2 seconds
         self.activityIndicator.isHidden = true
         UIView.animate(withDuration: 2.0, animations: {}, completion: { (isSuccess) in
@@ -165,6 +166,7 @@ class ChatInboxController: UIViewController, UICollectionViewDelegateFlowLayout,
         })
         DataService.ds.observeInboxChatMessagesOnce(inbox: self.inbox, limit: self.numMessages, completed: { (isSuccess, updatedInbox) in
             self.activityIndicator.stopAnimating()
+            self.collectionView.isScrollEnabled = true
             
             if (!isSuccess || updatedInbox == nil) {
                 // No messages yet, display placeholder view in the middle to prompt user to interact with new private chat

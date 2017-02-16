@@ -167,7 +167,6 @@ class LoginController: UIViewController, UIScrollViewDelegate, CLLocationManager
             
             let authuid = user!.uid
             
-            log.info("AUTH UID: \(authuid)")
             let fbid = user!.providerData[0].uid // Use FBID as the key for users
             
             // Grab only the first part of the display name
@@ -175,12 +174,9 @@ class LoginController: UIViewController, UIScrollViewDelegate, CLLocationManager
             let displayName = fullDisplayName.components(separatedBy: " ")[0]
             saveUid(uid: authuid) // Saving uid here is crucial so that loginFirebaseUser will return isSuccess
             
-            
             // Get timezone
             let secondsFromGMT: Double = Double(NSTimeZone.local.secondsFromGMT())
             let timezone: Double = secondsFromGMT*1.0 / (60.0*60.0)
-            
-            log.info("Before logging in firebase with pictureUrl: \(pictureUrl)")
             
             // Create/Update Firebase user with details
             DataService.ds.loginFirebaseUser(fbid: fbid, name: displayName, birthday: birthdayString, pictureUrl: pictureUrl, timezone: timezone, completed: { (isSuccess, isFirstTimeUser) in

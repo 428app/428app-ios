@@ -47,9 +47,9 @@ class ChatClassroomController: UIViewController, UIGestureRecognizerDelegate, UI
     override func viewDidLoad() {
         super.viewDidLoad()
         self.extendedLayoutIncludesOpaqueBars = true
+        self.setupNavigationBar() // This must come before setupFirebase
         self.setupFirebase()
         self.view.backgroundColor = UIColor.white
-        self.setupNavigationBar()
         self.setupPromptView()
         self.setupCollectionView()
         self.setupInputComponents()
@@ -57,7 +57,6 @@ class ChatClassroomController: UIViewController, UIGestureRecognizerDelegate, UI
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        self.animateQuestionBanner()
         DataService.ds.seeClassroomMessages(classroom: self.classroom) { (isSuccess) in }
         self.tabBarController?.tabBar.isHidden = true
         self.navigationController?.navigationBar.barTintColor = RED_UICOLOR
@@ -88,15 +87,38 @@ class ChatClassroomController: UIViewController, UIGestureRecognizerDelegate, UI
     
     // MARK: Firebase
     
-    fileprivate func initClassroomObserver() {
-        self.activityIndicator.startAnimating()
-        // Small hack to make it not show up when the load time is less than 2 seconds
-        self.activityIndicator.isHidden = true
-        UIView.animate(withDuration: 2.0, animations: {}, completion: { (isSuccess) in
-            if self.activityIndicator.isAnimating {
-                self.activityIndicator.isHidden = false
+    fileprivate func loadingScreen(isLoading: Bool) {
+        if isLoading {
+            self.activityIndicator.startAnimating()
+            self.collectionView.isScrollEnabled = false
+            self.questionBanner.isUserInteractionEnabled = false
+            if let btns = self.navigationItem.rightBarButtonItems {
+                for btn in btns {
+                    btn.isEnabled = false
+                }
             }
-        })
+            // Small hack to make it not show up when the load time is less than 2 seconds
+            self.activityIndicator.isHidden = true
+            UIView.animate(withDuration: 2.0, animations: {}, completion: { (isSuccess) in
+                if self.activityIndicator.isAnimating {
+                    self.activityIndicator.isHidden = false
+                }
+            })
+        } else {
+            self.activityIndicator.stopAnimating()
+            self.animateQuestionBanner()
+            self.collectionView.isScrollEnabled = true
+            self.questionBanner.isUserInteractionEnabled = true
+            if let btns = self.navigationItem.rightBarButtonItems {
+                for btn in btns {
+                    btn.isEnabled = true
+                }
+            }
+        }
+    }
+    
+    fileprivate func initClassroomObserver() {
+        self.loadingScreen(isLoading: true)
         
         // Classroom could have already been initialized, so just init messages straight away
         let classroomHasBeenInit: Bool = self.classroom.members.count > 0
@@ -147,7 +169,7 @@ class ChatClassroomController: UIViewController, UIGestureRecognizerDelegate, UI
         }
         
         DataService.ds.observeClassChatMessagesOnce(limit: self.numMessages, classroom: self.classroom) { (isSuccess, updatedClassroom) in
-            self.activityIndicator.stopAnimating()
+            self.loadingScreen(isLoading: false)
             if (!isSuccess || updatedClassroom == nil) {
                 // No messages yet, display placeholder view in the middle
                 self.emptyPlaceholderView.isHidden = false
@@ -347,14 +369,13 @@ class ChatClassroomController: UIViewController, UIGestureRecognizerDelegate, UI
         
         // Setup activity indicator for initial load
         self.collectionView.addSubview(activityIndicator)
-        self.activityIndicator.center = CGPoint(x: self.view.center.x, y: self.view.center.y - 0.08 * self.view.frame.height)
+        self.activityIndicator.center = CGPoint(x: self.view.center.x, y: self.view.center.y - 0.15 * self.view.frame.height)
         
         // Setup refresh control for pull-to-refresh
         self.refreshControl.addSubview(self.pullToRefreshIndicator)
         self.pullToRefreshIndicator.center = CGPoint(x: self.view.center.x, y: self.refreshControl.center.y)
         collectionView.addSubview(self.refreshControl)
         
-//        self.initMessages()
         self.initClassroomObserver()
     }
     
@@ -428,7 +449,7 @@ class ChatClassroomController: UIViewController, UIGestureRecognizerDelegate, UI
     }()
     
     fileprivate func animateQuestionBanner() {
-        UIView.animate(withDuration: 0.5, delay: 0.5, animations: {
+        UIView.animate(withDuration: 0.5, delay: 0.3, animations: {
             self.questionBanner.transform = CGAffineTransform(translationX: 0.0, y: 50.0)
         })
     }
