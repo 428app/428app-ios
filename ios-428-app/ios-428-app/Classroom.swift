@@ -10,9 +10,15 @@ import Foundation
 
 class Classroom {
     
+    // These are read in from the start when viewing all classrooms
     fileprivate var _cid: String
     fileprivate var _title: String
-    fileprivate var _timeCreated: Double // Unix time used to sort classrooms
+    fileprivate var _timeReplied: Double // Unix time used to sort classrooms
+    fileprivate var _hasUpdates: Bool // If true, there is a new message/question being posted that the user has not seen yet
+    fileprivate var _questionNum: Int
+    fileprivate var _imageName: String
+    
+    // These are read in on opening the classroom
     fileprivate var _members: [Profile] // Used to display members and their profiles
     fileprivate var _questions: [Question] // Get question number from this
     fileprivate var _classroomMessages: [ClassroomMessage]
@@ -25,16 +31,15 @@ class Classroom {
     fileprivate var _superlativeType: SuperlativeType
     fileprivate var _didYouKnowId: String
     
-    fileprivate var _hasUpdates: Bool // If true, there is a new message/question being posted that the user has not seen yet
     
-    // Computed variables from questions array
-    var _questionNum: Int
-    var _imageName: String
-    
-    init(cid: String, title: String, timeCreated: Double, members: [Profile], questions: [Question], classroomMessages: [ClassroomMessage] = [], superlatives: [Superlative] = [], results: [Superlative] = [], superlativeType: SuperlativeType = SuperlativeType.NOTVOTED, hasUpdates: Bool = false, hasSuperlatives: Bool = false, isVotingOngoing: Bool = false, didYouKnowId: String = "") {
+    init(cid: String, title: String, timeReplied: Double, hasUpdates: Bool, questionNum: Int, imageName: String, members: [Profile] = [], questions: [Question] = [], classroomMessages: [ClassroomMessage] = [], superlatives: [Superlative] = [], results: [Superlative] = [], superlativeType: SuperlativeType = SuperlativeType.NOTVOTED, hasSuperlatives: Bool = false, isVotingOngoing: Bool = false, didYouKnowId: String = "") {
         _cid = cid
         _title = title
-        _timeCreated = timeCreated
+        _timeReplied = timeReplied
+        _hasUpdates = hasUpdates
+        _questionNum = questionNum
+        _imageName = imageName
+        
         _members = members
         _questions = questions.sorted{$0.timestamp > $1.timestamp} // Most recent questions first
         _classroomMessages = classroomMessages
@@ -42,12 +47,8 @@ class Classroom {
         _results = results
         _superlativeType = superlativeType
         _didYouKnowId = didYouKnowId
-        _hasUpdates = hasUpdates
         _hasSuperlatives = hasSuperlatives
         _isVotingOngoing = isVotingOngoing
-        // Compute question num and imageName to display from questions
-        _questionNum = questions.count
-        _imageName = _questions.count == 0 ? "" : _questions[0].imageName // Fail silently if no questions provided in init
     }
     
     var cid: String {
@@ -62,9 +63,9 @@ class Classroom {
         }
     }
     
-    var timeCreated: Double {
+    var timeReplied: Double {
         get {
-            return _timeCreated
+            return _timeReplied
         }
     }
     
@@ -72,11 +73,17 @@ class Classroom {
         get {
             return _members
         }
+        set(memb) {
+            _members = memb
+        }
     }
     
     var questions: [Question] {
         get {
             return _questions
+        }
+        set(qs) {
+            _questions = qs
         }
     }
     
@@ -133,6 +140,9 @@ class Classroom {
     var didYouKnowId: String {
         get {
             return _didYouKnowId
+        }
+        set (did) {
+            _didYouKnowId = did
         }
     }
     

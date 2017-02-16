@@ -25,8 +25,10 @@ class SuperlativeController: UIViewController, UICollectionViewDelegate, UIColle
         self.loadData()
     }
     
-    deinit {
-        NotificationCenter.default.removeObserver(NOTIF_VOTESELECTED)
+    override func willMove(toParentViewController parent: UIViewController?) {
+        if parent == nil { // Leaving
+            NotificationCenter.default.removeObserver(NOTIF_VOTESELECTED)
+        }
     }
     
     override func viewWillAppear(_ animated: Bool) {

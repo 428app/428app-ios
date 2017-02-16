@@ -17,7 +17,7 @@ class ClassroomsController: UIViewController, UICollectionViewDelegate, UICollec
     
     // Firebase
     fileprivate var allClassFirebase: (FIRDatabaseReference, FIRDatabaseHandle)!
-    fileprivate var classesFirebase: [(FIRDatabaseReference, FIRDatabaseHandle)] = []
+    fileprivate var classesFirebase: [String: (FIRDatabaseReference, FIRDatabaseHandle)] = [:]
     
     fileprivate let CELL_ID = "classroomCell"
     
@@ -59,7 +59,7 @@ class ClassroomsController: UIViewController, UICollectionViewDelegate, UICollec
     
     deinit {
         self.countdownTimer.invalidate()
-        for (ref, handle) in self.classesFirebase {
+        for (ref, handle) in self.classesFirebase.values {
             ref.removeObserver(withHandle: handle)
         }
         if allClassFirebase != nil {
@@ -82,9 +82,9 @@ class ClassroomsController: UIViewController, UICollectionViewDelegate, UICollec
         
         self.activityIndicator.startAnimating()
         
-        self.allClassFirebase = DataService.ds.observeClassrooms { (isSuccess, cids) in
-            
-            if !isSuccess || cids.count == 0 {
+        self.allClassFirebase = DataService.ds.observeClassroomAdded { (isSuccess, cid) in
+ 
+            if !isSuccess || cid.isEmpty {
                 // No classrooms yet, display placeholder and stop animating loader
                 self.enableEmptyPlaceholder(enable: true)
                 self.activityIndicator.stopAnimating()
@@ -93,31 +93,22 @@ class ClassroomsController: UIViewController, UICollectionViewDelegate, UICollec
             
             self.enableEmptyPlaceholder(enable: false)
             
-            // Remove all chat observers and reappend
-            for (ref, handle) in self.classesFirebase {
-                ref.removeObserver(withHandle: handle)
+            // Reset single classroom observer
+            if self.classesFirebase[cid] != nil {
+                self.classesFirebase[cid]!.0.removeObserver(withHandle: self.classesFirebase[cid]!.1)
             }
-            
-            self.classrooms = []
-            
-            for cid in cids {
-                let classFirebase = DataService.ds.observeSingleClassroom(cid: cid, completed: { (isSuccess2, classroom) in
-                    
-                    self.activityIndicator.stopAnimating()
-                    
-                    if !isSuccess2 || classroom == nil {
-                        log.error("[Error] Can't read classroom with cid: \(cid)")
-                        return
-                    }
-                    
-                    self.classrooms = self.classrooms.filter{$0.cid != cid}  // If class already added, then remove it first
-                    self.classrooms.append(classroom!)
-                    self.classrooms = self.classrooms.sorted{$0.timeCreated > $1.timeCreated}
-                    self.collectionView.reloadData()
-                })
+            self.classesFirebase[cid] = DataService.ds.observeClassroomUpdates(cid: cid, completed: { (isSuccess2, classroom_) in
                 
-                self.classesFirebase.append(classFirebase)
-            }
+                self.activityIndicator.stopAnimating()
+                if !isSuccess2 || classroom_ == nil {
+                    return
+                }
+                let classroom = classroom_!
+                self.classrooms = self.classrooms.filter{$0.cid != classroom.cid}  // If class already added, then remove it first
+                self.classrooms.append(classroom)
+                self.classrooms = self.classrooms.sorted{$0.timeReplied > $1.timeReplied}
+                self.collectionView.reloadData()
+            })
         }
     }
     

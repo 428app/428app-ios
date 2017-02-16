@@ -18,30 +18,51 @@ import FBSDKLoginKit
 // Extends DataService to house Classroom calls
 extension DataService {
     
-    // Observes changes in the classrooms that a user is in, used in ClassroomController
-    func observeClassrooms(completed: @escaping (_ isSuccess: Bool, _ cids: [String]) -> ()) -> (FIRDatabaseReference, FIRDatabaseHandle) {
+    // Observe for added classroom of a user, used in ClassroomsController
+    func observeClassroomAdded(completed: @escaping (_ isSuccess: Bool, _ cid: String) -> ()) -> (FIRDatabaseReference, FIRDatabaseHandle) {
         let uid = getStoredUid() == nil ? "" : getStoredUid()!
         // Grabs the user's classrooms
         let ref: FIRDatabaseReference = REF_USERS.child("\(uid)/classrooms")
-        ref.keepSynced(true)
         
+        // Observed on value as not childAdded, as classrooms might be deleted in the future
+        let handle = ref.observe(.childAdded, with: { snapshot in
+            if !snapshot.exists() {
+                completed(false, "")
+                return
+            }
+            guard var _ = snapshot.value as? [String: Any] else {
+                completed(false, "")
+                return
+            }
+            completed(true, snapshot.key)
+            return
+        })
+        return (ref, handle)
+    }
+    
+    // Observe updates of a single classroom for a user, used in ClassroomsController
+    func observeClassroomUpdates(cid: String, completed: @escaping (_ isSuccess: Bool, _ classroom: Classroom?) -> ()) ->(FIRDatabaseReference, FIRDatabaseHandle) {
+        let uid = getStoredUid() == nil ? "" : getStoredUid()!
+        let ref: FIRDatabaseReference = REF_USERS.child("\(uid)/classrooms/\(cid)")
         // Observed on value as not childAdded, as classrooms might be deleted in the future
         let handle = ref.observe(.value, with: { snapshot in
             if !snapshot.exists() {
-                completed(false, [])
+                completed(false, nil)
                 return
             }
-            guard let snaps = snapshot.children.allObjects as? [FIRDataSnapshot] else {
-                completed(false, [])
+            guard var classDict = snapshot.value as? [String: Any] else {
+                completed(false, nil)
+                return
+            }
+            let cid = snapshot.key
+            
+            guard let questionNum = classDict["questionNum"] as? Int, let discipline = classDict["discipline"] as? String, let questionImage = classDict["questionImage"] as? String, let timeReplied = classDict["timeReplied"] as? Double, let hasUpdates = classDict["hasUpdates"] as? Bool else {
+                completed(false, nil)
                 return
             }
             
-            var cids: [String] = []
-            
-            for snap in snaps {
-                cids.append(snap.key)
-            }
-            completed(true, cids)
+            let classroom = Classroom(cid: cid, title: discipline, timeReplied: timeReplied, hasUpdates: hasUpdates, questionNum: questionNum, imageName: questionImage)
+            completed(true, classroom)
             return
         })
         return (ref, handle)
@@ -70,102 +91,76 @@ extension DataService {
         return set1 == set2
     }
     
-    // Observes changes in a single classroom's meta information such as question number, etc., used in ClassroomController
-    // NOTE: This is quite fragile with a lot of nested calls, and a lot of potential failure points. Restructure in the future to make it more robust.
-    func observeSingleClassroom(cid: String, completed: @escaping (_ isSuccess: Bool, _ classroom: Classroom?) -> ()) -> (FIRDatabaseReference, FIRDatabaseHandle) {
+    // Observe single classroom used in ChatClassroomController
+    func observeSingleClassroom(classroom: Classroom, completed: @escaping (_ isSuccess: Bool, _ classroom: Classroom) -> ()) -> (FIRDatabaseReference, FIRDatabaseHandle) {
         let uid = getStoredUid() == nil ? "" : getStoredUid()!
-        let ref: FIRDatabaseReference = REF_USERS.child("\(uid)/classrooms/\(cid)")
-        ref.keepSynced(true)
-        REF_CLASSROOMS.child("\(cid)/memberHasVoted/\(uid)").keepSynced(true)
-        REF_CLASSROOMS.child("\(cid)/questions").keepSynced(true)
-        
-        // Primarily observe on changes in classroom's question number and image
-        let handle = ref.observe(.value, with: { snapshot in
-            if !snapshot.exists() {
-                completed(false, nil)
+        let cid = classroom.cid
+        let ref: FIRDatabaseReference = REF_CLASSROOMS.child(cid)
+        let handle = ref.observe(.value, with: { classSnap in
+            guard let classDict = classSnap.value as? [String: Any], let classmateAndSuperlativeType = classDict["memberHasVoted"] as? [String: Int], let questionsAndTimes = classDict["questions"] as? [String: Double] else {
+                completed(false, classroom)
                 return
             }
-            guard let snapDict = snapshot.value as? [String: Any], let _ = snapDict["discipline"] as? String, let _ = snapDict["questionNum"] as? Int, let _ = snapDict["questionImage"] as? String, let hasUpdates = snapDict["hasUpdates"] as? Bool else { // Some of the fields are not being used because they are collected below
-                log.info("Failed at start")
-                completed(false, nil)
-                return
+            // Download profiles, and find this user's superlative type
+            var members: [Profile] = [Profile]()
+
+            // Used as comparison to know if async task is done
+            var memberIds: [String] = [String]()
+            let totalMemberIds: [String] = Array(classmateAndSuperlativeType.keys)
+
+            var didYouKnowId = ""
+            if let did = classDict["didYouKnow"] as? String {
+                didYouKnowId = did
             }
             
-            // Grab the other details relevant to form a Classroom model
-            self.REF_CLASSROOMS.child(cid).observeSingleEvent(of: .value, with: { classSnap in
+            var superlativeType: SuperlativeType = SuperlativeType.NOTVOTED
+            
+            for (uid_, superlativeType_) in classmateAndSuperlativeType {
                 
-                if !classSnap.exists() {
-                    log.info("Failed at classroom-0")
-                    completed(false, nil)
-                    return
+                // Find superlative type of this user
+                if uid_ == uid {
+                    superlativeType = SuperlativeType(rawValue: superlativeType_)!
                 }
-                guard let classDict = classSnap.value as? [String: Any], let classTitle = classDict["title"] as? String, let timeCreated = classDict["timeCreated"] as? Double, let classmateAndSuperlativeType = classDict["memberHasVoted"] as? [String: Int], let questionsAndTimes = classDict["questions"] as? [String: Double] else {
-                    log.info("Failed at classroom")
-                    completed(false, nil)
-                    return
-                }
-                
-                // Download profiles, and find this user's superlative type
-                var members: [Profile] = [Profile]()
-                
-                // Used as comparison to know if async task is done
-                var memberIds: [String] = [String]()
-                let totalMemberIds: [String] = Array(classmateAndSuperlativeType.keys)
-                
-                var didYouKnowId = ""
-                if let did = classDict["didYouKnow"] as? String {
-                    didYouKnowId = did
-                }
-                
-                var superlativeType: SuperlativeType = SuperlativeType.NOTVOTED
-                
-                for (uid_, superlativeType_) in classmateAndSuperlativeType {
+                // Download all classmates' profiles
+                self.getUserFields(uid: uid_, completed: { (isSuccess, userProfile) in
                     
-                    // Find superlative type of this user
-                    if uid_ == uid {
-                        superlativeType = SuperlativeType(rawValue: superlativeType_)!
+                    if !isSuccess || userProfile == nil {
+                        // There was a problem getting a user's profile, so return false
+                        log.info("Failed at user profiles")
+                        completed(false, classroom)
+                        return
                     }
-                    // Download all classmates' profiles
-                    self.getUserFields(uid: uid_, completed: { (isSuccess, userProfile) in
+                    
+                    members.append(userProfile!)
+                    memberIds.append(userProfile!.uid)
+                    
+                    if self.isIdenticalArrays(arr1: memberIds, arr2: totalMemberIds) { // All classmates read
                         
-                        if !isSuccess || userProfile == nil {
-                            // There was a problem getting a user's profile, so return false
-                            log.info("Failed at user profiles")
-                            completed(false, nil)
-                            return
+                        // Check if there are superlatives available yet
+                        let hasSuperlatives = classDict["superlatives"] != nil
+                        
+                        // Download questions and answers
+                        var questions: [Question] = [Question]()
+                        for (qid_, timestamp_) in questionsAndTimes {
+                            self.getQuestion(discipline: classroom.title, qid: qid_, timestamp: timestamp_, completed: { (isSuccess2, question) in
+                                if !isSuccess2 || question == nil {
+                                    // There was a problem getting a question from qid, so return false
+                                    log.info("Failed at question")
+                                    completed(false, classroom)
+                                    return
+                                }
+                                questions.append(question!)
+                                if questions.count == questionsAndTimes.count { // All questions qid read
+                                    // Form classroom messages in a separate call
+                                    let updatedClassroom = Classroom(cid: classroom.cid, title: classroom.title, timeReplied: classroom.timeReplied, hasUpdates: classroom.hasUpdates, questionNum: classroom.questionNum, imageName: classroom.imageName, members: members, questions: questions, superlativeType: superlativeType, hasSuperlatives: hasSuperlatives, didYouKnowId: didYouKnowId)
+                                    completed(true, updatedClassroom) // Finally!
+                                    return
+                                }
+                            })
                         }
-                        
-                        members.append(userProfile!)
-                        memberIds.append(userProfile!.uid)
-                        
-                        if self.isIdenticalArrays(arr1: memberIds, arr2: totalMemberIds) { // All classmates read
-                        
-                            // Check if there are superlatives available yet
-                            let hasSuperlatives = classDict["superlatives"] != nil
-                            
-                            // Download questions and answers
-                            var questions: [Question] = [Question]()
-                            for (qid_, timestamp_) in questionsAndTimes {
-                                self.getQuestion(discipline: classTitle, qid: qid_, timestamp: timestamp_, completed: { (isSuccess2, question) in
-                                    if !isSuccess2 || question == nil {
-                                        // There was a problem getting a question from qid, so return false
-                                        log.info("Failed at question")
-                                        completed(false, nil)
-                                        return
-                                    }
-                                    questions.append(question!)
-                                    if questions.count == questionsAndTimes.count { // All questions qid read
-                                        // Form classroom messages in a separate call
-                                        let classroom = Classroom(cid: cid, title: classTitle, timeCreated: timeCreated, members: members, questions: questions, superlativeType: superlativeType, hasUpdates: hasUpdates, hasSuperlatives: hasSuperlatives, didYouKnowId: didYouKnowId)
-                                        completed(true, classroom) // Finally!
-                                        return
-                                    }
-                                })
-                            }
-                        }
-                    })
-                }
-            })
+                    }
+                })
+            }
         })
         return (ref, handle)
     }
@@ -244,9 +239,6 @@ extension DataService {
         let classroomTitle = classroom.title
         let timestamp = Date().timeIntervalSince1970
         
-        // Add to classrooms (timeReplied)
-        REF_CLASSROOMS.child("\(cid)/timeReplied").setValue(timestamp)
-        
         // Add to classroomMessages
         let messageRef: FIRDatabaseReference = REF_CLASSROOMMESSAGES.child(cid).childByAutoId()
         let mid = messageRef.key
@@ -274,7 +266,7 @@ extension DataService {
                 }
                 guard let pushToken = userDict["pushToken"] as? String, let pushCount = userDict["pushCount"] as? Int else {
                     // No push token, but user still exists in classroom, so set updates right
-                    self.REF_USERS.child("\(classmateUid)/classrooms/\(cid)/hasUpdates").setValue(true)
+                    self.REF_USERS.child("\(classmateUid)/classrooms/\(cid)").updateChildValues(["hasUpdates": true, "timeReplied": timestamp])
                     return
                 }
             
@@ -299,7 +291,7 @@ extension DataService {
                                     self.adjustPushCount(isIncrement: true, uid: classmateUid, completed: { (isSuccess) in })
                                 }
                                 
-                                self.REF_USERS.child("\(classmateUid)/classrooms/\(cid)/hasUpdates").setValue(true)
+                                self.REF_USERS.child("\(classmateUid)/classrooms/\(cid)").updateChildValues(["hasUpdates": true, "timeReplied": timestamp])
                                 return
                             }
                         }
@@ -308,12 +300,13 @@ extension DataService {
                     // Allowed to send push notifications
                     if hasUpdates {
                         // There are already new messages in this classroom for this user, just send a notification without updating push count
+                        self.REF_USERS.child("\(classmateUid)/classrooms/\(cid)").updateChildValues(["hasUpdates": true, "timeReplied": timestamp])
                         self.addToNotificationQueue(type: TokenType.CLASSROOM, posterUid: posterUid, posterName: posterName, posterImage: posterImage, recipientUid: classmateUid, pushToken: pushToken, pushCount: pushCount, inApp: inAppSettings, cid: cid, title: classroomTitle, body: text)
                         return
                     }
                     // No new messages for this user in this classroom, set hasUpdates to true, and increment push count for this user
-                    self.REF_USERS.child("\(classmateUid)/classrooms/\(cid)/hasUpdates").setValue(true)
                     self.adjustPushCount(isIncrement: true, uid: classmateUid, completed: { (isSuccess) in
+                        self.REF_USERS.child("\(classmateUid)/classrooms/\(cid)").updateChildValues(["hasUpdates": true, "timeReplied": timestamp])
                         // After push count is incremented, then push notification.
                         self.addToNotificationQueue(type: TokenType.CLASSROOM, posterUid: posterUid, posterName: posterName, posterImage: posterImage, recipientUid: classmateUid, pushToken: pushToken, pushCount: pushCount + 1, inApp: inAppSettings, cid: cid, title: classroomTitle, body: text)
                     })
@@ -324,7 +317,6 @@ extension DataService {
     
     // See classroom messages so the updated label goes away
     func seeClassroomMessages(classroom: Classroom, completed: @escaping (_ isSuccess: Bool) -> ()) {
-        log.info("Seeing classroom messages")
         guard let uid = getStoredUid() else {
             completed(false)
             return

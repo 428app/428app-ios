@@ -1,9 +1,11 @@
 TODO TONIGHT:
-+ Slide down Read Question here
-+ Change login screen demos
-+ Resync classrooms: Load some stuff after
+
 + Click on profile picture on inbox also open up profile
+
+
 + Tweet on Question
++ Clicking on tableview cells not grey out, but use green
++ Link Login screen Terms/Privacy upon click to open safari to link
 
 
 
@@ -14,6 +16,7 @@ TODO TONIGHT:
 + FB App permissions
 
 BUGS:
++ 
 
 
 DO LATER:

@@ -13,7 +13,8 @@ import Firebase
 class ChatClassroomController: UIViewController, UIGestureRecognizerDelegate, UITextViewDelegate, UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
     
     /** FIREBASE **/
-    fileprivate var queryAndHandle: (FIRDatabaseQuery, FIRDatabaseHandle)!
+    fileprivate var chatQueryAndHandle: (FIRDatabaseQuery, FIRDatabaseHandle)!
+    fileprivate var classroomRefAndHandle: (FIRDatabaseReference, FIRDatabaseHandle)!
     
     fileprivate var numMessages: UInt = 30 // Increases as user scrolls to top of collection view
     fileprivate let NUM_INCREMENT: UInt = 10 // Downloads 10 messages per scroll
@@ -60,10 +61,6 @@ class ChatClassroomController: UIViewController, UIGestureRecognizerDelegate, UI
         DataService.ds.seeClassroomMessages(classroom: self.classroom) { (isSuccess) in }
         self.tabBarController?.tabBar.isHidden = true
         self.navigationController?.navigationBar.barTintColor = RED_UICOLOR
-        // Show superlative alert when there are superlatives and user has not voted
-        if classroom.hasSuperlatives && classroom.superlativeType == SuperlativeType.NOTVOTED {
-            showSuperlativeAlert()
-        }
         self.registerObservers()
     }
 
@@ -74,7 +71,57 @@ class ChatClassroomController: UIViewController, UIGestureRecognizerDelegate, UI
         self.unregisterObservers()
     }
     
+    override func willMove(toParentViewController parent: UIViewController?) {
+        if parent == nil { // Leaving
+            self.removeFirebaseObservers()
+        }
+    }
+    
+    fileprivate func removeFirebaseObservers() {
+        if self.chatQueryAndHandle != nil {
+            self.chatQueryAndHandle.0.removeObserver(withHandle: self.chatQueryAndHandle.1)
+        }
+        if self.classroomRefAndHandle != nil {
+            self.classroomRefAndHandle.0.removeObserver(withHandle: self.classroomRefAndHandle.1)
+        }
+    }
+    
     // MARK: Firebase
+    
+    fileprivate func initClassroomObserver() {
+        self.activityIndicator.startAnimating()
+        // Small hack to make it not show up when the load time is less than 2 seconds
+        self.activityIndicator.isHidden = true
+        UIView.animate(withDuration: 2.0, animations: {}, completion: { (isSuccess) in
+            if self.activityIndicator.isAnimating {
+                self.activityIndicator.isHidden = false
+            }
+        })
+        
+        // Classroom could have already been initialized, so just init messages straight away
+        let classroomHasBeenInit: Bool = self.classroom.members.count > 0
+        if classroomHasBeenInit {
+            self.initMessages()
+        }
+        
+        self.classroomRefAndHandle = DataService.ds.observeSingleClassroom(classroom: self.classroom, completed: { (isSuccess, updatedClassroom) in
+            
+            // Update fields individually instead of replacing, as we don't want to replace messages
+            self.classroom.members = updatedClassroom.members
+            self.classroom.questions = updatedClassroom.questions
+            self.classroom.superlativeType = updatedClassroom.superlativeType
+            self.classroom.hasSuperlatives = updatedClassroom.hasSuperlatives
+            self.classroom.didYouKnowId = updatedClassroom.didYouKnowId
+            
+            // Show superlative alert when there are superlatives and user has not voted
+            if self.classroom.hasSuperlatives && self.classroom.superlativeType == SuperlativeType.NOTVOTED {
+                self.showSuperlativeAlert()
+            }
+            if self.messages.isEmpty && !classroomHasBeenInit {
+                self.initMessages()
+            }
+        })
+    }
     
     func loadMoreMessages() {
         self.numMessages += NUM_INCREMENT
@@ -95,18 +142,9 @@ class ChatClassroomController: UIViewController, UIGestureRecognizerDelegate, UI
     
     // Called after entering the page
     fileprivate func initMessages() {
-        if self.queryAndHandle != nil {
+        if self.chatQueryAndHandle != nil {
             return
         }
-        
-        self.activityIndicator.startAnimating()
-        // Small hack to make it not show up when the load time is less than 2 seconds
-        self.activityIndicator.isHidden = true
-        UIView.animate(withDuration: 2.0, animations: {}, completion: { (isSuccess) in
-            if self.activityIndicator.isAnimating {
-                self.activityIndicator.isHidden = false
-            }
-        })
         
         DataService.ds.observeClassChatMessagesOnce(limit: self.numMessages, classroom: self.classroom) { (isSuccess, updatedClassroom) in
             self.activityIndicator.stopAnimating()
@@ -129,6 +167,7 @@ class ChatClassroomController: UIViewController, UIGestureRecognizerDelegate, UI
             
             self.organizeMessages()
             
+            
             // Simple hack to load the bottom of the collection view without visually showing it
             UIView.animate(withDuration: 0, animations: {
                 // Collection view is hidden first so the scrolling is not visible to the user
@@ -147,8 +186,8 @@ class ChatClassroomController: UIViewController, UIGestureRecognizerDelegate, UI
 
         self.removeTimeLabel()
         
-        if self.queryAndHandle != nil {
-            self.queryAndHandle.0.removeObserver(withHandle: self.queryAndHandle.1)
+        if self.chatQueryAndHandle != nil {
+            self.chatQueryAndHandle.0.removeObserver(withHandle: self.chatQueryAndHandle.1)
         }
         self.refreshControl.beginRefreshing()
         self.pullToRefreshIndicator.startAnimating()
@@ -228,11 +267,12 @@ class ChatClassroomController: UIViewController, UIGestureRecognizerDelegate, UI
     }
     
     fileprivate func reobserveMessages() {
-        if self.queryAndHandle != nil {
-            queryAndHandle.0.removeObserver(withHandle: queryAndHandle.1)
+        if self.chatQueryAndHandle != nil {
+            chatQueryAndHandle.0.removeObserver(withHandle: chatQueryAndHandle.1)
         }
         
-        queryAndHandle = DataService.ds.reobserveClassChatMessages(limit: self.numMessages, classroom: self.classroom, completed: { (isSuccess, updatedClassroom) in
+        chatQueryAndHandle = DataService.ds.reobserveClassChatMessages(limit: self.numMessages, classroom: self.classroom, completed: { (isSuccess, updatedClassroom) in
+            
             if (!isSuccess || updatedClassroom == nil) {
                 // Rewind increment of numMessages
                 if self.numMessages > self.NUM_INCREMENT {
@@ -314,7 +354,8 @@ class ChatClassroomController: UIViewController, UIGestureRecognizerDelegate, UI
         self.pullToRefreshIndicator.center = CGPoint(x: self.view.center.x, y: self.refreshControl.center.y)
         collectionView.addSubview(self.refreshControl)
         
-        self.initMessages()
+//        self.initMessages()
+        self.initClassroomObserver()
     }
     
     // MARK: Navigation
@@ -822,7 +863,6 @@ class ChatClassroomController: UIViewController, UIGestureRecognizerDelegate, UI
         self.collectionView.addGestureRecognizer(panToKeepKeyboardRecognizer)
         
         // Scroll collection view to the bottom to most recent message upon first entering screen
-        // TODO: This will be moved away to Firebase
         UIView.animate(withDuration: 0, delay: 0, options: .curveEaseOut, animations: {
             self.view.layoutIfNeeded()
             }, completion: { (completed) in
@@ -874,11 +914,9 @@ class ChatClassroomController: UIViewController, UIGestureRecognizerDelegate, UI
         // Get poster image name and poster name
         let posterUid = message.posterUid
         let potentialPoster = classroom.members.filter({$0.uid == posterUid})
-        if potentialPoster.count != 1 {
-            log.error("[Error] Uid of poster not found in classroom")
+        if potentialPoster.count != 1 { // NOTE: This case will happen on first opening chat because profiles are not loaded yet
             return cell
         }
-        
         let poster = potentialPoster[0]
         cell.configureCell(messageObj: message, posterImageName: poster.profileImageName, posterName: poster.name, viewWidth: view.frame.width, isLastInChain: isLastInChain)
         return cell
