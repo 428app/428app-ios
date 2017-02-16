@@ -56,6 +56,7 @@ class ChatClassroomController: UIViewController, UIGestureRecognizerDelegate, UI
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+        self.animateQuestionBanner()
         DataService.ds.seeClassroomMessages(classroom: self.classroom) { (isSuccess) in }
         self.tabBarController?.tabBar.isHidden = true
         self.navigationController?.navigationBar.barTintColor = RED_UICOLOR
@@ -379,6 +380,18 @@ class ChatClassroomController: UIViewController, UIGestureRecognizerDelegate, UI
         return label
     }()
     
+    fileprivate let questionBannerBg: UIView = {
+        let view = UIView()
+        view.backgroundColor = GRAY_UICOLOR
+        return view
+    }()
+    
+    fileprivate func animateQuestionBanner() {
+        UIView.animate(withDuration: 0.5, delay: 0.5, animations: {
+            self.questionBanner.transform = CGAffineTransform(translationX: 0.0, y: 50.0)
+        })
+    }
+    
     func openDescription() {
         let modalController = ModalQuestionController()
         modalController.classroom = self.classroom
@@ -388,14 +401,14 @@ class ChatClassroomController: UIViewController, UIGestureRecognizerDelegate, UI
     }
     
     fileprivate func setupPromptView() {
+        view.addSubview(questionBannerBg)
         view.addSubview(questionBanner)
+        view.addConstraintsWithFormat("H:|[v0]|", views: questionBannerBg)
         view.addConstraintsWithFormat("H:|[v0]|", views: questionBanner)
-        if let navHeight = navigationController?.navigationBar.frame.height {
-           view.addConstraintsWithFormat("V:|-\(navHeight * 1.45)-[v0(50)]", views: questionBanner)
-        } else {
-            view.addConstraint(NSLayoutConstraint(item: questionBanner, attribute: .top, relatedBy: .equal, toItem: topLayoutGuide, attribute: .bottom, multiplier: 1.0, constant: 0.0))
-           view.addConstraintsWithFormat("V:[v0(60)]", views: questionBanner)
-        }
+        view.addConstraint(NSLayoutConstraint(item: questionBannerBg, attribute: .top, relatedBy: .equal, toItem: topLayoutGuide, attribute: .bottom, multiplier: 1.0, constant: 0.0))
+        view.addConstraint(NSLayoutConstraint(item: questionBanner, attribute: .top, relatedBy: .equal, toItem: topLayoutGuide, attribute: .bottom, multiplier: 1.0, constant: -50.0))
+        view.addConstraintsWithFormat("V:[v0(50)]", views: questionBannerBg)
+       view.addConstraintsWithFormat("V:[v0(50)]", views: questionBanner)
     }
     
     // MARK: Superlatives
