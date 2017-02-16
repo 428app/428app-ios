@@ -108,7 +108,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         DataService.ds.updateUserPushToken()
         
         if #available(iOS 10.0, *) {
-            writeToDebug(line: "Enter setup remote notif")
             let authOptions: UNAuthorizationOptions = [.alert, .badge, .sound]
             
             UNUserNotificationCenter.current().requestAuthorization(options: authOptions, completionHandler: { (granted, error) in })
@@ -136,7 +135,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func tokenRefreshNotification(_ notification: Notification) {
         
         if let refreshedToken = FIRInstanceID.instanceID().token() {
-            writeToDebug(line: refreshedToken)
             log.info("User push token: \(refreshedToken)")
             savePushToken(token: refreshedToken)
             DataService.ds.updateUserPushToken()
@@ -157,7 +155,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func application(_ application: UIApplication, didFailToRegisterForRemoteNotificationsWithError error: Error) {
         log.error("[Error] Fail to register for remote notifications with error: \(error)")
-        writeToDebug(line: "failed to update with error: \(error)")
         // Try again
         connectToFcm()
     }
