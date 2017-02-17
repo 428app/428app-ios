@@ -18,6 +18,13 @@ import FBSDKLoginKit
 // Extends DataService to house Classroom calls
 extension DataService {
     
+    func checkIfThereAreAnyClassrooms(completed: @escaping (_ haveClassrooms: Bool) -> ()) {
+        let uid = getStoredUid() == nil ? "" : getStoredUid()!
+        REF_USERS.child("\(uid)/classrooms").observeSingleEvent(of: .value, with: { snapshot in
+            completed(snapshot.exists())
+        })
+    }
+    
     // Observe for added classroom of a user, used in ClassroomsController
     func observeClassroomAdded(completed: @escaping (_ isSuccess: Bool, _ cid: String) -> ()) -> (FIRDatabaseReference, FIRDatabaseHandle) {
         let uid = getStoredUid() == nil ? "" : getStoredUid()!

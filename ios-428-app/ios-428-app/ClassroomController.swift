@@ -82,8 +82,19 @@ class ClassroomsController: UIViewController, UICollectionViewDelegate, UICollec
         
         self.activityIndicator.startAnimating()
         
+        // Check if there are any classrooms in the first place
+        DataService.ds.checkIfThereAreAnyClassrooms { (hasClassroom) in
+            if !hasClassroom {
+                // No classrooms yet, display placeholder and stop animating loader
+                self.enableEmptyPlaceholder(enable: true)
+                self.activityIndicator.stopAnimating()
+            } else {
+                self.enableEmptyPlaceholder(enable: false)
+            }
+        }
+        
         self.allClassFirebase = DataService.ds.observeClassroomAdded { (isSuccess, cid) in
- 
+            
             if !isSuccess || cid.isEmpty {
                 // No classrooms yet, display placeholder and stop animating loader
                 self.enableEmptyPlaceholder(enable: true)
