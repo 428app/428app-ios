@@ -33,6 +33,7 @@ class SuperlativeController: UIViewController, UICollectionViewDelegate, UIColle
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+        self.loadShareFirst()
         let color = classroom.superlativeType == .SHARED ? RED_UICOLOR : GREEN_UICOLOR
         self.navigationController?.navigationBar.setBackgroundImage(UIImage.init(color: color), for: .default)
         self.navigationController?.navigationBar.shadowImage = UIImage()
@@ -151,14 +152,12 @@ class SuperlativeController: UIViewController, UICollectionViewDelegate, UIColle
     // MARK: Web view delegates for Share
     
     func webViewDidFinishLoad(_ webView: UIWebView) {
-        log.info("Finish loading")
         activityIndicator.isHidden = true
         activityIndicator.stopAnimating()
         placeHolderVideo.isHidden = true
     }
     
     func webViewDidStartLoad(_ webView: UIWebView) {
-        log.info("Starting to load")
         // Padding to remove the ugly default left padding of UIWebViews
         let negativePadding = "document.body.style.margin='0';document.body.style.padding = '0'"
         didYouKnowVideo.stringByEvaluatingJavaScript(from: negativePadding)
@@ -203,9 +202,22 @@ class SuperlativeController: UIViewController, UICollectionViewDelegate, UIColle
     
     fileprivate var shareLink = ""
     
-    func shareOnFb() {
+    fileprivate func loadShareFirst() {
+        // This is loaded first upon view appearing so there would be no wait time when user clicks Share on FB
         if(SLComposeViewController.isAvailable(forServiceType: SLServiceTypeFacebook)) {
-            
+            if let socialController = SLComposeViewController(forServiceType: SLServiceTypeFacebook) {
+                socialController.add(#imageLiteral(resourceName: "logo"))
+                self.present(socialController, animated: false, completion: {
+                    socialController.dismiss(animated: false, completion: nil)
+                })
+            }
+        }
+    }
+    
+    func shareOnFb() {
+        log.info("Share")
+        if(SLComposeViewController.isAvailable(forServiceType: SLServiceTypeFacebook)) {
+            log.info("Share made available")
             if let socialController = SLComposeViewController(forServiceType: SLServiceTypeFacebook) {
                 socialController.add(#imageLiteral(resourceName: "logo"))
                 let url = URL(string: shareLink)

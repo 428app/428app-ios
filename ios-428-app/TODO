@@ -1,16 +1,18 @@
 TODO TONIGHT:
-+ Look through server code again to make sure they make sense
-+ Test negative cases (disallow notifications, etc.)
-+ Fill in app store details
-+ FB App permissions
++ Tweet on Question
+
+
+- SERVER
++ Test server for new classroom
++ Setup new classroom once every 2 days to prep for user testing
++ Link terms and privacy policy from login
+
 
 BUGS:
 
 
-
 DO LATER:
-+ Link terms and privacy policy from login
-+ Tweet on Question
++ Fill in app store details - Design screenshots (green/red background with screenshot), write description
 + Analytics
 + Database backup
 + How to update incrementally on app store
@@ -19,7 +21,6 @@ DO LATER:
 TASKS FOR YIHANG:
 + Come up with questions, put them in a .tsv file
 + Come up with did you knows, put them one by one
-
 
 
 Push notifications to test:

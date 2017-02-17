@@ -16,6 +16,7 @@ import FBSDKCoreKit
 import FBSDKLoginKit
 import FirebaseMessaging
 import FirebaseInstanceID
+import Social
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
