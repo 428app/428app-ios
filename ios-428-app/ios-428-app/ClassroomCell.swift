@@ -83,7 +83,7 @@ class ClassroomCell: BaseCollectionCell {
         containerView.addConstraintsWithFormat("H:|[v0]|", views: titleLbl)
         containerView.addConstraintsWithFormat("H:|[v0]|", views: questionNumLbl)
         
-        containerView.addConstraint(NSLayoutConstraint(item: updatedLbl, attribute: .centerY, relatedBy: .equal, toItem: titleLbl, attribute: .centerY, multiplier: 1.0, constant: 0.0))
+        containerView.addConstraint(NSLayoutConstraint(item: updatedLbl, attribute: .bottom, relatedBy: .equal, toItem: classroomImageView, attribute: .bottom, multiplier: 1.0, constant: -8.0))
         containerView.addConstraintsWithFormat("V:[v0(35)]", views: updatedLbl)
         containerView.addConstraintsWithFormat("H:[v0(80)]-8-|", views: updatedLbl)
 
