@@ -488,6 +488,7 @@
 				4064A1B01DAC381300071383 /* Resources */,
 				F88A9F202BC3599A865F8C62 /* [CP] Embed Pods Frameworks */,
 				84FF72238AF9FBEE0BCDBB17 /* [CP] Copy Pods Resources */,
+				40944BED1E57B22100B0C722 /* ShellScript */,
 			);
 			buildRules = (
 			);
@@ -571,6 +572,19 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
+		40944BED1E57B22100B0C722 /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "# Replace this with the GOOGLE_APP_ID from your GoogleService-Info.plist file\nGOOGLE_APP_ID=1:370202313506:ios:b8fdceecdd74d0fd\n\n# Replace the /Path/To/ServiceAccount.json with the path to the key you just downloaded\n\"${PODS_ROOT}\"/FirebaseCrash/upload-sym \"~\"";
+		};
 		83AC00D59BBC5F7B96D7D229 /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
