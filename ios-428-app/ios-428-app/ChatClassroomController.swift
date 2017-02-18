@@ -390,6 +390,7 @@ class ChatClassroomController: UIViewController, UIGestureRecognizerDelegate, UI
     }
     
     func handleNavMore() {
+        logAnalyticsEvent(key: kEventMoreNavClicked)
         // Bring up alert controller to view classmates, answers or superlatives
         let alertController = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
         alertController.view.tintColor = GREEN_UICOLOR
@@ -434,7 +435,7 @@ class ChatClassroomController: UIViewController, UIGestureRecognizerDelegate, UI
         label.textColor = UIColor.white
         label.textAlignment = .center
         label.numberOfLines = 1
-        let tapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(openDescription))
+        let tapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(openQuestion))
         tapGestureRecognizer.delegate = self
         label.isUserInteractionEnabled = true
         label.addGestureRecognizer(tapGestureRecognizer)
@@ -454,7 +455,8 @@ class ChatClassroomController: UIViewController, UIGestureRecognizerDelegate, UI
         })
     }
     
-    func openDescription() {
+    func openQuestion() {
+        logAnalyticsEvent(key: kEventViewQuestion)
         let modalController = ModalQuestionController()
         modalController.classroom = self.classroom
         modalController.modalPresentationStyle = .overFullScreen

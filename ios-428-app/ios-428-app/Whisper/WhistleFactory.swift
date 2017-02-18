@@ -87,7 +87,7 @@ open class WhistleFactory: UIViewController {
     whistleWindow.windowLevel = UIWindowLevelStatusBar
     UIApplication.shared.setStatusBarStyle(currentStatusBarStyle, animated: false)
   }
-
+    
   open func setupFrames() {
     whistleWindow = UIWindow()
 

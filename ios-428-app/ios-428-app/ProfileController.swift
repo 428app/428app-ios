@@ -105,11 +105,11 @@ class ProfileController: UIViewController, UIGestureRecognizerDelegate, UIScroll
     }
     
     func expandPic() {
+        logAnalyticsEvent(key: kEventViewPhotoOnProfile)
         let pictureModalController = PictureModalController()
         pictureModalController.picture = self.profileImageView.image
         pictureModalController.modalPresentationStyle = .overFullScreen
         pictureModalController.modalTransitionStyle = .crossDissolve
-        
         self.present(pictureModalController, animated: true, completion: nil)
     }
     
@@ -420,6 +420,7 @@ class ProfileController: UIViewController, UIGestureRecognizerDelegate, UIScroll
     // MARK: Close profile
     
     func closeProfile(button: UIButton) {
+        logAnalyticsEvent(key: kEventDismissProfileClicked)
         self.dismiss(animated: true, completion: nil)
     }
     
@@ -446,6 +447,7 @@ class ProfileController: UIViewController, UIGestureRecognizerDelegate, UIScroll
             interactor.cancel()
         case .ended:
             if progress > percentThreshold {
+                logAnalyticsEvent(key: kEventDismissProfileSlide)
                 dismiss(animated: true, completion: nil)
             } else {
                 UIView.animate(withDuration: 0.2, animations: {

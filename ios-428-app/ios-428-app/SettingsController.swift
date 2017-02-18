@@ -77,8 +77,6 @@ class SettingsController: UIViewController, UITableViewDelegate, UITableViewData
             
             self.settingsChosen[option] = isOn
             
-            log.info("\(self.settingsChosen)")
-            
             // Update all user settings with each change
             
             DataService.ds.updateUserSettings(dailyAlert: settingsChosen["Daily alert"]!, inboxMessages: settingsChosen["Private messages"]!, classroomMessages: settingsChosen["Classroom messages"]!, inAppNotifications: settingsChosen["In-app notifications"]!, completed: { (isSuccess) in
@@ -155,40 +153,31 @@ class SettingsController: UIViewController, UITableViewDelegate, UITableViewData
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let setting = settings[indexPath.section][indexPath.row]
-        log.info("Selected row: \(setting.text)") // TODO: Perform right logic based on the selected row
         if setting.text == "Log out" {
             self.logout()
         } else if setting.text == "428 Website" {
+            logAnalyticsEvent(key: kEventVisitWebsite)
             let controller = WebviewController()
             controller.urlString = "www.428pm.com"
             self.navigationItem.backBarButtonItem?.title = "Back to 428"
             self.navigationController?.pushViewController(controller, animated: true)
         } else if setting.text == "428 Facebook" {
+            logAnalyticsEvent(key: kEventVisitFacebook)
             let controller = WebviewController()
             controller.urlString = "https://www.facebook.com/428app"
             self.navigationItem.backBarButtonItem?.title = "Back to 428"
             self.navigationController?.pushViewController(controller, animated: true)
+        } else if setting.text == "Rate us" {
+            // TODO: Add rate link
+            logAnalyticsEvent(key: kEventRateUs)
+        } else if setting.text == "Privacy Policy" {
+            // TODO: Add privacy link
+            logAnalyticsEvent(key: kEventVisitPrivacyPolicy)
+        } else if setting.text == "Terms" {
+            // TODO: Add terms link
+            logAnalyticsEvent(key: kEventVisitTerms)
         }
         tableView.deselectRow(at: indexPath, animated: true)
-    }
-    
-    func tableView(_ tableView: UITableView, didHighlightRowAt indexPath: IndexPath) {
-        let cell = tableView.cellForRow(at: indexPath) as! SettingCell
-//        cell.contentView.backgroundColor = GREEN_UICOLOR
-//        cell.backgroundColor = GREEN_UICOLOR
-        let cellView = UIView(frame: cell.frame)
-        cellView.backgroundColor = GREEN_UICOLOR
-        cell.backgroundView = cellView
-    }
-    
-    func tableView(_ tableView: UITableView, didUnhighlightRowAt indexPath: IndexPath) {
-        let cell = tableView.cellForRow(at: indexPath) as! SettingCell
-//        cell.contentView.backgroundColor = UIColor.white
-//        cell.backgroundColor = UIColor.white
-        let cellView = UIView(frame: cell.frame)
-        cellView.backgroundColor = UIColor.white
-        cell.backgroundView = cellView
-        
     }
     
     fileprivate func logout() {

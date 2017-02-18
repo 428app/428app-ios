@@ -470,9 +470,18 @@ class ChatInboxController: UIViewController, UICollectionViewDelegateFlowLayout,
         }
     }
     
-    func openProfile() {
+    func openProfile(sender: Any) {
         if profile == nil {
             return
+        }
+        if let _ = sender as? UIButton {
+            logAnalyticsEvent(key: kEventViewProfileFromNav)
+        }
+        if let _ = sender as? UIGestureRecognizer {
+            logAnalyticsEvent(key: kEventViewProfileFromPlaceholder)
+        }
+        if let _ = sender as? Notification {
+            logAnalyticsEvent(key: kEventViewProfileFromThumbnail)
         }
         let controller = ProfileController()
         controller.transitioningDelegate = self

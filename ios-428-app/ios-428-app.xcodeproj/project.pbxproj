@@ -27,6 +27,7 @@
 		4024F2351DBB2155007819F7 /* IntroController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4024F2341DBB2155007819F7 /* IntroController.swift */; };
 		4031FB9A1DC04B490066E6B6 /* MyProfile.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4031FB991DC04B490066E6B6 /* MyProfile.swift */; };
 		4031FB9C1DC0691C0066E6B6 /* StorageService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4031FB9B1DC0691C0066E6B6 /* StorageService.swift */; };
+		4037A6231E57E8AC0079B203 /* AnalyticsConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4037A6221E57E8AC0079B203 /* AnalyticsConstants.swift */; };
 		404C22FA1DBDB86D0054FE19 /* UserDefaults.swift in Sources */ = {isa = PBXBuildFile; fileRef = 404C22F91DBDB86D0054FE19 /* UserDefaults.swift */; };
 		4064A1B61DAC381300071383 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4064A1B51DAC381300071383 /* AppDelegate.swift */; };
 		4064A1B81DAC381300071383 /* InboxController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4064A1B71DAC381300071383 /* InboxController.swift */; };
@@ -127,6 +128,7 @@
 		4024F2341DBB2155007819F7 /* IntroController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IntroController.swift; sourceTree = "<group>"; };
 		4031FB991DC04B490066E6B6 /* MyProfile.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MyProfile.swift; sourceTree = "<group>"; };
 		4031FB9B1DC0691C0066E6B6 /* StorageService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StorageService.swift; sourceTree = "<group>"; };
+		4037A6221E57E8AC0079B203 /* AnalyticsConstants.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AnalyticsConstants.swift; sourceTree = "<group>"; };
 		404C22F91DBDB86D0054FE19 /* UserDefaults.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserDefaults.swift; sourceTree = "<group>"; };
 		4064A1B21DAC381300071383 /* ios-428-app.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "ios-428-app.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		4064A1B51DAC381300071383 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -177,6 +179,7 @@
 		40785D661E0E5A1F009B66E0 /* RemoteService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RemoteService.swift; sourceTree = "<group>"; };
 		40790C861E1B659700A779A6 /* SuperlativeAlertController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SuperlativeAlertController.swift; sourceTree = "<group>"; };
 		4081B2611E1500FF00D6E690 /* Question.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Question.swift; sourceTree = "<group>"; };
+		40944BEE1E57BC1700B0C722 /* AdSupport.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AdSupport.framework; path = System/Library/Frameworks/AdSupport.framework; sourceTree = SDKROOT; };
 		409F05F11DD81E1D001B673F /* Upload.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Upload.swift; sourceTree = "<group>"; };
 		40A2C0861E13D61F00D477E1 /* WebviewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WebviewController.swift; sourceTree = "<group>"; };
 		40AB7FF71DB59C9600492788 /* SettingsController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingsController.swift; sourceTree = "<group>"; };
@@ -395,6 +398,7 @@
 				40785D661E0E5A1F009B66E0 /* RemoteService.swift */,
 				4031FB9B1DC0691C0066E6B6 /* StorageService.swift */,
 				40B90DA21E54ECFF00ABB3ED /* Debug.swift */,
+				4037A6221E57E8AC0079B203 /* AnalyticsConstants.swift */,
 			);
 			name = Services;
 			sourceTree = "<group>";
@@ -466,6 +470,7 @@
 		734284813DDF0C951C19BCCA /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				40944BEE1E57BC1700B0C722 /* AdSupport.framework */,
 				4020CE1A1DBCA84C00461181 /* Bolts.framework */,
 				4020CE1B1DBCA84C00461181 /* FBSDKCoreKit.framework */,
 				4020CE1C1DBCA84C00461181 /* FBSDKLoginKit.framework */,
@@ -574,16 +579,16 @@
 /* Begin PBXShellScriptBuildPhase section */
 		40944BED1E57B22100B0C722 /* ShellScript */ = {
 			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
+			buildActionMask = 8;
 			files = (
 			);
 			inputPaths = (
 			);
 			outputPaths = (
 			);
-			runOnlyForDeploymentPostprocessing = 0;
+			runOnlyForDeploymentPostprocessing = 1;
 			shellPath = /bin/sh;
-			shellScript = "# Replace this with the GOOGLE_APP_ID from your GoogleService-Info.plist file\nGOOGLE_APP_ID=1:370202313506:ios:b8fdceecdd74d0fd\n\n# Replace the /Path/To/ServiceAccount.json with the path to the key you just downloaded\n\"${PODS_ROOT}\"/FirebaseCrash/upload-sym \"~\"";
+			shellScript = "# Replace this with the GOOGLE_APP_ID from your GoogleService-Info.plist file\nGOOGLE_APP_ID=1:370202313506:ios:b8fdceecdd74d0fd\n\n# Replace the /Path/To/ServiceAccount.json with the path to the key you just downloaded\n\"${PODS_ROOT}\"/FirebaseCrash/upload-sym \"./app-abdf9-firebase-crashreporting-wrsq5-b6ea68c519.json\"";
 		};
 		83AC00D59BBC5F7B96D7D229 /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -688,6 +693,7 @@
 				4064A1B61DAC381300071383 /* AppDelegate.swift in Sources */,
 				40ADEED91DDD12D000CE529A /* Config.swift in Sources */,
 				40785D671E0E5A1F009B66E0 /* RemoteService.swift in Sources */,
+				4037A6231E57E8AC0079B203 /* AnalyticsConstants.swift in Sources */,
 				404C22FA1DBDB86D0054FE19 /* UserDefaults.swift in Sources */,
 				4072AD9C1E164A880067046D /* Superlative.swift in Sources */,
 				40790C871E1B659700A779A6 /* SuperlativeAlertController.swift in Sources */,

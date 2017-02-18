@@ -68,6 +68,7 @@ class HorizontalScrollCell: UICollectionViewCell, UICollectionViewDataSource, UI
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         let iconImageName = iconImageNames[indexPath.row]
+        logAnalyticsEvent(key: kEventClickOnClassroomIcon)
         // Send notification to ProfileController to launch modal about this icon image
         NotificationCenter.default.post(name: NOTIF_PROFILEICONTAPPED, object: nil, userInfo: ["iconImageName": iconImageName])
     }

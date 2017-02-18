@@ -147,11 +147,11 @@ class MeController: UIViewController, UIGestureRecognizerDelegate, UIScrollViewD
     }
     
     func expandPic() {
+        logAnalyticsEvent(key: kEventViewPhotoOnMe)
         let pictureModalController = PictureModalController()
         pictureModalController.picture = self.profileImageView.image
         pictureModalController.modalPresentationStyle = .overFullScreen
         pictureModalController.modalTransitionStyle = .crossDissolve
-        
         self.present(pictureModalController, animated: true, completion: nil)
     }
     

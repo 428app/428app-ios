@@ -32,6 +32,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         FIRApp.configure()
         FIRDatabase.database().persistenceEnabled = true
         
+//        fatalError()
+        
         // Reupload previous photo that might not have been uploaded due to nLogetwork issues or user quitting the app after changing profile photo
         reuploadPhoto()
  
