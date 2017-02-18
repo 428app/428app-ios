@@ -21,9 +21,25 @@ class MeController: UIViewController, UIGestureRecognizerDelegate, UIScrollViewD
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+        if isFirstTimeUser {
+            isFirstTimeUser = false
+            showNewUserAlert()
+        }
         tabBarController?.tabBar.isHidden = false
         self.loadData()
         self.registerObservers()
+    }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        self.unregisterObservers()
+    }
+    
+    fileprivate func showNewUserAlert() {
+        let alertController = NewUserAlertController()
+        alertController.modalPresentationStyle = .overFullScreen
+        alertController.modalTransitionStyle = .crossDissolve
+        self.present(alertController, animated: true, completion: nil)
     }
     
     func openProfileIconModal(notif: Notification) {
@@ -41,11 +57,6 @@ class MeController: UIViewController, UIGestureRecognizerDelegate, UIScrollViewD
     
     func dismissProfileIconModal() {
         self.dismiss(animated: true, completion: nil)
-    }
-    
-    override func viewWillDisappear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-        self.unregisterObservers()
     }
     
     func setProfilePic() {

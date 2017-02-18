@@ -17,6 +17,7 @@ class IntroController: UIViewController, UITextFieldDelegate, UIPickerViewDelega
         let tapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(keepKeyboard))
         self.view.addGestureRecognizer(tapGestureRecognizer)
         self.setupViews()
+        isFirstTimeUser = true // If you're in IntroController, means you're a first time user
     }
     
     // MARK: Views

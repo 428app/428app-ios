@@ -28,6 +28,8 @@
 		4031FB9A1DC04B490066E6B6 /* MyProfile.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4031FB991DC04B490066E6B6 /* MyProfile.swift */; };
 		4031FB9C1DC0691C0066E6B6 /* StorageService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4031FB9B1DC0691C0066E6B6 /* StorageService.swift */; };
 		4037A6231E57E8AC0079B203 /* AnalyticsConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4037A6221E57E8AC0079B203 /* AnalyticsConstants.swift */; };
+		4037A6251E5808540079B203 /* NewUserAlertController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4037A6241E5808540079B203 /* NewUserAlertController.swift */; };
+		4037A6261E580B7B0079B203 /* AdSupport.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 40944BEE1E57BC1700B0C722 /* AdSupport.framework */; };
 		404C22FA1DBDB86D0054FE19 /* UserDefaults.swift in Sources */ = {isa = PBXBuildFile; fileRef = 404C22F91DBDB86D0054FE19 /* UserDefaults.swift */; };
 		4064A1B61DAC381300071383 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4064A1B51DAC381300071383 /* AppDelegate.swift */; };
 		4064A1B81DAC381300071383 /* InboxController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4064A1B71DAC381300071383 /* InboxController.swift */; };
@@ -129,6 +131,7 @@
 		4031FB991DC04B490066E6B6 /* MyProfile.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MyProfile.swift; sourceTree = "<group>"; };
 		4031FB9B1DC0691C0066E6B6 /* StorageService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StorageService.swift; sourceTree = "<group>"; };
 		4037A6221E57E8AC0079B203 /* AnalyticsConstants.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AnalyticsConstants.swift; sourceTree = "<group>"; };
+		4037A6241E5808540079B203 /* NewUserAlertController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NewUserAlertController.swift; sourceTree = "<group>"; };
 		404C22F91DBDB86D0054FE19 /* UserDefaults.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserDefaults.swift; sourceTree = "<group>"; };
 		4064A1B21DAC381300071383 /* ios-428-app.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "ios-428-app.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		4064A1B51DAC381300071383 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -211,6 +214,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				4037A6261E580B7B0079B203 /* AdSupport.framework in Frameworks */,
 				FED3D2F8E9831031BBFFDBEB /* Pods_ios_428_app.framework in Frameworks */,
 				4020CE1F1DBCA84C00461181 /* FBSDKCoreKit.framework in Frameworks */,
 				4020CE211DBCA84C00461181 /* FBSDKShareKit.framework in Frameworks */,
@@ -425,6 +429,7 @@
 			isa = PBXGroup;
 			children = (
 				40785D5E1E093AAF009B66E0 /* MeController.swift */,
+				4037A6241E5808540079B203 /* NewUserAlertController.swift */,
 				40AB7FFF1DB5FDB100492788 /* EditProfileController.swift */,
 				40AB80041DB7094700492788 /* EditProfessionalController.swift */,
 				40AB80061DB7095200492788 /* EditTaglineController.swift */,
@@ -658,6 +663,7 @@
 				40B90DA31E54ECFF00ABB3ED /* Debug.swift in Sources */,
 				4000C37A1DD81227009C10E5 /* Download.swift in Sources */,
 				40785D5B1E04EDCE009B66E0 /* HorizontalScrollCell.swift in Sources */,
+				4037A6251E5808540079B203 /* NewUserAlertController.swift in Sources */,
 				40AB7FF81DB59C9600492788 /* SettingsController.swift in Sources */,
 				40ADEEE01DDD12D000CE529A /* WhisperView.swift in Sources */,
 				40AB7FFA1DB5B06A00492788 /* SettingCell.swift in Sources */,
