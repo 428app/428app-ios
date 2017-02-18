@@ -17,7 +17,7 @@ class InboxChatCell: BaseCollectionCell {
     fileprivate let TEXT_VIEW_FONT = UIFont.systemFont(ofSize: 16.0)
     open var request: Request?
     
-    fileprivate let messageTextView: UITextView = {
+    fileprivate lazy var messageTextView: UITextView = {
         var textView = UITextView()
         textView.backgroundColor = UIColor.clear
         textView.showsHorizontalScrollIndicator = false
@@ -28,6 +28,7 @@ class InboxChatCell: BaseCollectionCell {
         textView.dataDetectorTypes = .all
         textView.isUserInteractionEnabled = true
         textView.isScrollEnabled = false
+        textView.font = self.TEXT_VIEW_FONT
         return textView
     }()
 
@@ -74,6 +75,9 @@ class InboxChatCell: BaseCollectionCell {
         textBubbleView.addSubview(bubbleImageView)
         textBubbleView.addConstraintsWithFormat("H:|[v0]|", views: bubbleImageView)
         textBubbleView.addConstraintsWithFormat("V:|[v0]|", views: bubbleImageView)
+        
+        let tap = UITapGestureRecognizer(target: self, action: #selector(notifyControllerToExpand))
+        messageTextView.addGestureRecognizer(tap)
     }
     
     fileprivate func populateCellWithImage(image: UIImage?) {
