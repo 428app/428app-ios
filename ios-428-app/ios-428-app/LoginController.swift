@@ -208,7 +208,7 @@ class LoginController: UIViewController, UIScrollViewDelegate, CLLocationManager
     
     // MARK: Frontend
     
-    fileprivate let warningLabel: UILabel = {
+    fileprivate lazy var warningLabel: UILabel = {
         let label = UILabel()
         label.font = FONT_MEDIUM_SMALL
         label.textColor = UIColor.darkGray
@@ -225,9 +225,18 @@ class LoginController: UIViewController, UIScrollViewDelegate, CLLocationManager
         str1.append(str3)
         str1.append(str4)
         label.attributedText = str1
-        
+        label.isUserInteractionEnabled = true
+        let openTermsTap = UITapGestureRecognizer(target: self, action: #selector(openTerms))
+        label.addGestureRecognizer(openTermsTap)
         return label
     }()
+    
+    func openTerms() {
+        // TODO: Change this open terms to 428 privacy policy
+        if let url = URL(string: "https://www.google.com") {
+            UIApplication.shared.openURL(url)
+        }
+    }
     
     fileprivate let fbDisclaimerIcon: UIImageView = {
         let imageView = UIImageView()
