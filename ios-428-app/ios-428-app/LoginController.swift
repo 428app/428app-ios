@@ -180,14 +180,14 @@ class LoginController: UIViewController, UIScrollViewDelegate, CLLocationManager
             
             // Create/Update Firebase user with details
             DataService.ds.loginFirebaseUser(fbid: fbid, name: displayName, birthday: birthdayString, pictureUrl: pictureUrl, timezone: timezone, completed: { (isSuccess, isFirstTimeUser) in
-                log.info("Logged in user to our own Firebase")
-                
                 hideLoader()
                 if !isSuccess {
                     log.error("[Error] Login to Firebase failed")
                     showErrorAlert(vc: self, title: "Could not sign in", message: "There was a problem signing in. We apologize. Please try again later.")
                     return
                 }
+                
+                log.info("Logged in user to our own Firebase")
                 
                 DataService.ds.updateUserPushToken() // Update push token again here because uid is now saved
                 

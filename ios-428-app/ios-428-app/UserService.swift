@@ -51,10 +51,13 @@ extension DataService {
     // Called in LoginController to create new user or log existing user in
     // Note: Only mostly updates Facebook details, other details such as pushToken and location are being updated by other calls
     func loginFirebaseUser(fbid: String, name: String, birthday: String, pictureUrl: String, timezone: Double, completed: @escaping (_ isSuccess: Bool, _ isFirstTimeUser: Bool) -> ()) {
-        guard let uid = getStoredUid() else {
+        let uid_ = getStoredUid()
+        if (uid_ == nil) {
+            // This is an error, before calling loginFirebase should already have uid saved
             completed(false, true)
             return
         }
+        let userUid = uid_!
         
         // Update name locally
         saveName(name: name)
@@ -64,12 +67,12 @@ extension DataService {
         // Only update profile photo if this user does not have a profile photo
         var user: [String: Any] = ["fbid": fbid, "name": name, "birthday": birthday, "timezone": timezone, "lastSeen": timeNow]
         
-        self.REF_USERS.child(uid).observeSingleEvent(of: .value, with: { snapshot in
+        self.REF_USERS.child(userUid).observeSingleEvent(of: .value, with: { snapshot in
             
             if snapshot.exists() {
-                // Check if user has already filled in at least org, school and discipline, if not label first time user
+                // Check if user has already filled in discipline, if not label first time user
                 var isFirstTimeUser = true
-                if let userDict = snapshot.value as? [String: Any], let _ = userDict["organization"] as? String, let _ = userDict["school"] as? String, let _ = userDict["discipline"] as? String {
+                if let userDict = snapshot.value as? [String: Any], let _ = userDict["discipline"] as? String {
                     isFirstTimeUser = false
                 }
                 
@@ -84,7 +87,7 @@ extension DataService {
                 self.setIsLoggedIn(isLoggedIn: true, completed: { (loginSuccess) in })
                 
                 // Update user info
-                self.REF_USERS.child(uid).updateChildValues(user, withCompletionBlock: { (err, ref) in
+                self.REF_USERS.child(userUid).updateChildValues(user, withCompletionBlock: { (err, ref) in
                     completed(err == nil, isFirstTimeUser)
                     return
                 })
@@ -95,14 +98,13 @@ extension DataService {
                 user["profilePhoto"] = pictureUrl
                 let userSettings = ["dailyAlert": true, "inboxMessages": true, "classroomMessages": true, "inAppNotifications": true, "isLoggedIn": true]
                 
-                self.REF_USERS.child(uid).updateChildValues(user, withCompletionBlock: { (err, ref) in
-                    
+                self.REF_USERS.child(userUid).updateChildValues(user, withCompletionBlock: { (err, ref) in
                     completed(err == nil, true)
                     return
                 })
                 
                 // Updating user settings does not have callback because it is less important than user info
-                self.REF_USERSETTINGS.child(uid).updateChildValues(userSettings, withCompletionBlock: { (err, ref) in
+                self.REF_USERSETTINGS.child(userUid).updateChildValues(userSettings, withCompletionBlock: { (err, ref) in
                     if err != nil {
                         log.error("[Error] Error updating settings during login")
                     }
