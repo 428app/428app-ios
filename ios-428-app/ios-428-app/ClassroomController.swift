@@ -117,7 +117,7 @@ class ClassroomsController: UIViewController, UICollectionViewDelegate, UICollec
                 self.classrooms = self.classrooms.filter{$0.cid != classroom.cid}  // If class already added, then remove it first
                 self.classrooms.append(classroom)
                 self.classrooms = self.classrooms.sorted{$0.timeReplied > $1.timeReplied}
-                self.collectionView.reloadData()
+                self.collectionView.reloadDataAnimatedForSingleSection()
             })
         }
     }
@@ -248,6 +248,11 @@ class ClassroomsController: UIViewController, UICollectionViewDelegate, UICollec
     }
     
     // MARK: Collection view of classrooms
+    
+    func numberOfSections(in collectionView: UICollectionView) -> Int {
+        // NOTE: This is crucial, there must only be 1 section for the collection view's reload data to animate
+        return 1
+    }
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return classrooms.count

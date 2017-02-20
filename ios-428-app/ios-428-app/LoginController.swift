@@ -233,7 +233,7 @@ class LoginController: UIViewController, UIScrollViewDelegate, CLLocationManager
     
     func openTerms() {
         // TODO: Change this open terms to 428 privacy policy
-        if let url = URL(string: "https://www.google.com") {
+        if let url = URL(string: "https://www.428pm.com/?open=terms-and-conditions") {
             UIApplication.shared.openURL(url)
         }
     }

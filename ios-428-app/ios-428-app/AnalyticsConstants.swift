@@ -34,7 +34,6 @@ let kEventVisitWebsite = "visit_website"
 let kEventVisitFacebook = "visit_facebook"
 let kEventRateUs = "rate_us"
 let kEventVisitPrivacyPolicy = "visit_privacy_policy"
-let kEventVisitTerms = "visit_terms"
 
 func logAnalyticsEvent(key: String) { // We're not passing over any params, just logging the event happening
     FIRAnalytics.logEvent(withName: key, parameters: nil)

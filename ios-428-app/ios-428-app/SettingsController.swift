@@ -122,7 +122,7 @@ class SettingsController: UIViewController, UITableViewDelegate, UITableViewData
     fileprivate var settings: [[Setting]] = [
         [Setting(text: "Daily alert", type: .toggle, isOn: true),  Setting(text: "Private messages", type: .toggle, isOn: true), Setting(text: "Classroom messages", type: .toggle, isOn: true), Setting(text: "In-app notifications", type: .toggle, isLastCell: true, isOn: true)],
         [Setting(text: "428 Website", type: .link), Setting(text: "428 Facebook", type: .link), Setting(text: "Rate us", type: .link, isLastCell: true)],
-        [Setting(text: "Privacy Policy", type: .link), Setting(text: "Terms", type: .link, isLastCell: true)],
+        [Setting(text: "Privacy Policy", type: .link, isLastCell: true)],
         [Setting(text: "Log out", type: .center, isLastCell: true)],
         [Setting(text: "Version 1.0.0", type: .nobg, isLastCell: true)]]
     
@@ -158,7 +158,7 @@ class SettingsController: UIViewController, UITableViewDelegate, UITableViewData
         } else if setting.text == "428 Website" {
             logAnalyticsEvent(key: kEventVisitWebsite)
             let controller = WebviewController()
-            controller.urlString = "www.428pm.com"
+            controller.urlString = "https://www.428pm.com"
             self.navigationItem.backBarButtonItem?.title = "Back to 428"
             self.navigationController?.pushViewController(controller, animated: true)
         } else if setting.text == "428 Facebook" {
@@ -170,12 +170,14 @@ class SettingsController: UIViewController, UITableViewDelegate, UITableViewData
         } else if setting.text == "Rate us" {
             // TODO: Add rate link
             logAnalyticsEvent(key: kEventRateUs)
+            
         } else if setting.text == "Privacy Policy" {
             // TODO: Add privacy link
             logAnalyticsEvent(key: kEventVisitPrivacyPolicy)
-        } else if setting.text == "Terms" {
-            // TODO: Add terms link
-            logAnalyticsEvent(key: kEventVisitTerms)
+            let controller = WebviewController()
+            controller.urlString = "https://www.428pm.com/?open=terms-and-conditions"
+            self.navigationItem.backBarButtonItem?.title = "Back to 428"
+            self.navigationController?.pushViewController(controller, animated: true)
         }
         tableView.deselectRow(at: indexPath, animated: true)
     }

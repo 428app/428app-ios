@@ -9,6 +9,17 @@
 import Foundation
 import UIKit
 
+extension UICollectionView {
+    func reloadDataAnimatedForSingleSection() {
+        // WARNING: This will only work if your collection view has one section
+        let range = NSMakeRange(0, self.numberOfSections)
+        let sections = NSIndexSet(indexesIn: range)
+//        self.reloadSections(sections as IndexSet)
+        
+        self.reloadSections(sections as IndexSet)
+    }
+}
+
 extension UIView {
     func addConstraintsWithFormat(_ format: String, views: UIView...) {
         _ = _addAndGetConstraintsWithFormat(format, views: views)

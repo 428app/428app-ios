@@ -104,7 +104,7 @@ class InboxController: UICollectionViewController, UICollectionViewDelegateFlowL
                     self.latestMessages.sort(by: { (m1, m2) -> Bool in
                         return m1.date.compare(m2.date) == .orderedDescending
                     })
-                    self.collectionView?.reloadData()
+                    self.collectionView?.reloadDataAnimatedForSingleSection()
                 }))
             }
         }
@@ -170,6 +170,11 @@ class InboxController: UICollectionViewController, UICollectionViewDelegateFlowL
     }
     
     // MARK: Collection view 
+    
+    override func numberOfSections(in collectionView: UICollectionView) -> Int {
+        // NOTE: This is crucial, there must only be 1 section for the collection view's reload data to animate
+        return 1
+    }
     
     override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return self.latestMessages.count

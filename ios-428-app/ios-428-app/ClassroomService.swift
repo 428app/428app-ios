@@ -258,6 +258,9 @@ extension DataService {
             // NOTE: We do not return here, but also note that there are no more completed calls below
         }
         
+        // Add to own classroom's time replied first (do not add to own hasUpdates)
+        REF_USERS.child("\(posterUid)/classrooms/\(cid)/timeReplied").setValue(timestamp)
+        
         // Add to other classmates' hasUpdates
         let classmateUids = classroom.members.map { (profile) -> String in return profile.uid }.filter{$0 != posterUid}
         for classmateUid in classmateUids {
