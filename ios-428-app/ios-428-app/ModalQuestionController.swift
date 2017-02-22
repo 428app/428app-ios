@@ -38,7 +38,7 @@ class ModalQuestionController: UIViewController {
        let imageView = UIImageView(frame: frame)
         imageView.contentMode = .scaleAspectFill
         let maskLayer = CAShapeLayer()
-        let path = UIBezierPath(roundedRect: imageView.bounds, byRoundingCorners: [.topLeft, .topRight], cornerRadii: CGSize(width: self.CORNER_RADIUS, height: self.CORNER_RADIUS)).cgPath
+        let path = UIBezierPath(roundedRect: imageView.bounds, byRoundingCorners: [.topLeft, .topRight], cornerRadii: CGSize(width: self.CORNER_RADIUS - 2, height: self.CORNER_RADIUS - 2)).cgPath
         maskLayer.path = path
         imageView.layer.mask = maskLayer
         return imageView

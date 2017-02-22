@@ -8,6 +8,7 @@
 
 import Foundation
 import UIKit
+import Social
 
 class AnswersController: UITableViewController {
     
@@ -35,6 +36,7 @@ class AnswersController: UITableViewController {
         self.navigationController?.navigationBar.setBackgroundImage(UIImage.init(color: GREEN_UICOLOR), for: .default)
         self.navigationController?.navigationBar.shadowImage = UIImage()
         self.tabBarController?.tabBar.isHidden = true
+        NotificationCenter.default.addObserver(self, selector: #selector(shareOnFB), name: NOTIF_SHAREANSWER, object: nil)
     }
     
     override func viewWillDisappear(_ animated: Bool) {
@@ -42,6 +44,7 @@ class AnswersController: UITableViewController {
         self.navigationController?.navigationBar.setBackgroundImage(nil, for: .default)
         self.navigationController?.navigationBar.shadowImage = nil
         self.tabBarController?.tabBar.isHidden = false
+        NotificationCenter.default.removeObserver(self, name: NOTIF_SHAREANSWER, object: nil)
     }
     
     fileprivate func setupViews() {
@@ -87,6 +90,25 @@ class AnswersController: UITableViewController {
         }
     }
     
+    // MARK: Share
+    
+    func shareOnFB(notif: Notification) {
+        log.info("shared received")
+        guard let userInfo = notif.userInfo as? [String: Any], let shareLink = userInfo["shareLink"] as? String else {
+            return
+        }
+        log.info("pass")
+        if(SLComposeViewController.isAvailable(forServiceType: SLServiceTypeFacebook)) {
+            log.info("about to share")
+            if let socialController = SLComposeViewController(forServiceType: SLServiceTypeFacebook) {
+                log.info("shared!")
+                socialController.add(#imageLiteral(resourceName: "logo"))
+                let url = URL(string: shareLink)
+                socialController.add(url)
+                self.present(socialController, animated: true, completion: {})
+            }
+        }
+    }
 }
 
 
@@ -145,6 +167,25 @@ class VideoAnswerCell: BaseTableViewCell, UIWebViewDelegate {
         return activityIndicatorView
     }()
     
+    // MARK: Share
+    
+    fileprivate lazy var fbButton: UIButton = {
+        let btn = UIButton()
+        btn.setTitleColor(UIColor.white, for: .normal)
+        btn.setBackgroundColor(color: FB_BLUE_UICOLOR, forState: .normal)
+        btn.setBackgroundColor(color: UIColor(red: 50/255.0, green: 75/255.0, blue: 128/255.0, alpha: 1.0), forState: .highlighted) // Darker shade of blue
+        btn.titleLabel?.font = FONT_HEAVY_LARGE
+        btn.setTitle("Share on Facebook", for: .normal)
+        btn.addTarget(self, action: #selector(shareOnFb), for: .touchUpInside)
+        btn.layer.cornerRadius = 5.0
+        btn.clipsToBounds = true
+        return btn
+    }()
+    
+    func shareOnFb() {
+        NotificationCenter.default.post(name: NOTIF_SHAREANSWER, object: nil, userInfo: ["shareLink": question.answer])
+    }
+    
     // MARK: Web view delegates
     
     func webViewDidFinishLoad(_ webView: UIWebView) {
@@ -185,12 +226,14 @@ class VideoAnswerCell: BaseTableViewCell, UIWebViewDelegate {
         containerView.addSubview(questionText)
         containerView.addSubview(answerLbl)
         containerView.addSubview(answerVideo)
+        containerView.addSubview(fbButton)
         
-        containerView.addConstraintsWithFormat("V:|-8-[v0(20)]-8-[v1]-8-[v2(20)]-8-[v3(250)]-8-|", views: questionLbl, questionText,  answerLbl, answerVideo)
+        containerView.addConstraintsWithFormat("V:|-8-[v0(20)]-8-[v1]-8-[v2(20)]-8-[v3(250)]-8-[v4(40)]-8-|", views: questionLbl, questionText,  answerLbl, answerVideo, fbButton)
         containerView.addConstraintsWithFormat("H:|-8-[v0]-8-|", views: questionLbl)
         containerView.addConstraintsWithFormat("H:|-8-[v0]-8-|", views: questionText)
         containerView.addConstraintsWithFormat("H:|-8-[v0]-8-|", views: answerLbl)
         containerView.addConstraintsWithFormat("H:|-8-[v0]-8-|", views: answerVideo)
+        containerView.addConstraintsWithFormat("H:|-8-[v0]-8-|", views: fbButton)
         
         answerVideo.addSubview(placeHolderVideo)
         answerVideo.addConstraintsWithFormat("H:|[v0]|", views: placeHolderVideo)

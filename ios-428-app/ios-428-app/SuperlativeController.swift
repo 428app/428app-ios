@@ -33,7 +33,6 @@ class SuperlativeController: UIViewController, UICollectionViewDelegate, UIColle
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        self.loadShareFirst()
         let color = classroom.superlativeType == .SHARED ? RED_UICOLOR : GREEN_UICOLOR
         self.navigationController?.navigationBar.setBackgroundImage(UIImage.init(color: color), for: .default)
         self.navigationController?.navigationBar.shadowImage = UIImage()
@@ -202,25 +201,11 @@ class SuperlativeController: UIViewController, UICollectionViewDelegate, UIColle
     
     fileprivate var shareLink = ""
     
-    fileprivate func loadShareFirst() {
-        // This is loaded first upon view appearing so there would be no wait time when user clicks Share on FB
-        if(SLComposeViewController.isAvailable(forServiceType: SLServiceTypeFacebook)) {
-            if let socialController = SLComposeViewController(forServiceType: SLServiceTypeFacebook) {
-                socialController.add(#imageLiteral(resourceName: "logo"))
-                self.present(socialController, animated: false, completion: {
-                    socialController.dismiss(animated: false, completion: nil)
-                })
-            }
-        }
-    }
-    
     func shareOnFb() {
-        log.info("Share")
         if(SLComposeViewController.isAvailable(forServiceType: SLServiceTypeFacebook)) {
-            log.info("Share made available")
             if let socialController = SLComposeViewController(forServiceType: SLServiceTypeFacebook) {
-                socialController.add(#imageLiteral(resourceName: "logo"))
                 let url = URL(string: shareLink)
+                // Just share the video, do not share anything 428 related, and hope people type 428 in the post
                 socialController.add(url)
                 self.present(socialController, animated: true, completion: {})
                 socialController.completionHandler = { (result:SLComposeViewControllerResult) in
@@ -398,17 +383,16 @@ class SuperlativeController: UIViewController, UICollectionViewDelegate, UIColle
         }
         
         // Load did you know
-        DataService.ds.getDidYouKnow(discipline: classroom.title, did: classroom.didYouKnowId) { (didSuccess, videoLink_, shareLink_) in
+        DataService.ds.getDidYouKnow(discipline: classroom.title, did: classroom.didYouKnowId) { (didSuccess, videoLink_) in
             if !didSuccess {
                 showErrorAlert(vc: self, title: "Error", message: "There's an error loading the video. Please try again later.")
                 return
             }
-            let videoLink = videoLink_.trim() + "?&playsinline=1"
+            self.shareLink = videoLink_.trim() + "?&playsinline=1"
             self.didYouKnowVideo.stopLoading()
             let videoWidth = UIScreen.main.bounds.width - 8.0 * 4 // Double margin from outside cell and within cell
             let videoHeight = 250.0 // This matches the constraints defined above
-            self.didYouKnowVideo.loadHTMLString("<iframe width=\"\(videoWidth)\" height=\"\(videoHeight)\" src=\"\(videoLink)\" frameborder=\"0\" allowfullscreen></iframe>", baseURL: nil)
-            self.shareLink = shareLink_
+            self.didYouKnowVideo.loadHTMLString("<iframe width=\"\(videoWidth)\" height=\"\(videoHeight)\" src=\"\(self.shareLink)\" frameborder=\"0\" allowfullscreen></iframe>", baseURL: nil)
         }
     }
 

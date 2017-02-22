@@ -218,12 +218,8 @@ class LoginController: UIViewController, UIScrollViewDelegate, CLLocationManager
         label.numberOfLines = 0
         paragraphStyle.alignment = .center
         let str1 = NSMutableAttributedString(string: "By continuing, you agree to our ", attributes: [NSParagraphStyleAttributeName: paragraphStyle])
-        let str2 = NSMutableAttributedString(string: "Terms of Service", attributes: [NSFontAttributeName: FONT_HEAVY_SMALL])
-        let str3 = NSMutableAttributedString(string: " and ")
-        let str4 = NSMutableAttributedString(string: "Privacy Policy", attributes: [NSFontAttributeName: FONT_HEAVY_SMALL])
+        let str2 = NSMutableAttributedString(string: "Privacy Policy.", attributes: [NSFontAttributeName: FONT_HEAVY_SMALL])
         str1.append(str2)
-        str1.append(str3)
-        str1.append(str4)
         label.attributedText = str1
         label.isUserInteractionEnabled = true
         let openTermsTap = UITapGestureRecognizer(target: self, action: #selector(openTerms))
@@ -232,7 +228,6 @@ class LoginController: UIViewController, UIScrollViewDelegate, CLLocationManager
     }()
     
     func openTerms() {
-        // TODO: Change this open terms to 428 privacy policy
         if let url = URL(string: "https://www.428pm.com/?open=terms-and-conditions") {
             UIApplication.shared.openURL(url)
         }
@@ -349,7 +344,7 @@ class LoginController: UIViewController, UIScrollViewDelegate, CLLocationManager
         view.addConstraint(NSLayoutConstraint(item: disclaimerContainer, attribute: .centerX, relatedBy: .equal, toItem: view, attribute: .centerX, multiplier: 1.0, constant: 0.0))
         
         view.addConstraint(NSLayoutConstraint(item: scrollView, attribute: .top, relatedBy: .equal, toItem: topLayoutGuide, attribute: .bottom, multiplier: 1.0, constant: 8.0))
-        view.addConstraintsWithFormat("V:[v0][v1(30)]-2-[v2(45)]-8-[v3(45)]-15-[v4]-15-|", views: scrollView, pageControl, warningLabel, loginButton, disclaimerContainer)
+        view.addConstraintsWithFormat("V:[v0][v1(30)]-2-[v2(30)]-8-[v3(45)]-15-[v4]-15-|", views: scrollView, pageControl, warningLabel, loginButton, disclaimerContainer)
         view.addConstraintsWithFormat("H:|-20-[v0]-20-|", views: warningLabel)
         view.addConstraintsWithFormat("H:|-20-[v0]-20-|", views: loginButton)
     }

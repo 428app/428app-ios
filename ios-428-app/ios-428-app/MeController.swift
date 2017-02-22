@@ -9,6 +9,7 @@
 import Foundation
 import UIKit
 import Firebase
+import Social
 
 class MeController: UIViewController, UIGestureRecognizerDelegate, UIScrollViewDelegate, UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
     
@@ -17,6 +18,7 @@ class MeController: UIViewController, UIGestureRecognizerDelegate, UIScrollViewD
         self.view.backgroundColor = UIColor.white
         self.navigationItem.title = "Me"
         self.setupViews()
+        self.loadShareFirst()
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -33,6 +35,19 @@ class MeController: UIViewController, UIGestureRecognizerDelegate, UIScrollViewD
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillAppear(animated)
         self.unregisterObservers()
+    }
+    
+    // This is loaded first upon view appearing so there would be no wait time when user clicks Share on FB on other parts of the app
+    fileprivate func loadShareFirst() {
+        if(SLComposeViewController.isAvailable(forServiceType: SLServiceTypeFacebook)) {
+            if let socialController = SLComposeViewController(forServiceType: SLServiceTypeFacebook) {
+                socialController.add(#imageLiteral(resourceName: "logo"))
+                self.present(socialController, animated: false, completion: {
+                    // Dismiss immediately after presented
+                    socialController.dismiss(animated: false, completion: nil)
+                })
+            }
+        }
     }
     
     fileprivate func showNewUserAlert() {
