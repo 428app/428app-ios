@@ -144,7 +144,7 @@ class EditProfessionalController: UIViewController, UITextFieldDelegate, UIPicke
         textfield.leftView = paddingView
         textfield.leftViewMode = .always
         textfield.tintColor = GREEN_UICOLOR
-        let editImageView = UIImageView(image: #imageLiteral(resourceName: "edit"))
+        let editImageView = UIImageView(image: #imageLiteral(resourceName: "edit-3x"))
         editImageView.frame = CGRect(x: 0, y: 0, width: editImageView.image!.size.width + 20.0, height: editImageView.image!.size.height)
         editImageView.contentMode = .center
         textfield.rightView = editImageView

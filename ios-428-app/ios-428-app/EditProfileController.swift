@@ -242,8 +242,8 @@ class EditProfileController: UIViewController, UIScrollViewDelegate, UIGestureRe
     
     fileprivate func editDetailTemplateButton(title: String) -> UIButton {
         let button = UIButton()
-        button.setImage(#imageLiteral(resourceName: "edit"), for: .normal)
-        button.setImage(#imageLiteral(resourceName: "edit").maskWithColor(color: UIColor.white), for: .highlighted)
+        button.setImage(#imageLiteral(resourceName: "edit-3x"), for: .normal)
+        button.setImage(#imageLiteral(resourceName: "edit-3x").maskWithColor(color: UIColor.white), for: .highlighted)
         button.setTitle(title, for: .normal)
         button.setTitleColor(GREEN_UICOLOR, for: .normal)
         button.setTitleColor(UIColor.white, for: .highlighted)

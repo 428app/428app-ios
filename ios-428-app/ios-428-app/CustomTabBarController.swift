@@ -23,22 +23,21 @@ class CustomTabBarController: UITabBarController {
         let meController = MeController()
         let meNavController = CustomNavigationController(rootViewController: meController)
         meNavController.tabBarItem.title = "Me"
-        meNavController.tabBarItem.image = #imageLiteral(resourceName: "me-U")
-        meNavController.tabBarItem.selectedImage = #imageLiteral(resourceName: "me-F")
+        meNavController.tabBarItem.image = #imageLiteral(resourceName: "me-U-2x")
+        meNavController.tabBarItem.selectedImage = #imageLiteral(resourceName: "me-F-2x")
         
         let classroomsController = ClassroomsController()
         let classroomsNavController = CustomNavigationController(rootViewController: classroomsController)
         classroomsNavController.tabBarItem.title = "Classrooms"
-        classroomsNavController.tabBarItem.image = #imageLiteral(resourceName: "classrooms-U")
-        classroomsNavController.tabBarItem.selectedImage = #imageLiteral(resourceName: "classrooms-F")
+        classroomsNavController.tabBarItem.image = #imageLiteral(resourceName: "classrooms-U-2x")
+        classroomsNavController.tabBarItem.selectedImage = #imageLiteral(resourceName: "classrooms-F-2x")
         
         let layout = UICollectionViewFlowLayout()
         let inboxController = InboxController(collectionViewLayout: layout)
         let inboxNavController = CustomNavigationController(rootViewController: inboxController)
         inboxNavController.tabBarItem.title = "Inbox"
-        
-        inboxNavController.tabBarItem.image = #imageLiteral(resourceName: "inbox-U")
-        inboxNavController.tabBarItem.selectedImage = #imageLiteral(resourceName: "inbox-F")
+        inboxNavController.tabBarItem.image = #imageLiteral(resourceName: "inbox-U-2x")
+        inboxNavController.tabBarItem.selectedImage = #imageLiteral(resourceName: "inbox-F-2x")
         
         // NOTE: Changing this order will break the remote notification logic in AppDelegate
         viewControllers = [meNavController, classroomsNavController, inboxNavController]

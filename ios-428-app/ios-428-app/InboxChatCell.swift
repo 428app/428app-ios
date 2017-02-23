@@ -55,8 +55,8 @@ class InboxChatCell: BaseCollectionCell {
         NotificationCenter.default.post(name: NOTIF_OPENPROFILE, object: nil)
     }
     
-    fileprivate let BUBBLE_RECIPIENT_IMAGE = UIImage(named: "bubble_recipient")?.resizableImage(withCapInsets: UIEdgeInsets(top: 23, left: 26, bottom: 23, right: 26))
-    fileprivate let BUBBLE_ME_IMAGE = UIImage(named: "bubble_me")?.resizableImage(withCapInsets: UIEdgeInsets(top: 23, left: 26, bottom: 23, right: 26))
+    fileprivate let BUBBLE_RECIPIENT_IMAGE = UIImage(named: "bubble_recipient-2x")?.resizableImage(withCapInsets: UIEdgeInsets(top: 23, left: 26, bottom: 23, right: 26))
+    fileprivate let BUBBLE_ME_IMAGE = UIImage(named: "bubble_me-2x")?.resizableImage(withCapInsets: UIEdgeInsets(top: 23, left: 26, bottom: 23, right: 26))
     
     fileprivate let bubbleImageView: UIImageView = {
         let imageView = UIImageView()

@@ -385,7 +385,7 @@ class ChatClassroomController: UIViewController, UIGestureRecognizerDelegate, UI
         self.navigationItem.title = self.classroom.title
         let negativeSpace = UIBarButtonItem(barButtonSystemItem: .fixedSpace, target: nil, action: nil)
         negativeSpace.width = -6.0
-        let moreButton = UIBarButtonItem(image: #imageLiteral(resourceName: "more"), style: .plain, target: self, action: #selector(handleNavMore))
+        let moreButton = UIBarButtonItem(image: #imageLiteral(resourceName: "more-2x"), style: .plain, target: self, action: #selector(handleNavMore))
         self.navigationItem.rightBarButtonItems = [negativeSpace, moreButton]
     }
     

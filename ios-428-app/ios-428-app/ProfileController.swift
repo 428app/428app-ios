@@ -138,8 +138,8 @@ class ProfileController: UIViewController, UIGestureRecognizerDelegate, UIScroll
     
     fileprivate lazy var messageBtn: UIButton = {
         let button = UIButton()
-        button.setImage(#imageLiteral(resourceName: "message-U"), for: .normal)
-        button.setImage(#imageLiteral(resourceName: "message-F"), for: .highlighted)
+        button.setImage(#imageLiteral(resourceName: "message-U-3x"), for: .normal)
+        button.setImage(#imageLiteral(resourceName: "message-F-3x"), for: .highlighted)
         button.setTitle("Send message", for: .normal)
         button.setTitleColor(GREEN_UICOLOR, for: .normal)
         button.setTitleColor(UIColor.white, for: .highlighted)

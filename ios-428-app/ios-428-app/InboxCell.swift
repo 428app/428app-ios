@@ -91,7 +91,7 @@ class InboxCell: BaseCollectionCell {
     
     fileprivate let repliedImageView: UIImageView = {
         let imageView = UIImageView()
-        imageView.image = #imageLiteral(resourceName: "replied")
+        imageView.image = #imageLiteral(resourceName: "replied-3x")
         imageView.contentMode = .scaleAspectFit
         imageView.tintColor = UIColor.lightGray
         return imageView
