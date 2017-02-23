@@ -104,7 +104,7 @@ extension DataService {
                 return
             }
             
-            let date: Date = Date(timeIntervalSince1970: timestamp)
+            let date: Date = Date(timeIntervalSince1970: timestamp * 1.0 / 1000.0)
             let isSentByYou: Bool = poster == uid
             
             inbox.hasNewMessages = hasNewMessages
@@ -135,7 +135,7 @@ extension DataService {
             if let dict = snap.value as? [String: Any], let text = dict["message"] as? String, let timestamp = dict["timestamp"] as? Double, let poster = dict["poster"] as? String {
                 let mid: String = snap.key
                 let isSentByYou: Bool = poster == uid
-                let date = Date(timeIntervalSince1970: timestamp)
+                let date = Date(timeIntervalSince1970: timestamp * 1.0 / 1000.0)
                 let msg = InboxMessage(mid: mid, text: text, inbox: inbox, date: date, isSentByYou: isSentByYou)
                 inbox.addMessage(message: msg)
             }
@@ -201,12 +201,13 @@ extension DataService {
         let poster = uid
         let uid2 = inbox.uid
         let inboxId: String = getInboxId(uid1: uid, uid2: uid2)
-        let timestamp = Date().timeIntervalSince1970
+        let timestampInSeconds = Date().timeIntervalSince1970
+        let timestampInMilliseconds = timestampInSeconds * 1000.0
         
         // Append message to inbox messages first and send complete
         let messagesRef: FIRDatabaseReference = REF_INBOXMESSAGES.child(inboxId).childByAutoId()
         let mid = messagesRef.key
-        let newMessage: [String: Any] = ["message": text, "timestamp": timestamp, "poster": poster]
+        let newMessage: [String: Any] = ["message": text, "timestamp": timestampInMilliseconds, "poster": poster]
         messagesRef.setValue(newMessage) { (err, ref) in
             completed(err == nil)
             // NOTE: We do not return here because there is also no more completes down below this function
@@ -220,7 +221,7 @@ extension DataService {
             }
 
             // Set joint inbox
-            let inboxValues: [String: Any] = ["hasNew:\(uid)": false, "hasNew:\(uid2)": true, "lastMessage": text, "mid": mid, "poster": poster, "timestamp": timestamp]
+            let inboxValues: [String: Any] = ["hasNew:\(uid)": false, "hasNew:\(uid2)": true, "lastMessage": text, "mid": mid, "poster": poster, "timestamp": timestampInMilliseconds]
             self.REF_INBOX.child(inboxId).updateChildValues(inboxValues)
             
             // Set each other's inbox if there were no inbox

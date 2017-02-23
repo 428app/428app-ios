@@ -1,30 +1,24 @@
-TODO TONIGHT:
-+ Did you know pasting video X
-+ Share on FB for each Answer video X
-
-+ Optimize individual classroom loading speed (Load questions and answers after)
-
-+ Tweet on question popup
-+ FB share
+TODO:
 
 + Change classroom sliders
-+ Write better classroom description
++ Finish CS questions
++ Do image + text for all questions
 
 
+During beta:
 + Clean up Image assets
 + Check every line of ios code
 
 BUGS:
-+ Sometimes user could not logout - unable to replicate
 
 DO LATER:
 + Fill in app store details - Design screenshots (green/red background with screenshot), write description
 
 
 YIHANG:
-+ Fix website, design icons
-+ Website question banner
-+ Come up with questions, put them in a .tsv file
-+ Come up with did you knows, put them one by one
++ Website question banner on website: To download in app store
++ Finish up questions
++ Come up with question over image
++ Come up with did you knows, and put them in DB
 
 QUESTIONS:

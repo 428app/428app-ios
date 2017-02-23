@@ -404,7 +404,7 @@ class ChatClassroomController: UIViewController, UIGestureRecognizerDelegate, UI
         let answersAction = UIAlertAction(title: "Answers", style: .default) { (action) in
             let controller = AnswersController()
             self.navigationItem.backBarButtonItem = UIBarButtonItem(title: " ", style: .plain, target: nil, action: nil)
-            controller.questions = self.classroom.questions
+            controller.classroom = self.classroom
             self.navigationController?.pushViewController(controller, animated: true)
         }
         let superlativesAction = UIAlertAction(title: "Superlatives", style: .default) { (action) in

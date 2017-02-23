@@ -172,7 +172,6 @@ class SettingsController: UIViewController, UITableViewDelegate, UITableViewData
             logAnalyticsEvent(key: kEventRateUs)
             
         } else if setting.text == "Privacy Policy" {
-            // TODO: Add privacy link
             logAnalyticsEvent(key: kEventVisitPrivacyPolicy)
             let controller = WebviewController()
             controller.urlString = "https://www.428pm.com/?open=terms-and-conditions"

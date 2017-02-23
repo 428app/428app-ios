@@ -63,33 +63,15 @@ extension DataService {
             }
             let cid = snapshot.key
             
-            guard let questionNum = classDict["questionNum"] as? Int, let discipline = classDict["discipline"] as? String, let questionImage = classDict["questionImage"] as? String, let timeReplied = classDict["timeReplied"] as? Double, let hasUpdates = classDict["hasUpdates"] as? Bool else {
+            guard let questionNum = classDict["questionNum"] as? Int, let discipline = classDict["discipline"] as? String, let questionImage = classDict["questionImage"] as? String, let questionShareImage = classDict["questionShareImage"] as? String, let questionText = classDict["questionText"] as? String, let timeReplied = classDict["timeReplied"] as? Double, let hasUpdates = classDict["hasUpdates"] as? Bool else {
                 completed(false, nil)
                 return
             }
-            
-            let classroom = Classroom(cid: cid, title: discipline, timeReplied: timeReplied, hasUpdates: hasUpdates, questionNum: questionNum, imageName: questionImage)
+            let classroom = Classroom(cid: cid, title: discipline, timeReplied: timeReplied, hasUpdates: hasUpdates, questionNum: questionNum, questionText: questionText, imageName: questionImage, shareImageName: questionShareImage)
             completed(true, classroom)
             return
         })
         return (ref, handle)
-    }
-    
-    // Private helper function that returns Question model given qid and timestamp of question. Used primarily by observeSingleClassroom.
-    fileprivate func getQuestion(discipline: String, qid: String, timestamp: Double, completed: @escaping (_ isSuccess: Bool, _ question: Question?) -> ()) {
-        self.REF_QUESTIONS.child("\(discipline)/\(qid)").observeSingleEvent(of: .value, with: { questionSnap in
-            if !questionSnap.exists() {
-                completed(false, nil)
-                return
-            }
-            guard let qDict = questionSnap.value as? [String: Any], let imageName = qDict["image"] as? String, let question = qDict["question"] as? String, let answer = qDict["answer"] as? String else {
-                completed(false, nil)
-                return
-            }
-            let qn = Question(qid: qid, timestamp: timestamp, imageName: imageName, question: question, answer: answer)
-            completed(true, qn)
-            return
-        })
     }
     
     fileprivate func isIdenticalArrays(arr1: [Any], arr2: [Any]) -> Bool {
@@ -104,7 +86,7 @@ extension DataService {
         let cid = classroom.cid
         let ref: FIRDatabaseReference = REF_CLASSROOMS.child(cid)
         let handle = ref.observe(.value, with: { classSnap in
-            guard let classDict = classSnap.value as? [String: Any], let classmateAndSuperlativeType = classDict["memberHasVoted"] as? [String: Int], let questionsAndTimes = classDict["questions"] as? [String: Double] else {
+            guard let classDict = classSnap.value as? [String: Any], let classmateAndSuperlativeType = classDict["memberHasVoted"] as? [String: Int], let questionsDict = classDict["questions"] as? [String: Double] else {
                 completed(false, classroom)
                 return
             }
@@ -118,6 +100,12 @@ extension DataService {
             var didYouKnowId = ""
             if let did = classDict["didYouKnow"] as? String {
                 didYouKnowId = did
+            }
+            
+            // Assemble skeleton of questions, load question+answers later only when user clicks Answers
+            var questions: [Question] = [Question]()
+            for (qid, timestamp) in questionsDict {
+                questions.append(Question(qid: qid, timestamp: timestamp))
             }
             
             var superlativeType: SuperlativeType = SuperlativeType.NOTVOTED
@@ -146,30 +134,43 @@ extension DataService {
                         // Check if there are superlatives available yet
                         let hasSuperlatives = classDict["superlatives"] != nil
                         
-                        // Download questions and answers
-                        var questions: [Question] = [Question]()
-                        for (qid_, timestamp_) in questionsAndTimes {
-                            self.getQuestion(discipline: classroom.title, qid: qid_, timestamp: timestamp_, completed: { (isSuccess2, question) in
-                                if !isSuccess2 || question == nil {
-                                    // There was a problem getting a question from qid, so return false
-                                    log.info("Failed at question")
-                                    completed(false, classroom)
-                                    return
-                                }
-                                questions.append(question!)
-                                if questions.count == questionsAndTimes.count { // All questions qid read
-                                    // Form classroom messages in a separate call
-                                    let updatedClassroom = Classroom(cid: classroom.cid, title: classroom.title, timeReplied: classroom.timeReplied, hasUpdates: classroom.hasUpdates, questionNum: classroom.questionNum, imageName: classroom.imageName, members: members, questions: questions, superlativeType: superlativeType, hasSuperlatives: hasSuperlatives, didYouKnowId: didYouKnowId)
-                                    completed(true, updatedClassroom) // Finally!
-                                    return
-                                }
-                            })
-                        }
+                        // Form classroom messages in a separate call
+                        let updatedClassroom = Classroom(cid: classroom.cid, title: classroom.title, timeReplied: classroom.timeReplied, hasUpdates: classroom.hasUpdates, questionNum: classroom.questionNum, questionText: classroom.questionText, imageName: classroom.imageName, shareImageName: classroom.shareImageName, members: members, questions: questions, superlativeType: superlativeType, hasSuperlatives: hasSuperlatives, didYouKnowId: didYouKnowId)
+                        completed(true, updatedClassroom) // Finally!
+                        return
                     }
                 })
             }
         })
         return (ref, handle)
+    }
+    
+    // Used to get questions and answers in AnswersController
+    func getQuestionsAndAnswers(classroom: Classroom, completed: @escaping (_ isSuccess: Bool, _ classroom: Classroom) -> ()) {
+        // Note that qids must already be populated in classroom's questions
+        let discipline = classroom.title
+        let oldQuestions = classroom.questions
+        var questionsLeft = classroom.questions.count
+        if questionsLeft == 0 {
+            completed(false, classroom)
+            return
+        }
+        var newQuestions = [Question]()
+        for question in oldQuestions {
+            // Grab the question data to reform question
+            self.REF_QUESTIONS.child("\(discipline)/\(question.qid)").observe(.value, with: { questionSnap in
+                questionsLeft -= 1
+                if let qDict = questionSnap.value as? [String: Any], let imageName = qDict["image"] as? String, let questionText = qDict["question"] as? String, let answer = qDict["answer"] as? String {
+                    newQuestions.append(Question(qid: question.qid, timestamp: question.timestamp, imageName: imageName, question: questionText, answer: answer))
+                }
+                if questionsLeft == 0 { // Finished processing all questions, but might not have gotten all questions' info
+                    classroom.questions = newQuestions
+                    completed(newQuestions.count == oldQuestions.count, classroom)
+                    return
+                }
+            });
+            
+        }
     }
     
     // MARK: Chat messages
@@ -189,7 +190,7 @@ extension DataService {
             if let dict = snap.value as? [String: Any], let text = dict["message"] as? String, let timestamp = dict["timestamp"] as? Double, let poster = dict["poster"] as? String {
                 let mid: String = snap.key
                 let isSentByYou: Bool = poster == uid
-                let date = Date(timeIntervalSince1970: timestamp)
+                let date = Date(timeIntervalSince1970: timestamp * 1.0 / 1000.0)
                 let msg = ClassroomMessage(mid: mid, parentCid: classroom.cid, posterUid: poster, text: text, date: date, isSentByYou: isSentByYou)
                 classroom.addMessage(message: msg)
             }
@@ -244,22 +245,23 @@ extension DataService {
         let posterImage = profile.profileImageName
         let cid = classroom.cid
         let classroomTitle = classroom.title
-        let timestamp = Date().timeIntervalSince1970
+        let timestampInSeconds = Date().timeIntervalSince1970 // NOTE: This is in seconds, be careful with this one
+        let timestampInMilliseconds = timestampInSeconds * 1000 // All Firebase entries are in milliseconds
         
         // Add to classroomMessages
         let messageRef: FIRDatabaseReference = REF_CLASSROOMMESSAGES.child(cid).childByAutoId()
         let mid = messageRef.key
-        let newMessage: [String: Any] = ["message": text, "poster": posterUid, "timestamp": timestamp]
+        let newMessage: [String: Any] = ["message": text, "poster": posterUid, "timestamp": timestampInMilliseconds]
         messageRef.setValue(newMessage) { (err, ref) in
             // Message successfully added, append to classroom
-            let msg: ClassroomMessage = ClassroomMessage(mid: mid, parentCid: cid, posterUid: posterUid, text: text, date: Date(timeIntervalSince1970: timestamp), isSentByYou: true)
+            let msg: ClassroomMessage = ClassroomMessage(mid: mid, parentCid: cid, posterUid: posterUid, text: text, date: Date(timeIntervalSince1970: timestampInSeconds), isSentByYou: true)
             classroom.addMessage(message: msg)
             completed(err == nil, classroom)
             // NOTE: We do not return here, but also note that there are no more completed calls below
         }
         
         // Add to own classroom's time replied first (do not add to own hasUpdates)
-        REF_USERS.child("\(posterUid)/classrooms/\(cid)/timeReplied").setValue(timestamp)
+        REF_USERS.child("\(posterUid)/classrooms/\(cid)/timeReplied").setValue(timestampInMilliseconds) // NOTE: Have to set milliseconds in server
         
         // Add to other classmates' hasUpdates
         let classmateUids = classroom.members.map { (profile) -> String in return profile.uid }.filter{$0 != posterUid}
@@ -276,7 +278,7 @@ extension DataService {
                 }
                 guard let pushToken = userDict["pushToken"] as? String, let pushCount = userDict["pushCount"] as? Int else {
                     // No push token, but user still exists in classroom, so set updates right
-                    self.REF_USERS.child("\(classmateUid)/classrooms/\(cid)").updateChildValues(["hasUpdates": true, "timeReplied": timestamp])
+                    self.REF_USERS.child("\(classmateUid)/classrooms/\(cid)").updateChildValues(["hasUpdates": true, "timeReplied": timestampInMilliseconds])
                     return
                 }
             
@@ -301,7 +303,7 @@ extension DataService {
                                     self.adjustPushCount(isIncrement: true, uid: classmateUid, completed: { (isSuccess) in })
                                 }
                                 
-                                self.REF_USERS.child("\(classmateUid)/classrooms/\(cid)").updateChildValues(["hasUpdates": true, "timeReplied": timestamp])
+                                self.REF_USERS.child("\(classmateUid)/classrooms/\(cid)").updateChildValues(["hasUpdates": true, "timeReplied": timestampInMilliseconds])
                                 return
                             }
                         }
@@ -310,13 +312,13 @@ extension DataService {
                     // Allowed to send push notifications
                     if hasUpdates {
                         // There are already new messages in this classroom for this user, just send a notification without updating push count
-                        self.REF_USERS.child("\(classmateUid)/classrooms/\(cid)").updateChildValues(["hasUpdates": true, "timeReplied": timestamp])
+                        self.REF_USERS.child("\(classmateUid)/classrooms/\(cid)").updateChildValues(["hasUpdates": true, "timeReplied": timestampInMilliseconds])
                         self.addToNotificationQueue(type: TokenType.CLASSROOM, posterUid: posterUid, posterName: posterName, posterImage: posterImage, recipientUid: classmateUid, pushToken: pushToken, pushCount: pushCount, inApp: inAppSettings, cid: cid, title: classroomTitle, body: text)
                         return
                     }
                     // No new messages for this user in this classroom, set hasUpdates to true, and increment push count for this user
                     self.adjustPushCount(isIncrement: true, uid: classmateUid, completed: { (isSuccess) in
-                        self.REF_USERS.child("\(classmateUid)/classrooms/\(cid)").updateChildValues(["hasUpdates": true, "timeReplied": timestamp])
+                        self.REF_USERS.child("\(classmateUid)/classrooms/\(cid)").updateChildValues(["hasUpdates": true, "timeReplied": timestampInMilliseconds])
                         // After push count is incremented, then push notification.
                         self.addToNotificationQueue(type: TokenType.CLASSROOM, posterUid: posterUid, posterName: posterName, posterImage: posterImage, recipientUid: classmateUid, pushToken: pushToken, pushCount: pushCount + 1, inApp: inAppSettings, cid: cid, title: classroomTitle, body: text)
                     })

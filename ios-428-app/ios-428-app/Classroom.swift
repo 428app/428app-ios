@@ -13,10 +13,12 @@ class Classroom {
     // These are read in from the start when viewing all classrooms
     fileprivate var _cid: String
     fileprivate var _title: String
-    fileprivate var _timeReplied: Double // Unix time used to sort classrooms
+    fileprivate var _timeReplied: Double // Unix time in MILLISECONDS used to sort classrooms - divide by 1000 before using this to init TimeInterval
     fileprivate var _hasUpdates: Bool // If true, there is a new message/question being posted that the user has not seen yet
     fileprivate var _questionNum: Int
-    fileprivate var _imageName: String
+    fileprivate var _questionText: String
+    fileprivate var _imageName: String // Image name is the latest question's image url string
+    fileprivate var _shareImageName: String // Latest question's share image url string (used for FB share on this question)
     
     // These are read in on opening the classroom
     fileprivate var _members: [Profile] // Used to display members and their profiles
@@ -32,13 +34,15 @@ class Classroom {
     fileprivate var _didYouKnowId: String
     
     
-    init(cid: String, title: String, timeReplied: Double, hasUpdates: Bool, questionNum: Int, imageName: String, members: [Profile] = [], questions: [Question] = [], classroomMessages: [ClassroomMessage] = [], superlatives: [Superlative] = [], results: [Superlative] = [], superlativeType: SuperlativeType = SuperlativeType.NOTVOTED, hasSuperlatives: Bool = false, isVotingOngoing: Bool = false, didYouKnowId: String = "") {
+    init(cid: String, title: String, timeReplied: Double, hasUpdates: Bool, questionNum: Int, questionText: String, imageName: String, shareImageName: String, members: [Profile] = [], questions: [Question] = [], classroomMessages: [ClassroomMessage] = [], superlatives: [Superlative] = [], results: [Superlative] = [], superlativeType: SuperlativeType = SuperlativeType.NOTVOTED, hasSuperlatives: Bool = false, isVotingOngoing: Bool = false, didYouKnowId: String = "") {
         _cid = cid
         _title = title
         _timeReplied = timeReplied
         _hasUpdates = hasUpdates
         _questionNum = questionNum
+        _questionText = questionText
         _imageName = imageName
+        _shareImageName = shareImageName
         
         _members = members
         _questions = questions.sorted{$0.timestamp > $1.timestamp} // Most recent questions first
@@ -83,7 +87,7 @@ class Classroom {
             return _questions
         }
         set(qs) {
-            _questions = qs
+            _questions = qs.sorted{$0.timestamp > $1.timestamp} // Most recent questions first
         }
     }
     
@@ -167,9 +171,21 @@ class Classroom {
         }
     }
     
+    var questionText: String {
+        get {
+            return _questionText
+        }
+    }
+    
     var imageName: String {
         get {
             return _imageName
+        }
+    }
+    
+    var shareImageName: String {
+        get {
+            return _shareImageName
         }
     }
 }

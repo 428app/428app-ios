@@ -17,18 +17,16 @@ class AnswersController: UITableViewController {
     fileprivate let ANSWERCELL_ID = "answerCell"
     fileprivate let VIDEOANSWERCELL_ID = "videoAnswerCell"
     
-    open var questions: [Question]!
+    fileprivate var questions = [Question]()
+    open var classroom: Classroom!
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        // Do not show the most recent answer (the first answer, as it has already been sorted)
-        questions = Array(questions.dropFirst(1))
-        
         self.navigationItem.title = "Answers"
         self.view.backgroundColor = GREEN_UICOLOR
         self.extendedLayoutIncludesOpaqueBars = true
         self.setupViews()
+        self.loadData()
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -65,6 +63,38 @@ class AnswersController: UITableViewController {
         // Table view cells with dynamic heights
         tableView.rowHeight = UITableViewAutomaticDimension
         tableView.estimatedRowHeight = 300.0
+        
+        self.view.addSubview(globalActivityIndicator)
+        globalActivityIndicator.center = CGPoint(x: self.view.center.x, y: self.view.center.y - 0.12 * self.view.frame.height)
+    }
+    
+    // MARK: Firebase
+    
+    fileprivate lazy var globalActivityIndicator: CustomActivityIndicatorView = {
+        let image : UIImage = UIImage(named: "loading-large")!.maskWithColor(color: UIColor.white)!
+        let activityIndicatorView = CustomActivityIndicatorView(image: image)
+        activityIndicatorView.hidesWhenStopped = true
+        activityIndicatorView.isHidden = true
+        return activityIndicatorView
+    }()
+    
+    fileprivate func loadData() {
+        globalActivityIndicator.startAnimating()
+        // Load questions and answers
+        DataService.ds.getQuestionsAndAnswers(classroom: self.classroom) { (isSuccess, updatedClassroom) in
+            self.globalActivityIndicator.stopAnimating()
+            if !isSuccess {
+                showErrorAlert(vc: self, title: "Error", message: "We could not get the class' answers. Please try again later.")
+                return
+            }
+            self.classroom = updatedClassroom
+            self.questions = self.classroom.questions
+            
+            // Do not show the most recent answer (the first answer, as it has already been sorted)
+            self.questions = Array(self.questions.dropFirst(1))
+            
+            self.tableView.reloadData()
+        }
     }
     
     // MARK: Table view
@@ -93,19 +123,20 @@ class AnswersController: UITableViewController {
     // MARK: Share
     
     func shareOnFB(notif: Notification) {
-        log.info("shared received")
         guard let userInfo = notif.userInfo as? [String: Any], let shareLink = userInfo["shareLink"] as? String else {
             return
         }
-        log.info("pass")
         if(SLComposeViewController.isAvailable(forServiceType: SLServiceTypeFacebook)) {
-            log.info("about to share")
             if let socialController = SLComposeViewController(forServiceType: SLServiceTypeFacebook) {
-                log.info("shared!")
-                socialController.add(#imageLiteral(resourceName: "logo"))
+                logAnalyticsEvent(key: kEventOpenShareAnswer, params: ["answerLink": shareLink as NSObject])
                 let url = URL(string: shareLink)
                 socialController.add(url)
                 self.present(socialController, animated: true, completion: {})
+                socialController.completionHandler = { (result:SLComposeViewControllerResult) in
+                    if result == SLComposeViewControllerResult.done {
+                        logAnalyticsEvent(key: kEventSuccessShareAnswer, params: ["answerLink": shareLink as NSObject])
+                    }
+                }
             }
         }
     }
@@ -189,14 +220,12 @@ class VideoAnswerCell: BaseTableViewCell, UIWebViewDelegate {
     // MARK: Web view delegates
     
     func webViewDidFinishLoad(_ webView: UIWebView) {
-        log.info("Finish loading")
         activityIndicator.isHidden = true
         activityIndicator.stopAnimating()
         placeHolderVideo.isHidden = true
     }
     
     func webViewDidStartLoad(_ webView: UIWebView) {
-        log.info("Starting to load")
         // Padding to remove the ugly default left padding of UIWebViews
         let negativePadding = "document.body.style.margin='0';document.body.style.padding = '0'"
         answerVideo.stringByEvaluatingJavaScript(from: negativePadding)

@@ -37,7 +37,7 @@ class WebviewController: UIViewController, UIWebViewDelegate {
     // MARK: Web view delegate functions
     
     func webView(_ webView: UIWebView, didFailLoadWithError error: Error) {
-        log.warning("Web view stopped loading")
+        log.warning("Web view stopped loading with error: \(error)")
         UIApplication.shared.isNetworkActivityIndicatorVisible = false
         viewForFailedLoad()
     }

@@ -62,10 +62,10 @@ extension DataService {
         // Update name locally
         saveName(name: name)
         
-        let timeNow = Date().timeIntervalSince1970
+        let timestampInMilliseconds = Date().timeIntervalSince1970 * 1000
         
         // Only update profile photo if this user does not have a profile photo
-        var user: [String: Any] = ["fbid": fbid, "name": name, "birthday": birthday, "timezone": timezone, "lastSeen": timeNow]
+        var user: [String: Any] = ["fbid": fbid, "name": name, "birthday": birthday, "timezone": timezone, "lastSeen": timestampInMilliseconds]
         
         self.REF_USERS.child(userUid).observeSingleEvent(of: .value, with: { snapshot in
             
@@ -119,12 +119,12 @@ extension DataService {
             completed(false)
             return
         }
-        let timeNow = Date().timeIntervalSince1970
+        let timestampInMilliseconds = Date().timeIntervalSince1970 * 1000
         self.REF_USERS.child(uid).observeSingleEvent(of: .value, with: { snapshot in
             if snapshot.exists() && snapshot.value != nil {
                 // Might as well update last seen as well
                 // Location is in the format "lat, lon"
-                self.REF_USERS.child(uid).updateChildValues(["location": "\(lat),\(lon)", "lastSeen": timeNow], withCompletionBlock: { (error, ref) in
+                self.REF_USERS.child(uid).updateChildValues(["location": "\(lat),\(lon)", "lastSeen": timestampInMilliseconds], withCompletionBlock: { (error, ref) in
                     completed(error == nil)
                     return
                 })
@@ -156,10 +156,10 @@ extension DataService {
             completed(false)
             return
         }
-        let timeNow = Date().timeIntervalSince1970
+        let timestampInMilliseconds = Date().timeIntervalSince1970 * 1000
         self.REF_USERS.child(uid).observeSingleEvent(of: .value, with: { snapshot in
             if snapshot.exists() && snapshot.value != nil {
-                self.REF_USERS.child(uid).updateChildValues(["lastSeen": timeNow], withCompletionBlock: { (error, ref) in
+                self.REF_USERS.child(uid).updateChildValues(["lastSeen": timestampInMilliseconds], withCompletionBlock: { (error, ref) in
                     completed(error == nil)
                     return
                 })

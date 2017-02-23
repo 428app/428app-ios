@@ -35,6 +35,14 @@ let kEventVisitFacebook = "visit_facebook"
 let kEventRateUs = "rate_us"
 let kEventVisitPrivacyPolicy = "visit_privacy_policy"
 
-func logAnalyticsEvent(key: String) { // We're not passing over any params, just logging the event happening
-    FIRAnalytics.logEvent(withName: key, parameters: nil)
+// Share hooks
+let kEventOpenShareQuestion = "openShareQuestion"
+let kEventSuccessShareQuestion = "successShareQuestion"
+let kEventOpenTweetQuestion = "openTweetQuestion"
+let kEventSuccessTweetQuestion = "successTweetQuestion"
+let kEventOpenShareAnswer = "openShareAnswer"
+let kEventSuccessShareAnswer = "successShareAnswer"
+
+func logAnalyticsEvent(key: String, params: [String: NSObject] = [:]) { // We're not passing over any params, just logging the event
+    FIRAnalytics.logEvent(withName: key, parameters: params)
 }
