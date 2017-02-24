@@ -105,7 +105,7 @@ class ChatInboxController: UIViewController, UICollectionViewDelegateFlowLayout,
     }()
     
     fileprivate func emptyPlaceholderGenerator() -> String {
-        let placeholders = ["Hey! Why don't you talk to \(self.inbox.name) about ", "Don't be shy. \(self.inbox.name) is friendly. Why don't you talk to him about ", "\(self.inbox.name) is waiting for you to say Hi. Do you know anything about ", "\(self.inbox.name) asks you: Do you know why I love "]
+        let placeholders = ["Hey! Why don't you talk to \(self.inbox.name) about ", "Don't be shy. \(self.inbox.name) is friendly. Why don't you talk about ", "\(self.inbox.name) is waiting for you to say Hi. Do you know anything about ", "\(self.inbox.name) asks you: Do you know why I love "]
         let randomIndex = Int(arc4random_uniform(UInt32(placeholders.count)))
         return placeholders[randomIndex]
     }

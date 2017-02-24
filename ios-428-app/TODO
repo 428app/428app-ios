@@ -1,21 +1,24 @@
 TODO:
-+ Finish CS questions
-+ Do image + text for all questions
++ Edit classroom placeholder to remove countdown!
++ Rate us feature
 
 
-During beta:
-+ Check every line of ios code
 
 BUGS:
+
++ When user clicks Send Message, pop up keyboard
++ Profile: Emoji gets cut off for What I do at 428pm
++ Too small a gap between different users' messages in classroom chat
++ Resign from classroom page/receive inapp push notification brings screen down
+
 
 DO LATER:
 + Fill in app store details - Design screenshots (green/red background with screenshot), write description
 
-
 YIHANG:
 + Website question banner on website: To download in app store
++ Do image + text for remaining questions
++ Start learning Javascript section
 + Finish up questions
-+ Come up with question over image
-+ Come up with did you knows, and put them in DB
 
 QUESTIONS:

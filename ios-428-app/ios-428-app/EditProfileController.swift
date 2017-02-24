@@ -291,7 +291,7 @@ class EditProfileController: UIViewController, UIScrollViewDelegate, UIGestureRe
     fileprivate func fieldTemplate() -> UILabel {
         let label = UILabel()
         label.textColor = UIColor.gray
-        label.font = FONT_MEDIUM_MID
+        label.font = UIFont.systemFont(ofSize: 16.0)
         label.textAlignment = .left
         label.numberOfLines = 1
         return label
@@ -342,7 +342,7 @@ class EditProfileController: UIViewController, UIScrollViewDelegate, UIGestureRe
     
     fileprivate lazy var taglineText: UILabel = {
         let label = UILabel()
-        label.font = FONT_MEDIUM_MID
+        label.font = UIFont.systemFont(ofSize: 16.0)
         // Additional options to style font are in attributedText
         label.numberOfLines = 0
         return label
