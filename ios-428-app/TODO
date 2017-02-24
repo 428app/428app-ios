@@ -1,15 +1,23 @@
 TODO:
-+ Edit classroom placeholder to remove countdown!
+
+
+
 + Rate us feature
+
+
+UPDATES:
++ FIXED BUG: Emoji getting cut off for profile information
++ FIXED BUG: Going from classmates page back to chat resigns the message input box but not the keyboard
++ IMPROVEMENTS: Improved look of login sliders
++ IMPROVEMENTS:
++
 
 
 
 BUGS:
-
 + When user clicks Send Message, pop up keyboard
-+ Profile: Emoji gets cut off for What I do at 428pm
 + Too small a gap between different users' messages in classroom chat
-+ Resign from classroom page/receive inapp push notification brings screen down
+
 
 
 DO LATER:

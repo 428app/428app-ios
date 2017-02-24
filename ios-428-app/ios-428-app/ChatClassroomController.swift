@@ -65,6 +65,7 @@ class ChatClassroomController: UIViewController, UIGestureRecognizerDelegate, UI
 
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
+        self.view.endEditing(true)
         DataService.ds.seeClassroomMessages(classroom: self.classroom) { (isSuccess) in }
         self.tabBarController?.tabBar.isHidden = false
         self.unregisterObservers()
