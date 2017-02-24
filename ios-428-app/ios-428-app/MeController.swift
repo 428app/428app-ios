@@ -301,7 +301,6 @@ class MeController: UIViewController, UIGestureRecognizerDelegate, UIScrollViewD
     }()
     
     func openEditProfile() {
-        log.info("Edit profile")
         // Launch EditProfileController which has two sub controllers, EditProfession and EditTagline
         self.navigationItem.backBarButtonItem = UIBarButtonItem(title: " ", style: .plain, target: nil, action: nil)
         let controller = EditProfileController()
@@ -309,7 +308,6 @@ class MeController: UIViewController, UIGestureRecognizerDelegate, UIScrollViewD
     }
     
     func openSettings() {
-        log.info("Open settings")
         // Launch SettingsController
         self.navigationItem.backBarButtonItem = UIBarButtonItem(title: " ", style: .plain, target: nil, action: nil)
         let controller = SettingsController()

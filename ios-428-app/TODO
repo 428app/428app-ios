@@ -1,22 +1,17 @@
 TODO:
-
-
-
 + Rate us feature
 
 
-UPDATES:
+IOS UPDATES:
 + FIXED BUG: Emoji getting cut off for profile information
 + FIXED BUG: Going from classmates page back to chat resigns the message input box but not the keyboard
-+ IMPROVEMENTS: Improved look of login sliders
-+ IMPROVEMENTS:
-+
-
++ IMPROVEMENT: Improved look of login sliders
++ IMPROVEMENT: When entering private message screen, message box automatically pops up (Thanks Tomas)
++ IMPROVEMENT: Differentiated gap between chat messages sent by you and others in Inbox and Classroom chat
 
 
 BUGS:
-+ When user clicks Send Message, pop up keyboard
-+ Too small a gap between different users' messages in classroom chat
+
 
 
 

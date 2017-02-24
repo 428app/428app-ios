@@ -120,8 +120,7 @@ extension DataService {
                 self.getUserFields(uid: uid_, completed: { (isSuccess, userProfile) in
                     
                     if !isSuccess || userProfile == nil {
-                        // There was a problem getting a user's profile, so return false
-                        log.info("Failed at user profiles")
+                        // There was a problem getting a user's profile, so return false)
                         completed(false, classroom)
                         return
                     }

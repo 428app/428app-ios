@@ -271,7 +271,6 @@ extension DataService {
     // Called whenever a user clicks on a private chat that is not previously seen to update the private chat's
     // message to seen. Also decrements push count. Used in InboxController.
     func seeInboxMessages(inbox: Inbox, completed: @escaping (_ isSuccess: Bool) -> ()) {
-        log.info("Seeing inbox messages")
         guard let uid = getStoredUid() else {
             completed(false)
             return

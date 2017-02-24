@@ -172,6 +172,7 @@ class ProfileController: UIViewController, UIGestureRecognizerDelegate, UIScroll
             // 2) That controller switches the tab to Inbox and sets the global side effect inboxToOpen
             // 3) InboxController reads inboxToOpen and opens the Inbox, then clears the side effect inboxToOpen
             self.dismiss(animated: true, completion: {
+                // If this is dismissed from profile
                 NotificationCenter.default.post(name: NOTIF_SENDMESSAGE, object: nil, userInfo: ["inbox": inbox])
             })
         }

@@ -957,7 +957,14 @@ class ChatClassroomController: UIViewController, UIGestureRecognizerDelegate, UI
         let size = CGSize(width: 250, height: 1000)
         let options = NSStringDrawingOptions.usesFontLeading.union(.usesLineFragmentOrigin)
         let estimatedFrame = NSString(string: messageText).boundingRect(with: size, options: options, attributes: [NSFontAttributeName: UIFont.systemFont(ofSize: 16.0)], context: nil)
-        let cellHeight = message.isSentByYou ? estimatedFrame.height + 11 : estimatedFrame.height + 11 + 19
+        var cellHeight = message.isSentByYou ? estimatedFrame.height + 11 : estimatedFrame.height + 11 + 19
+        
+        let isLastInChain = self.messageIsLastInChain[indexPath.section][indexPath.row]
+        let LAST_IN_CHAIN_GAP: CGFloat = 10.0
+        if isLastInChain {
+            cellHeight += LAST_IN_CHAIN_GAP
+        }
+        
         if let cell = self.collectionView.cellForItem(at: indexPath) as? ClassroomChatCell {
             if cell.shouldExpand {
                 self.cellTimeLabel.removeFromSuperview()
@@ -965,6 +972,9 @@ class ChatClassroomController: UIViewController, UIGestureRecognizerDelegate, UI
                 var yi = cellFrame.origin.y + cellFrame.height
                 // Insert timeLabel here
                 yi += 12
+                if isLastInChain {
+                    yi -= LAST_IN_CHAIN_GAP
+                }
                 if tappedIndexPath == nil {
                     tappedIndexPath = indexPath
                 }

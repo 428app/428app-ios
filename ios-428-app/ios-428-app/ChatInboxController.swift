@@ -65,6 +65,12 @@ class ChatInboxController: UIViewController, UICollectionViewDelegateFlowLayout,
         self.registerObservers()
     }
     
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        // Once view is loaded, bring up input text view to prompt user to send a message
+        self.inputTextView.becomeFirstResponder()
+    }
+    
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         self.navigationController?.navigationBar.barTintColor = RED_UICOLOR
@@ -592,7 +598,7 @@ class ChatInboxController: UIViewController, UICollectionViewDelegateFlowLayout,
         return view
     }()
     
-    fileprivate let inputTextView: UITextView = {
+    open let inputTextView: UITextView = {
        let textView = UITextView()
         textView.textColor = UIColor.black
         textView.font = UIFont.systemFont(ofSize: 16.0)
@@ -846,7 +852,13 @@ class ChatInboxController: UIViewController, UICollectionViewDelegateFlowLayout,
         let options = NSStringDrawingOptions.usesFontLeading.union(.usesLineFragmentOrigin)
         let estimatedFrame = NSString(string: messageText).boundingRect(with: size, options: options, attributes: [NSFontAttributeName: UIFont.systemFont(ofSize: 16.0)], context: nil)
         
-        let defaultHeight = estimatedFrame.height + 17
+        var defaultHeight = estimatedFrame.height + 13
+        
+        let isLastInChain = self.messageIsLastInChain[indexPath.section][indexPath.row]
+        let LAST_IN_CHAIN_GAP: CGFloat = 10.0
+        if isLastInChain {
+            defaultHeight += LAST_IN_CHAIN_GAP
+        }
         
         if let cell = self.collectionView.cellForItem(at: indexPath) as? InboxChatCell {
             
@@ -855,7 +867,10 @@ class ChatInboxController: UIViewController, UICollectionViewDelegateFlowLayout,
                 self.cellTimeLabel.removeFromSuperview()
                 let cellFrame = self.collectionView.convert(cell.frame, to: self.view)
                 var yi = cellFrame.origin.y + cellFrame.height
-                yi += 6
+                yi += 8
+                if isLastInChain {
+                    yi -= LAST_IN_CHAIN_GAP
+                }
                 if tappedIndexPath == nil {
                     // Not tapped yet
                     tappedIndexPath = indexPath
@@ -863,7 +878,7 @@ class ChatInboxController: UIViewController, UICollectionViewDelegateFlowLayout,
                 else {
                     // If tapping at an index below, need to change yi
                     if indexPath.section > tappedIndexPath!.section || (indexPath.section == tappedIndexPath!.section && indexPath.row > tappedIndexPath!.row) {
-                        yi -= 18
+                        yi -= 20
                     } else if indexPath.section == tappedIndexPath!.section && indexPath.row == tappedIndexPath!.row {
                         // Clicked to hide
                         self.tappedIndexPath = nil

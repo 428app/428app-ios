@@ -54,13 +54,11 @@ class WebviewController: UIViewController, UIWebViewDelegate {
     
     func webViewDidStartLoad(_ webView: UIWebView) {
         UIApplication.shared.isNetworkActivityIndicatorVisible = true
-        log.info("Web view started loading")
     }
     
     func webViewDidFinishLoad(_ webView: UIWebView) {
         UIApplication.shared.isNetworkActivityIndicatorVisible = false
         viewForSuccessfulLoad()
-        log.info("Web view finished loading")
         // Set back and forward button accordingly
         forward.isEnabled = webView.canGoForward
         backward.isEnabled = webView.canGoBack

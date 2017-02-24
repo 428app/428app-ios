@@ -20,9 +20,7 @@ let imageCache = AutoPurgingImageCache(
 
 func downloadImage(imageUrlString: String, completed: @escaping (_ image: UIImage?) -> ()) -> Request? {
     // Image exists in cache, so return image without starting an Alamofire request
-    log.info("imageUrlString in downloadImage: \(imageUrlString)")
     if let image = imageCache.image(withIdentifier: imageUrlString) {
-        log.info("cached image fetched")
         completed(image)
         return nil
     }

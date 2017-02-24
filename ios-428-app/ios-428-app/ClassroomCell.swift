@@ -102,7 +102,6 @@ class ClassroomCell: BaseCollectionCell {
         self.classroomImageView.af_setImage(withURL: imageUrl, placeholderImage: UIImage.init(color: UIColor.white), filter: nil, progress: nil, imageTransition: .crossDissolve(0.5), runImageTransitionIfCached: false, completion: { imageResponse in
             // Image finished downloading, so cache it - this is mostly for push notifications, as internally af_setImage already has its own cache
             if let imageData = imageResponse.data, let image = UIImage(data: imageData) {
-                log.info("Image cached for class \(self.classroom.title): \(imageUrl.absoluteString)")
                 imageCache.add(image, withIdentifier: imageUrl.absoluteString)
             }
         })

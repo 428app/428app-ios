@@ -20,7 +20,6 @@ extension DataService {
 
     // Adds message to Queue that will be picked up by push server
     open func addToNotificationQueue(type: TokenType, posterUid: String, posterName: String, posterImage: String, recipientUid: String, pushToken: String, pushCount: Int, inApp: Bool, cid: String, title: String, body: String) {
-        log.info("Adding to queue")
         // No need to async callback because notifications are not guaranteed anyway
         let dict: [String: Any] = ["type": type.rawValue, "posterUid": posterUid, "posterName": posterName, "posterImage": posterImage, "recipientUid": recipientUid, "pushToken": pushToken, "pushCount": pushCount, "inApp": inApp, "cid": cid, "title": title, "body": body]
         REF_QUEUE.childByAutoId().setValue(dict)

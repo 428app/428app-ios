@@ -187,15 +187,11 @@ class LoginController: UIViewController, UIScrollViewDelegate, CLLocationManager
                     return
                 }
                 
-                log.info("Logged in user to our own Firebase")
-                
                 DataService.ds.updateUserPushToken() // Update push token again here because uid is now saved
                 
                 if isFirstTimeUser {
                     setHasToFillInfo(hasToFill: true)
                 }
-                
-                log.info("Before going to introcontroller")
                 
                 // Successfully updated user info in DB, get user's location, and log user in!
                 self.startLocationManager()

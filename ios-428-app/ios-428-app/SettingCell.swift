@@ -53,7 +53,6 @@ class SettingCell: BaseTableViewCell {
     }()
     
     func switchValueDidChange(switch_: UISwitch) {
-        log.info("\(self.setting.text) switch changed to \(switch_.isOn)")
         NotificationCenter.default.post(name: NOTIF_CHANGESETTING, object: nil, userInfo: ["option": setting.text, "isOn": switch_.isOn])
     }
     
