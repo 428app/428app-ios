@@ -157,7 +157,9 @@ class EditTaglineController: UIViewController, UITextViewDelegate {
         if numberOfChars <= MAX_CHARACTERS {
             taglineCountLabel.text = "\(max(MAX_CHARACTERS - numberOfChars, 0))"
         }
-        saveButton.isEnabled = numberOfChars > 0 && newText != tagline
+        if numberOfChars < MAX_CHARACTERS {
+            saveButton.isEnabled = numberOfChars > 0 && newText != tagline && !newText.trim().isEmpty
+        }
         return numberOfChars < MAX_CHARACTERS
     }
     
