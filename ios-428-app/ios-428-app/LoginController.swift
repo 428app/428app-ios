@@ -210,13 +210,13 @@ class LoginController: UIViewController, UIScrollViewDelegate, CLLocationManager
         label.textColor = UIColor.darkGray
         let paragraphStyle = NSMutableParagraphStyle()
         paragraphStyle.lineSpacing = 6
-        paragraphStyle.lineBreakMode = .byTruncatingTail
-        label.numberOfLines = 0
         paragraphStyle.alignment = .center
+        label.adjustsFontSizeToFitWidth = true
         let str1 = NSMutableAttributedString(string: "By continuing, you agree to our ", attributes: [NSParagraphStyleAttributeName: paragraphStyle])
         let str2 = NSMutableAttributedString(string: "Privacy Policy.", attributes: [NSFontAttributeName: FONT_HEAVY_SMALL])
         str1.append(str2)
         label.attributedText = str1
+        label.lineBreakMode = .byTruncatingTail
         label.isUserInteractionEnabled = true
         let openTermsTap = UITapGestureRecognizer(target: self, action: #selector(openTerms))
         label.addGestureRecognizer(openTermsTap)

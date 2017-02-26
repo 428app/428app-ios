@@ -14,7 +14,7 @@ class ModalQuestionController: UIViewController {
     
     let CORNER_RADIUS: CGFloat = 15.0
     let HORIZONTAL_MARGIN: CGFloat = 28.0
-    let VERTICAL_MARGIN: CGFloat = 200.0
+    let VERTICAL_MARGIN: CGFloat = UIScreen.main.bounds.height * 0.3
     
     var classroom: Classroom! {
         didSet {
@@ -160,7 +160,7 @@ class ModalQuestionController: UIViewController {
         view.addSubview(tweetButton)
         
         view.addConstraintsWithFormat("H:|-\(self.HORIZONTAL_MARGIN)-[v0]-\(self.HORIZONTAL_MARGIN)-|", views: containerView)
-        view.addConstraintsWithFormat("V:|-\(self.VERTICAL_MARGIN * 0.8)-[v0]-\(self.VERTICAL_MARGIN * 1.2)-|", views: containerView)
+        view.addConstraintsWithFormat("V:|-\(self.VERTICAL_MARGIN * 0.7)-[v0]-\(self.VERTICAL_MARGIN * 1.2)-|", views: containerView)
         
         view.addConstraintsWithFormat("H:|-\(self.HORIZONTAL_MARGIN)-[v0]-\(self.HORIZONTAL_MARGIN)-|", views: fbButton)
         view.addConstraintsWithFormat("H:|-\(self.HORIZONTAL_MARGIN)-[v0]-\(self.HORIZONTAL_MARGIN)-|", views: tweetButton)

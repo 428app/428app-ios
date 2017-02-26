@@ -72,12 +72,6 @@ class ChatClassroomController: UIViewController, UIGestureRecognizerDelegate, UI
         self.unregisterObservers()
     }
     
-    override func didMove(toParentViewController parent: UIViewController?) {
-        if parent != nil { // Entering
-            self.inputTextView.becomeFirstResponder()
-        }
-    }
-    
     override func willMove(toParentViewController parent: UIViewController?) {
         if parent == nil { // Leaving
             self.removeFirebaseObservers()
@@ -433,7 +427,7 @@ class ChatClassroomController: UIViewController, UIGestureRecognizerDelegate, UI
     }()
     
     fileprivate func animateQuestionBanner() {
-        UIView.animate(withDuration: 0.5, delay: 0.65, animations: {
+        UIView.animate(withDuration: 0.5, delay: 0.3, animations: {
             self.questionBanner.transform = CGAffineTransform(translationX: 0.0, y: 50.0)
         })
     }
