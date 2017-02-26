@@ -92,4 +92,8 @@ class ClassmatesProfileCell: BaseCollectionCell {
         loadImage()
         self.nameLbl.text = profile.name
     }
+    
+    func changeColor() {
+        disciplineBg.backgroundColor = RED_UICOLOR
+    }
 }

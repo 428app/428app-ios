@@ -118,11 +118,24 @@ class InboxController: UICollectionViewController, UICollectionViewDelegateFlowL
     
     // MARK: Views for no chats
     
-    fileprivate let emptyPlaceholderView: UIView = {
+    fileprivate lazy var emptyPlaceholderView: UIView = {
         let view = UIView(frame: CGRect(x: 0, y: 0, width: UIScreen.main.bounds.width * 0.9, height: UIScreen.main.bounds.height * 0.4))
         view.isHidden = true
+        let tap = UITapGestureRecognizer(target: self, action: #selector(changePlaceholderColor))
+        view.isUserInteractionEnabled = true
+        view.addGestureRecognizer(tap)
         return view
     }()
+    
+    func changePlaceholderColor() {
+        if self.noChatsLbl.textColor == GREEN_UICOLOR {
+            self.inboxImage.image = self.inboxImage.image?.maskWithColor(color: RED_UICOLOR)
+            self.noChatsLbl.textColor = RED_UICOLOR
+        } else {
+            self.inboxImage.image = self.inboxImage.image?.maskWithColor(color: GREEN_UICOLOR)
+            self.noChatsLbl.textColor = GREEN_UICOLOR
+        }
+    }
     
     fileprivate let inboxImage: UIImageView = {
         let image = #imageLiteral(resourceName: "inbox-empty")
@@ -131,26 +144,40 @@ class InboxController: UICollectionViewController, UICollectionViewDelegateFlowL
         return imageView
     }()
     
-    fileprivate let noChatsLbl: UIView = {
+    fileprivate let noChatsLbl: UILabel = {
         let label = UILabel()
-        label.font = FONT_HEAVY_MID
-        label.textColor = UIColor.darkGray
+        label.font = FONT_HEAVY_LARGE
+        label.textColor = GREEN_UICOLOR
         label.textAlignment = .center
         label.text = "No private messages yet."
        return label
     }()
     
+    fileprivate let descriptionLbl: UILabel = {
+       let label = UILabel()
+        label.font = FONT_HEAVY_MID
+        let paragraphStyle = NSMutableParagraphStyle()
+        paragraphStyle.lineSpacing = 6
+        paragraphStyle.alignment = .center
+        let str = NSMutableAttributedString(string: "Send your classmates private messages by visiting their profiles in the classrooms.", attributes: [NSForegroundColorAttributeName: UIColor.darkGray, NSParagraphStyleAttributeName: paragraphStyle])
+        label.attributedText = str
+        label.numberOfLines = 0
+        return label
+    }()
+    
     fileprivate func setupEmptyPlaceholderView() {
         self.collectionView?.addSubview(self.emptyPlaceholderView)
-        self.emptyPlaceholderView.center = CGPoint(x: self.view.center.x, y: self.view.center.y)
+        self.emptyPlaceholderView.center = CGPoint(x: self.view.center.x, y: self.view.center.y - 12.0)
         
         self.emptyPlaceholderView.addSubview(inboxImage)
         self.emptyPlaceholderView.addSubview(noChatsLbl)
+        self.emptyPlaceholderView.addSubview(descriptionLbl)
         self.emptyPlaceholderView.addConstraintsWithFormat("H:[v0(60)]", views: inboxImage)
         self.emptyPlaceholderView.addConstraint(NSLayoutConstraint(item: inboxImage, attribute: .centerX, relatedBy: .equal, toItem: self.emptyPlaceholderView, attribute: .centerX, multiplier: 1.0, constant: 0.0))
         self.emptyPlaceholderView.addConstraintsWithFormat("H:|-8-[v0]-8-|", views: noChatsLbl)
+        self.emptyPlaceholderView.addConstraintsWithFormat("H:|-8-[v0]-8-|", views: descriptionLbl)
         
-        self.emptyPlaceholderView.addConstraintsWithFormat("V:|-8-[v0(60)]-5-[v1]", views: inboxImage, noChatsLbl)
+        self.emptyPlaceholderView.addConstraintsWithFormat("V:|-8-[v0(60)]-5-[v1(30)]-5-[v2]", views: inboxImage, noChatsLbl, descriptionLbl)
     }
     
     fileprivate func setupViews() {

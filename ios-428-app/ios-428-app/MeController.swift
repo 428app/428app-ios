@@ -88,7 +88,6 @@ class MeController: UIViewController, UIGestureRecognizerDelegate, UIScrollViewD
         }
         self.nameAndAgeLbl.text = "\(profileData.name), \(profileData.age)"
         self.disciplineImageView.image = UIImage(named: profileData.disciplineIcon)
-        // TODO: Badges
         self.classrooms = profileData.classroomIcons
         self.classroomsCollectionView.reloadData()
     }
@@ -197,13 +196,24 @@ class MeController: UIViewController, UIGestureRecognizerDelegate, UIScrollViewD
         return label
     }()
     
-    fileprivate let disciplineImageView: UIImageView = {
+    fileprivate lazy var disciplineImageView: UIImageView = {
         let imageView = UIImageView()
         imageView.contentMode = .scaleAspectFill
         imageView.tintColor = RED_UICOLOR
+        let tap = UITapGestureRecognizer(target: self, action: #selector(animateDiscipline))
+        imageView.addGestureRecognizer(tap)
+        imageView.isUserInteractionEnabled = true
         return imageView
     }()
     
+    func animateDiscipline() {
+        let animation = CAKeyframeAnimation(keyPath: "transform.rotation.z")
+        animation.isAdditive = true
+        animation.duration = 0.6
+        animation.values = [0, M_PI, 2*M_PI]
+        disciplineImageView.layer.add(animation, forKey: "show")
+    }
+
     // MARK: Views 2 - Horizontal collection views of classroom icons
     
     fileprivate let CLASSROOMS_CELL_ID = "classroomsCollectionCell"
@@ -332,9 +342,10 @@ class MeController: UIViewController, UIGestureRecognizerDelegate, UIScrollViewD
         
         // Assign delegate, data source and setup cells for and classrooms collection view
         self.setupCollectionView()
-        
+        containerView.isUserInteractionEnabled = true
         // Centered discipline icon and name label
         let disciplineNameAgeContainer = UIView()
+        disciplineNameAgeContainer.isUserInteractionEnabled = true
         disciplineNameAgeContainer.addSubview(disciplineImageView)
         disciplineNameAgeContainer.addSubview(nameAndAgeLbl)
         disciplineNameAgeContainer.translatesAutoresizingMaskIntoConstraints = false

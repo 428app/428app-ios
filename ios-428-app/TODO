@@ -1,9 +1,6 @@
 TODO:
 + Rate us feature
-
-
-+ IMPROVEMENT: Explain to users how to get Inbox messages
-
++ Backend question likes/dislikes calculation
 
 
 
@@ -17,9 +14,10 @@ V9:
 + FIXED BUG: Fixed views for iPhone SE: Question banner too small, privacy policy message cut off at login (Thanks Taira)
 + FIXED BUG: On chat screen if you highlight a word then go to profile screen, the highlight continues to appear in the background (Thanks Tomas)
 + IMPROVEMENT: Server - Randomized swap classroom algorithm that reduces your chances of being with the exact same people in the next classroom (not going to work very well now because there are only few classrooms and few users right now)
++ IMPROVEMENT: Explain to users how to get Inbox messages - decided a bit of explanation helps. (Thanks Jenny)
 + IMPROVEMENT: Section divider for each question each day (Thanks Ernest)
++ IMPROVEMENT: Fun animation (and behavioral nudges) over many parts of the app (try clicking around!)
 + IMPROVEMENT: Ability to thumbs up and down question-answer pair in Answers section
-
 
 
 V8:

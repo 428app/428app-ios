@@ -84,6 +84,8 @@ class ClassmatesController: UICollectionViewController, UICollectionViewDelegate
     }
     
     override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        let cell = collectionView.cellForItem(at: indexPath) as! ClassmatesProfileCell
+        cell.changeColor()
         let classmate = self.classmates[indexPath.item]
         let controller = ProfileController()
         controller.transitioningDelegate = self

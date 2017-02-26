@@ -129,12 +129,23 @@ class ProfileController: UIViewController, UIGestureRecognizerDelegate, UIScroll
         return label
     }()
     
-    fileprivate let disciplineImageView: UIImageView = {
+    fileprivate lazy var disciplineImageView: UIImageView = {
         let imageView = UIImageView()
         imageView.contentMode = .scaleAspectFit
         imageView.tintColor = GREEN_UICOLOR
+        imageView.isUserInteractionEnabled = true
+        let tap = UITapGestureRecognizer(target: self, action: #selector(animateDiscipline))
+        imageView.addGestureRecognizer(tap)
         return imageView
     }()
+    
+    func animateDiscipline() {
+        let animation = CAKeyframeAnimation(keyPath: "transform.rotation.z")
+        animation.isAdditive = true
+        animation.duration = 0.6
+        animation.values = [0, M_PI, 2*M_PI]
+        disciplineImageView.layer.add(animation, forKey: "show")
+    }
     
     fileprivate lazy var messageBtn: UIButton = {
         let button = UIButton()
