@@ -23,6 +23,8 @@ class ClassmatesController: UICollectionViewController, UICollectionViewDelegate
         self.view.backgroundColor = RED_UICOLOR
         self.extendedLayoutIncludesOpaqueBars = true
         self.setupViews()
+        // Sort classmates by name alphabetically
+        self.classmates = self.classmates.sorted{($0.name < $1.name)}
     }
 
     override func viewWillAppear(_ animated: Bool) {

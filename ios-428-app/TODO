@@ -2,13 +2,12 @@ TODO:
 + Rate us feature
 
 
-+ BUG: Classmates list must be ordered, so they appear in the same order each time (Thanks Jenny)
-
++ BUG: Question banner too small for iPhone SE: Test with iPhone SE (Thanks Taira)
 
 
 + IMPROVEMENT: Explain to users how to get Inbox messages
 + IMPROVEMENT: Ability to thumbs up and down question-answer pair in Answers section
-+ BUG: Question banner too small for iPhone SE: Test with iPhone SE (Thanks Taira)
+
 
 
 
@@ -22,6 +21,8 @@ V9:
 + FIXED BUG: Server - Fixed next day 4:28pm function which wasn't calculating it exactly right for different timezones, causing people to get classrooms at the wrong times
 + FIXED BUG: Allowing empty input on profile tagline (Thanks Jenny)
 + FIXED BUG: isLoggedIn setting is true without other settings (unable to replicate, and rarely happens, but made some changes and I think I fixed this. Not a big issue regardless.)
++ FIXED BUG: Classmates list are now ordered alphabetically, so they appear in the same order each time (Thanks Jenny)
+
 + IMPROVEMENT: Server - Randomized swap classroom algorithm that reduces your chances of being with the exact same people in the next classroom (not going to work very well now because there are only few classrooms and few users right now)
 + IMPROVEMENT: Section divider for each question each day (Thanks Ernest)
 + IMPROVEMENT: Classroom chat box should also pop up the moment user enters classroom to prompt user to chat (Adapted from Tomas idea)
