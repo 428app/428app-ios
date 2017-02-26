@@ -17,9 +17,10 @@ class Question {
     fileprivate var _question: String
     fileprivate var _answer: String
     fileprivate var _isVideo: Bool
+    fileprivate var _userVote: QuestionVoteType
     
     // Qids and timestamps compulsory, because they identify a question uniquely to a classroom
-    init(qid: String, timestamp: Double, imageName: String = "", shareImageName: String = "", question: String = "", answer: String = "") {
+    init(qid: String, timestamp: Double, imageName: String = "", shareImageName: String = "", question: String = "", answer: String = "", userVote: QuestionVoteType = .NEUTRAL) {
         _qid = qid
         _timestamp = timestamp
         _imageName = imageName
@@ -27,6 +28,7 @@ class Question {
         _question = question
         _answer = answer
         _isVideo = answer.hasPrefix("https://www.youtube.com/") // If answer starts with a youtube link, it is a video
+        _userVote = userVote
     }
     
     var qid: String {
@@ -81,6 +83,15 @@ class Question {
     var isVideo: Bool {
         get {
             return _isVideo
+        }
+    }
+    
+    var userVote: QuestionVoteType {
+        get {
+            return _userVote
+        }
+        set(vote) {
+            _userVote = vote
         }
     }
 }

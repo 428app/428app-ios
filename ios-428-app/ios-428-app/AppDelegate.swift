@@ -32,7 +32,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         FIRApp.configure()
         FIRDatabase.database().persistenceEnabled = true
         
-//        fatalError()
+        setPromptForAnswerVote(hasPrompt: true) // For the future when answers from classroom shows up, show answer prompt once
         
         // Reupload previous photo that might not have been uploaded due to nLogetwork issues or user quitting the app after changing profile photo
         reuploadPhoto()

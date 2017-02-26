@@ -16,3 +16,7 @@ enum TokenType: String {
 enum SuperlativeType: Int {
     case NOTVOTED = 0, VOTED, SHARED
 }
+
+enum QuestionVoteType: Int {
+    case DISLIKED = -1, NEUTRAL = 0, LIKED = 1
+}

@@ -1,19 +1,13 @@
 TODO:
 + Rate us feature
 
-+ IMPROVEMENT: Ability to thumbs up and down question-answer pair in Answers section
-
-
 
 + IMPROVEMENT: Explain to users how to get Inbox messages
 
 
 
 
-
-
 IOS UPDATES:
-
 
 V9:
 + FIXED BUG: Server - Fixed next day 4:28pm function which wasn't calculating it exactly right for different timezones, causing people to get classrooms at the wrong times
@@ -24,6 +18,7 @@ V9:
 + FIXED BUG: On chat screen if you highlight a word then go to profile screen, the highlight continues to appear in the background (Thanks Tomas)
 + IMPROVEMENT: Server - Randomized swap classroom algorithm that reduces your chances of being with the exact same people in the next classroom (not going to work very well now because there are only few classrooms and few users right now)
 + IMPROVEMENT: Section divider for each question each day (Thanks Ernest)
++ IMPROVEMENT: Ability to thumbs up and down question-answer pair in Answers section
 
 
 

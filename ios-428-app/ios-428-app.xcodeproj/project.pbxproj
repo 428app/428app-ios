@@ -30,6 +30,7 @@
 		4037A6231E57E8AC0079B203 /* AnalyticsConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4037A6221E57E8AC0079B203 /* AnalyticsConstants.swift */; };
 		4037A6251E5808540079B203 /* NewUserAlertController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4037A6241E5808540079B203 /* NewUserAlertController.swift */; };
 		4037A6261E580B7B0079B203 /* AdSupport.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 40944BEE1E57BC1700B0C722 /* AdSupport.framework */; };
+		4038F45D1E62A34D004E4C1D /* VoteAnswerPromptAlertController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4038F45C1E62A34D004E4C1D /* VoteAnswerPromptAlertController.swift */; };
 		404C22FA1DBDB86D0054FE19 /* UserDefaults.swift in Sources */ = {isa = PBXBuildFile; fileRef = 404C22F91DBDB86D0054FE19 /* UserDefaults.swift */; };
 		404ED6D71E6226370092F90B /* ClassroomQuestionCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 404ED6D61E6226370092F90B /* ClassroomQuestionCell.swift */; };
 		4064A1B61DAC381300071383 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4064A1B51DAC381300071383 /* AppDelegate.swift */; };
@@ -133,6 +134,7 @@
 		4031FB9B1DC0691C0066E6B6 /* StorageService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StorageService.swift; sourceTree = "<group>"; };
 		4037A6221E57E8AC0079B203 /* AnalyticsConstants.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AnalyticsConstants.swift; sourceTree = "<group>"; };
 		4037A6241E5808540079B203 /* NewUserAlertController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NewUserAlertController.swift; sourceTree = "<group>"; };
+		4038F45C1E62A34D004E4C1D /* VoteAnswerPromptAlertController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VoteAnswerPromptAlertController.swift; sourceTree = "<group>"; };
 		404C22F91DBDB86D0054FE19 /* UserDefaults.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserDefaults.swift; sourceTree = "<group>"; };
 		404ED6D61E6226370092F90B /* ClassroomQuestionCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ClassroomQuestionCell.swift; sourceTree = "<group>"; };
 		4064A1B21DAC381300071383 /* ios-428-app.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "ios-428-app.app"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -238,6 +240,7 @@
 				4024F2301DB88262007819F7 /* ModalQuestionController.swift */,
 				4072AD951E15FD0E0067046D /* ClassmatesController.swift */,
 				4072AD991E1633E30067046D /* AnswersController.swift */,
+				4038F45C1E62A34D004E4C1D /* VoteAnswerPromptAlertController.swift */,
 				4072ADA11E1657D50067046D /* SuperlativeController.swift */,
 				4072ADA51E1662A30067046D /* ModalVoteController.swift */,
 			);
@@ -690,6 +693,7 @@
 				4064A1B81DAC381300071383 /* InboxController.swift in Sources */,
 				40ADEEDD1DDD12D000CE529A /* ShoutFactory.swift in Sources */,
 				40AB80001DB5FDB100492788 /* EditProfileController.swift in Sources */,
+				4038F45D1E62A34D004E4C1D /* VoteAnswerPromptAlertController.swift in Sources */,
 				4064A21F1DAD72DF00071383 /* Functions.swift in Sources */,
 				4064A22B1DB2B27F00071383 /* Inbox.swift in Sources */,
 				40BC2E931E4EF2B300017253 /* NewClassroomAlertController.swift in Sources */,

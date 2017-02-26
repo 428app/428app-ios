@@ -86,7 +86,7 @@ extension DataService {
         let cid = classroom.cid
         let ref: FIRDatabaseReference = REF_CLASSROOMS.child(cid)
         let handle = ref.observe(.value, with: { classSnap in
-            guard let classDict = classSnap.value as? [String: Any], let classmateAndSuperlativeType = classDict["memberHasVoted"] as? [String: Int], let questionsDict = classDict["questions"] as? [String: Double] else {
+            guard let classDict = classSnap.value as? [String: Any], let classmateAndSuperlativeType = classDict["memberHasVoted"] as? [String: Int], let questionsDict = classDict["questions"] as? [String: Any] else {
                 completed(false, classroom)
                 return
             }
@@ -104,8 +104,11 @@ extension DataService {
             
             // Assemble skeleton of questions, load question+answers later only when user clicks Answers
             var questions: [Question] = [Question]()
-            for (qid, timestamp) in questionsDict {
-                questions.append(Question(qid: qid, timestamp: timestamp))
+            
+            for (qid, questionDict_) in questionsDict {
+                if let questionDict = questionDict_ as? [String: Any], let questionTime = questionDict["timestamp"] as? Double, let userVoteIntForQuestion = questionDict[uid] as? Int, let userVoteForQuestion = QuestionVoteType(rawValue: userVoteIntForQuestion) {
+                    questions.append(Question(qid: qid, timestamp: questionTime, userVote: userVoteForQuestion))
+                }
             }
             
             var superlativeType: SuperlativeType = SuperlativeType.NOTVOTED
@@ -144,6 +147,8 @@ extension DataService {
         return (ref, handle)
     }
     
+    // MARK: Questions 
+    
     // Used to get questions and answers in AnswersController
     func getQuestionsAndAnswers(classroom: Classroom, completed: @escaping (_ isSuccess: Bool, _ classroom: Classroom) -> ()) {
         // Note that qids must already be populated in classroom's questions
@@ -160,7 +165,7 @@ extension DataService {
             self.REF_QUESTIONS.child("\(discipline)/\(question.qid)").observe(.value, with: { questionSnap in
                 questionsLeft -= 1
                 if let qDict = questionSnap.value as? [String: Any], let imageName = qDict["image"] as? String, let questionText = qDict["question"] as? String, let answer = qDict["answer"] as? String {
-                    newQuestions.append(Question(qid: question.qid, timestamp: question.timestamp, imageName: imageName, question: questionText, answer: answer))
+                    newQuestions.append(Question(qid: question.qid, timestamp: question.timestamp, imageName: imageName, question: questionText, answer: answer, userVote: question.userVote))
                 }
                 if questionsLeft == 0 { // Finished processing all questions, but might not have gotten all questions' info
                     classroom.questions = newQuestions
@@ -170,6 +175,14 @@ extension DataService {
             });
             
         }
+    }
+    
+    // Used to vote for a question in answers as Boring, Cool or Neutral
+    func voteForQuestionInClassroom(cid: String, qid: String, userVote: Int) {
+        guard let uid = getStoredUid() else {
+            return
+        }
+        REF_CLASSROOMS.child("\(cid)/questions/\(qid)/\(uid)").setValue(userVote)
     }
     
     // MARK: Chat messages

@@ -34,7 +34,11 @@ class AnswersController: UITableViewController {
         self.navigationController?.navigationBar.setBackgroundImage(UIImage.init(color: GREEN_UICOLOR), for: .default)
         self.navigationController?.navigationBar.shadowImage = UIImage()
         self.tabBarController?.tabBar.isHidden = true
-        NotificationCenter.default.addObserver(self, selector: #selector(shareOnFB), name: NOTIF_SHAREANSWER, object: nil)
+        if hasPromptForAnswerVote() {
+            self.showPromptForAnswerVote()
+            setPromptForAnswerVote(hasPrompt: false)
+        }
+        self.registerObservers()
     }
     
     override func viewWillDisappear(_ animated: Bool) {
@@ -42,7 +46,17 @@ class AnswersController: UITableViewController {
         self.navigationController?.navigationBar.setBackgroundImage(nil, for: .default)
         self.navigationController?.navigationBar.shadowImage = nil
         self.tabBarController?.tabBar.isHidden = false
+        self.unregisterObservers()
+    }
+    
+    fileprivate func registerObservers() {
+        NotificationCenter.default.addObserver(self, selector: #selector(shareOnFB), name: NOTIF_SHAREANSWER, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(voteAnswer), name: NOTIF_VOTEANSWER, object: nil)
+    }
+    
+    fileprivate func unregisterObservers() {
         NotificationCenter.default.removeObserver(self, name: NOTIF_SHAREANSWER, object: nil)
+        NotificationCenter.default.removeObserver(self, name: NOTIF_VOTEANSWER, object: nil)
     }
     
     fileprivate func setupViews() {
@@ -97,6 +111,21 @@ class AnswersController: UITableViewController {
         }
     }
     
+    // MARK: Vote for answers
+    
+    fileprivate func showPromptForAnswerVote() {
+        let alertController = VoteAnswerPromptAlertController()
+        alertController.modalPresentationStyle = .overFullScreen
+        alertController.modalTransitionStyle = .crossDissolve
+        self.present(alertController, animated: true, completion: nil)
+    }
+    
+    func voteAnswer(notif: Notification) {
+        if let userInfo = notif.userInfo as? [String: Any], let qid = userInfo["qid"] as? String, let userVoteInt = userInfo["userVote"] as? Int {
+            DataService.ds.voteForQuestionInClassroom(cid: self.classroom.cid, qid: qid, userVote: userVoteInt)
+        }
+    }
+    
     // MARK: Table view
     
     override func numberOfSections(in tableView: UITableView) -> Int {
@@ -141,7 +170,6 @@ class AnswersController: UITableViewController {
         }
     }
 }
-
 
 class VideoAnswerCell: BaseTableViewCell, UIWebViewDelegate {
     
@@ -239,6 +267,58 @@ class VideoAnswerCell: BaseTableViewCell, UIWebViewDelegate {
         activityIndicator.stopAnimating()
     }
     
+    // MARK: Like and dislike container
+    
+    fileprivate func voteBtnTemplate(title: String) -> UIButton {
+        let btn = UIButton(type: .custom)
+        btn.setTitle(title, for: .normal)
+        btn.titleLabel?.font = FONT_HEAVY_LARGE
+        btn.setTitleColor(RED_UICOLOR, for: .normal)
+        btn.setTitleColor(UIColor.white, for: .selected)
+        btn.setBackgroundColor(color: UIColor.white, forState: .normal)
+        btn.adjustsImageWhenHighlighted = false
+        btn.setBackgroundColor(color: RED_UICOLOR, forState: .selected)
+        btn.layer.borderColor = RED_UICOLOR.cgColor
+        btn.layer.borderWidth = 0.8
+        btn.layer.cornerRadius = 4.0
+        btn.clipsToBounds = true
+        return btn
+    }
+    
+    fileprivate lazy var likeBtn: UIButton = {
+        let btn = self.voteBtnTemplate(title: "Cool")
+        btn.addTarget(self, action: #selector(voteBtnPressed), for: .touchUpInside)
+        return btn
+    }()
+    
+    fileprivate lazy var dislikeBtn: UIButton = {
+        let btn = self.voteBtnTemplate(title: "Boring")
+        btn.addTarget(self, action: #selector(voteBtnPressed), for: .touchUpInside)
+        return btn
+    }()
+    
+    func voteBtnPressed(btn: UIButton) {
+        if btn == likeBtn {
+            likeBtn.isSelected = !likeBtn.isSelected
+            dislikeBtn.isSelected = false
+        } else if btn == dislikeBtn {
+            likeBtn.isSelected = false
+            dislikeBtn.isSelected = !dislikeBtn.isSelected
+        }
+        
+        // Store results locally
+        if likeBtn.isSelected {
+            question.userVote = .LIKED
+        } else if dislikeBtn.isSelected {
+            question.userVote = .DISLIKED
+        } else {
+            question.userVote = .NEUTRAL
+        }
+        
+        // Post results to AnswersController to send to server
+        NotificationCenter.default.post(name: NOTIF_VOTEANSWER, object: nil, userInfo: ["qid": question.qid, "userVote": question.userVote.rawValue])
+    }
+    
     override func setupViews() {
         backgroundColor = GREEN_UICOLOR
         
@@ -257,12 +337,22 @@ class VideoAnswerCell: BaseTableViewCell, UIWebViewDelegate {
         containerView.addSubview(answerVideo)
         containerView.addSubview(fbButton)
         
-        containerView.addConstraintsWithFormat("V:|-8-[v0(20)]-8-[v1]-8-[v2(20)]-8-[v3(250)]-8-[v4(40)]-8-|", views: questionLbl, questionText,  answerLbl, answerVideo, fbButton)
+        let voteContainer = UIView()
+        voteContainer.addSubview(likeBtn)
+        voteContainer.addSubview(dislikeBtn)
+        voteContainer.addConstraintsWithFormat("H:|[v0]-8-[v1]|", views: dislikeBtn, likeBtn)
+        voteContainer.addConstraint(NSLayoutConstraint(item: dislikeBtn, attribute: .width, relatedBy: .equal, toItem: likeBtn, attribute: .width, multiplier: 1.0, constant: 0.0))
+        voteContainer.addConstraintsWithFormat("V:|[v0]|", views: dislikeBtn)
+        voteContainer.addConstraintsWithFormat("V:|[v0]|", views: likeBtn)
+        containerView.addSubview(voteContainer)
+        
+        containerView.addConstraintsWithFormat("V:|-8-[v0(20)]-8-[v1]-8-[v2(20)]-8-[v3(250)]-8-[v4(40)]-8-[v5(40)]-8-|", views: questionLbl, questionText,  answerLbl, answerVideo, fbButton, voteContainer)
         containerView.addConstraintsWithFormat("H:|-8-[v0]-8-|", views: questionLbl)
         containerView.addConstraintsWithFormat("H:|-8-[v0]-8-|", views: questionText)
         containerView.addConstraintsWithFormat("H:|-8-[v0]-8-|", views: answerLbl)
         containerView.addConstraintsWithFormat("H:|-8-[v0]-8-|", views: answerVideo)
         containerView.addConstraintsWithFormat("H:|-8-[v0]-8-|", views: fbButton)
+        containerView.addConstraintsWithFormat("H:|-8-[v0]-8-|", views: voteContainer)
         
         answerVideo.addSubview(placeHolderVideo)
         answerVideo.addConstraintsWithFormat("H:|[v0]|", views: placeHolderVideo)
@@ -288,6 +378,17 @@ class VideoAnswerCell: BaseTableViewCell, UIWebViewDelegate {
         let videoWidth = UIScreen.main.bounds.width - 8.0 * 4 // Double margin from outside cell and within cell
         let videoHeight = 250.0 // This matches the constraints defined above
         self.answerVideo.loadHTMLString("<iframe width=\"\(videoWidth)\" height=\"\(videoHeight)\" src=\"\(answerLink)\" frameborder=\"0\" allowfullscreen></iframe>", baseURL: nil)
+        switch question.userVote {
+        case .DISLIKED:
+            dislikeBtn.isSelected = true
+            likeBtn.isSelected = false
+        case .NEUTRAL:
+            dislikeBtn.isSelected = false
+            likeBtn.isSelected = false
+        case .LIKED:
+            dislikeBtn.isSelected = false
+            likeBtn.isSelected = true
+        }
     }
     
 }
@@ -332,6 +433,58 @@ class AnswerCell: BaseTableViewCell {
         return label
     }()
     
+    // MARK: Like and dislike container
+    
+    fileprivate func voteBtnTemplate(title: String) -> UIButton {
+        let btn = UIButton(type: .custom)
+        btn.setTitle(title, for: .normal)
+        btn.titleLabel?.font = FONT_HEAVY_LARGE
+        btn.setTitleColor(RED_UICOLOR, for: .normal)
+        btn.setTitleColor(UIColor.white, for: .selected)
+        btn.setBackgroundColor(color: UIColor.white, forState: .normal)
+        btn.adjustsImageWhenHighlighted = false
+        btn.setBackgroundColor(color: RED_UICOLOR, forState: .selected)
+        btn.layer.borderColor = RED_UICOLOR.cgColor
+        btn.layer.borderWidth = 0.8
+        btn.layer.cornerRadius = 4.0
+        btn.clipsToBounds = true
+        return btn
+    }
+    
+    fileprivate lazy var likeBtn: UIButton = {
+        let btn = self.voteBtnTemplate(title: "Cool")
+        btn.addTarget(self, action: #selector(voteBtnPressed), for: .touchUpInside)
+        return btn
+    }()
+    
+    fileprivate lazy var dislikeBtn: UIButton = {
+        let btn = self.voteBtnTemplate(title: "Boring")
+        btn.addTarget(self, action: #selector(voteBtnPressed), for: .touchUpInside)
+        return btn
+    }()
+    
+    func voteBtnPressed(btn: UIButton) {
+        if btn == likeBtn {
+            likeBtn.isSelected = !likeBtn.isSelected
+            dislikeBtn.isSelected = false
+        } else if btn == dislikeBtn {
+            likeBtn.isSelected = false
+            dislikeBtn.isSelected = !dislikeBtn.isSelected
+        }
+        
+        // Store results locally
+        if likeBtn.isSelected {
+            question.userVote = .LIKED
+        } else if dislikeBtn.isSelected {
+            question.userVote = .DISLIKED
+        } else {
+            question.userVote = .NEUTRAL
+        }
+        
+        // Post results to AnswersController to send to server
+        NotificationCenter.default.post(name: NOTIF_VOTEANSWER, object: nil, userInfo: ["qid": question.qid, "userVote": question.userVote.rawValue])
+    }
+    
     override func setupViews() {
         backgroundColor = GREEN_UICOLOR
         
@@ -349,11 +502,21 @@ class AnswerCell: BaseTableViewCell {
         containerView.addSubview(answerLbl)
         containerView.addSubview(answerText)
         
-        containerView.addConstraintsWithFormat("V:|-8-[v0(20)]-8-[v1]-8-[v2(20)]-8-[v3]-8-|", views: questionLbl, questionText,  answerLbl, answerText)
+        let voteContainer = UIView()
+        voteContainer.addSubview(likeBtn)
+        voteContainer.addSubview(dislikeBtn)
+        voteContainer.addConstraintsWithFormat("H:|[v0]-8-[v1]|", views: dislikeBtn, likeBtn)
+        voteContainer.addConstraint(NSLayoutConstraint(item: dislikeBtn, attribute: .width, relatedBy: .equal, toItem: likeBtn, attribute: .width, multiplier: 1.0, constant: 0.0))
+        voteContainer.addConstraintsWithFormat("V:|[v0]|", views: dislikeBtn)
+        voteContainer.addConstraintsWithFormat("V:|[v0]|", views: likeBtn)
+        containerView.addSubview(voteContainer)
+        
+        containerView.addConstraintsWithFormat("V:|-8-[v0(20)]-8-[v1]-8-[v2(20)]-8-[v3]-8-[v4(40)]-8-|", views: questionLbl, questionText,  answerLbl, answerText, voteContainer)
         containerView.addConstraintsWithFormat("H:|-8-[v0]-8-|", views: questionLbl)
         containerView.addConstraintsWithFormat("H:|-8-[v0]-8-|", views: questionText)
         containerView.addConstraintsWithFormat("H:|-8-[v0]-8-|", views: answerLbl)
         containerView.addConstraintsWithFormat("H:|-8-[v0]-8-|", views: answerText)
+        containerView.addConstraintsWithFormat("H:|-8-[v0]-8-|", views: voteContainer)
         
         addSubview(containerView)
         addConstraintsWithFormat("H:|-12-[v0]-12-|", views: containerView)
@@ -364,5 +527,16 @@ class AnswerCell: BaseTableViewCell {
         self.question = questionObj
         questionText.text = question.question
         answerText.text = question.answer
+        switch question.userVote {
+        case .DISLIKED:
+            dislikeBtn.isSelected = true
+            likeBtn.isSelected = false
+        case .NEUTRAL:
+            dislikeBtn.isSelected = false
+            likeBtn.isSelected = false
+        case .LIKED:
+            dislikeBtn.isSelected = false
+            likeBtn.isSelected = true
+        }
     }
 }

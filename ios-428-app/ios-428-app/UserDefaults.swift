@@ -81,3 +81,17 @@ func setHasToFillInfo(hasToFill: Bool) {
     DEFAULTS.synchronize()
 }
 
+//
+let KEY_PROMPTFORANSWERVOTE = "promptForAnswerVote"
+func hasPromptForAnswerVote() -> Bool {
+    return DEFAULTS.object(forKey: KEY_PROMPTFORANSWERVOTE) != nil
+}
+func setPromptForAnswerVote(hasPrompt: Bool) {
+    if hasPrompt {
+        DEFAULTS.set("true", forKey: KEY_PROMPTFORANSWERVOTE)
+    } else {
+        DEFAULTS.removeObject(forKey: KEY_PROMPTFORANSWERVOTE)
+    }
+    DEFAULTS.synchronize()
+}
+
