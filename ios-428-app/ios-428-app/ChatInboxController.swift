@@ -70,7 +70,7 @@ class ChatInboxController: UIViewController, UICollectionViewDelegateFlowLayout,
         // Once view is loaded, bring up input text view to prompt user to send a message
         self.inputTextView.becomeFirstResponder()
     }
-    
+
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         self.navigationController?.navigationBar.barTintColor = RED_UICOLOR
@@ -476,6 +476,15 @@ class ChatInboxController: UIViewController, UICollectionViewDelegateFlowLayout,
         }
     }
     
+    fileprivate func resetTextViewSelects() {
+        let visibleCells = collectionView.visibleCells
+        for cell_ in visibleCells {
+            if let cell = cell_ as? InboxChatCell {
+                cell.messageTextView.selectedTextRange = nil
+            }
+        }
+    }
+    
     func openProfile(sender: Any) {
         if profile == nil {
             return
@@ -495,7 +504,9 @@ class ChatInboxController: UIViewController, UICollectionViewDelegateFlowLayout,
         controller.profile = profile!
         controller.modalTransitionStyle = .coverVertical
         controller.modalPresentationStyle = .overFullScreen
-        self.present(controller, animated: true, completion: nil)
+        self.present(controller, animated: true, completion: {
+            self.resetTextViewSelects()
+        })
     }
     
     fileprivate let navLabel: UILabel = {

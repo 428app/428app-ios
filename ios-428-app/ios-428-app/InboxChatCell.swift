@@ -17,7 +17,7 @@ class InboxChatCell: BaseCollectionCell {
     fileprivate let TEXT_VIEW_FONT = UIFont.systemFont(ofSize: 16.0)
     open var request: Request?
     
-    fileprivate lazy var messageTextView: UITextView = {
+    open lazy var messageTextView: UITextView = {
         var textView = UITextView()
         textView.backgroundColor = UIColor.clear
         textView.showsHorizontalScrollIndicator = false
