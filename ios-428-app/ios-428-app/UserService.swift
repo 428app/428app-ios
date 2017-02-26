@@ -96,9 +96,10 @@ extension DataService {
                 // Create new user
                 user["pushCount"] = 0
                 user["profilePhoto"] = pictureUrl
-                let userSettings = ["dailyAlert": true, "inboxMessages": true, "classroomMessages": true, "inAppNotifications": true, "isLoggedIn": true]
+                let userSettings = ["dailyAlert": true, "inboxMessages": true, "classroomMessages": true, "inAppNotifications": true]
                 
                 self.REF_USERS.child(userUid).updateChildValues(user, withCompletionBlock: { (err, ref) in
+                    self.setIsLoggedIn(isLoggedIn: true, completed: { (loginSuccess) in })
                     completed(err == nil, true)
                     return
                 })
