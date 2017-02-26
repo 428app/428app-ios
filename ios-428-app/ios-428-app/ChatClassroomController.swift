@@ -51,7 +51,7 @@ class ChatClassroomController: UIViewController, UIGestureRecognizerDelegate, UI
         self.setupNavigationBar() // This must come before setupFirebase
         self.setupFirebase()
         self.view.backgroundColor = UIColor.white
-        self.setupPromptView()
+        self.setupQuestionBanner()
         self.setupCollectionView()
         self.setupInputComponents()
     }
@@ -63,13 +63,19 @@ class ChatClassroomController: UIViewController, UIGestureRecognizerDelegate, UI
         self.navigationController?.navigationBar.barTintColor = RED_UICOLOR
         self.registerObservers()
     }
-
+    
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         self.view.endEditing(true)
         DataService.ds.seeClassroomMessages(classroom: self.classroom) { (isSuccess) in }
         self.tabBarController?.tabBar.isHidden = false
         self.unregisterObservers()
+    }
+    
+    override func didMove(toParentViewController parent: UIViewController?) {
+        if parent != nil { // Entering
+            self.inputTextView.becomeFirstResponder()
+        }
     }
     
     override func willMove(toParentViewController parent: UIViewController?) {
@@ -200,7 +206,7 @@ class ChatClassroomController: UIViewController, UIGestureRecognizerDelegate, UI
     
     // Called upon pull to refresh
     fileprivate func observeMore() {
-
+        
         self.removeTimeLabel()
         
         if self.chatQueryAndHandle != nil {
@@ -263,7 +269,7 @@ class ChatClassroomController: UIViewController, UIGestureRecognizerDelegate, UI
                     self.collectionView.reloadData()
                 }
             }
-            
+                
             else {
                 // Previous messages are empty - this should very rarely happen, possibly only due to network connectivity issues
                 self.messages = updatedClassroom!.classroomMessages
@@ -427,7 +433,7 @@ class ChatClassroomController: UIViewController, UIGestureRecognizerDelegate, UI
     }()
     
     fileprivate func animateQuestionBanner() {
-        UIView.animate(withDuration: 0.5, delay: 0.3, animations: {
+        UIView.animate(withDuration: 0.5, delay: 0.65, animations: {
             self.questionBanner.transform = CGAffineTransform(translationX: 0.0, y: 50.0)
         })
     }
@@ -441,7 +447,7 @@ class ChatClassroomController: UIViewController, UIGestureRecognizerDelegate, UI
         self.present(modalController, animated: true, completion: nil)
     }
     
-    fileprivate func setupPromptView() {
+    fileprivate func setupQuestionBanner() {
         view.addSubview(questionBannerBg)
         view.addSubview(questionBanner)
         view.addConstraintsWithFormat("H:|[v0]|", views: questionBannerBg)
@@ -449,7 +455,7 @@ class ChatClassroomController: UIViewController, UIGestureRecognizerDelegate, UI
         view.addConstraint(NSLayoutConstraint(item: questionBannerBg, attribute: .top, relatedBy: .equal, toItem: topLayoutGuide, attribute: .bottom, multiplier: 1.0, constant: 0.0))
         view.addConstraint(NSLayoutConstraint(item: questionBanner, attribute: .top, relatedBy: .equal, toItem: topLayoutGuide, attribute: .bottom, multiplier: 1.0, constant: -50.0))
         view.addConstraintsWithFormat("V:[v0(50)]", views: questionBannerBg)
-       view.addConstraintsWithFormat("V:[v0(50)]", views: questionBanner)
+        view.addConstraintsWithFormat("V:[v0(50)]", views: questionBanner)
     }
     
     // MARK: Superlatives
@@ -675,7 +681,7 @@ class ChatClassroomController: UIViewController, UIGestureRecognizerDelegate, UI
             })
         }
     }
-
+    
     fileprivate func registerObservers() {
         NotificationCenter.default.addObserver(self, selector: #selector(handleKeyboardNotification), name: NSNotification.Name.UIKeyboardWillHide, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(handleKeyboardNotification), name: NSNotification.Name.UIKeyboardWillChangeFrame, object: nil)
@@ -782,7 +788,7 @@ class ChatClassroomController: UIViewController, UIGestureRecognizerDelegate, UI
             }
         }
     }
-
+    
     // MARK: Collection view
     
     fileprivate let collectionView: UICollectionView = {
@@ -827,8 +833,8 @@ class ChatClassroomController: UIViewController, UIGestureRecognizerDelegate, UI
         // Scroll collection view to the bottom to most recent message upon first entering screen
         UIView.animate(withDuration: 0, delay: 0, options: .curveEaseOut, animations: {
             self.view.layoutIfNeeded()
-            }, completion: { (completed) in
-                self.scrollToLastItemInCollectionView(animated: false)
+        }, completion: { (completed) in
+            self.scrollToLastItemInCollectionView(animated: false)
         })
     }
     
