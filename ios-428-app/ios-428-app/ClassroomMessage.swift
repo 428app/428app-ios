@@ -16,6 +16,7 @@ class ClassroomMessage {
     fileprivate var _text: String
     fileprivate var _date: Date // Date of message posted
     fileprivate var _isSentByYou: Bool
+    fileprivate var _isSentBy428: Bool
     
     init(mid: String, parentCid: String, posterUid: String, text: String, date: Date = Date(), isSentByYou: Bool = false) {
         _mid = mid
@@ -24,6 +25,7 @@ class ClassroomMessage {
         _text = text
         _date = date
         _isSentByYou = isSentByYou
+        _isSentBy428 = posterUid == "428" // Classroom messages sent by server has poster as 428
     }
     
     var mid: String {
@@ -59,6 +61,12 @@ class ClassroomMessage {
     var isSentByYou: Bool {
         get {
             return _isSentByYou
+        }
+    }
+    
+    var isSentBy428: Bool {
+        get {
+            return _isSentBy428
         }
     }
 }

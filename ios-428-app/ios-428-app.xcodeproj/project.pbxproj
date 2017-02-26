@@ -31,6 +31,7 @@
 		4037A6251E5808540079B203 /* NewUserAlertController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4037A6241E5808540079B203 /* NewUserAlertController.swift */; };
 		4037A6261E580B7B0079B203 /* AdSupport.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 40944BEE1E57BC1700B0C722 /* AdSupport.framework */; };
 		404C22FA1DBDB86D0054FE19 /* UserDefaults.swift in Sources */ = {isa = PBXBuildFile; fileRef = 404C22F91DBDB86D0054FE19 /* UserDefaults.swift */; };
+		404ED6D71E6226370092F90B /* ClassroomQuestionCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 404ED6D61E6226370092F90B /* ClassroomQuestionCell.swift */; };
 		4064A1B61DAC381300071383 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4064A1B51DAC381300071383 /* AppDelegate.swift */; };
 		4064A1B81DAC381300071383 /* InboxController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4064A1B71DAC381300071383 /* InboxController.swift */; };
 		4064A1C01DAC381300071383 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 4064A1BF1DAC381300071383 /* Assets.xcassets */; };
@@ -133,6 +134,7 @@
 		4037A6221E57E8AC0079B203 /* AnalyticsConstants.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AnalyticsConstants.swift; sourceTree = "<group>"; };
 		4037A6241E5808540079B203 /* NewUserAlertController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NewUserAlertController.swift; sourceTree = "<group>"; };
 		404C22F91DBDB86D0054FE19 /* UserDefaults.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserDefaults.swift; sourceTree = "<group>"; };
+		404ED6D61E6226370092F90B /* ClassroomQuestionCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ClassroomQuestionCell.swift; sourceTree = "<group>"; };
 		4064A1B21DAC381300071383 /* ios-428-app.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "ios-428-app.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		4064A1B51DAC381300071383 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		4064A1B71DAC381300071383 /* InboxController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InboxController.swift; sourceTree = "<group>"; };
@@ -374,6 +376,7 @@
 				40AB7FF91DB5B06A00492788 /* SettingCell.swift */,
 				4024F2261DB82239007819F7 /* ClassroomCell.swift */,
 				4024F22C1DB86B18007819F7 /* ClassroomChatCell.swift */,
+				404ED6D61E6226370092F90B /* ClassroomQuestionCell.swift */,
 				40E2E1411DD3788300469B4D /* CustomActivityIndicatorView.swift */,
 				4072AD971E1619BD0067046D /* ClassmatesProfileCell.swift */,
 				4072ADA71E1663EB0067046D /* SuperlativeCell.swift */,
@@ -695,6 +698,7 @@
 				40ADEEDE1DDD12D000CE529A /* Showing.swift in Sources */,
 				4031FB9C1DC0691C0066E6B6 /* StorageService.swift in Sources */,
 				40ADEEDF1DDD12D000CE529A /* WhisperFactory.swift in Sources */,
+				404ED6D71E6226370092F90B /* ClassroomQuestionCell.swift in Sources */,
 				40ADEEE11DDD12D000CE529A /* WhistleFactory.swift in Sources */,
 				4064A1B61DAC381300071383 /* AppDelegate.swift in Sources */,
 				40ADEED91DDD12D000CE529A /* Config.swift in Sources */,

@@ -1,11 +1,30 @@
 TODO:
 + Rate us feature
 
-+ IMPROVEMENT: Section divider for each question each day (Thanks Ernest)
-+ FIXED BUG: Allowing empty input on profile tagline (Thanks Jenny)
++ IMPROVEMENT: Classroom chat box should also pop up by default
+
+
+
++ IMPROVEMENT: Explain to users how to get Inbox messages
++ IMPROVEMENT: Ability to thumbs up and down question-answer pair in Answers section
++ BUG: Question banner too small for iPhone SE: Test with iPhone SE (Thanks Taira)
++ BUG: Classmates list must be ordered, so they appear in the same order each time (Thanks Jenny)
++ BUG: isLoggedIn: true without other settings
+
++ BUG: On chat screen if you highlight a word then go to profile screen, the highlight continues to appear in the background
 
 
 IOS UPDATES:
+
+
+V9:
++ FIXED BUG: Server - Fixed next day 4:28pm function which wasn't calculating it exactly right for different timezones, causing people to get classrooms at the wrong times
++ FIXED BUG: Allowing empty input on profile tagline (Thanks Jenny)
++ IMPROVEMENT: Server - Randomized swap classroom algorithm that reduces your chances of being with the exact same people in the next classroom (not going to work very well now because there are only few classrooms and few users right now)
++ IMPROVEMENT: Section divider for each question each day (Thanks Ernest)
+
+
+
 V8:
 + FIXED BUG: Emoji getting cut off for profile information
 + FIXED BUG: Going from classmates page back to chat resigns the message input box but not the keyboard
@@ -14,12 +33,6 @@ V8:
 + IMPROVEMENT: Differentiated gap between chat messages sent by you and others in Inbox and Classroom chat
 
 
-V9:
-+ FIXED BUG: Server - Fixed next day 4:28pm function which wasn't calculating it exactly right for different timezones
-+ IMPROVEMENT: Server - Swap classroom function that randomizes your next match, so you have less chance of being in the exact same people in the next classroom (not going to work very well now because there are only few classrooms and few users)
-
-
-+ New line:
 
 
 DO LATER:

@@ -20,7 +20,8 @@ class ChatClassroomController: UIViewController, UIGestureRecognizerDelegate, UI
     fileprivate let NUM_INCREMENT: UInt = 10 // Downloads 10 messages per scroll
     
     /** CONSTANTS **/
-    fileprivate let CELL_ID = "classroomChatCell"
+    fileprivate let CELL_CHAT_ID = "classroomChatCell"
+    fileprivate let CELL_QUESTION_ID = "classroomQuestionCell"
     fileprivate let CELL_HEADER_ID = "classroomChatHeaderView"
     fileprivate let SECTION_HEADER_HEIGHT: CGFloat = 30.0
     
@@ -172,19 +173,12 @@ class ChatClassroomController: UIViewController, UIGestureRecognizerDelegate, UI
         DataService.ds.observeClassChatMessagesOnce(limit: self.numMessages, classroom: self.classroom) { (isSuccess, updatedClassroom) in
             self.loadingScreen(isLoading: false)
             if (!isSuccess || updatedClassroom == nil) {
-                // No messages yet, display placeholder view in the middle
-                self.emptyPlaceholderView.isHidden = false
-                self.emptyPlaceholderView.isUserInteractionEnabled = true
-                log.info("No messages updated for private chat")
+                log.info("No messages updated for classroom")
                 self.reobserveMessages()
                 return
             }
             
-            // There are messages, hide and disable empty placeholder view
-            self.emptyPlaceholderView.isHidden = true
-            self.emptyPlaceholderView.isUserInteractionEnabled = false
-            
-            // Update private chat and messages
+            // There are messages, so update private chat and messages
             self.classroom = updatedClassroom
             self.messages = self.classroom.classroomMessages
             
@@ -220,20 +214,13 @@ class ChatClassroomController: UIViewController, UIGestureRecognizerDelegate, UI
             self.pullToRefreshIndicator.stopAnimating()
             
             if (!isSuccess || updatedClassroom == nil) {
-                // No messages yet, display placeholder view in the middle to prompt user to interact with new private chat
-                self.emptyPlaceholderView.isHidden = false
-                self.emptyPlaceholderView.isUserInteractionEnabled = true
+                // No messages yet
                 log.info("No messages updated for classroom")
                 self.reobserveMessages()
                 return
             }
-            log.info("More classroom messages pulled")
             
-            // There are messages, hide and disable empty placeholder view
-            self.emptyPlaceholderView.isHidden = true
-            self.emptyPlaceholderView.isUserInteractionEnabled = false
-            
-            // Update private chat and messages
+            // There are messages, update private chat and messages
             self.classroom = updatedClassroom
             
             // Logic to scroll to the right chat message upon loading more messages above
@@ -301,17 +288,9 @@ class ChatClassroomController: UIViewController, UIGestureRecognizerDelegate, UI
                 if self.numMessages > self.NUM_INCREMENT {
                     self.numMessages -= self.NUM_INCREMENT
                 }
-                
-                // No messages yet, display placeholder view in the middle to prompt user to interact with new private chat
-                self.emptyPlaceholderView.isHidden = false
-                self.emptyPlaceholderView.isUserInteractionEnabled = true
                 log.info("No messages updated for classroom")
                 return
             }
-            
-            // There are messages, hide and disable empty placeholder view
-            self.emptyPlaceholderView.isHidden = true
-            self.emptyPlaceholderView.isUserInteractionEnabled = false
             
             // Check if messages are exactly the same, if yes, then no need to update
             if self.messages.count == updatedClassroom!.classroomMessages.count {
@@ -364,9 +343,6 @@ class ChatClassroomController: UIViewController, UIGestureRecognizerDelegate, UI
     }()
     
     fileprivate func setupFirebase() {
-        
-        // Setup empty placeholder view
-        self.setupEmptyPlaceholderView()
         
         // Setup activity indicator for initial load
         self.collectionView.addSubview(activityIndicator)
@@ -493,43 +469,6 @@ class ChatClassroomController: UIViewController, UIGestureRecognizerDelegate, UI
         controller.classroom = self.classroom
         self.navigationItem.backBarButtonItem = UIBarButtonItem(title: " ", style: .plain, target: nil, action: nil)
         self.navigationController?.pushViewController(controller, animated: true)
-    }
-    
-    // MARK: No messages view
-    
-    fileprivate let emptyPlaceholderView: UIView = {
-        let view = UIView(frame: CGRect(x: 0, y: 0, width: UIScreen.main.bounds.width * 0.9, height: UIScreen.main.bounds.height * 0.4))
-        view.isHidden = true
-        return view
-    }()
-    
-    fileprivate let minionImage: UIImageView = {
-        let image = #imageLiteral(resourceName: "minion")
-        let imageView = UIImageView(image: image)
-        imageView.contentMode = .scaleAspectFit
-        return imageView
-    }()
-    
-    fileprivate let noMessagesLbl: UIView = {
-        let label = UILabel()
-        label.font = FONT_HEAVY_MID
-        label.textColor = UIColor.darkGray
-        label.textAlignment = .center
-        label.text = "Don't be shy. Speak."
-        return label
-    }()
-    
-    fileprivate func setupEmptyPlaceholderView() {
-        
-        self.collectionView.addSubview(self.emptyPlaceholderView)
-        self.emptyPlaceholderView.center = CGPoint(x: self.view.center.x, y: self.view.center.y - 0.05 * self.view.frame.height)
-        self.emptyPlaceholderView.addSubview(minionImage)
-        self.emptyPlaceholderView.addSubview(noMessagesLbl)
-        self.emptyPlaceholderView.addConstraintsWithFormat("H:[v0(60)]", views: minionImage)
-        self.emptyPlaceholderView.addConstraint(NSLayoutConstraint(item: minionImage, attribute: .centerX, relatedBy: .equal, toItem: self.emptyPlaceholderView, attribute: .centerX, multiplier: 1.0, constant: 0.0))
-        self.emptyPlaceholderView.addConstraintsWithFormat("H:|-8-[v0]-8-|", views: noMessagesLbl)
-        
-        self.emptyPlaceholderView.addConstraintsWithFormat("V:|-8-[v0(60)]-5-[v1]", views: minionImage, noMessagesLbl)
     }
     
     // MARK: Chat
@@ -869,7 +808,8 @@ class ChatClassroomController: UIViewController, UIGestureRecognizerDelegate, UI
         self.automaticallyAdjustsScrollViewInsets = false
         self.collectionView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: 0.8*SECTION_HEADER_HEIGHT, right: 0) // Fix top and bottom padding since automaticallyAdjustScrollViewInsets set to false
         
-        self.collectionView.register(ClassroomChatCell.self, forCellWithReuseIdentifier: CELL_ID)
+        self.collectionView.register(ClassroomChatCell.self, forCellWithReuseIdentifier: CELL_CHAT_ID)
+        self.collectionView.register(ClassroomQuestionCell.self, forCellWithReuseIdentifier: CELL_QUESTION_ID)
         self.collectionView.register(ChatHeaderView.self, forSupplementaryViewOfKind: UICollectionElementKindSectionHeader, withReuseIdentifier: CELL_HEADER_ID)
         
         self.view.insertSubview(collectionView, at: 0)
@@ -878,8 +818,6 @@ class ChatClassroomController: UIViewController, UIGestureRecognizerDelegate, UI
         self.view.addConstraintsWithFormat("V:[v0]", views: collectionView)
         self.topConstraintForCollectionView = NSLayoutConstraint(item: self.collectionView, attribute: .top, relatedBy: .equal, toItem: self.view, attribute: .top, multiplier: 1.0, constant: self.TOP_GAP)
         self.view.addConstraint(self.topConstraintForCollectionView)
-        
-        self.setupEmptyPlaceholderView()
         
         // Panning on collection view keeps keyboard
         let panToKeepKeyboardRecognizer = UIPanGestureRecognizer(target: self, action: #selector(keepKeyboard))
@@ -930,9 +868,18 @@ class ChatClassroomController: UIViewController, UIGestureRecognizerDelegate, UI
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: CELL_ID, for: indexPath) as! ClassroomChatCell
+        
         let message = self.messagesInTimeBuckets[indexPath.section][indexPath.row]
         
+        if message.isSentBy428 {
+            // Question cell
+            if let cell = collectionView.dequeueReusableCell(withReuseIdentifier: CELL_QUESTION_ID, for: indexPath) as? ClassroomQuestionCell {
+                cell.configureCell(messageObj: message)
+                return cell
+            }
+        }
+        
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: CELL_CHAT_ID, for: indexPath) as! ClassroomChatCell
         let isLastInChain = self.messageIsLastInChain[indexPath.section][indexPath.row]
         
         // Get poster image name and poster name
@@ -958,6 +905,10 @@ class ChatClassroomController: UIViewController, UIGestureRecognizerDelegate, UI
         let options = NSStringDrawingOptions.usesFontLeading.union(.usesLineFragmentOrigin)
         let estimatedFrame = NSString(string: messageText).boundingRect(with: size, options: options, attributes: [NSFontAttributeName: UIFont.systemFont(ofSize: 16.0)], context: nil)
         var cellHeight = message.isSentByYou ? estimatedFrame.height + 11 : estimatedFrame.height + 11 + 19
+        
+        if message.isSentBy428 {
+            return CGSize(width: UIScreen.main.bounds.width, height: cellHeight)
+        }
         
         let isLastInChain = self.messageIsLastInChain[indexPath.section][indexPath.row]
         let LAST_IN_CHAIN_GAP: CGFloat = 10.0
