@@ -23,13 +23,17 @@ class MeController: UIViewController, UIGestureRecognizerDelegate, UIScrollViewD
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        if isFirstTimeUser {
-            isFirstTimeUser = false
-            showNewUserAlert()
-        }
         tabBarController?.tabBar.isHidden = false
         self.loadData()
         self.registerObservers()
+    }
+    
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+        // This code has to be here and not in viewDidAppear, etc.
+        if isFirstTimeUser {
+            showNewUserAlert()
+        }
     }
     
     override func viewWillDisappear(_ animated: Bool) {

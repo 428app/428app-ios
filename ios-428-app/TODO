@@ -1,10 +1,16 @@
 TODO:
-+ Rate us feature
-+ Backend question likes/dislikes calculation
-
 
 
 IOS UPDATES:
+
+V10:
++ FIXED BUG: New user does not get new user alert that tells her to edit profile first
+
+
++ Rate us feature
+
+
+
 
 V9:
 + FIXED BUG: Server - Fixed next day 4:28pm function which wasn't calculating it exactly right for different timezones, causing people to get classrooms at the wrong times
@@ -16,7 +22,7 @@ V9:
 + IMPROVEMENT: Server - Randomized swap classroom algorithm that reduces your chances of being with the exact same people in the next classroom (not going to work very well now because there are only few classrooms and few users right now)
 + IMPROVEMENT: Explain to users how to get Inbox messages - decided a bit of explanation helps. (Thanks Jenny)
 + IMPROVEMENT: Section divider for each question each day (Thanks Ernest)
-+ IMPROVEMENT: Fun animation (and behavioral nudges) over many parts of the app (try clicking around!)
++ IMPROVEMENT: Fun animation (and behavioral nudges) over many parts of the app (try clicking around)
 + IMPROVEMENT: Ability to thumbs up and down question-answer pair in Answers section
 
 

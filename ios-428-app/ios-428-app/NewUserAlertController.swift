@@ -27,15 +27,18 @@ class NewUserAlertController: UIViewController {
     
     fileprivate lazy var onTheWayLbl: UILabel = {
         let label = UILabel()
-        label.text = "Your classroom is on the way. \nWhy not edit your profile first?"
         label.font = FONT_HEAVY_MID
-        label.textAlignment = .center
-        label.textColor = GREEN_UICOLOR
+        let paragraphStyle = NSMutableParagraphStyle()
+        paragraphStyle.lineSpacing = 6
+        paragraphStyle.alignment = .center
+        let str = NSMutableAttributedString(string: "Your classroom is on the way. \nWhy not edit your profile first?", attributes: [NSForegroundColorAttributeName: GREEN_UICOLOR, NSParagraphStyleAttributeName: paragraphStyle])
+        label.attributedText = str
         label.numberOfLines = 0
         return label
     }()
     
     func dismissScreen() {
+        isFirstTimeUser = false
         self.dismiss(animated: true, completion: nil)
     }
     
@@ -53,7 +56,7 @@ class NewUserAlertController: UIViewController {
         containerView.addSubview(underConstructionIcon)
         containerView.addSubview(onTheWayLbl)
         
-        containerView.addConstraintsWithFormat("V:|-12-[v0(80)][v1(60)]-8-|", views: underConstructionIcon, onTheWayLbl)
+        containerView.addConstraintsWithFormat("V:|-12-[v0(70)][v1(60)]-8-|", views: underConstructionIcon, onTheWayLbl)
         containerView.addConstraintsWithFormat("H:[v0(80)]", views: underConstructionIcon)
         containerView.addConstraint(NSLayoutConstraint(item: underConstructionIcon, attribute: .centerX, relatedBy: .equal, toItem: containerView, attribute: .centerX, multiplier: 1.0, constant: 0.0))
         containerView.addConstraintsWithFormat("H:|-8-[v0]-8-|", views: onTheWayLbl)

@@ -159,7 +159,7 @@ class InboxController: UICollectionViewController, UICollectionViewDelegateFlowL
         let paragraphStyle = NSMutableParagraphStyle()
         paragraphStyle.lineSpacing = 6
         paragraphStyle.alignment = .center
-        let str = NSMutableAttributedString(string: "Send your classmates private messages by visiting their profiles in the classrooms.", attributes: [NSForegroundColorAttributeName: UIColor.darkGray, NSParagraphStyleAttributeName: paragraphStyle])
+        let str = NSMutableAttributedString(string: "Send your classmates private messages by visiting their profiles in your classrooms.", attributes: [NSForegroundColorAttributeName: UIColor.darkGray, NSParagraphStyleAttributeName: paragraphStyle])
         label.attributedText = str
         label.numberOfLines = 0
         return label
