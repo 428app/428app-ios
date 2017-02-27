@@ -14,28 +14,28 @@ class Profile {
     fileprivate var _name: String
     fileprivate var _profileImageName: String
     fileprivate var _discipline: String
-    fileprivate var _age: Int
     fileprivate var _location: String // Country, City
     fileprivate var _school: String
     fileprivate var _org: String
     fileprivate var _tagline: String // What I do at 4:28pm
     fileprivate var _classrooms: [String]
+    fileprivate var _age: Int?
     
     // Calculated variable
     fileprivate var _disciplineIcon: String
     fileprivate var _classroomIcons: [String]
     
-    init(uid: String, name: String, profileImageName: String, discipline: String, age: Int, location: String, school: String, org: String, tagline: String, classrooms: [String]) {
+    init(uid: String, name: String, profileImageName: String, discipline: String, location: String, school: String, org: String, tagline: String, classrooms: [String], age: Int?) {
         _uid = uid
         _name = name
         _profileImageName = profileImageName
         _discipline = discipline
-        _age = age
         _location = location
         _school = school
         _org = org
         _tagline = tagline
         _classrooms = classrooms
+        _age = age
         _disciplineIcon = getDisciplineIcon(discipline: _discipline)
         _classroomIcons = [String]()
         for c in classrooms {
@@ -71,7 +71,7 @@ class Profile {
         }
     }
     
-    var age: Int {
+    var age: Int? {
         get {
             return _age
         }

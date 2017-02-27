@@ -413,16 +413,18 @@ class ProfileController: UIViewController, UIGestureRecognizerDelegate, UIScroll
         _ = downloadImage(imageUrlString: profile.profileImageName, completed: { image in
             self.profileImageView.image = image
         })
-        nameAndAgeLbl.text = "\(profile.name), \(profile.age)"
+        
+        let ageString = profile.age == nil ? "" : ", \(profile.age!)"
+        nameAndAgeLbl.text = "\(profile.name)\(ageString)"
         disciplineImageView.image = UIImage(named: profile.disciplineIcon)
         
-        locationText.text = profile.location.isEmpty ? "Unknown" : profile.location
-        schoolText.text = profile.school.isEmpty ? "TOO LAZY to fill this in." : profile.school
-        organizationText.text = profile.org.isEmpty ? "TOO LAZY to fill this in." : profile.org
+        locationText.text = profile.location.isEmpty ? "Ask me where I'm from." : profile.location
+        schoolText.text = profile.school.isEmpty ? "Ask me why I did not fill this in." : profile.school
+        organizationText.text = profile.org.isEmpty ? "Ask me why I did not fill this in." : profile.org
         let paragraphStyle = NSMutableParagraphStyle()
         paragraphStyle.lineSpacing = 6
         paragraphStyle.alignment = .left
-        let taglineString = NSMutableAttributedString(string: profile.tagline.isEmpty ? "TOO LAZY to fill this in." : profile.tagline, attributes: [NSForegroundColorAttributeName: UIColor.gray, NSParagraphStyleAttributeName: paragraphStyle])
+        let taglineString = NSMutableAttributedString(string: profile.tagline.isEmpty ? "Ask me why I did not fill this in." : profile.tagline, attributes: [NSForegroundColorAttributeName: UIColor.gray, NSParagraphStyleAttributeName: paragraphStyle])
         taglineText.attributedText = taglineString
         
         self.classrooms = profile.classroomIcons

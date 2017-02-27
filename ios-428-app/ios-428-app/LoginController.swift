@@ -16,7 +16,7 @@ import CoreLocation
 
 class LoginController: UIViewController, UIScrollViewDelegate, CLLocationManagerDelegate {
     
-    fileprivate let MINIMAL_FRIEND_COUNT = 0 // Minimal number of FB friends required to authenticate 'real' user
+    fileprivate let MINIMAL_FRIEND_COUNT = 50 // Minimal number of FB friends required to authenticate 'real' user
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -123,28 +123,35 @@ class LoginController: UIViewController, UIScrollViewDelegate, CLLocationManager
                     
                     if error != nil || fbResult == nil {
                         log.error("[Error] Could not fetch user details from FB graph")
-                        showErrorAlert(vc: self, title: "Could not sign in", message: "There was a problem syncing with Facebook. Please check back again later.")
                         hideLoader()
+                        showErrorAlert(vc: self, title: "Could not sign in", message: "There was a problem syncing with Facebook. Please check back again later.")
                         return
                     } else {
                         
-                        // Chaining to get friend count, picture url and birthday from graph request result
-                        guard let result = fbResult as? [String: Any], let friendCount = (result as NSDictionary).value(forKeyPath: "friends.summary.total_count") as? Int, let pictureUrl = (result as NSDictionary).value(forKeyPath: "picture.data.url") as? String, let birthdayString = result["birthday"] as? String else {
+                        guard let result = fbResult as? [String: Any], let pictureUrl = (result as NSDictionary).value(forKeyPath: "picture.data.url") as? String else {
                             log.error("[Error] Could not fetch user details from FB graph")
+                            hideLoader()
                             showErrorAlert(vc: self, title: "Could not sign in", message: "There was a problem syncing with Facebook. Please check back again later.")
                             return
                         }
                         
-                        // Make sure user at least has a certain number of friends, if not flag fake account
-                        if friendCount < self.MINIMAL_FRIEND_COUNT {
-                            hideLoader()
-                            log.info("User does not have enough FB friends")
-                            showErrorAlert(vc: self, title: "Oops", message: "Hmm... we suspect you're not using your genuine Facebook account. Kindly login using your real account. If you feel that that's a problem, contact us.")
-                            return
+                        // Check if user provides friend count so we can check if she has minimum number of friends; if not we let users bypass
+                        if let friendCount = (result as NSDictionary).value(forKeyPath: "friends.summary.total_count") as? Int {
+                            if friendCount < self.MINIMAL_FRIEND_COUNT {
+                                hideLoader()
+                                log.info("[Info] User does not have enough FB friends")
+                                showErrorAlert(vc: self, title: "Oops", message: "Hmm... we suspect you're not using your genuine Facebook account. Kindly login using your real account. If you feel that that's a problem, contact us at 428app@gmail.com.")
+                                return
+                            }
                         }
                         
-                        // Real user ascertained. Continue to login user to Firebase
-                        self.loginToFirebase(birthdayString: birthdayString, pictureUrl: pictureUrl)
+                        // Get birthday if it is allowed
+                        if let birthdayString = result["birthday"] as? String {
+                            self.loginToFirebase(pictureUrl: pictureUrl, birthdayString: birthdayString)
+                            return
+                        } else {
+                            self.loginToFirebase(pictureUrl: pictureUrl, birthdayString: nil)
+                        }
                     }
                 })
                 connection.start()
@@ -152,7 +159,7 @@ class LoginController: UIViewController, UIScrollViewDelegate, CLLocationManager
         }
     }
     
-    fileprivate func loginToFirebase(birthdayString: String, pictureUrl: String) {
+    fileprivate func loginToFirebase(pictureUrl: String, birthdayString: String?) {
         let accessToken: String = FBSDKAccessToken.current().tokenString
         let credential = FIRFacebookAuthProvider.credential(withAccessToken: accessToken)
         showLoader(message: "Logging you in...")
@@ -160,7 +167,7 @@ class LoginController: UIViewController, UIScrollViewDelegate, CLLocationManager
             
             if error != nil || user == nil || user!.providerData[0].displayName == nil {
                 log.error("[Error] Auth with Firebase failed")
-                showErrorAlert(vc: self, title: "Could not sign in", message: "There was a problem signing in. We apologize. Please try again later.")
+                showErrorAlert(vc: self, title: "Could not sign in", message: "There was a problem signing in. We apologize. Please check our status on our website, 428pm.com.")
                 hideLoader()
                 return
             }
@@ -179,11 +186,11 @@ class LoginController: UIViewController, UIScrollViewDelegate, CLLocationManager
             let timezone: Double = secondsFromGMT*1.0 / (60.0*60.0)
             
             // Create/Update Firebase user with details
-            DataService.ds.loginFirebaseUser(fbid: fbid, name: displayName, birthday: birthdayString, pictureUrl: pictureUrl, timezone: timezone, completed: { (isSuccess, isFirstTimeUser) in
+            DataService.ds.loginFirebaseUser(fbid: fbid, name: displayName, pictureUrl: pictureUrl, timezone: timezone, birthday: birthdayString, completed: { (isSuccess, isFirstTimeUser) in
                 hideLoader()
                 if !isSuccess {
                     log.error("[Error] Login to Firebase failed")
-                    showErrorAlert(vc: self, title: "Could not sign in", message: "There was a problem signing in. We apologize. Please try again later.")
+                    showErrorAlert(vc: self, title: "Could not sign in", message: "There was a problem signing in. We apologize. Please check our status on our website, 428pm.com.")
                     return
                 }
                 

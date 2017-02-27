@@ -50,7 +50,7 @@ extension DataService {
     
     // Called in LoginController to create new user or log existing user in
     // Note: Only mostly updates Facebook details, other details such as pushToken and location are being updated by other calls
-    func loginFirebaseUser(fbid: String, name: String, birthday: String, pictureUrl: String, timezone: Double, completed: @escaping (_ isSuccess: Bool, _ isFirstTimeUser: Bool) -> ()) {
+    func loginFirebaseUser(fbid: String, name: String, pictureUrl: String, timezone: Double, birthday: String?, completed: @escaping (_ isSuccess: Bool, _ isFirstTimeUser: Bool) -> ()) {
         let uid_ = getStoredUid()
         if (uid_ == nil) {
             // This is an error, before calling loginFirebase should already have uid saved
@@ -65,7 +65,10 @@ extension DataService {
         let timestampInMilliseconds = Date().timeIntervalSince1970 * 1000
         
         // Only update profile photo if this user does not have a profile photo
-        var user: [String: Any] = ["fbid": fbid, "name": name, "birthday": birthday, "timezone": timezone, "lastSeen": timestampInMilliseconds]
+        var user: [String: Any] = ["fbid": fbid, "name": name, "timezone": timezone, "lastSeen": timestampInMilliseconds]
+        if birthday != nil {
+            user["birthday"] = birthday!
+        }
         
         self.REF_USERS.child(userUid).observeSingleEvent(of: .value, with: { snapshot in
             
@@ -248,9 +251,13 @@ extension DataService {
             if snapshot.exists() {
                 
                 // Name, birthday, discipline, profile photo are compulsory fields
-                guard let userDict = snapshot.value as? [String: Any], let name = userDict["name"] as? String, let birthday = userDict["birthday"] as? String, let discipline = userDict["discipline"] as? String, let profilePhotoUrl = userDict["profilePhoto"] as? String else {
+                guard let userDict = snapshot.value as? [String: Any], let name = userDict["name"] as? String, let discipline = userDict["discipline"] as? String, let profilePhotoUrl = userDict["profilePhoto"] as? String else {
                     completed(false, nil)
                     return
+                }
+                var age: Int? = nil
+                if let b = userDict["birthday"] as? String {
+                    age = convertBirthdayToAge(birthday: b)
                 }
                 var school = ""
                 if let s = userDict["school"] as? String {
@@ -278,17 +285,17 @@ extension DataService {
                     }
                 }
                 // Convert birthday of "MM/DD/yyyy" to age integer
-                let age = convertBirthdayToAge(birthday: birthday)
+                
                 if location == "" {
                     // User disabled location, return here without location
-                    let user = Profile(uid: uid_, name: name, profileImageName: profilePhotoUrl, discipline: discipline, age: age, location: "", school: school, org: org, tagline: tagline, classrooms: classrooms)
+                    let user = Profile(uid: uid_, name: name, profileImageName: profilePhotoUrl, discipline: discipline, location: "", school: school, org: org, tagline: tagline, classrooms: classrooms, age: age)
                     completed(true, user)
                     return
                 }
                 // Convert "<lat>,<lon>" to "<City>, <State>, <Country>"
                 convertLocationToCityAndCountry(location: location) { (cityCountry) in
                     // User has city country here
-                    let user = Profile(uid: uid_, name: name, profileImageName: profilePhotoUrl, discipline: discipline, age: age, location: cityCountry, school: school, org: org, tagline: tagline, classrooms: classrooms)
+                    let user = Profile(uid: uid_, name: name, profileImageName: profilePhotoUrl, discipline: discipline, location: cityCountry, school: school, org: org, tagline: tagline, classrooms: classrooms, age: age)
                     completed(true, user)
                     return
                 }

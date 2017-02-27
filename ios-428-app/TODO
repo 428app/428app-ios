@@ -5,9 +5,14 @@ IOS UPDATES:
 
 V10:
 + FIXED BUG: New user does not get new user alert that tells her to edit profile first
++ IMPROVEMENT: Better FB permissions control: App partially allows some permissions to be unchecked and does not refuse to sync with Facebook
 
 
-+ Rate us feature
++ TIDY UP: Remove Visit website, and place privacy policy in app because our website doesn't have very stable HTTPS
+
++ IMPROVEMENT: Lobby - a new user can chat in a lobby before she gets her first classroom
+
++ IMPROVEMENT: Rate us feature that is linked to the App store
 
 
 

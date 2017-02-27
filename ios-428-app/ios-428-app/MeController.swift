@@ -90,7 +90,8 @@ class MeController: UIViewController, UIGestureRecognizerDelegate, UIScrollViewD
         guard let profileData = myProfile else {
             return
         }
-        self.nameAndAgeLbl.text = "\(profileData.name), \(profileData.age)"
+        let ageString = profileData.age == nil ? "" : ", \(profileData.age!)"
+        self.nameAndAgeLbl.text = "\(profileData.name)\(ageString)"
         self.disciplineImageView.image = UIImage(named: profileData.disciplineIcon)
         self.classrooms = profileData.classroomIcons
         self.classroomsCollectionView.reloadData()
