@@ -157,10 +157,10 @@ class SettingsController: UIViewController, UITableViewDelegate, UITableViewData
             self.logout()
         } else if setting.text == "428 Website" {
             logAnalyticsEvent(key: kEventVisitWebsite)
-            let controller = WebviewController()
-            controller.urlString = "https://www.428pm.com"
-            self.navigationItem.backBarButtonItem?.title = "Back to 428"
-            self.navigationController?.pushViewController(controller, animated: true)
+            // NOTE: Do not open web view controller for this, because sometimes if our website flips to non-https it is not secure
+            if let url = URL(string: "https://www.428pm.com") {
+                UIApplication.shared.openURL(url)
+            }
         } else if setting.text == "428 Facebook" {
             logAnalyticsEvent(key: kEventVisitFacebook)
             let controller = WebviewController()
@@ -168,15 +168,17 @@ class SettingsController: UIViewController, UITableViewDelegate, UITableViewData
             self.navigationItem.backBarButtonItem?.title = "Back to 428"
             self.navigationController?.pushViewController(controller, animated: true)
         } else if setting.text == "Rate us" {
-            // TODO: Add rate link
             logAnalyticsEvent(key: kEventRateUs)
-            
+            let appId = "1206012038" // Get app id from itunes connect
+            if let url = URL(string : "itms-apps://itunes.apple.com/app/\(appId)") {
+                UIApplication.shared.openURL(url)
+            }
         } else if setting.text == "Privacy Policy" {
             logAnalyticsEvent(key: kEventVisitPrivacyPolicy)
-            let controller = WebviewController()
-            controller.urlString = "https://www.428pm.com/?open=terms-and-conditions"
-            self.navigationItem.backBarButtonItem?.title = "Back to 428"
-            self.navigationController?.pushViewController(controller, animated: true)
+            // NOTE: Do not open web view controller for this, because sometimes if our website flips to non-https it is not secure
+            if let url = URL(string: "https://www.428pm.com/?open=terms-and-conditions") {
+                UIApplication.shared.openURL(url)
+            }
         }
         tableView.deselectRow(at: indexPath, animated: true)
     }

@@ -3,16 +3,18 @@ TODO:
 
 IOS UPDATES:
 
++ IMPROVEMENT: Remove in-app browser for visit website and privacy policy and redirect that to Safari for stability, also added a rate us feature to prep for linking to app store once our app is live
+
 V10:
 + FIXED BUG: New user does not get new user alert that tells her to edit profile first
 + IMPROVEMENT: Better FB permissions control: App partially allows some permissions to be unchecked and does not refuse to sync with Facebook
 
 
-+ TIDY UP: Remove Visit website, and place privacy policy in app because our website doesn't have very stable HTTPS
+
 
 + IMPROVEMENT: Lobby - a new user can chat in a lobby before she gets her first classroom
 
-+ IMPROVEMENT: Rate us feature that is linked to the App store
+
 
 
 

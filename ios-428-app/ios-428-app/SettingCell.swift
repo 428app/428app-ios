@@ -93,7 +93,7 @@ class SettingCell: BaseTableViewCell {
         
         if setting.type == .link {
             
-            // Link to website, Facebook or rate us
+            // Link to Facebook or rate us
             
             constraintsToDelete.append(contentsOf: addAndGetConstraintsWithFormat("H:|-16-[v0]", views: settingLabel))
             self.selectionStyle = .gray
