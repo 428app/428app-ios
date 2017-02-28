@@ -2,10 +2,8 @@ TODO:
 
 
 IOS UPDATES:
-+ IMPROVEMENT: Lobby - a new user can chat in a lobby before she gets her first playgroup
 
-
-+ IMPROVEMENT: Tutorial at the start
++ IMPROVEMENT: Interactive tutorial at the start
 
 
 + IMPROVEMENT: Clicking on playgroup title also brings up nav drawer
@@ -18,7 +16,7 @@ V10:
 + IMPROVEMENT: Remove in-app browser for visit website and privacy policy and redirect that to Safari for stability, also added a rate us feature to prep for linking to app store once our app is live
 + FIXED BUG: Profile photo change fail safe: In case profile photo upload failed, can reupload and won't get stuck
 + IMPROVEMENT: Rebranding: No longer called Playgroups, but now called Play groups!
-
++ IMPROVEMENT: Lobby - a new user can chat in a lobby before she gets her first playgroup
 
 
 

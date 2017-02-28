@@ -18,6 +18,7 @@ class IntroController: UIViewController, UITextFieldDelegate, UIPickerViewDelega
         self.view.addGestureRecognizer(tapGestureRecognizer)
         self.setupViews()
         isFirstTimeUser = true // If you're in IntroController, means you're a first time user
+        DataService.ds.createOrJoinLobby()
     }
     
     // MARK: Views

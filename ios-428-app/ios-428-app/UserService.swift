@@ -414,4 +414,19 @@ extension DataService {
             REF_USERS.child("\(uid)/hasNewPlaygroup").removeValue()
         }
     }
+    
+    // Used in PlaygroupsController to get user's lobby id to pass over to LobbyController
+    func getUserLobbyId(completed: @escaping (_ lid: String?) -> ()) {
+        guard let uid = getStoredUid() else {
+            completed(nil)
+            return
+        }
+        REF_USERS.child("\(uid)/lobbyId").observe(.value, with: { snap in
+            if let lid = snap.value as? String {
+                completed(lid)
+                return
+            }
+            completed(nil)
+        })
+    }
 }

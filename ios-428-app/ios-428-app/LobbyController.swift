@@ -91,11 +91,6 @@ class LobbyController: UIViewController, UIGestureRecognizerDelegate, UITextView
             self.activityIndicator.startAnimating()
             self.collectionView.isScrollEnabled = false
             self.questionBanner.isUserInteractionEnabled = false
-            if let btns = self.navigationItem.rightBarButtonItems {
-                for btn in btns {
-                    btn.isEnabled = false
-                }
-            }
             // Small hack to make it not show up when the load time is less than 2 seconds
             self.activityIndicator.isHidden = true
             UIView.animate(withDuration: 2.0, animations: {}, completion: { (isSuccess) in
@@ -108,11 +103,6 @@ class LobbyController: UIViewController, UIGestureRecognizerDelegate, UITextView
             self.animateQuestionBanner()
             self.collectionView.isScrollEnabled = true
             self.questionBanner.isUserInteractionEnabled = true
-            if let btns = self.navigationItem.rightBarButtonItems {
-                for btn in btns {
-                    btn.isEnabled = true
-                }
-            }
         }
     }
     
@@ -126,10 +116,11 @@ class LobbyController: UIViewController, UIGestureRecognizerDelegate, UITextView
         }
         self.lobbyRefAndHandle = DataService.ds.observeSingleLobby(lid: self.lobby.pid, completed: { (isSuccess, updatedLobby) in
             if !isSuccess || updatedLobby == nil {
+                self.loadingScreen(isLoading: false)
                 showErrorAlert(vc: self, title: "Error", message: "There was a problem loading your lobby. Please visit our website 428pm.com for status.")
                 return
             }
-            self.lobby.members = updatedLobby!.members
+            self.lobby = updatedLobby!
             if self.messages.isEmpty && !lobbyHasBeenInit {
                 self.initMessages()
             }
@@ -158,7 +149,6 @@ class LobbyController: UIViewController, UIGestureRecognizerDelegate, UITextView
         if self.chatQueryAndHandle != nil {
             return
         }
-        
         DataService.ds.observePlaygroupChatMessagesOnce(limit: self.numMessages, playgroup: self.lobby) { (isSuccess, updatedLobby) in
             self.loadingScreen(isLoading: false)
             if (!isSuccess || updatedLobby == nil) {
@@ -367,7 +357,7 @@ class LobbyController: UIViewController, UIGestureRecognizerDelegate, UITextView
     // MARK: Navigation
     
     fileprivate func setupNavigationBar() {
-        self.navigationItem.title = self.lobby.title
+        self.navigationItem.title = "Lobby"
     }
     
     // MARK: Question banner on top

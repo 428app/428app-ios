@@ -6,8 +6,6 @@
 //  Copyright © 2016 428. All rights reserved.
 //
 
-// TODO: Download from TestFlight does not refresh push token
-
 import UIKit
 import UserNotifications
 

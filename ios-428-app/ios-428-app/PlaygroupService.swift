@@ -234,7 +234,6 @@ extension DataService {
         let uid = getStoredUid() == nil ? "" : getStoredUid()!
         let pid = playgroup.pid
         let ref: FIRDatabaseReference = REF_PLAYGROUPMESSAGES.child(pid)
-        
         let q: FIRDatabaseQuery = ref.queryOrdered(byChild: "timestamp").queryLimited(toLast: limit)
         q.observeSingleEvent(of: .value, with: { snapshot in
             q.removeAllObservers()
@@ -503,6 +502,71 @@ extension DataService {
     
     // MARK: Lobby
     
+    // Used on IntroController for a new user to create or join a new lobby
+    // NOTE: Must be called after uid is saved to NSUserDefaults and user timezone is stored in Firebase
+    // This function does not send back a callback but merely creates a lobbyId entry in the users table
+    func createOrJoinLobby() {
+        let uid = getStoredUid() == nil ? "" : getStoredUid()!
+        // First confirm that this user does not have classrooms/lobby yet
+        REF_USERS.child(uid).observe(.value, with: { userSnap in
+            // User does not exist yet
+            guard let userDict = userSnap.value as? [String: Any] else {
+                return
+            }
+            // User already has playgroups
+            if userDict["playgroups"] != nil {
+                return
+            }
+            // User has a lobby! Return
+            if let _ = userDict["lobbyId"] as? String {
+                return
+            }
+            // Need user timezone in order to find lobby from that timezone
+            guard let userTimezone = userDict["timezone"] as? Double else {
+                return
+            }
+            
+            let MAX_LOBBY_SIZE = 12
+            
+            // Find lobbies from the past 48 hours
+            let timestampInMilliseconds = Date().timeIntervalSince1970 * 1000
+            
+            let q: FIRDatabaseQuery = self.REF_LOBBIES.queryOrdered(byChild: "timeCreated").queryStarting(atValue: timestampInMilliseconds - (48 * 60 * 60 * 1000))
+            q.observeSingleEvent(of: .value, with: { snapshot in
+                
+                if let lobbiesSnap = snapshot.children.allObjects as? [FIRDataSnapshot] {
+                    // There are lobbies to scan for
+                    for lobbySnap in lobbiesSnap {
+                        if let lobbyDict = lobbySnap.value as? [String: Any], let timezone = lobbyDict["timezone"] as? Double, let members = lobbyDict["members"] as? [String: Bool] {
+                            if timezone == userTimezone && members.count < MAX_LOBBY_SIZE {
+                                // Lobby found that user can join!
+                                let lid = lobbySnap.key
+                                self.REF_USERS.child("\(uid)/lobbyId").setValue(lid)
+                                self.REF_LOBBIES.child("\(lid)/members/\(uid)").setValue(true)
+                                return
+                            }
+                        }
+                    }
+                }
+                
+                // Scanned all lobbies, and no lobby to be found, have to create a new lobby
+                let lobbyRef = self.REF_LOBBIES.childByAutoId()
+                let memberDict = [uid: true]
+                let lobbyData: [String: Any] = ["timeCreated": timestampInMilliseconds, "timezone": userTimezone, "members": memberDict]
+                lobbyRef.setValue(lobbyData, withCompletionBlock: { (error, ref) in
+                    if error != nil {
+                        log.error("[Error] Error creating lobby for a new user")
+                        return
+                    }
+                    // New lobby created!
+                    self.REF_USERS.child("\(uid)/lobbyId").setValue(ref.key)
+                    return
+                })
+                return
+            })
+        })
+    }
+    
     // Observe lobby used in LobbyController, a lobby is actually a playgroup model
     func observeSingleLobby(lid: String, completed: @escaping (_ isSuccess: Bool, _ lobby: Playgroup?) -> ()) -> (FIRDatabaseReference, FIRDatabaseHandle) {
         let ref: FIRDatabaseReference = REF_LOBBIES.child(lid)
@@ -511,9 +575,9 @@ extension DataService {
                 completed(false, nil)
                 return
             }
-            
+
             var members: [Profile] = [Profile]()
-            let totalMemberIds = Array(membersDict.keys)
+            let totalMemberIds: [String] = Array(membersDict.keys)
             var memberIds = [String]()
             
             // Get members' profiles
@@ -529,7 +593,7 @@ extension DataService {
                     memberIds.append(userProfile!.uid)
                     if self.isIdenticalArrays(arr1: memberIds, arr2: totalMemberIds) { // All members read
                         // Image name of lobby in assets
-                        let lobby = Playgroup(pid: lid, title: "Lobby", questionText: "What was your childhood ambition?", imageName: "lobby", members: members)
+                        let lobby = Playgroup(pid: lid, title: "Lobby", questionText: "Remember the time when Dad did science experiments with you? Or the other time you attended art class and fell in love with painting? Share with us: What was your childhood ambition?", imageName: "lobby", members: members)
                         completed(true, lobby)
                         return
                     }

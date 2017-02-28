@@ -23,12 +23,16 @@ class ModalQuestionController: UIViewController {
                 self.questionImageView.image = UIImage(named: self.playgroup.imageName)
                 self.fbButton.isEnabled = false
                 self.tweetButton.isEnabled = false
+                self.fbButton.alpha = 0.0
+                self.tweetButton.alpha = 0.0
             } else {
                 _ = downloadImage(imageUrlString: playgroup.imageName, completed: { image in
                     self.questionImageView.image = image
                 })
                 self.fbButton.isEnabled = true
                 self.tweetButton.isEnabled = true
+                self.fbButton.alpha = 1.0
+                self.tweetButton.alpha = 1.0
             }
             self.questionText.text = playgroup.questionText
         }

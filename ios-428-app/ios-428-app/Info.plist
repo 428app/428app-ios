@@ -49,7 +49,7 @@
 	<key>NSCameraUsageDescription</key>
 	<string>$(PRODUCT_NAME) Access to the camera will be for the sole purpose of selecting your profile picture.</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>We require your location while you're using the app to connect you with people nearby.</string>
+	<string>428 respects your privacy and only uses city-level location information.</string>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>$(PRODUCT_NAME) Access to the library will be for the sole purpose of selecting your profile picture.</string>
 	<key>UIAppFonts</key>

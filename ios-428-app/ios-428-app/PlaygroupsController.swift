@@ -23,6 +23,8 @@ class PlaygroupsController: UIViewController, UICollectionViewDelegate, UICollec
     
     open var playgroups = [Playgroup]()
     
+    fileprivate var lid: String? = nil // Lobby id if there is one
+    
     fileprivate lazy var collectionView: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
         let collectionView = UICollectionView(frame: UIScreen.main.bounds, collectionViewLayout: layout)
@@ -44,6 +46,10 @@ class PlaygroupsController: UIViewController, UICollectionViewDelegate, UICollec
         self.extendedLayoutIncludesOpaqueBars = true
         self.setupViews()
         self.loadPlaygroups()
+        // Check to see if user has a lobby id, and pull it down
+        DataService.ds.getUserLobbyId(completed: { (lobbyId) in
+            self.lid = lobbyId
+        })
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -214,9 +220,53 @@ class PlaygroupsController: UIViewController, UICollectionViewDelegate, UICollec
         return label
     }()
     
+    fileprivate lazy var visitLobbyBtn: UIButton = {
+       let btn = UIButton()
+        btn.titleLabel?.text = "Visit Lobby first"
+        btn.backgroundColor = RED_UICOLOR
+        btn.setTitle("Visit Lobby first", for: .normal)
+        btn.setTitleColor(RED_UICOLOR, for: .normal)
+        btn.setTitleColor(UIColor.white, for: .highlighted)
+        btn.titleLabel?.font = FONT_HEAVY_LARGE
+        btn.setBackgroundColor(color: UIColor.white, forState: .normal)
+        btn.setBackgroundColor(color: RED_UICOLOR, forState: .highlighted)
+        btn.layer.cornerRadius = 4.0
+        btn.layer.borderColor = RED_UICOLOR.cgColor
+        btn.layer.borderWidth = 0.8
+        btn.clipsToBounds = true
+        
+        btn.addTarget(self, action: #selector(visitLobby), for: .touchUpInside)
+        return btn
+    }()
+    
+    func visitLobby() {
+        if lid == nil {
+            showLoader(message: "Entering Lobby...")
+            DataService.ds.getUserLobbyId(completed: { (lobbyId) in
+                hideLoader()
+                self.lid = lobbyId
+                if self.lid == nil {
+                    showErrorAlert(vc: self, title: "One second", message: "Lobby is currently full. Please try again later!")
+                    return
+                }
+                let lobby = Playgroup(pid: self.lid!)
+                let controller = LobbyController()
+                controller.lobby = lobby
+                self.navigationItem.backBarButtonItem = UIBarButtonItem(title: " ", style: .plain, target: nil, action: nil)
+                self.navigationController?.pushViewController(controller, animated: true)
+            })
+        } else {
+            let lobby = Playgroup(pid: self.lid!)
+            let controller = LobbyController()
+            controller.lobby = lobby
+            self.navigationItem.backBarButtonItem = UIBarButtonItem(title: " ", style: .plain, target: nil, action: nil)
+            self.navigationController?.pushViewController(controller, animated: true)
+        }
+    }
+    
     fileprivate func setupEmptyPlaceholderView() {
         self.collectionView.addSubview(self.emptyPlaceholderView)
-        self.emptyPlaceholderView.center = CGPoint(x: self.view.center.x, y: self.view.center.y - 0.03 * self.view.frame.height)
+        self.emptyPlaceholderView.center = CGPoint(x: self.view.center.x, y: self.view.center.y - 0.08 * self.view.frame.height)
         
         self.emptyPlaceholderView.addSubview(logo428)
         self.emptyPlaceholderView.addSubview(timerLabel)
@@ -235,7 +285,11 @@ class PlaygroupsController: UIViewController, UICollectionViewDelegate, UICollec
         self.emptyPlaceholderView.addSubview(infoContainer)
         self.emptyPlaceholderView.addConstraint(NSLayoutConstraint(item: infoContainer, attribute: .centerX, relatedBy: .equal, toItem: self.emptyPlaceholderView, attribute: .centerX, multiplier: 1.0, constant: 0.0))
         
-        self.emptyPlaceholderView.addConstraintsWithFormat("V:|-8-[v0(60)]-5-[v1]-2-[v2]-8-[v3]", views: logo428, timerLabel, until428Label, infoContainer)
+        self.emptyPlaceholderView.addSubview(visitLobbyBtn)
+        self.emptyPlaceholderView.addConstraint(NSLayoutConstraint(item: visitLobbyBtn, attribute: .centerX, relatedBy: .equal, toItem: self.emptyPlaceholderView, attribute: .centerX, multiplier: 1.0, constant: 0.0))
+        self.emptyPlaceholderView.addConstraint(NSLayoutConstraint(item: visitLobbyBtn, attribute: .width, relatedBy: .equal, toItem: infoContainer, attribute: .width, multiplier: 1.25, constant: 0.0))
+        
+        self.emptyPlaceholderView.addConstraintsWithFormat("V:|-8-[v0(60)]-5-[v1]-2-[v2]-8-[v3]-8-[v4(45)]", views: logo428, timerLabel, until428Label, infoContainer, visitLobbyBtn)
     }
     
     fileprivate func setupViews() {
