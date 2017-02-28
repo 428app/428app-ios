@@ -87,7 +87,7 @@ class EditTaglineController: UIViewController, UITextViewDelegate {
         label.textColor = UIColor.lightGray
         label.sizeToFit()
         label.isHidden = true
-        label.text = "At 4:28pm, you can find me..."
+        label.text = "When I was little, I wanted to..."
         return label
     }()
     
@@ -108,7 +108,7 @@ class EditTaglineController: UIViewController, UITextViewDelegate {
         label.font = FONT_HEAVY_LARGE
         label.textColor = UIColor.black
         label.textAlignment = .left
-        label.text = "What I do at 4:28pm:"
+        label.text = "My childhood ambition is:"
         return label
     }()
     

@@ -158,6 +158,7 @@ class ChatInboxController: UIViewController, UICollectionViewDelegateFlowLayout,
     **/
     
     fileprivate func initMessages() {
+        log.info("Init messages")
         if self.queryAndHandle != nil {
             return
         }

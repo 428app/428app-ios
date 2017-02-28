@@ -217,7 +217,7 @@ open class ShoutView: UIView {
         self.frame.size.height = 0
         self.backgroundView.frame.size.height = self.frame.height
     }, completion: { finished in
-        // Fires completion so that upon tap I can go to the right chat/classroom
+        // Fires completion so that upon tap I can go to the right chat/playgroup
         self.completion?()
         self.displayTimer.invalidate()
         self.removeFromSuperview()

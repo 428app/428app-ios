@@ -1,5 +1,5 @@
 //
-//  ClassroomQuestionCell.swift
+//  PlaygroupQuestionCell.swift
 //  ios-428-app
 //
 //  Created by Leonard Loo on 2/25/17.
@@ -9,9 +9,9 @@
 import Foundation
 import UIKit
 
-class ClassroomQuestionCell: BaseCollectionCell {
+class PlaygroupQuestionCell: BaseCollectionCell {
     
-    fileprivate var message: ClassroomMessage!
+    fileprivate var message: PlaygroupMessage!
     open var shouldExpand = false
     
     fileprivate let bgView: UIView = {
@@ -41,7 +41,7 @@ class ClassroomQuestionCell: BaseCollectionCell {
         questionLbl.addGestureRecognizer(tap)
     }
     
-    func configureCell(messageObj: ClassroomMessage) {
+    func configureCell(messageObj: PlaygroupMessage) {
         self.message = messageObj
         
         // Attributed string to increase spacing

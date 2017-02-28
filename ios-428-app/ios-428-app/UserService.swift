@@ -99,7 +99,7 @@ extension DataService {
                 // Create new user
                 user["pushCount"] = 0
                 user["profilePhoto"] = pictureUrl
-                let userSettings = ["dailyAlert": true, "inboxMessages": true, "classroomMessages": true, "inAppNotifications": true]
+                let userSettings = ["dailyAlert": true, "inboxMessages": true, "playgroupMessages": true, "inAppNotifications": true]
                 
                 self.REF_USERS.child(userUid).updateChildValues(user, withCompletionBlock: { (err, ref) in
                     self.setIsLoggedIn(isLoggedIn: true, completed: { (loginSuccess) in })
@@ -236,7 +236,7 @@ extension DataService {
     
     // Retrive user's profile data based on input user id.
     // View other profiles in ChatInboxController's openProfile or own profile in Edit Profile Controllers
-    // Also used in ClassroomService to get user fields
+    // Also used in PlaygroupService to get user fields
     func getUserFields(uid: String?, completed: @escaping (_ isSuccess: Bool, _ user: Profile?) -> ()) {
         guard let uid_ = uid else {
             completed(false, nil)
@@ -275,12 +275,12 @@ extension DataService {
                 if let l = userDict["location"] as? String {
                     location = l
                 }
-                var classrooms = [String]()
-                if let c = userDict["classrooms"] as? [String: [String: Any]] {
-                    // Iterate through classrooms to get disciplines
-                    for (_, cidData) in c {
-                        if let classroomDiscipline = cidData["discipline"] as? String {
-                            classrooms.append(classroomDiscipline)
+                var playgroups = [String]()
+                if let c = userDict["playgroups"] as? [String: [String: Any]] {
+                    // Iterate through playgroups to get disciplines
+                    for (_, pidData) in c {
+                        if let playgroupDiscipline = pidData["discipline"] as? String {
+                            playgroups.append(playgroupDiscipline)
                         }
                     }
                 }
@@ -288,14 +288,14 @@ extension DataService {
                 
                 if location == "" {
                     // User disabled location, return here without location
-                    let user = Profile(uid: uid_, name: name, profileImageName: profilePhotoUrl, discipline: discipline, location: "", school: school, org: org, tagline: tagline, classrooms: classrooms, age: age)
+                    let user = Profile(uid: uid_, name: name, profileImageName: profilePhotoUrl, discipline: discipline, location: "", school: school, org: org, tagline: tagline, playgroups: playgroups, age: age)
                     completed(true, user)
                     return
                 }
                 // Convert "<lat>,<lon>" to "<City>, <State>, <Country>"
                 convertLocationToCityAndCountry(location: location) { (cityCountry) in
                     // User has city country here
-                    let user = Profile(uid: uid_, name: name, profileImageName: profilePhotoUrl, discipline: discipline, location: cityCountry, school: school, org: org, tagline: tagline, classrooms: classrooms, age: age)
+                    let user = Profile(uid: uid_, name: name, profileImageName: profilePhotoUrl, discipline: discipline, location: cityCountry, school: school, org: org, tagline: tagline, playgroups: playgroups, age: age)
                     completed(true, user)
                     return
                 }
@@ -351,13 +351,13 @@ extension DataService {
     // MARK: User Settings
     
     // Updates user settings whenever a user toggles the various settings in SettingsController
-    func updateUserSettings(dailyAlert: Bool, inboxMessages: Bool, classroomMessages: Bool, inAppNotifications: Bool, completed: @escaping (_ isSuccess: Bool) -> ()) {
+    func updateUserSettings(dailyAlert: Bool, inboxMessages: Bool, playgroupMessages: Bool, inAppNotifications: Bool, completed: @escaping (_ isSuccess: Bool) -> ()) {
         guard let uid = getStoredUid() else {
             completed(false)
             return
         }
         // Replace all existing settings
-        let settings: [String: Bool] = ["dailyAlert": dailyAlert, "inboxMessages": inboxMessages, "classroomMessages": classroomMessages, "inAppNotifications": inAppNotifications]
+        let settings: [String: Bool] = ["dailyAlert": dailyAlert, "inboxMessages": inboxMessages, "playgroupMessages": playgroupMessages, "inAppNotifications": inAppNotifications]
         
         REF_USERSETTINGS.child(uid).updateChildValues(settings, withCompletionBlock: { (err, ref) in
             completed(err == nil)
@@ -380,27 +380,27 @@ extension DataService {
                 completed(nil)
                 return
             }
-            guard let dict = snapshot.value as? [String: Bool], let dailyAlert = dict["dailyAlert"], let inboxMessages = dict["inboxMessages"], let classroomMessages = dict["classroomMessages"], let inAppNotifications = dict["inAppNotifications"] else {
+            guard let dict = snapshot.value as? [String: Bool], let dailyAlert = dict["dailyAlert"], let inboxMessages = dict["inboxMessages"], let playgroupMessages = dict["playgroupMessages"], let inAppNotifications = dict["inAppNotifications"] else {
                 completed(nil)
                 return
             }
             // These are settings are values mapped directly to the keys that will be displayed on the frontend
             // Note: The keys must be named exactly as you want them to appear on the frontend
-            let settings = ["Daily alert": dailyAlert, "Private messages": inboxMessages, "Classroom messages": classroomMessages, "In-app notifications": inAppNotifications]
+            let settings = ["Daily alert": dailyAlert, "Private messages": inboxMessages, "Playgroup messages": playgroupMessages, "In-app notifications": inAppNotifications]
             completed(settings)
             return
         })
     }
     
-    // Used in ClassroomsController to check if a user has new classrooms, so as to show alert
-    func getUserHasNewClassroom(completed: @escaping (_ classroomTitle: String?) -> ()) {
+    // Used in PlaygroupsController to check if a user has new playgroups, so as to show alert
+    func getUserHasNewPlaygroup(completed: @escaping (_ playgroupTitle: String?) -> ()) {
         guard let uid = getStoredUid() else {
             completed(nil)
             return
         }
-        REF_USERS.child("\(uid)/hasNewClassroom").observeSingleEvent(of: .value, with: { snapshot in
-            if let classroomTitle = snapshot.value as? String {
-                completed(classroomTitle)
+        REF_USERS.child("\(uid)/hasNewPlaygroup").observeSingleEvent(of: .value, with: { snapshot in
+            if let playgroupTitle = snapshot.value as? String {
+                completed(playgroupTitle)
                 return
             }
             completed(nil)
@@ -408,10 +408,10 @@ extension DataService {
         })
     }
     
-    // Used upon dismissing NewClassroomAlertController, so the alert does not show again
-    func removeUserHasNewClassroom() { // No need for callback
+    // Used upon dismissing NewPlaygroupAlertController, so the alert does not show again
+    func removeUserHasNewPlaygroup() { // No need for callback
         if let uid = getStoredUid() {
-            REF_USERS.child("\(uid)/hasNewClassroom").removeValue()
+            REF_USERS.child("\(uid)/hasNewPlaygroup").removeValue()
         }
     }
 }

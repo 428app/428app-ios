@@ -2,7 +2,7 @@
 //  SuperlativeAlertController.swift
 //  ios-428-app
 //
-//  Launched from ChatClassroomController when user superlatives are available but user has not voted.
+//  Launched from ChatPlaygroupController when user superlatives are available but user has not voted.
 //
 //  Created by Leonard Loo on 1/3/17.
 //  Copyright © 2017 428. All rights reserved.
@@ -13,7 +13,7 @@ import UIKit
 
 class SuperlativeAlertController: UIViewController {
     
-    open var classroom: Classroom!
+    open var playgroup: Playgroup!
     
     fileprivate let containerView: UIView = {
         let view = UIView()
@@ -24,7 +24,7 @@ class SuperlativeAlertController: UIViewController {
     
     fileprivate let superlativeIcon: UIImageView = {
         let imageView = UIImageView(frame: CGRect(x: 0.0, y: 0.0, width: 50.0, height: 50.0))
-        imageView.image = #imageLiteral(resourceName: "rateclassmates")
+        imageView.image = #imageLiteral(resourceName: "rateplaypeers")
         imageView.contentMode = .scaleAspectFit
         return imageView
     }()

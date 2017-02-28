@@ -1,5 +1,5 @@
 //
-//  ChatClassroomController.swift
+//  ChatPlaygroupController.swift
 //  ios-428-app
 //
 //  Created by Leonard Loo on 10/19/16.
@@ -10,24 +10,24 @@ import Foundation
 import UIKit
 import Firebase
 
-class ChatClassroomController: UIViewController, UIGestureRecognizerDelegate, UITextViewDelegate, UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
+class ChatPlaygroupController: UIViewController, UIGestureRecognizerDelegate, UITextViewDelegate, UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
     
     /** FIREBASE **/
     fileprivate var chatQueryAndHandle: (FIRDatabaseQuery, FIRDatabaseHandle)!
-    fileprivate var classroomRefAndHandle: (FIRDatabaseReference, FIRDatabaseHandle)!
+    fileprivate var playgroupRefAndHandle: (FIRDatabaseReference, FIRDatabaseHandle)!
     
     fileprivate var numMessages: UInt = 30 // Increases as user scrolls to top of collection view
     fileprivate let NUM_INCREMENT: UInt = 10 // Downloads 10 messages per scroll
     
     /** CONSTANTS **/
-    fileprivate let CELL_CHAT_ID = "classroomChatCell"
-    fileprivate let CELL_QUESTION_ID = "classroomQuestionCell"
-    fileprivate let CELL_HEADER_ID = "classroomChatHeaderView"
+    fileprivate let CELL_CHAT_ID = "playgroupChatCell"
+    fileprivate let CELL_QUESTION_ID = "playgroupQuestionCell"
+    fileprivate let CELL_HEADER_ID = "playgroupChatHeaderView"
     fileprivate let SECTION_HEADER_HEIGHT: CGFloat = 30.0
     
     /** DATA **/
-    fileprivate var messages: [ClassroomMessage] = [ClassroomMessage]() // All messages
-    fileprivate var messagesInTimeBuckets: [[ClassroomMessage]] = [[ClassroomMessage]]() // Messages separated into buckets of time (at least 1 hour apart)
+    fileprivate var messages: [PlaygroupMessage] = [PlaygroupMessage]() // All messages
+    fileprivate var messagesInTimeBuckets: [[PlaygroupMessage]] = [[PlaygroupMessage]]() // Messages separated into buckets of time (at least 1 hour apart)
     fileprivate var messageIsLastInChain: [[Bool]] = [[Bool]]() // If true, that means message is the last message sent in chain of messages by one user, so bubble will be attached
     fileprivate var timeBucketHeaders: [Date] = [Date]() // Headers of time buckets, must have same length as messagesInTimeBuckets
     
@@ -43,7 +43,7 @@ class ChatClassroomController: UIViewController, UIGestureRecognizerDelegate, UI
     
     let interactor = Interactor() // Used for transitioning to and from ProfileController
     
-    var classroom: Classroom!
+    var playgroup: Playgroup!
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -58,7 +58,7 @@ class ChatClassroomController: UIViewController, UIGestureRecognizerDelegate, UI
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        DataService.ds.seeClassroomMessages(classroom: self.classroom) { (isSuccess) in }
+        DataService.ds.seePlaygroupMessages(playgroup: self.playgroup) { (isSuccess) in }
         self.tabBarController?.tabBar.isHidden = true
         self.navigationController?.navigationBar.barTintColor = RED_UICOLOR
         self.registerObservers()
@@ -67,7 +67,7 @@ class ChatClassroomController: UIViewController, UIGestureRecognizerDelegate, UI
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         self.view.endEditing(true)
-        DataService.ds.seeClassroomMessages(classroom: self.classroom) { (isSuccess) in }
+        DataService.ds.seePlaygroupMessages(playgroup: self.playgroup) { (isSuccess) in }
         self.tabBarController?.tabBar.isHidden = false
         self.unregisterObservers()
     }
@@ -82,8 +82,8 @@ class ChatClassroomController: UIViewController, UIGestureRecognizerDelegate, UI
         if self.chatQueryAndHandle != nil {
             self.chatQueryAndHandle.0.removeObserver(withHandle: self.chatQueryAndHandle.1)
         }
-        if self.classroomRefAndHandle != nil {
-            self.classroomRefAndHandle.0.removeObserver(withHandle: self.classroomRefAndHandle.1)
+        if self.playgroupRefAndHandle != nil {
+            self.playgroupRefAndHandle.0.removeObserver(withHandle: self.playgroupRefAndHandle.1)
         }
     }
     
@@ -119,29 +119,29 @@ class ChatClassroomController: UIViewController, UIGestureRecognizerDelegate, UI
         }
     }
     
-    fileprivate func initClassroomObserver() {
+    fileprivate func initPlaygroupObserver() {
         self.loadingScreen(isLoading: true)
         
-        // Classroom could have already been initialized, so just init messages straight away
-        let classroomHasBeenInit: Bool = self.classroom.members.count > 0
-        if classroomHasBeenInit {
+        // Playgroup could have already been initialized, so just init messages straight away
+        let playgroupHasBeenInit: Bool = self.playgroup.members.count > 0
+        if playgroupHasBeenInit {
             self.initMessages()
         }
         
-        self.classroomRefAndHandle = DataService.ds.observeSingleClassroom(classroom: self.classroom, completed: { (isSuccess, updatedClassroom) in
+        self.playgroupRefAndHandle = DataService.ds.observeSinglePlaygroup(playgroup: self.playgroup, completed: { (isSuccess, updatedPlaygroup) in
             
             // Update fields individually instead of replacing, as we don't want to replace messages
-            self.classroom.members = updatedClassroom.members
-            self.classroom.questions = updatedClassroom.questions
-            self.classroom.superlativeType = updatedClassroom.superlativeType
-            self.classroom.hasSuperlatives = updatedClassroom.hasSuperlatives
-            self.classroom.didYouKnowId = updatedClassroom.didYouKnowId
+            self.playgroup.members = updatedPlaygroup.members
+            self.playgroup.questions = updatedPlaygroup.questions
+            self.playgroup.superlativeType = updatedPlaygroup.superlativeType
+            self.playgroup.hasSuperlatives = updatedPlaygroup.hasSuperlatives
+            self.playgroup.didYouKnowId = updatedPlaygroup.didYouKnowId
             
             // Show superlative alert when there are superlatives and user has not voted
-            if self.classroom.hasSuperlatives && self.classroom.superlativeType == SuperlativeType.NOTVOTED {
+            if self.playgroup.hasSuperlatives && self.playgroup.superlativeType == SuperlativeType.NOTVOTED {
                 self.showSuperlativeAlert()
             }
-            if self.messages.isEmpty && !classroomHasBeenInit {
+            if self.messages.isEmpty && !playgroupHasBeenInit {
                 self.initMessages()
             }
         })
@@ -170,17 +170,17 @@ class ChatClassroomController: UIViewController, UIGestureRecognizerDelegate, UI
             return
         }
         
-        DataService.ds.observeClassChatMessagesOnce(limit: self.numMessages, classroom: self.classroom) { (isSuccess, updatedClassroom) in
+        DataService.ds.observeClassChatMessagesOnce(limit: self.numMessages, playgroup: self.playgroup) { (isSuccess, updatedPlaygroup) in
             self.loadingScreen(isLoading: false)
-            if (!isSuccess || updatedClassroom == nil) {
-                log.info("No messages updated for classroom")
+            if (!isSuccess || updatedPlaygroup == nil) {
+                log.info("No messages updated for playgroup")
                 self.reobserveMessages()
                 return
             }
             
             // There are messages, so update private chat and messages
-            self.classroom = updatedClassroom
-            self.messages = self.classroom.classroomMessages
+            self.playgroup = updatedPlaygroup
+            self.messages = self.playgroup.playgroupMessages
             
             self.organizeMessages()
             
@@ -209,25 +209,25 @@ class ChatClassroomController: UIViewController, UIGestureRecognizerDelegate, UI
         self.refreshControl.beginRefreshing()
         self.pullToRefreshIndicator.startAnimating()
         
-        DataService.ds.observeClassChatMessagesOnce(limit: self.numMessages, classroom: self.classroom) { (isSuccess, updatedClassroom) in
+        DataService.ds.observeClassChatMessagesOnce(limit: self.numMessages, playgroup: self.playgroup) { (isSuccess, updatedPlaygroup) in
             self.refreshControl.endRefreshing()
             self.pullToRefreshIndicator.stopAnimating()
             
-            if (!isSuccess || updatedClassroom == nil) {
+            if (!isSuccess || updatedPlaygroup == nil) {
                 // No messages yet
-                log.info("No messages updated for classroom")
+                log.info("No messages updated for playgroup")
                 self.reobserveMessages()
                 return
             }
             
             // There are messages, update private chat and messages
-            self.classroom = updatedClassroom
+            self.playgroup = updatedPlaygroup
             
             // Logic to scroll to the right chat message upon loading more messages above
             if self.messagesInTimeBuckets.count > 0 && self.messagesInTimeBuckets[0].count > 0 {
                 // Find the first message in the old message so we scroll to this one
                 let firstMsg = self.messagesInTimeBuckets[0][0]
-                self.messages = updatedClassroom!.classroomMessages
+                self.messages = updatedPlaygroup!.playgroupMessages
                 self.organizeMessages()
                 // Find this first message in the new messages to find the new row and section to scroll to
                 var messageFound = false
@@ -266,7 +266,7 @@ class ChatClassroomController: UIViewController, UIGestureRecognizerDelegate, UI
                 
             else {
                 // Previous messages are empty - this should very rarely happen, possibly only due to network connectivity issues
-                self.messages = updatedClassroom!.classroomMessages
+                self.messages = updatedPlaygroup!.playgroupMessages
                 self.organizeMessages()
                 self.collectionView.reloadData()
             }
@@ -281,21 +281,21 @@ class ChatClassroomController: UIViewController, UIGestureRecognizerDelegate, UI
             chatQueryAndHandle.0.removeObserver(withHandle: chatQueryAndHandle.1)
         }
         
-        chatQueryAndHandle = DataService.ds.reobserveClassChatMessages(limit: self.numMessages, classroom: self.classroom, completed: { (isSuccess, updatedClassroom) in
+        chatQueryAndHandle = DataService.ds.reobserveClassChatMessages(limit: self.numMessages, playgroup: self.playgroup, completed: { (isSuccess, updatedPlaygroup) in
             
-            if (!isSuccess || updatedClassroom == nil) {
+            if (!isSuccess || updatedPlaygroup == nil) {
                 // Rewind increment of numMessages
                 if self.numMessages > self.NUM_INCREMENT {
                     self.numMessages -= self.NUM_INCREMENT
                 }
-                log.info("No messages updated for classroom")
+                log.info("No messages updated for playgroup")
                 return
             }
             
             // Check if messages are exactly the same, if yes, then no need to update
-            if self.messages.count == updatedClassroom!.classroomMessages.count {
+            if self.messages.count == updatedPlaygroup!.playgroupMessages.count {
                 var areTheSame = true
-                let updatedMessages = updatedClassroom!.classroomMessages.sorted(by: { (m1, m2) -> Bool in
+                let updatedMessages = updatedPlaygroup!.playgroupMessages.sorted(by: { (m1, m2) -> Bool in
                     return m1.date.compare(m2.date) == .orderedAscending
                 })
                 let oldMessages = self.messages.sorted(by: { (m1, m2) -> Bool in
@@ -313,8 +313,8 @@ class ChatClassroomController: UIViewController, UIGestureRecognizerDelegate, UI
             }
             
             // Update messages
-            self.classroom = updatedClassroom
-            self.messages = self.classroom.classroomMessages
+            self.playgroup = updatedPlaygroup
+            self.messages = self.playgroup.playgroupMessages
             self.organizeMessages()
             self.collectionView.reloadData()
             self.scrollToLastItemInCollectionView(animated: false)
@@ -353,13 +353,13 @@ class ChatClassroomController: UIViewController, UIGestureRecognizerDelegate, UI
         self.pullToRefreshIndicator.center = CGPoint(x: self.view.center.x, y: self.refreshControl.center.y)
         collectionView.addSubview(self.refreshControl)
         
-        self.initClassroomObserver()
+        self.initPlaygroupObserver()
     }
     
     // MARK: Navigation
     
     fileprivate func setupNavigationBar() {
-        self.navigationItem.title = self.classroom.title
+        self.navigationItem.title = self.playgroup.title
         let negativeSpace = UIBarButtonItem(barButtonSystemItem: .fixedSpace, target: nil, action: nil)
         negativeSpace.width = -6.0
         let moreButton = UIBarButtonItem(image: #imageLiteral(resourceName: "more-2x"), style: .plain, target: self, action: #selector(handleNavMore))
@@ -368,29 +368,29 @@ class ChatClassroomController: UIViewController, UIGestureRecognizerDelegate, UI
     
     func handleNavMore() {
         logAnalyticsEvent(key: kEventMoreNavClicked)
-        // Bring up alert controller to view classmates, answers or superlatives
+        // Bring up alert controller to view playpeers, answers or superlatives
         let alertController = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
         alertController.view.tintColor = GREEN_UICOLOR
         let cancelAction = UIAlertAction(title: "Cancel", style: .cancel, handler: nil)
-        let classmatesAction = UIAlertAction(title: "Classmates", style: .default) { (action) in
-            let controller = ClassmatesController(collectionViewLayout: UICollectionViewFlowLayout())
+        let playpeersAction = UIAlertAction(title: "Playpeers", style: .default) { (action) in
+            let controller = PlaypeersController(collectionViewLayout: UICollectionViewFlowLayout())
             self.navigationItem.backBarButtonItem = UIBarButtonItem(title: " ", style: .plain, target: nil, action: nil)
-            controller.classmates = self.classroom.members
+            controller.playpeers = self.playgroup.members
             self.navigationController?.pushViewController(controller, animated: true)
         }
         let answersAction = UIAlertAction(title: "Answers", style: .default) { (action) in
             let controller = AnswersController()
             self.navigationItem.backBarButtonItem = UIBarButtonItem(title: " ", style: .plain, target: nil, action: nil)
-            controller.classroom = self.classroom
+            controller.playgroup = self.playgroup
             self.navigationController?.pushViewController(controller, animated: true)
         }
         let superlativesAction = UIAlertAction(title: "Superlatives", style: .default) { (action) in
             self.launchSuperlativeController()
         }
         
-        answersAction.isEnabled = self.classroom.questions.count > 1 // Only enable seeing answers if there is more than 1 answer (current answer)
-        superlativesAction.isEnabled = classroom.hasSuperlatives
-        alertController.addAction(classmatesAction)
+        answersAction.isEnabled = self.playgroup.questions.count > 1 // Only enable seeing answers if there is more than 1 answer (current answer)
+        superlativesAction.isEnabled = playgroup.hasSuperlatives
+        alertController.addAction(playpeersAction)
         alertController.addAction(answersAction)
         alertController.addAction(superlativesAction)
         alertController.addAction(cancelAction)
@@ -416,7 +416,7 @@ class ChatClassroomController: UIViewController, UIGestureRecognizerDelegate, UI
         tapGestureRecognizer.delegate = self
         label.isUserInteractionEnabled = true
         label.addGestureRecognizer(tapGestureRecognizer)
-        label.text = "Read Question \(self.classroom.questionNum) here"
+        label.text = "Read Question \(self.playgroup.questionNum) here"
         return label
     }()
     
@@ -435,7 +435,7 @@ class ChatClassroomController: UIViewController, UIGestureRecognizerDelegate, UI
     func openQuestion() {
         logAnalyticsEvent(key: kEventViewQuestion)
         let modalController = ModalQuestionController()
-        modalController.classroom = self.classroom
+        modalController.playgroup = self.playgroup
         modalController.modalPresentationStyle = .overFullScreen
         modalController.modalTransitionStyle = .flipHorizontal
         self.present(modalController, animated: true, completion: nil)
@@ -456,7 +456,7 @@ class ChatClassroomController: UIViewController, UIGestureRecognizerDelegate, UI
     
     fileprivate func showSuperlativeAlert() {
         let alertController = SuperlativeAlertController()
-        alertController.classroom = self.classroom
+        alertController.playgroup = self.playgroup
         alertController.modalPresentationStyle = .overFullScreen
         alertController.modalTransitionStyle = .crossDissolve
         self.present(alertController, animated: true, completion: {
@@ -466,7 +466,7 @@ class ChatClassroomController: UIViewController, UIGestureRecognizerDelegate, UI
     
     func launchSuperlativeController() {
         let controller = SuperlativeController()
-        controller.classroom = self.classroom
+        controller.playgroup = self.playgroup
         self.navigationItem.backBarButtonItem = UIBarButtonItem(title: " ", style: .plain, target: nil, action: nil)
         self.navigationController?.pushViewController(controller, animated: true)
     }
@@ -486,10 +486,10 @@ class ChatClassroomController: UIViewController, UIGestureRecognizerDelegate, UI
         }
         // Sort messages such that earliest messages come first
         self.messages = self.messages.sorted{($0.date.timeIntervalSince1970) < ($1.date.timeIntervalSince1970)}
-        self.messagesInTimeBuckets = [[ClassroomMessage]]()
+        self.messagesInTimeBuckets = [[PlaygroupMessage]]()
         self.timeBucketHeaders = [Date]()
         var currentBucketTime: Date? = nil
-        var currentBucketMessages: [ClassroomMessage] = [ClassroomMessage]()
+        var currentBucketMessages: [PlaygroupMessage] = [PlaygroupMessage]()
         
         for i in 0...self.messages.count - 1 {
             let message = self.messages[i]
@@ -521,7 +521,7 @@ class ChatClassroomController: UIViewController, UIGestureRecognizerDelegate, UI
         }
         self.messageIsLastInChain = [[Bool]]()
         for i in 0...self.messagesInTimeBuckets.count - 1 {
-            let section: [ClassroomMessage] = self.messagesInTimeBuckets[i]
+            let section: [PlaygroupMessage] = self.messagesInTimeBuckets[i]
             var chains = [Bool]()
             if section.count == 0 {
                 log.error("[Error] No messages in bucket")
@@ -530,8 +530,8 @@ class ChatClassroomController: UIViewController, UIGestureRecognizerDelegate, UI
             }
             if section.count >= 2 {
                 for j in 0...section.count - 2 {
-                    let m0: ClassroomMessage = section[j]
-                    let m1: ClassroomMessage = section[j+1]
+                    let m0: PlaygroupMessage = section[j]
+                    let m1: PlaygroupMessage = section[j+1]
                     // Last in chain if next one is different from current
                     chains.append(!((m0.isSentByYou && m1.isSentByYou) || (!m0.isSentByYou && !m1.isSentByYou)))
                 }
@@ -665,8 +665,8 @@ class ChatClassroomController: UIViewController, UIGestureRecognizerDelegate, UI
     func handleSend() {
         if let text = inputTextView.text {
             self.resetInputContainer()
-            DataService.ds.addClassChatMessage(classroom: self.classroom, text: text.trim(), completed: { (isSuccess, updatedClassroom) in
-                if !isSuccess || updatedClassroom == nil {
+            DataService.ds.addClassChatMessage(playgroup: self.playgroup, text: text.trim(), completed: { (isSuccess, updatedPlaygroup) in
+                if !isSuccess || updatedPlaygroup == nil {
                     
                     log.error("[Error] Message failed to be posted")
                     showErrorAlert(vc: self, title: "Error", message: "Could not send message. Please try again.")
@@ -679,7 +679,7 @@ class ChatClassroomController: UIViewController, UIGestureRecognizerDelegate, UI
     fileprivate func registerObservers() {
         NotificationCenter.default.addObserver(self, selector: #selector(handleKeyboardNotification), name: NSNotification.Name.UIKeyboardWillHide, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(handleKeyboardNotification), name: NSNotification.Name.UIKeyboardWillChangeFrame, object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(expandCell), name: NOTIF_EXPANDCLASSROOMCHATCELL, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(expandCell), name: NOTIF_EXPANDPLAYGROUPCHATCELL, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(openProfile), name: NOTIF_OPENPROFILE, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(launchSuperlativeController), name: NOTIF_LAUNCHVOTING, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(sendMessageFromProfile), name: NOTIF_SENDMESSAGE, object: nil)
@@ -688,7 +688,7 @@ class ChatClassroomController: UIViewController, UIGestureRecognizerDelegate, UI
     private func unregisterObservers() {
         NotificationCenter.default.removeObserver(self, name: NSNotification.Name.UIKeyboardWillHide, object: nil)
         NotificationCenter.default.removeObserver(self, name: NSNotification.Name.UIKeyboardWillChangeFrame, object: nil)
-        NotificationCenter.default.removeObserver(self, name: NOTIF_EXPANDCLASSROOMCHATCELL, object: nil)
+        NotificationCenter.default.removeObserver(self, name: NOTIF_EXPANDPLAYGROUPCHATCELL, object: nil)
         NotificationCenter.default.removeObserver(self, name: NOTIF_OPENPROFILE, object: nil)
         NotificationCenter.default.removeObserver(self, name: NOTIF_LAUNCHVOTING, object: nil)
         NotificationCenter.default.removeObserver(self, name: NOTIF_SENDMESSAGE, object: nil)
@@ -705,7 +705,7 @@ class ChatClassroomController: UIViewController, UIGestureRecognizerDelegate, UI
     func openProfile(notif: Notification) {
         if let userInfo = notif.userInfo as? [String: String], let uid = userInfo["uid"] {
             log.info("opening profile of uid: \(uid)")
-            let profilesToOpen = classroom.members.filter{$0.uid == uid}
+            let profilesToOpen = playgroup.members.filter{$0.uid == uid}
             if profilesToOpen.count != 1 {
                 return
             }
@@ -808,8 +808,8 @@ class ChatClassroomController: UIViewController, UIGestureRecognizerDelegate, UI
         self.automaticallyAdjustsScrollViewInsets = false
         self.collectionView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: 0.8*SECTION_HEADER_HEIGHT, right: 0) // Fix top and bottom padding since automaticallyAdjustScrollViewInsets set to false
         
-        self.collectionView.register(ClassroomChatCell.self, forCellWithReuseIdentifier: CELL_CHAT_ID)
-        self.collectionView.register(ClassroomQuestionCell.self, forCellWithReuseIdentifier: CELL_QUESTION_ID)
+        self.collectionView.register(PlaygroupChatCell.self, forCellWithReuseIdentifier: CELL_CHAT_ID)
+        self.collectionView.register(PlaygroupQuestionCell.self, forCellWithReuseIdentifier: CELL_QUESTION_ID)
         self.collectionView.register(ChatHeaderView.self, forSupplementaryViewOfKind: UICollectionElementKindSectionHeader, withReuseIdentifier: CELL_HEADER_ID)
         
         self.view.insertSubview(collectionView, at: 0)
@@ -873,18 +873,18 @@ class ChatClassroomController: UIViewController, UIGestureRecognizerDelegate, UI
         
         if message.isSentBy428 {
             // Question cell
-            if let cell = collectionView.dequeueReusableCell(withReuseIdentifier: CELL_QUESTION_ID, for: indexPath) as? ClassroomQuestionCell {
+            if let cell = collectionView.dequeueReusableCell(withReuseIdentifier: CELL_QUESTION_ID, for: indexPath) as? PlaygroupQuestionCell {
                 cell.configureCell(messageObj: message)
                 return cell
             }
         }
         
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: CELL_CHAT_ID, for: indexPath) as! ClassroomChatCell
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: CELL_CHAT_ID, for: indexPath) as! PlaygroupChatCell
         let isLastInChain = self.messageIsLastInChain[indexPath.section][indexPath.row]
         
         // Get poster image name and poster name
         let posterUid = message.posterUid
-        let potentialPoster = classroom.members.filter({$0.uid == posterUid})
+        let potentialPoster = playgroup.members.filter({$0.uid == posterUid})
         if potentialPoster.count != 1 { // NOTE: This case will happen on first opening chat because profiles are not loaded yet
             return cell
         }
@@ -916,7 +916,7 @@ class ChatClassroomController: UIViewController, UIGestureRecognizerDelegate, UI
             cellHeight += LAST_IN_CHAIN_GAP
         }
         
-        if let cell = self.collectionView.cellForItem(at: indexPath) as? ClassroomChatCell {
+        if let cell = self.collectionView.cellForItem(at: indexPath) as? PlaygroupChatCell {
             if cell.shouldExpand {
                 self.cellTimeLabel.removeFromSuperview()
                 let cellFrame = self.collectionView.convert(cell.frame, to: self.view)
@@ -975,7 +975,7 @@ class ChatClassroomController: UIViewController, UIGestureRecognizerDelegate, UI
     }
     
     func expandCell(notif: Notification) {
-        // Called by ClassroomChatCell's messageTextView to invalidate layout
+        // Called by PlaygroupChatCell's messageTextView to invalidate layout
         UIView.performWithoutAnimation {
             self.collectionView.collectionViewLayout.invalidateLayout()
         }
@@ -986,7 +986,7 @@ class ChatClassroomController: UIViewController, UIGestureRecognizerDelegate, UI
         self.cellTimeLabel.removeFromSuperview()
         // Find index path and set unchecked
         if tappedIndexPath != nil {
-            if let cell = collectionView(self.collectionView, cellForItemAt: tappedIndexPath!) as? ClassroomChatCell {
+            if let cell = collectionView(self.collectionView, cellForItemAt: tappedIndexPath!) as? PlaygroupChatCell {
                 self.tappedIndexPath = nil
                 cell.shouldExpand = false
             }

@@ -16,13 +16,13 @@ class ModalQuestionController: UIViewController {
     let HORIZONTAL_MARGIN: CGFloat = 28.0
     let VERTICAL_MARGIN: CGFloat = UIScreen.main.bounds.height * 0.3
     
-    var classroom: Classroom! {
+    var playgroup: Playgroup! {
         didSet {
             // Set modal info
-            _ = downloadImage(imageUrlString: classroom.imageName, completed: { image in
+            _ = downloadImage(imageUrlString: playgroup.imageName, completed: { image in
                 self.questionImageView.image = image
             })
-            self.questionText.text = classroom.questionText
+            self.questionText.text = playgroup.questionText
         }
     }
     
@@ -92,13 +92,13 @@ class ModalQuestionController: UIViewController {
     func shareOnFb() {
         if(SLComposeViewController.isAvailable(forServiceType: SLServiceTypeFacebook)) {
             if let socialController = SLComposeViewController(forServiceType: SLServiceTypeFacebook) {
-                logAnalyticsEvent(key: kEventOpenShareQuestion, params: ["question": self.classroom.questionText as NSObject])
-                if let url = URL(string: self.classroom.shareImageName) {
+                logAnalyticsEvent(key: kEventOpenShareQuestion, params: ["question": self.playgroup.questionText as NSObject])
+                if let url = URL(string: self.playgroup.shareImageName) {
                     socialController.add(url)
                     self.present(socialController, animated: true, completion: {})
                     socialController.completionHandler = { (result:SLComposeViewControllerResult) in
                         if result == SLComposeViewControllerResult.done {
-                            logAnalyticsEvent(key: kEventSuccessShareQuestion, params: ["question": self.classroom.questionText as NSObject])
+                            logAnalyticsEvent(key: kEventSuccessShareQuestion, params: ["question": self.playgroup.questionText as NSObject])
                         }
                     }
                 }
@@ -109,15 +109,15 @@ class ModalQuestionController: UIViewController {
     func shareOnTwitter() {
         if(SLComposeViewController.isAvailable(forServiceType: SLServiceTypeTwitter)) {
             if let socialController = SLComposeViewController(forServiceType: SLServiceTypeTwitter) {
-                logAnalyticsEvent(key: kEventOpenTweetQuestion, params: ["question": self.classroom.questionText as NSObject])
-                socialController.setInitialText(self.classroom.questionText)
-                if let url = URL(string: self.classroom.shareImageName) {
+                logAnalyticsEvent(key: kEventOpenTweetQuestion, params: ["question": self.playgroup.questionText as NSObject])
+                socialController.setInitialText(self.playgroup.questionText)
+                if let url = URL(string: self.playgroup.shareImageName) {
                     socialController.add(url)
                 }
                 self.present(socialController, animated: true, completion: {})
                 socialController.completionHandler = { (result:SLComposeViewControllerResult) in
                     if result == SLComposeViewControllerResult.done {
-                        logAnalyticsEvent(key: kEventSuccessTweetQuestion, params: ["question": self.classroom.questionText as NSObject])
+                        logAnalyticsEvent(key: kEventSuccessTweetQuestion, params: ["question": self.playgroup.questionText as NSObject])
                     }
                 }
             }

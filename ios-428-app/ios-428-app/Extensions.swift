@@ -71,7 +71,7 @@ extension ChatInboxController: UIViewControllerTransitioningDelegate {
     }
 }
 
-extension ChatClassroomController: UIViewControllerTransitioningDelegate {
+extension ChatPlaygroupController: UIViewControllerTransitioningDelegate {
     func animationControllerForDismissedController(dismissed: UIViewController) -> UIViewControllerAnimatedTransitioning? {
         return DismissAnimator()
     }
@@ -80,7 +80,7 @@ extension ChatClassroomController: UIViewControllerTransitioningDelegate {
     }
 }
 
-extension ClassmatesController: UIViewControllerTransitioningDelegate {
+extension PlaypeersController: UIViewControllerTransitioningDelegate {
     func animationControllerForDismissedController(dismissed: UIViewController) -> UIViewControllerAnimatedTransitioning? {
         return DismissAnimator()
     }

@@ -15,13 +15,13 @@ class SuperlativeController: UIViewController, UICollectionViewDelegate, UIColle
     
     fileprivate let CELL_ID = "superlativeCell"
     
-    open var classroom: Classroom!
+    open var playgroup: Playgroup!
     fileprivate var superlativeFirebase: (FIRDatabaseReference, FIRDatabaseHandle)!
     
     override func viewDidLoad() {
         super.viewDidLoad()
         self.setupViews()
-        self.toggleViews(superlativeType: self.classroom.superlativeType)
+        self.toggleViews(superlativeType: self.playgroup.superlativeType)
         self.loadData()
     }
     
@@ -33,7 +33,7 @@ class SuperlativeController: UIViewController, UICollectionViewDelegate, UIColle
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        let color = classroom.superlativeType == .SHARED ? RED_UICOLOR : GREEN_UICOLOR
+        let color = playgroup.superlativeType == .SHARED ? RED_UICOLOR : GREEN_UICOLOR
         self.navigationController?.navigationBar.setBackgroundImage(UIImage.init(color: color), for: .default)
         self.navigationController?.navigationBar.shadowImage = UIImage()
         self.tabBarController?.tabBar.isHidden = true
@@ -58,7 +58,7 @@ class SuperlativeController: UIViewController, UICollectionViewDelegate, UIColle
         let collectionView = UICollectionView(frame: UIScreen.main.bounds, collectionViewLayout: layout)
         collectionView.delegate = self
         collectionView.dataSource = self
-        collectionView.backgroundColor = self.classroom.superlativeType == .SHARED ? RED_UICOLOR : GREEN_UICOLOR
+        collectionView.backgroundColor = self.playgroup.superlativeType == .SHARED ? RED_UICOLOR : GREEN_UICOLOR
         collectionView.bounces = true
         collectionView.showsVerticalScrollIndicator = false
         collectionView.showsHorizontalScrollIndicator = false
@@ -67,27 +67,27 @@ class SuperlativeController: UIViewController, UICollectionViewDelegate, UIColle
     }()
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        if self.classroom.superlativeType == SuperlativeType.NOTVOTED {
-            return self.classroom.superlatives.count
+        if self.playgroup.superlativeType == SuperlativeType.NOTVOTED {
+            return self.playgroup.superlatives.count
         } else {
-            return self.classroom.results.count
+            return self.playgroup.results.count
         }
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: CELL_ID, for: indexPath) as! SuperlativeCell
         var superlative: Superlative!
-        if self.classroom.superlativeType == SuperlativeType.NOTVOTED {
-            superlative = self.classroom.superlatives[indexPath.item]
+        if self.playgroup.superlativeType == SuperlativeType.NOTVOTED {
+            superlative = self.playgroup.superlatives[indexPath.item]
         } else {
-            superlative = self.classroom.results[indexPath.item]
+            superlative = self.playgroup.results[indexPath.item]
         }
         cell.configureCell(superlativeObj: superlative)
     
         // Green background for not voted, Red background for results
-        if self.classroom.superlativeType == SuperlativeType.NOTVOTED {
+        if self.playgroup.superlativeType == SuperlativeType.NOTVOTED {
             cell.setColorOfViews(color: GREEN_UICOLOR)
-        } else if self.classroom.superlativeType == SuperlativeType.SHARED {
+        } else if self.playgroup.superlativeType == SuperlativeType.SHARED {
             cell.setColorOfViews(color: RED_UICOLOR)
         }
         
@@ -99,17 +99,17 @@ class SuperlativeController: UIViewController, UICollectionViewDelegate, UIColle
     }
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        if self.classroom.superlativeType == SuperlativeType.SHARED {
+        if self.playgroup.superlativeType == SuperlativeType.SHARED {
             // Does nothing on click
             return
         }
-        let superlative = self.classroom.superlatives[indexPath.item]
+        let superlative = self.playgroup.superlatives[indexPath.item]
         let modalController = ModalVoteController()
         modalController.modalPresentationStyle = .overFullScreen
         modalController.modalTransitionStyle = .crossDissolve
         modalController.superlativeName = superlative.superlativeName
         modalController.userVotedFor = superlative.userVotedFor
-        modalController.classmates = self.classroom.members
+        modalController.playpeers = self.playgroup.members
         self.present(modalController, animated: true, completion: nil)
     }
     
@@ -214,11 +214,11 @@ class SuperlativeController: UIViewController, UICollectionViewDelegate, UIColle
                         log.info("Sharing got cancelled")
                     } else if result == SLComposeViewControllerResult.done {
                         showLoader(message: "Retrieving superlative results")
-                        DataService.ds.shareSuperlative(classroom: self.classroom, completed: { (isSuccess) in
+                        DataService.ds.shareSuperlative(playgroup: self.playgroup, completed: { (isSuccess) in
                             hideLoader()
                             if isSuccess {
                                 self.toggleViews(superlativeType: SuperlativeType.SHARED)
-                                self.navigationItem.title = self.classroom.isVotingOngoing ? "Running Results" : "Final Results"
+                                self.navigationItem.title = self.playgroup.isVotingOngoing ? "Running Results" : "Final Results"
                                 // Hack: Adjust the screen
                                 self.view.frame = CGRect(x: 0, y: 0, width: UIScreen.main.bounds.width, height: UIScreen.main.bounds.height)
                             } else {
@@ -282,7 +282,7 @@ class SuperlativeController: UIViewController, UICollectionViewDelegate, UIColle
     // MARK: Submit and select superlatives
     
     func checkToEnableSubmitSuperlative() {
-        for superlative in self.classroom.superlatives {
+        for superlative in self.playgroup.superlatives {
             if superlative.userVotedFor == nil {
                 self.navigationItem.rightBarButtonItem?.isEnabled = false
                 return
@@ -293,7 +293,7 @@ class SuperlativeController: UIViewController, UICollectionViewDelegate, UIColle
     
     func selectSuperlative(notif: Notification) {
         if let userInfo = notif.userInfo, let superlativeName = userInfo["superlativeName"] as? String, let userVotedFor = userInfo["userVotedFor"] as? Profile {
-            for superlative in self.classroom.superlatives {
+            for superlative in self.playgroup.superlatives {
                 if superlative.superlativeName == superlativeName {
                     superlative.userVotedFor = userVotedFor
                     self.collectionView.reloadData()
@@ -305,7 +305,7 @@ class SuperlativeController: UIViewController, UICollectionViewDelegate, UIColle
     
     func submitSuperlatives() { // Used in NOTVOTED stage, and on success transfer to VOTED stage
         showLoader(message: "Submitting your votes...")
-        DataService.ds.submitSuperlativeVote(classroom: self.classroom) { (isSuccess) in
+        DataService.ds.submitSuperlativeVote(playgroup: self.playgroup) { (isSuccess) in
             hideLoader()
             if isSuccess {
                 self.toggleViews(superlativeType: SuperlativeType.VOTED)
@@ -331,7 +331,7 @@ class SuperlativeController: UIViewController, UICollectionViewDelegate, UIColle
     
     fileprivate func toggleViews(superlativeType: SuperlativeType) {
         
-        self.classroom.superlativeType = superlativeType
+        self.playgroup.superlativeType = superlativeType
         
         if superlativeType == .VOTED {
             // Rated but not shared, hide collection view and show share
@@ -370,20 +370,20 @@ class SuperlativeController: UIViewController, UICollectionViewDelegate, UIColle
     
     fileprivate func loadData() {
         self.navigationItem.rightBarButtonItem?.isEnabled = false
-        superlativeFirebase = DataService.ds.observeSuperlatives(classroom: classroom) { (isSuccess, updatedClassroom) in
+        superlativeFirebase = DataService.ds.observeSuperlatives(playgroup: playgroup) { (isSuccess, updatedPlaygroup) in
             if isSuccess {
-                self.classroom = updatedClassroom
-                if self.classroom.superlativeType == .SHARED {
-                    self.navigationItem.title = self.classroom.isVotingOngoing ? "Running Results" : "Final Results"
+                self.playgroup = updatedPlaygroup
+                if self.playgroup.superlativeType == .SHARED {
+                    self.navigationItem.title = self.playgroup.isVotingOngoing ? "Running Results" : "Final Results"
                 }
                 self.collectionView.reloadData()
             } else {
-                log.error("[Error] Failed to update superlatives for classroom id: \(self.classroom.cid)")
+                log.error("[Error] Failed to update superlatives for playgroup id: \(self.playgroup.pid)")
             }
         }
         
         // Load did you know
-        DataService.ds.getDidYouKnow(discipline: classroom.title, did: classroom.didYouKnowId) { (didSuccess, videoLink_) in
+        DataService.ds.getDidYouKnow(discipline: playgroup.title, did: playgroup.didYouKnowId) { (didSuccess, videoLink_) in
             if !didSuccess {
                 showErrorAlert(vc: self, title: "Error", message: "There's an error loading the video. Please try again later.")
                 return

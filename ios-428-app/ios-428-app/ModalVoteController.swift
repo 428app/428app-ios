@@ -15,7 +15,7 @@ class ModalVoteController: UIViewController, UITableViewDelegate, UITableViewDat
 
     open var superlativeName: String!
     open var userVotedFor: Profile!
-    open var classmates: [Profile]!
+    open var playpeers: [Profile]!
     
     fileprivate let containerView: UIView = {
         let view = UIView()
@@ -53,9 +53,9 @@ class ModalVoteController: UIViewController, UITableViewDelegate, UITableViewDat
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = UIColor.black.withAlphaComponent(0.85)
-        // Remove self from classmates 
+        // Remove self from playpeers 
         if let myUid = getStoredUid() {
-            self.classmates = self.classmates.filter(){$0.uid != myUid}
+            self.playpeers = self.playpeers.filter(){$0.uid != myUid}
         }
         self.setupViews()
     }
@@ -91,29 +91,29 @@ class ModalVoteController: UIViewController, UITableViewDelegate, UITableViewDat
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return classmates.count
+        return playpeers.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: CELL_ID, for: indexPath) as! VoteCell
-        let classmate = classmates[indexPath.item]
-        cell.configureCell(profileObj: classmate)
+        let playpeer = playpeers[indexPath.item]
+        cell.configureCell(profileObj: playpeer)
         return cell
     }
     
     func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
-        let classmate = classmates[indexPath.item]
+        let playpeer = playpeers[indexPath.item]
         // If profile is same as user voted for, set selected
         if self.userVotedFor != nil {
-            if classmate.uid == self.userVotedFor.uid {
+            if playpeer.uid == self.userVotedFor.uid {
                 cell.setSelected(true, animated: false)
             }
         }
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        let classmate = classmates[indexPath.item]
-        self.userVotedFor = classmate
+        let playpeer = playpeers[indexPath.item]
+        self.userVotedFor = playpeer
         
         // Select and deselect all rows
         for i in 0...tableView.numberOfRows(inSection: 0) {
@@ -123,7 +123,7 @@ class ModalVoteController: UIViewController, UITableViewDelegate, UITableViewDat
         }
         tableView.selectRow(at: indexPath, animated: false, scrollPosition: .none)
         
-        NotificationCenter.default.post(name: NOTIF_VOTESELECTED, object: nil, userInfo: ["superlativeName": self.superlativeName, "userVotedFor": classmate])
+        NotificationCenter.default.post(name: NOTIF_VOTESELECTED, object: nil, userInfo: ["superlativeName": self.superlativeName, "userVotedFor": playpeer])
         self.dismissScreen()
     }
     

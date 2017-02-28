@@ -1,8 +1,8 @@
 //
-//  NewClassroomAlertController.swift
+//  NewPlaygroupAlertController.swift
 //  ios-428-app
 //
-//  Shown when user's hasNewClassroom is non-null
+//  Shown when user's hasNewPlaygroup is non-null
 //  Created by Leonard Loo on 2/11/17.
 //  Copyright © 2017 428. All rights reserved.
 //
@@ -10,7 +10,7 @@
 import Foundation
 import UIKit
 
-class NewClassroomAlertController: UIViewController {
+class NewPlaygroupAlertController: UIViewController {
     
     open var discipline: String!
     
@@ -38,9 +38,9 @@ class NewClassroomAlertController: UIViewController {
         return label
     }()
     
-    fileprivate let newClassroomLbl: UILabel = {
+    fileprivate let newPlaygroupLbl: UILabel = {
        let label = UILabel()
-        label.text = "You've got a new classroom!"
+        label.text = "You've got a new playgroup!"
         label.font = FONT_MEDIUM_MID
         label.textAlignment = .center
         label.textColor = UIColor.darkGray
@@ -49,7 +49,7 @@ class NewClassroomAlertController: UIViewController {
     }()
     
     func dismissScreen() {
-        DataService.ds.removeUserHasNewClassroom()
+        DataService.ds.removeUserHasNewPlaygroup()
         self.dismiss(animated: true, completion: nil)
     }
     
@@ -66,13 +66,13 @@ class NewClassroomAlertController: UIViewController {
         
         containerView.addSubview(disciplineIcon)
         containerView.addSubview(disciplineLbl)
-        containerView.addSubview(newClassroomLbl)
+        containerView.addSubview(newPlaygroupLbl)
         
-        containerView.addConstraintsWithFormat("V:|-12-[v0(50)]-2-[v1(20)]-8-[v2(40)]-|", views: disciplineIcon, disciplineLbl, newClassroomLbl)
+        containerView.addConstraintsWithFormat("V:|-12-[v0(50)]-2-[v1(20)]-8-[v2(40)]-|", views: disciplineIcon, disciplineLbl, newPlaygroupLbl)
         containerView.addConstraintsWithFormat("H:[v0(50)]", views: disciplineIcon)
         containerView.addConstraint(NSLayoutConstraint(item: disciplineIcon, attribute: .centerX, relatedBy: .equal, toItem: containerView, attribute: .centerX, multiplier: 1.0, constant: 0.0))
         containerView.addConstraintsWithFormat("H:|-8-[v0]-8-|", views: disciplineLbl)
-        containerView.addConstraintsWithFormat("H:|-8-[v0]-8-|", views: newClassroomLbl)
+        containerView.addConstraintsWithFormat("H:|-8-[v0]-8-|", views: newPlaygroupLbl)
         
         view.addSubview(containerView)
         view.addConstraintsWithFormat("H:|-28-[v0]-28-|", views: containerView)

@@ -1,5 +1,5 @@
 //
-//  ClassroomService.swift
+//  PlaygroupService.swift
 //  ios-428-app
 //
 //  Created by Leonard Loo on 1/4/17.
@@ -15,23 +15,21 @@ import FirebaseMessaging
 import FBSDKCoreKit
 import FBSDKLoginKit
 
-// Extends DataService to house Classroom calls
+// Extends DataService to house Playgroup calls
 extension DataService {
     
-    func checkIfThereAreAnyClassrooms(completed: @escaping (_ haveClassrooms: Bool) -> ()) {
+    func checkIfThereAreAnyPlaygroups(completed: @escaping (_ havePlaygroups: Bool) -> ()) {
         let uid = getStoredUid() == nil ? "" : getStoredUid()!
-        REF_USERS.child("\(uid)/classrooms").observeSingleEvent(of: .value, with: { snapshot in
+        REF_USERS.child("\(uid)/playgroups").observeSingleEvent(of: .value, with: { snapshot in
             completed(snapshot.exists())
         })
     }
     
-    // Observe for added classroom of a user, used in ClassroomsController
-    func observeClassroomAdded(completed: @escaping (_ isSuccess: Bool, _ cid: String) -> ()) -> (FIRDatabaseReference, FIRDatabaseHandle) {
+    // Observe for added playgroup of a user, used in PlaygroupsController
+    func observePlaygroupAdded(completed: @escaping (_ isSuccess: Bool, _ pid: String) -> ()) -> (FIRDatabaseReference, FIRDatabaseHandle) {
         let uid = getStoredUid() == nil ? "" : getStoredUid()!
-        // Grabs the user's classrooms
-        let ref: FIRDatabaseReference = REF_USERS.child("\(uid)/classrooms")
-        
-        // Observed on value as not childAdded, as classrooms might be deleted in the future
+        // Grabs the user's playgroups
+        let ref: FIRDatabaseReference = REF_USERS.child("\(uid)/playgroups")
         let handle = ref.observe(.childAdded, with: { snapshot in
             if !snapshot.exists() {
                 completed(false, "")
@@ -47,11 +45,11 @@ extension DataService {
         return (ref, handle)
     }
     
-    // Observe updates of a single classroom for a user, used in ClassroomsController
-    func observeClassroomUpdates(cid: String, completed: @escaping (_ isSuccess: Bool, _ classroom: Classroom?) -> ()) ->(FIRDatabaseReference, FIRDatabaseHandle) {
+    // Observe updates of a single playgroup for a user, used in PlaygroupsController
+    func observePlaygroupUpdates(pid: String, completed: @escaping (_ isSuccess: Bool, _ playgroup: Playgroup?) -> ()) ->(FIRDatabaseReference, FIRDatabaseHandle) {
         let uid = getStoredUid() == nil ? "" : getStoredUid()!
-        let ref: FIRDatabaseReference = REF_USERS.child("\(uid)/classrooms/\(cid)")
-        // Observed on value as not childAdded, as classrooms might be deleted in the future
+        let ref: FIRDatabaseReference = REF_USERS.child("\(uid)/playgroups/\(pid)")
+        // Observed on value as not childAdded, as playgroups might be deleted in the future
         let handle = ref.observe(.value, with: { snapshot in
             if !snapshot.exists() {
                 completed(false, nil)
@@ -61,14 +59,14 @@ extension DataService {
                 completed(false, nil)
                 return
             }
-            let cid = snapshot.key
+            let pid = snapshot.key
             
             guard let questionNum = classDict["questionNum"] as? Int, let discipline = classDict["discipline"] as? String, let questionImage = classDict["questionImage"] as? String, let questionShareImage = classDict["questionShareImage"] as? String, let questionText = classDict["questionText"] as? String, let timeReplied = classDict["timeReplied"] as? Double, let hasUpdates = classDict["hasUpdates"] as? Bool else {
                 completed(false, nil)
                 return
             }
-            let classroom = Classroom(cid: cid, title: discipline, timeReplied: timeReplied, hasUpdates: hasUpdates, questionNum: questionNum, questionText: questionText, imageName: questionImage, shareImageName: questionShareImage)
-            completed(true, classroom)
+            let playgroup = Playgroup(pid: pid, title: discipline, timeReplied: timeReplied, hasUpdates: hasUpdates, questionNum: questionNum, questionText: questionText, imageName: questionImage, shareImageName: questionShareImage)
+            completed(true, playgroup)
             return
         })
         return (ref, handle)
@@ -80,14 +78,15 @@ extension DataService {
         return set1 == set2
     }
     
-    // Observe single classroom used in ChatClassroomController
-    func observeSingleClassroom(classroom: Classroom, completed: @escaping (_ isSuccess: Bool, _ classroom: Classroom) -> ()) -> (FIRDatabaseReference, FIRDatabaseHandle) {
+    // Observe single playgroup used in ChatPlaygroupController
+    func observeSinglePlaygroup(playgroup: Playgroup, completed: @escaping (_ isSuccess: Bool, _ playgroup: Playgroup) -> ()) -> (FIRDatabaseReference, FIRDatabaseHandle) {
         let uid = getStoredUid() == nil ? "" : getStoredUid()!
-        let cid = classroom.cid
-        let ref: FIRDatabaseReference = REF_CLASSROOMS.child(cid)
+        let pid = playgroup.pid
+        let ref: FIRDatabaseReference = REF_PLAYGROUPS.child(pid)
+        
         let handle = ref.observe(.value, with: { classSnap in
-            guard let classDict = classSnap.value as? [String: Any], let classmateAndSuperlativeType = classDict["memberHasVoted"] as? [String: Int], let questionsDict = classDict["questions"] as? [String: Any] else {
-                completed(false, classroom)
+            guard let classDict = classSnap.value as? [String: Any], let playpeerAndSuperlativeType = classDict["memberHasVoted"] as? [String: Int], let questionsDict = classDict["questions"] as? [String: Any] else {
+                completed(false, playgroup)
                 return
             }
             // Download profiles, and find this user's superlative type
@@ -95,7 +94,7 @@ extension DataService {
 
             // Used as comparison to know if async task is done
             var memberIds: [String] = [String]()
-            let totalMemberIds: [String] = Array(classmateAndSuperlativeType.keys)
+            let totalMemberIds: [String] = Array(playpeerAndSuperlativeType.keys)
 
             var didYouKnowId = ""
             if let did = classDict["didYouKnow"] as? String {
@@ -113,32 +112,32 @@ extension DataService {
             
             var superlativeType: SuperlativeType = SuperlativeType.NOTVOTED
             
-            for (uid_, superlativeType_) in classmateAndSuperlativeType {
+            for (uid_, superlativeType_) in playpeerAndSuperlativeType {
                 
                 // Find superlative type of this user
                 if uid_ == uid {
                     superlativeType = SuperlativeType(rawValue: superlativeType_)!
                 }
-                // Download all classmates' profiles
+                // Download all playpeers' profiles
                 self.getUserFields(uid: uid_, completed: { (isSuccess, userProfile) in
                     
                     if !isSuccess || userProfile == nil {
                         // There was a problem getting a user's profile, so return false)
-                        completed(false, classroom)
+                        completed(false, playgroup)
                         return
                     }
                     
                     members.append(userProfile!)
                     memberIds.append(userProfile!.uid)
                     
-                    if self.isIdenticalArrays(arr1: memberIds, arr2: totalMemberIds) { // All classmates read
+                    if self.isIdenticalArrays(arr1: memberIds, arr2: totalMemberIds) { // All playpeers read
                         
                         // Check if there are superlatives available yet
                         let hasSuperlatives = classDict["superlatives"] != nil
                         
-                        // Form classroom messages in a separate call
-                        let updatedClassroom = Classroom(cid: classroom.cid, title: classroom.title, timeReplied: classroom.timeReplied, hasUpdates: classroom.hasUpdates, questionNum: classroom.questionNum, questionText: classroom.questionText, imageName: classroom.imageName, shareImageName: classroom.shareImageName, members: members, questions: questions, superlativeType: superlativeType, hasSuperlatives: hasSuperlatives, didYouKnowId: didYouKnowId)
-                        completed(true, updatedClassroom) // Finally!
+                        // Form playgroup messages in a separate call
+                        let updatedPlaygroup = Playgroup(pid: playgroup.pid, title: playgroup.title, timeReplied: playgroup.timeReplied, hasUpdates: playgroup.hasUpdates, questionNum: playgroup.questionNum, questionText: playgroup.questionText, imageName: playgroup.imageName, shareImageName: playgroup.shareImageName, members: members, questions: questions, superlativeType: superlativeType, hasSuperlatives: hasSuperlatives, didYouKnowId: didYouKnowId)
+                        completed(true, updatedPlaygroup) // Finally!
                         return
                     }
                 })
@@ -150,13 +149,13 @@ extension DataService {
     // MARK: Questions 
     
     // Used to get questions and answers in AnswersController
-    func getQuestionsAndAnswers(classroom: Classroom, completed: @escaping (_ isSuccess: Bool, _ classroom: Classroom) -> ()) {
-        // Note that qids must already be populated in classroom's questions
-        let discipline = classroom.title
-        let oldQuestions = classroom.questions
-        var questionsLeft = classroom.questions.count
+    func getQuestionsAndAnswers(playgroup: Playgroup, completed: @escaping (_ isSuccess: Bool, _ playgroup: Playgroup) -> ()) {
+        // Note that qids must already be populated in playgroup's questions
+        let discipline = playgroup.title
+        let oldQuestions = playgroup.questions
+        var questionsLeft = playgroup.questions.count
         if questionsLeft == 0 {
-            completed(false, classroom)
+            completed(false, playgroup)
             return
         }
         var newQuestions = [Question]()
@@ -168,8 +167,8 @@ extension DataService {
                     newQuestions.append(Question(qid: question.qid, timestamp: question.timestamp, imageName: imageName, question: questionText, answer: answer, userVote: question.userVote))
                 }
                 if questionsLeft == 0 { // Finished processing all questions, but might not have gotten all questions' info
-                    classroom.questions = newQuestions
-                    completed(newQuestions.count == oldQuestions.count, classroom)
+                    playgroup.questions = newQuestions
+                    completed(newQuestions.count == oldQuestions.count, playgroup)
                     return
                 }
             });
@@ -178,17 +177,17 @@ extension DataService {
     }
     
     // Used to vote for a question in answers as Boring, Cool or Neutral
-    func voteForQuestionInClassroom(cid: String, qid: String, userVote: Int) {
+    func voteForQuestionInPlaygroup(pid: String, qid: String, userVote: Int) {
         guard let uid = getStoredUid() else {
             return
         }
-        REF_CLASSROOMS.child("\(cid)/questions/\(qid)/\(uid)").setValue(userVote)
+        REF_PLAYGROUPS.child("\(pid)/questions/\(qid)/\(uid)").setValue(userVote)
     }
     
     // MARK: Chat messages
 
-    // Private helper function that takes in a snapshot of all private messages in a classroom and returns a Classroom model
-    fileprivate func processClassChatSnapshot(snapshot: FIRDataSnapshot, classroom: Classroom, uid: String) -> Classroom? {
+    // Private helper function that takes in a snapshot of all private messages in a playgroup and returns a Playgroup model
+    fileprivate func processClassChatSnapshot(snapshot: FIRDataSnapshot, playgroup: Playgroup, uid: String) -> Playgroup? {
         if !snapshot.exists() {
             return nil
         }
@@ -197,56 +196,56 @@ extension DataService {
             return nil
         }
         
-        classroom.clearMessages()
+        playgroup.clearMessages()
         for snap in snaps {
             if let dict = snap.value as? [String: Any], let text = dict["message"] as? String, let timestamp = dict["timestamp"] as? Double, let poster = dict["poster"] as? String {
                 let mid: String = snap.key
                 let isSentByYou: Bool = poster == uid
                 let date = Date(timeIntervalSince1970: timestamp * 1.0 / 1000.0)
-                let msg = ClassroomMessage(mid: mid, parentCid: classroom.cid, posterUid: poster, text: text, date: date, isSentByYou: isSentByYou)
-                classroom.addMessage(message: msg)
+                let msg = PlaygroupMessage(mid: mid, parentCid: playgroup.pid, posterUid: poster, text: text, date: date, isSentByYou: isSentByYou)
+                playgroup.addMessage(message: msg)
             }
         }
-        return classroom
+        return playgroup
     }
     
-    // Observes all chat messags of one classroom, used in ChatClassroomController
+    // Observes all chat messags of one playgroup, used in ChatPlaygroupController
     // Observes up till the limit, ordered by most recent timestamp
-    func reobserveClassChatMessages(limit: UInt, classroom: Classroom, completed: @escaping (_ isSuccess: Bool, _ classroom: Classroom?) -> ()) -> (FIRDatabaseQuery, FIRDatabaseHandle) {
+    func reobserveClassChatMessages(limit: UInt, playgroup: Playgroup, completed: @escaping (_ isSuccess: Bool, _ playgroup: Playgroup?) -> ()) -> (FIRDatabaseQuery, FIRDatabaseHandle) {
         
         let uid = getStoredUid() == nil ? "" : getStoredUid()!
-        let cid = classroom.cid
-        let ref: FIRDatabaseReference = REF_CLASSROOMMESSAGES.child(cid)
+        let pid = playgroup.pid
+        let ref: FIRDatabaseReference = REF_PLAYGROUPMESSAGES.child(pid)
         ref.keepSynced(true)
         
         let q: FIRDatabaseQuery = ref.queryOrdered(byChild: "timestamp").queryLimited(toLast: limit)
         q.keepSynced(true)
         let handle = q.observe(.value, with: { snapshot in
-            let updatedClassroom = self.processClassChatSnapshot(snapshot: snapshot, classroom: classroom, uid: uid)
-            completed(updatedClassroom != nil, updatedClassroom)
+            let updatedPlaygroup = self.processClassChatSnapshot(snapshot: snapshot, playgroup: playgroup, uid: uid)
+            completed(updatedPlaygroup != nil, updatedPlaygroup)
             return
         })
         return (q, handle)
     }
     
-    // Observes all chat messags of one classroom, used when setting up ChatClassroomController
+    // Observes all chat messags of one playgroup, used when setting up ChatPlaygroupController
     // The only difference between this and reobserve is that this is a one time observer and does not return the handle
-    func observeClassChatMessagesOnce(limit: UInt, classroom: Classroom, completed: @escaping (_ isSuccess: Bool, _ classroom: Classroom?) -> ()) {
+    func observeClassChatMessagesOnce(limit: UInt, playgroup: Playgroup, completed: @escaping (_ isSuccess: Bool, _ playgroup: Playgroup?) -> ()) {
         let uid = getStoredUid() == nil ? "" : getStoredUid()!
-        let cid = classroom.cid
-        let ref: FIRDatabaseReference = REF_CLASSROOMMESSAGES.child(cid)
+        let pid = playgroup.pid
+        let ref: FIRDatabaseReference = REF_PLAYGROUPMESSAGES.child(pid)
         
         let q: FIRDatabaseQuery = ref.queryOrdered(byChild: "timestamp").queryLimited(toLast: limit)
         q.observeSingleEvent(of: .value, with: { snapshot in
             q.removeAllObservers()
-            let updatedClassroom = self.processClassChatSnapshot(snapshot: snapshot, classroom: classroom, uid: uid)
-            completed(updatedClassroom != nil, updatedClassroom)
+            let updatedPlaygroup = self.processClassChatSnapshot(snapshot: snapshot, playgroup: playgroup, uid: uid)
+            completed(updatedPlaygroup != nil, updatedPlaygroup)
             return
         })
     }
     
-    // Add a chat message to the classroom
-    func addClassChatMessage(classroom: Classroom, text: String, completed: @escaping (_ isSuccess: Bool, _ classroom: Classroom?) -> ()) {
+    // Add a chat message to the playgroup
+    func addClassChatMessage(playgroup: Playgroup, text: String, completed: @escaping (_ isSuccess: Bool, _ playgroup: Playgroup?) -> ()) {
         guard let profile = myProfile else {
             completed(false, nil)
             return
@@ -255,47 +254,47 @@ extension DataService {
         let posterUid = profile.uid
         let posterName = profile.name
         let posterImage = profile.profileImageName
-        let cid = classroom.cid
-        let classroomTitle = classroom.title
+        let pid = playgroup.pid
+        let playgroupTitle = playgroup.title
         let timestampInSeconds = Date().timeIntervalSince1970 // NOTE: This is in seconds, be careful with this one
         let timestampInMilliseconds = timestampInSeconds * 1000 // All Firebase entries are in milliseconds
         
-        // Add to classroomMessages
-        let messageRef: FIRDatabaseReference = REF_CLASSROOMMESSAGES.child(cid).childByAutoId()
+        // Add to playgroupMessages
+        let messageRef: FIRDatabaseReference = REF_PLAYGROUPMESSAGES.child(pid).childByAutoId()
         let mid = messageRef.key
         let newMessage: [String: Any] = ["message": text, "poster": posterUid, "timestamp": timestampInMilliseconds]
         messageRef.setValue(newMessage) { (err, ref) in
-            // Message successfully added, append to classroom
-            let msg: ClassroomMessage = ClassroomMessage(mid: mid, parentCid: cid, posterUid: posterUid, text: text, date: Date(timeIntervalSince1970: timestampInSeconds), isSentByYou: true)
-            classroom.addMessage(message: msg)
-            completed(err == nil, classroom)
+            // Message successfully added, append to playgroup
+            let msg: PlaygroupMessage = PlaygroupMessage(mid: mid, parentCid: pid, posterUid: posterUid, text: text, date: Date(timeIntervalSince1970: timestampInSeconds), isSentByYou: true)
+            playgroup.addMessage(message: msg)
+            completed(err == nil, playgroup)
             // NOTE: We do not return here, but also note that there are no more completed calls below
         }
         
-        // Add to own classroom's time replied first (do not add to own hasUpdates)
-        REF_USERS.child("\(posterUid)/classrooms/\(cid)/timeReplied").setValue(timestampInMilliseconds) // NOTE: Have to set milliseconds in server
+        // Add to own playgroup's time replied first (do not add to own hasUpdates)
+        REF_USERS.child("\(posterUid)/playgroups/\(pid)/timeReplied").setValue(timestampInMilliseconds) // NOTE: Have to set milliseconds in server
         
-        // Add to other classmates' hasUpdates
-        let classmateUids = classroom.members.map { (profile) -> String in return profile.uid }.filter{$0 != posterUid}
-        for classmateUid in classmateUids {
+        // Add to other playpeers' hasUpdates
+        let playpeerUids = playgroup.members.map { (profile) -> String in return profile.uid }.filter{$0 != posterUid}
+        for playpeerUid in playpeerUids {
             
-            self.REF_USERS.child(classmateUid).observeSingleEvent(of: .value, with: { (userSnap) in
+            self.REF_USERS.child(playpeerUid).observeSingleEvent(of: .value, with: { (userSnap) in
                 if !userSnap.exists() {
                     return
                 }
                 
                 // Get this user's push token and push count, and send it to push server anyway
-                guard let userDict = userSnap.value as? [String: Any], let classroomsDict = userDict["classrooms"] as? [String: Any], let classroomDict = classroomsDict[cid] as? [String: Any], let hasUpdates = classroomDict["hasUpdates"] as? Bool else {
+                guard let userDict = userSnap.value as? [String: Any], let playgroupsDict = userDict["playgroups"] as? [String: Any], let playgroupDict = playgroupsDict[pid] as? [String: Any], let hasUpdates = playgroupDict["hasUpdates"] as? Bool else {
                     return
                 }
                 guard let pushToken = userDict["pushToken"] as? String, let pushCount = userDict["pushCount"] as? Int else {
-                    // No push token, but user still exists in classroom, so set updates right
-                    self.REF_USERS.child("\(classmateUid)/classrooms/\(cid)").updateChildValues(["hasUpdates": true, "timeReplied": timestampInMilliseconds])
+                    // No push token, but user still exists in playgroup, so set updates right
+                    self.REF_USERS.child("\(playpeerUid)/playgroups/\(pid)").updateChildValues(["hasUpdates": true, "timeReplied": timestampInMilliseconds])
                     return
                 }
             
                 // Check if this user has the settings that allow message to be push notified
-                let settingsRef = self.REF_USERSETTINGS.child(classmateUid)
+                let settingsRef = self.REF_USERSETTINGS.child(playpeerUid)
                 settingsRef.keepSynced(true)
                 settingsRef.observeSingleEvent(of: .value, with: { (settingsSnap) in
                     
@@ -307,15 +306,15 @@ extension DataService {
                             inAppSettings = inApp
                         }
                         
-                        // Check if /classroomMessages and /isLoggedIn are both true
-                        if let settingDict = settingsSnap.value as? [String: Bool], let acceptsClassroomMessages = settingDict["classroomMessages"], let isLoggedIn = settingDict["isLoggedIn"] {
-                            if !acceptsClassroomMessages || !isLoggedIn {
+                        // Check if /playgroupMessages and /isLoggedIn are both true
+                        if let settingDict = settingsSnap.value as? [String: Bool], let acceptsPlaygroupMessages = settingDict["playgroupMessages"], let isLoggedIn = settingDict["isLoggedIn"] {
+                            if !acceptsPlaygroupMessages || !isLoggedIn {
                                 // Not allowed to push messages. Increment push count if necessary, then return
                                 if !hasUpdates {
-                                    self.adjustPushCount(isIncrement: true, uid: classmateUid, completed: { (isSuccess) in })
+                                    self.adjustPushCount(isIncrement: true, uid: playpeerUid, completed: { (isSuccess) in })
                                 }
                                 
-                                self.REF_USERS.child("\(classmateUid)/classrooms/\(cid)").updateChildValues(["hasUpdates": true, "timeReplied": timestampInMilliseconds])
+                                self.REF_USERS.child("\(playpeerUid)/playgroups/\(pid)").updateChildValues(["hasUpdates": true, "timeReplied": timestampInMilliseconds])
                                 return
                             }
                         }
@@ -323,31 +322,31 @@ extension DataService {
                     
                     // Allowed to send push notifications
                     if hasUpdates {
-                        // There are already new messages in this classroom for this user, just send a notification without updating push count
-                        self.REF_USERS.child("\(classmateUid)/classrooms/\(cid)").updateChildValues(["hasUpdates": true, "timeReplied": timestampInMilliseconds])
-                        self.addToNotificationQueue(type: TokenType.CLASSROOM, posterUid: posterUid, posterName: posterName, posterImage: posterImage, recipientUid: classmateUid, pushToken: pushToken, pushCount: pushCount, inApp: inAppSettings, cid: cid, title: classroomTitle, body: text)
+                        // There are already new messages in this playgroup for this user, just send a notification without updating push count
+                        self.REF_USERS.child("\(playpeerUid)/playgroups/\(pid)").updateChildValues(["hasUpdates": true, "timeReplied": timestampInMilliseconds])
+                        self.addToNotificationQueue(type: TokenType.PLAYGROUP, posterUid: posterUid, posterName: posterName, posterImage: posterImage, recipientUid: playpeerUid, pushToken: pushToken, pushCount: pushCount, inApp: inAppSettings, pid: pid, title: playgroupTitle, body: text)
                         return
                     }
-                    // No new messages for this user in this classroom, set hasUpdates to true, and increment push count for this user
-                    self.adjustPushCount(isIncrement: true, uid: classmateUid, completed: { (isSuccess) in
-                        self.REF_USERS.child("\(classmateUid)/classrooms/\(cid)").updateChildValues(["hasUpdates": true, "timeReplied": timestampInMilliseconds])
+                    // No new messages for this user in this playgroup, set hasUpdates to true, and increment push count for this user
+                    self.adjustPushCount(isIncrement: true, uid: playpeerUid, completed: { (isSuccess) in
+                        self.REF_USERS.child("\(playpeerUid)/playgroups/\(pid)").updateChildValues(["hasUpdates": true, "timeReplied": timestampInMilliseconds])
                         // After push count is incremented, then push notification.
-                        self.addToNotificationQueue(type: TokenType.CLASSROOM, posterUid: posterUid, posterName: posterName, posterImage: posterImage, recipientUid: classmateUid, pushToken: pushToken, pushCount: pushCount + 1, inApp: inAppSettings, cid: cid, title: classroomTitle, body: text)
+                        self.addToNotificationQueue(type: TokenType.PLAYGROUP, posterUid: posterUid, posterName: posterName, posterImage: posterImage, recipientUid: playpeerUid, pushToken: pushToken, pushCount: pushCount + 1, inApp: inAppSettings, pid: pid, title: playgroupTitle, body: text)
                     })
                 })
             })
         }
     }
     
-    // See classroom messages so the updated label goes away
-    func seeClassroomMessages(classroom: Classroom, completed: @escaping (_ isSuccess: Bool) -> ()) {
+    // See playgroup messages so the updated label goes away
+    func seePlaygroupMessages(playgroup: Playgroup, completed: @escaping (_ isSuccess: Bool) -> ()) {
         guard let uid = getStoredUid() else {
             completed(false)
             return
         }
-        let cid = classroom.cid
+        let pid = playgroup.pid
         
-        REF_USERS.child("\(uid)/classrooms/\(cid)/hasUpdates").setValue(false) { (err, ref) in
+        REF_USERS.child("\(uid)/playgroups/\(pid)/hasUpdates").setValue(false) { (err, ref) in
             self.updatePushCount { (isSuccess, pushCount) in }
         }
         
@@ -355,7 +354,7 @@ extension DataService {
     
     // MARK: Superlatives
     
-    func submitSuperlativeVote(classroom: Classroom, completed: @escaping (_ isSuccess: Bool) -> ()) {
+    func submitSuperlativeVote(playgroup: Playgroup, completed: @escaping (_ isSuccess: Bool) -> ()) {
         guard let uid = getStoredUid() else {
             completed(false)
             return
@@ -363,19 +362,19 @@ extension DataService {
         
         // Atomic update on memberHasVoted and superlatives
         var classUpdates: [String: Any] = ["memberHasVoted/\(uid)": 1]
-        for sup in classroom.superlatives {
+        for sup in playgroup.superlatives {
             if let uidVotedFor = sup.userVotedFor?.uid {
                 classUpdates["superlatives/\(sup.superlativeName)/\(uid)"] = uidVotedFor
             }
         }
         
-        REF_CLASSROOMS.child(classroom.cid).updateChildValues(classUpdates) { (err, ref) in
+        REF_PLAYGROUPS.child(playgroup.pid).updateChildValues(classUpdates) { (err, ref) in
             completed(err == nil)
             return
         }
     }
     
-    func shareSuperlative(classroom: Classroom, completed: @escaping (_ isSuccess: Bool) -> ()) {
+    func shareSuperlative(playgroup: Playgroup, completed: @escaping (_ isSuccess: Bool) -> ()) {
         guard let uid = getStoredUid() else {
             completed(false)
             return
@@ -383,16 +382,16 @@ extension DataService {
         
         // When a user shares a superlative, simply update the flag for memberHasVoted
         let classUpdates: [String: Any] = ["memberHasVoted/\(uid)": 2]
-        REF_CLASSROOMS.child(classroom.cid).updateChildValues(classUpdates) { (err, ref) in
+        REF_PLAYGROUPS.child(playgroup.pid).updateChildValues(classUpdates) { (err, ref) in
             completed(err == nil)
             return
         }
     }
     
-    func getSuperlativeState(classroom: Classroom, completed: @escaping (_ isSuccess: Bool, _ superlativeState: SuperlativeType) -> ()) {
+    func getSuperlativeState(playgroup: Playgroup, completed: @escaping (_ isSuccess: Bool, _ superlativeState: SuperlativeType) -> ()) {
         let uid = getStoredUid() == nil ? "" : getStoredUid()!
-        let cid = classroom.cid
-        REF_CLASSROOMS.child("\(cid)/memberHasVoted/\(uid)").observeSingleEvent(of: .value, with: { snapshot in
+        let pid = playgroup.pid
+        REF_PLAYGROUPS.child("\(pid)/memberHasVoted/\(uid)").observeSingleEvent(of: .value, with: { snapshot in
             if let superlativeState = snapshot.value as? Int {
                 completed(true, SuperlativeType(rawValue: superlativeState)!)
                 return
@@ -403,28 +402,28 @@ extension DataService {
         })
     }
     
-    func observeSuperlatives(classroom: Classroom, completed: @escaping (_ isSuccess: Bool, _ classroom: Classroom?) -> ()) -> (FIRDatabaseReference, FIRDatabaseHandle) {
+    func observeSuperlatives(playgroup: Playgroup, completed: @escaping (_ isSuccess: Bool, _ playgroup: Playgroup?) -> ()) -> (FIRDatabaseReference, FIRDatabaseHandle) {
         let uid = getStoredUid() == nil ? "" : getStoredUid()!
-        let cid = classroom.cid
-        let ref: FIRDatabaseReference = REF_CLASSROOMS.child("\(cid)/superlatives")
+        let pid = playgroup.pid
+        let ref: FIRDatabaseReference = REF_PLAYGROUPS.child("\(pid)/superlatives")
         ref.keepSynced(true)
         
         let handle = ref.observe(.value, with: { snapshot in
             if !snapshot.exists() {
-                classroom.hasSuperlatives = false
-                completed(true, classroom)
+                playgroup.hasSuperlatives = false
+                completed(true, playgroup)
                 return
             }
             
             guard let supDict = snapshot.value as? [String: Any] else {
-                classroom.hasSuperlatives = false
-                completed(true, classroom)
+                playgroup.hasSuperlatives = false
+                completed(true, playgroup)
                 return
             }
             
             var superlatives = [Superlative]()
             var results = [Superlative]()
-            let members = classroom.members
+            let members = playgroup.members
             
             // Used to notify the user if voting is still ongoing or not.
             // If there is a single user who has not voted for a single superlative, this will be flipped to true.
@@ -481,11 +480,11 @@ extension DataService {
                 }
             }
             
-            classroom.superlatives = superlatives
-            classroom.results = results
-            classroom.isVotingOngoing = isVotingOngoing
+            playgroup.superlatives = superlatives
+            playgroup.results = results
+            playgroup.isVotingOngoing = isVotingOngoing
 
-            completed(true, classroom)
+            completed(true, playgroup)
             return
         })
         return (ref, handle)

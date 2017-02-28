@@ -17,8 +17,8 @@ import FBSDKLoginKit
 // Houses all the Firebase refs for the various extensions (Services) to call
 
 // Root of DB: Either real_db or test_db
-let DB_ROOT = "real_db"
-//let DB_ROOT = "test_db"
+//let DB_ROOT = "real_db"
+let DB_ROOT = "test_db"
 
 class DataService {
 
@@ -29,8 +29,8 @@ class DataService {
     fileprivate var _REF_USERSETTINGS = FIRDatabase.database().reference().child("\(DB_ROOT)/userSettings")
     fileprivate var _REF_INBOXMESSAGES = FIRDatabase.database().reference().child("\(DB_ROOT)/inboxMessages")
     fileprivate var _REF_INBOX = FIRDatabase.database().reference().child("\(DB_ROOT)/inbox")
-    fileprivate var _REF_CLASSROOMS = FIRDatabase.database().reference().child("\(DB_ROOT)/classrooms")
-    fileprivate var _REF_CLASSROOMMESSAGES = FIRDatabase.database().reference().child("\(DB_ROOT)/classroomMessages")
+    fileprivate var _REF_PLAYGROUPS = FIRDatabase.database().reference().child("\(DB_ROOT)/playgroups")
+    fileprivate var _REF_PLAYGROUPMESSAGES = FIRDatabase.database().reference().child("\(DB_ROOT)/playgroupMessages")
     fileprivate var _REF_QUESTIONS = FIRDatabase.database().reference().child("\(DB_ROOT)/questions")
     fileprivate var _REF_DIDYOUKNOWS = FIRDatabase.database().reference().child("\(DB_ROOT)/didyouknows")
     fileprivate var _REF_QUEUE = FIRDatabase.database().reference().child("\(DB_ROOT)/queue/tasks") // Queue for notifications to be sent out
@@ -65,15 +65,15 @@ class DataService {
         }
     }
     
-    var REF_CLASSROOMS: FIRDatabaseReference {
+    var REF_PLAYGROUPS: FIRDatabaseReference {
         get {
-            return _REF_CLASSROOMS
+            return _REF_PLAYGROUPS
         }
     }
     
-    var REF_CLASSROOMMESSAGES: FIRDatabaseReference {
+    var REF_PLAYGROUPMESSAGES: FIRDatabaseReference {
         get {
-            return _REF_CLASSROOMMESSAGES
+            return _REF_PLAYGROUPMESSAGES
         }
     }
     
@@ -102,8 +102,8 @@ class DataService {
         _REF_USERSETTINGS.removeAllObservers()
         _REF_INBOXMESSAGES.removeAllObservers()
         _REF_INBOX.removeAllObservers()
-        _REF_CLASSROOMS.removeAllObservers()
-        _REF_CLASSROOMMESSAGES.removeAllObservers()
+        _REF_PLAYGROUPS.removeAllObservers()
+        _REF_PLAYGROUPMESSAGES.removeAllObservers()
         _REF_QUESTIONS.removeAllObservers()
         _REF_DIDYOUKNOWS.removeAllObservers()
         _REF_QUEUE.removeAllObservers()

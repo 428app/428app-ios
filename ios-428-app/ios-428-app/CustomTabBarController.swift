@@ -26,11 +26,11 @@ class CustomTabBarController: UITabBarController {
         meNavController.tabBarItem.image = #imageLiteral(resourceName: "me-U-2x")
         meNavController.tabBarItem.selectedImage = #imageLiteral(resourceName: "me-F-2x")
         
-        let classroomsController = ClassroomsController()
-        let classroomsNavController = CustomNavigationController(rootViewController: classroomsController)
-        classroomsNavController.tabBarItem.title = "Classrooms"
-        classroomsNavController.tabBarItem.image = #imageLiteral(resourceName: "classrooms-U-2x")
-        classroomsNavController.tabBarItem.selectedImage = #imageLiteral(resourceName: "classrooms-F-2x")
+        let playgroupsController = PlaygroupsController()
+        let playgroupsNavController = CustomNavigationController(rootViewController: playgroupsController)
+        playgroupsNavController.tabBarItem.title = "Playgroups"
+        playgroupsNavController.tabBarItem.image = #imageLiteral(resourceName: "playgroups-U-2x")
+        playgroupsNavController.tabBarItem.selectedImage = #imageLiteral(resourceName: "playgroups-F-2x")
         
         let layout = UICollectionViewFlowLayout()
         let inboxController = InboxController(collectionViewLayout: layout)
@@ -40,6 +40,6 @@ class CustomTabBarController: UITabBarController {
         inboxNavController.tabBarItem.selectedImage = #imageLiteral(resourceName: "inbox-F-2x")
         
         // NOTE: Changing this order will break the remote notification logic in AppDelegate
-        viewControllers = [meNavController, classroomsNavController, inboxNavController]
+        viewControllers = [meNavController, playgroupsNavController, inboxNavController]
     }
 }

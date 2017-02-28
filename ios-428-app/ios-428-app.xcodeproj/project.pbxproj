@@ -14,14 +14,14 @@
 		4020CE1F1DBCA84C00461181 /* FBSDKCoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4020CE1B1DBCA84C00461181 /* FBSDKCoreKit.framework */; };
 		4020CE201DBCA84C00461181 /* FBSDKLoginKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4020CE1C1DBCA84C00461181 /* FBSDKLoginKit.framework */; };
 		4020CE211DBCA84C00461181 /* FBSDKShareKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4020CE1D1DBCA84C00461181 /* FBSDKShareKit.framework */; };
-		4022C7321E1D386D00363E17 /* ClassroomService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4022C7311E1D386D00363E17 /* ClassroomService.swift */; };
-		4024F2211DB7E2E9007819F7 /* ClassroomController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4024F2201DB7E2E9007819F7 /* ClassroomController.swift */; };
-		4024F2231DB7F664007819F7 /* Classroom.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4024F2221DB7F664007819F7 /* Classroom.swift */; };
-		4024F2251DB7F83F007819F7 /* ClassroomMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4024F2241DB7F83F007819F7 /* ClassroomMessage.swift */; };
-		4024F2271DB82239007819F7 /* ClassroomCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4024F2261DB82239007819F7 /* ClassroomCell.swift */; };
-		4024F2291DB853F9007819F7 /* ChatClassroomController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4024F2281DB853F9007819F7 /* ChatClassroomController.swift */; };
+		4022C7321E1D386D00363E17 /* PlaygroupService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4022C7311E1D386D00363E17 /* PlaygroupService.swift */; };
+		4024F2211DB7E2E9007819F7 /* PlaygroupsController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4024F2201DB7E2E9007819F7 /* PlaygroupsController.swift */; };
+		4024F2231DB7F664007819F7 /* Playgroup.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4024F2221DB7F664007819F7 /* Playgroup.swift */; };
+		4024F2251DB7F83F007819F7 /* PlaygroupMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4024F2241DB7F83F007819F7 /* PlaygroupMessage.swift */; };
+		4024F2271DB82239007819F7 /* PlaygroupCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4024F2261DB82239007819F7 /* PlaygroupCell.swift */; };
+		4024F2291DB853F9007819F7 /* ChatPlaygroupController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4024F2281DB853F9007819F7 /* ChatPlaygroupController.swift */; };
 		4024F22B1DB85C0E007819F7 /* PaddingLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4024F22A1DB85C0E007819F7 /* PaddingLabel.swift */; };
-		4024F22D1DB86B18007819F7 /* ClassroomChatCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4024F22C1DB86B18007819F7 /* ClassroomChatCell.swift */; };
+		4024F22D1DB86B18007819F7 /* PlaygroupChatCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4024F22C1DB86B18007819F7 /* PlaygroupChatCell.swift */; };
 		4024F2311DB88262007819F7 /* ModalQuestionController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4024F2301DB88262007819F7 /* ModalQuestionController.swift */; };
 		4024F2331DB9454B007819F7 /* LoginController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4024F2321DB9454B007819F7 /* LoginController.swift */; };
 		4024F2351DBB2155007819F7 /* IntroController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4024F2341DBB2155007819F7 /* IntroController.swift */; };
@@ -32,7 +32,7 @@
 		4037A6261E580B7B0079B203 /* AdSupport.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 40944BEE1E57BC1700B0C722 /* AdSupport.framework */; };
 		4038F45D1E62A34D004E4C1D /* VoteAnswerPromptAlertController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4038F45C1E62A34D004E4C1D /* VoteAnswerPromptAlertController.swift */; };
 		404C22FA1DBDB86D0054FE19 /* UserDefaults.swift in Sources */ = {isa = PBXBuildFile; fileRef = 404C22F91DBDB86D0054FE19 /* UserDefaults.swift */; };
-		404ED6D71E6226370092F90B /* ClassroomQuestionCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 404ED6D61E6226370092F90B /* ClassroomQuestionCell.swift */; };
+		404ED6D71E6226370092F90B /* PlaygroupQuestionCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 404ED6D61E6226370092F90B /* PlaygroupQuestionCell.swift */; };
 		4064A1B61DAC381300071383 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4064A1B51DAC381300071383 /* AppDelegate.swift */; };
 		4064A1B81DAC381300071383 /* InboxController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4064A1B71DAC381300071383 /* InboxController.swift */; };
 		4064A1C01DAC381300071383 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 4064A1BF1DAC381300071383 /* Assets.xcassets */; };
@@ -65,8 +65,8 @@
 		4064A2521DB346A800071383 /* Profile.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4064A2511DB346A800071383 /* Profile.swift */; };
 		4064A2541DB34E4D00071383 /* ProfileController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4064A2531DB34E4D00071383 /* ProfileController.swift */; };
 		4064A2561DB3E5E800071383 /* ProfileCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4064A2551DB3E5E800071383 /* ProfileCell.swift */; };
-		4072AD961E15FD0E0067046D /* ClassmatesController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4072AD951E15FD0E0067046D /* ClassmatesController.swift */; };
-		4072AD981E1619BD0067046D /* ClassmatesProfileCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4072AD971E1619BD0067046D /* ClassmatesProfileCell.swift */; };
+		4072AD961E15FD0E0067046D /* PlaypeersController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4072AD951E15FD0E0067046D /* PlaypeersController.swift */; };
+		4072AD981E1619BD0067046D /* PlaypeersProfileCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4072AD971E1619BD0067046D /* PlaypeersProfileCell.swift */; };
 		4072AD9A1E1633E30067046D /* AnswersController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4072AD991E1633E30067046D /* AnswersController.swift */; };
 		4072AD9C1E164A880067046D /* Superlative.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4072AD9B1E164A880067046D /* Superlative.swift */; };
 		4072ADA21E1657D50067046D /* SuperlativeController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4072ADA11E1657D50067046D /* SuperlativeController.swift */; };
@@ -101,7 +101,7 @@
 		40ADEEE11DDD12D000CE529A /* WhistleFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 40ADEED81DDD12D000CE529A /* WhistleFactory.swift */; };
 		40ADEEE31DDD82E300CE529A /* Enums.swift in Sources */ = {isa = PBXBuildFile; fileRef = 40ADEEE21DDD82E300CE529A /* Enums.swift */; };
 		40B90DA31E54ECFF00ABB3ED /* Debug.swift in Sources */ = {isa = PBXBuildFile; fileRef = 40B90DA21E54ECFF00ABB3ED /* Debug.swift */; };
-		40BC2E931E4EF2B300017253 /* NewClassroomAlertController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 40BC2E921E4EF2B300017253 /* NewClassroomAlertController.swift */; };
+		40BC2E931E4EF2B300017253 /* NewPlaygroupAlertController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 40BC2E921E4EF2B300017253 /* NewPlaygroupAlertController.swift */; };
 		40E2E1401DD26B8200469B4D /* Discipline.swift in Sources */ = {isa = PBXBuildFile; fileRef = 40E2E13F1DD26B8200469B4D /* Discipline.swift */; };
 		40E2E1421DD3788300469B4D /* CustomActivityIndicatorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 40E2E1411DD3788300469B4D /* CustomActivityIndicatorView.swift */; };
 		FED3D2F8E9831031BBFFDBEB /* Pods_ios_428_app.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1B0A78A64649B55915C0C572 /* Pods_ios_428_app.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
@@ -119,14 +119,14 @@
 		4020CE1C1DBCA84C00461181 /* FBSDKLoginKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = FBSDKLoginKit.framework; sourceTree = "<group>"; };
 		4020CE1D1DBCA84C00461181 /* FBSDKShareKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = FBSDKShareKit.framework; sourceTree = "<group>"; };
 		4020CE221DBCADFD00461181 /* ios-428-app.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "ios-428-app.entitlements"; sourceTree = "<group>"; };
-		4022C7311E1D386D00363E17 /* ClassroomService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ClassroomService.swift; sourceTree = "<group>"; };
-		4024F2201DB7E2E9007819F7 /* ClassroomController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ClassroomController.swift; sourceTree = "<group>"; };
-		4024F2221DB7F664007819F7 /* Classroom.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Classroom.swift; sourceTree = "<group>"; };
-		4024F2241DB7F83F007819F7 /* ClassroomMessage.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ClassroomMessage.swift; sourceTree = "<group>"; };
-		4024F2261DB82239007819F7 /* ClassroomCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ClassroomCell.swift; sourceTree = "<group>"; };
-		4024F2281DB853F9007819F7 /* ChatClassroomController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChatClassroomController.swift; sourceTree = "<group>"; };
+		4022C7311E1D386D00363E17 /* PlaygroupService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PlaygroupService.swift; sourceTree = "<group>"; };
+		4024F2201DB7E2E9007819F7 /* PlaygroupsController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PlaygroupsController.swift; sourceTree = "<group>"; };
+		4024F2221DB7F664007819F7 /* Playgroup.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Playgroup.swift; sourceTree = "<group>"; };
+		4024F2241DB7F83F007819F7 /* PlaygroupMessage.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PlaygroupMessage.swift; sourceTree = "<group>"; };
+		4024F2261DB82239007819F7 /* PlaygroupCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PlaygroupCell.swift; sourceTree = "<group>"; };
+		4024F2281DB853F9007819F7 /* ChatPlaygroupController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChatPlaygroupController.swift; sourceTree = "<group>"; };
 		4024F22A1DB85C0E007819F7 /* PaddingLabel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PaddingLabel.swift; sourceTree = "<group>"; };
-		4024F22C1DB86B18007819F7 /* ClassroomChatCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ClassroomChatCell.swift; sourceTree = "<group>"; };
+		4024F22C1DB86B18007819F7 /* PlaygroupChatCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PlaygroupChatCell.swift; sourceTree = "<group>"; };
 		4024F2301DB88262007819F7 /* ModalQuestionController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ModalQuestionController.swift; sourceTree = "<group>"; };
 		4024F2321DB9454B007819F7 /* LoginController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LoginController.swift; sourceTree = "<group>"; };
 		4024F2341DBB2155007819F7 /* IntroController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IntroController.swift; sourceTree = "<group>"; };
@@ -136,7 +136,7 @@
 		4037A6241E5808540079B203 /* NewUserAlertController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NewUserAlertController.swift; sourceTree = "<group>"; };
 		4038F45C1E62A34D004E4C1D /* VoteAnswerPromptAlertController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VoteAnswerPromptAlertController.swift; sourceTree = "<group>"; };
 		404C22F91DBDB86D0054FE19 /* UserDefaults.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserDefaults.swift; sourceTree = "<group>"; };
-		404ED6D61E6226370092F90B /* ClassroomQuestionCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ClassroomQuestionCell.swift; sourceTree = "<group>"; };
+		404ED6D61E6226370092F90B /* PlaygroupQuestionCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PlaygroupQuestionCell.swift; sourceTree = "<group>"; };
 		4064A1B21DAC381300071383 /* ios-428-app.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "ios-428-app.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		4064A1B51DAC381300071383 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		4064A1B71DAC381300071383 /* InboxController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InboxController.swift; sourceTree = "<group>"; };
@@ -171,8 +171,8 @@
 		4064A2511DB346A800071383 /* Profile.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Profile.swift; sourceTree = "<group>"; };
 		4064A2531DB34E4D00071383 /* ProfileController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProfileController.swift; sourceTree = "<group>"; };
 		4064A2551DB3E5E800071383 /* ProfileCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProfileCell.swift; sourceTree = "<group>"; };
-		4072AD951E15FD0E0067046D /* ClassmatesController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ClassmatesController.swift; sourceTree = "<group>"; };
-		4072AD971E1619BD0067046D /* ClassmatesProfileCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ClassmatesProfileCell.swift; sourceTree = "<group>"; };
+		4072AD951E15FD0E0067046D /* PlaypeersController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PlaypeersController.swift; sourceTree = "<group>"; };
+		4072AD971E1619BD0067046D /* PlaypeersProfileCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PlaypeersProfileCell.swift; sourceTree = "<group>"; };
 		4072AD991E1633E30067046D /* AnswersController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AnswersController.swift; sourceTree = "<group>"; };
 		4072AD9B1E164A880067046D /* Superlative.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Superlative.swift; sourceTree = "<group>"; };
 		4072ADA11E1657D50067046D /* SuperlativeController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SuperlativeController.swift; sourceTree = "<group>"; };
@@ -208,7 +208,7 @@
 		40ADEED81DDD12D000CE529A /* WhistleFactory.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WhistleFactory.swift; sourceTree = "<group>"; };
 		40ADEEE21DDD82E300CE529A /* Enums.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Enums.swift; sourceTree = "<group>"; };
 		40B90DA21E54ECFF00ABB3ED /* Debug.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Debug.swift; sourceTree = "<group>"; };
-		40BC2E921E4EF2B300017253 /* NewClassroomAlertController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NewClassroomAlertController.swift; sourceTree = "<group>"; };
+		40BC2E921E4EF2B300017253 /* NewPlaygroupAlertController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NewPlaygroupAlertController.swift; sourceTree = "<group>"; };
 		40E2E13F1DD26B8200469B4D /* Discipline.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Discipline.swift; sourceTree = "<group>"; };
 		40E2E1411DD3788300469B4D /* CustomActivityIndicatorView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CustomActivityIndicatorView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -230,21 +230,21 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		4024F21F1DB7E2DB007819F7 /* Classroom */ = {
+		4024F21F1DB7E2DB007819F7 /* Playgroup */ = {
 			isa = PBXGroup;
 			children = (
-				4024F2201DB7E2E9007819F7 /* ClassroomController.swift */,
-				4024F2281DB853F9007819F7 /* ChatClassroomController.swift */,
-				40BC2E921E4EF2B300017253 /* NewClassroomAlertController.swift */,
+				4024F2201DB7E2E9007819F7 /* PlaygroupsController.swift */,
+				4024F2281DB853F9007819F7 /* ChatPlaygroupController.swift */,
+				40BC2E921E4EF2B300017253 /* NewPlaygroupAlertController.swift */,
 				40790C861E1B659700A779A6 /* SuperlativeAlertController.swift */,
 				4024F2301DB88262007819F7 /* ModalQuestionController.swift */,
-				4072AD951E15FD0E0067046D /* ClassmatesController.swift */,
+				4072AD951E15FD0E0067046D /* PlaypeersController.swift */,
 				4072AD991E1633E30067046D /* AnswersController.swift */,
 				4038F45C1E62A34D004E4C1D /* VoteAnswerPromptAlertController.swift */,
 				4072ADA11E1657D50067046D /* SuperlativeController.swift */,
 				4072ADA51E1662A30067046D /* ModalVoteController.swift */,
 			);
-			name = Classroom;
+			name = Playgroup;
 			sourceTree = "<group>";
 		};
 		404C22F71DBDB8580054FE19 /* Frontend */ = {
@@ -356,9 +356,9 @@
 				4064A22A1DB2B27F00071383 /* Inbox.swift */,
 				4064A2511DB346A800071383 /* Profile.swift */,
 				40AB7FFD1DB5B89C00492788 /* Setting.swift */,
-				4024F2221DB7F664007819F7 /* Classroom.swift */,
+				4024F2221DB7F664007819F7 /* Playgroup.swift */,
 				4081B2611E1500FF00D6E690 /* Question.swift */,
-				4024F2241DB7F83F007819F7 /* ClassroomMessage.swift */,
+				4024F2241DB7F83F007819F7 /* PlaygroupMessage.swift */,
 				4072AD9B1E164A880067046D /* Superlative.swift */,
 			);
 			name = Model;
@@ -377,11 +377,11 @@
 				4064A2191DACC20E00071383 /* InboxCell.swift */,
 				4064A2551DB3E5E800071383 /* ProfileCell.swift */,
 				40AB7FF91DB5B06A00492788 /* SettingCell.swift */,
-				4024F2261DB82239007819F7 /* ClassroomCell.swift */,
-				4024F22C1DB86B18007819F7 /* ClassroomChatCell.swift */,
-				404ED6D61E6226370092F90B /* ClassroomQuestionCell.swift */,
+				4024F2261DB82239007819F7 /* PlaygroupCell.swift */,
+				4024F22C1DB86B18007819F7 /* PlaygroupChatCell.swift */,
+				404ED6D61E6226370092F90B /* PlaygroupQuestionCell.swift */,
 				40E2E1411DD3788300469B4D /* CustomActivityIndicatorView.swift */,
-				4072AD971E1619BD0067046D /* ClassmatesProfileCell.swift */,
+				4072AD971E1619BD0067046D /* PlaypeersProfileCell.swift */,
 				4072ADA71E1663EB0067046D /* SuperlativeCell.swift */,
 			);
 			name = View;
@@ -392,7 +392,7 @@
 			children = (
 				40785D681E0E6B14009B66E0 /* Login */,
 				40AB80011DB6FA9500492788 /* Me */,
-				4024F21F1DB7E2DB007819F7 /* Classroom */,
+				4024F21F1DB7E2DB007819F7 /* Playgroup */,
 				40A2C0881E14268500D477E1 /* Inbox */,
 			);
 			name = Controller;
@@ -403,7 +403,7 @@
 			children = (
 				40785D601E0D2C81009B66E0 /* DataService.swift */,
 				40785D641E0D9868009B66E0 /* UserService.swift */,
-				4022C7311E1D386D00363E17 /* ClassroomService.swift */,
+				4022C7311E1D386D00363E17 /* PlaygroupService.swift */,
 				40785D621E0D981C009B66E0 /* InboxService.swift */,
 				40785D661E0E5A1F009B66E0 /* RemoteService.swift */,
 				4031FB9B1DC0691C0066E6B6 /* StorageService.swift */,
@@ -653,10 +653,10 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				4024F2291DB853F9007819F7 /* ChatClassroomController.swift in Sources */,
+				4024F2291DB853F9007819F7 /* ChatPlaygroupController.swift in Sources */,
 				4064A2051DAC868E00071383 /* CustomNavigationController.swift in Sources */,
 				4024F2351DBB2155007819F7 /* IntroController.swift in Sources */,
-				4024F2231DB7F664007819F7 /* Classroom.swift in Sources */,
+				4024F2231DB7F664007819F7 /* Playgroup.swift in Sources */,
 				40ADEEDB1DDD12D000CE529A /* FontList.swift in Sources */,
 				40785D5F1E093AAF009B66E0 /* MeController.swift in Sources */,
 				40E2E1421DD3788300469B4D /* CustomActivityIndicatorView.swift in Sources */,
@@ -675,16 +675,16 @@
 				40AB7FFA1DB5B06A00492788 /* SettingCell.swift in Sources */,
 				4064A1EB1DAC80F100071383 /* Constants.swift in Sources */,
 				4064A2141DACBCAA00071383 /* BaseCollectionCell.swift in Sources */,
-				4024F22D1DB86B18007819F7 /* ClassroomChatCell.swift in Sources */,
-				4024F2211DB7E2E9007819F7 /* ClassroomController.swift in Sources */,
-				4024F2271DB82239007819F7 /* ClassroomCell.swift in Sources */,
+				4024F22D1DB86B18007819F7 /* PlaygroupChatCell.swift in Sources */,
+				4024F2211DB7E2E9007819F7 /* PlaygroupsController.swift in Sources */,
+				4024F2271DB82239007819F7 /* PlaygroupCell.swift in Sources */,
 				4064A2181DACC1B700071383 /* InboxChatCell.swift in Sources */,
 				4064A1E61DAC7DA600071383 /* CustomTabBarController.swift in Sources */,
 				4064A2521DB346A800071383 /* Profile.swift in Sources */,
 				4064A2561DB3E5E800071383 /* ProfileCell.swift in Sources */,
 				40785D651E0D9868009B66E0 /* UserService.swift in Sources */,
 				40ADEEDA1DDD12D000CE529A /* ColorList.swift in Sources */,
-				4024F2251DB7F83F007819F7 /* ClassroomMessage.swift in Sources */,
+				4024F2251DB7F83F007819F7 /* PlaygroupMessage.swift in Sources */,
 				40AB80071DB7095200492788 /* EditTaglineController.swift in Sources */,
 				4064A2211DADE67E00071383 /* ChatHeaderView.swift in Sources */,
 				40AB7FFE1DB5B89C00492788 /* Setting.swift in Sources */,
@@ -696,13 +696,13 @@
 				4038F45D1E62A34D004E4C1D /* VoteAnswerPromptAlertController.swift in Sources */,
 				4064A21F1DAD72DF00071383 /* Functions.swift in Sources */,
 				4064A22B1DB2B27F00071383 /* Inbox.swift in Sources */,
-				40BC2E931E4EF2B300017253 /* NewClassroomAlertController.swift in Sources */,
+				40BC2E931E4EF2B300017253 /* NewPlaygroupAlertController.swift in Sources */,
 				40A2C0871E13D61F00D477E1 /* WebviewController.swift in Sources */,
-				4072AD961E15FD0E0067046D /* ClassmatesController.swift in Sources */,
+				4072AD961E15FD0E0067046D /* PlaypeersController.swift in Sources */,
 				40ADEEDE1DDD12D000CE529A /* Showing.swift in Sources */,
 				4031FB9C1DC0691C0066E6B6 /* StorageService.swift in Sources */,
 				40ADEEDF1DDD12D000CE529A /* WhisperFactory.swift in Sources */,
-				404ED6D71E6226370092F90B /* ClassroomQuestionCell.swift in Sources */,
+				404ED6D71E6226370092F90B /* PlaygroupQuestionCell.swift in Sources */,
 				40ADEEE11DDD12D000CE529A /* WhistleFactory.swift in Sources */,
 				4064A1B61DAC381300071383 /* AppDelegate.swift in Sources */,
 				40ADEED91DDD12D000CE529A /* Config.swift in Sources */,
@@ -718,9 +718,9 @@
 				40785D611E0D2C81009B66E0 /* DataService.swift in Sources */,
 				4072ADA61E1662A30067046D /* ModalVoteController.swift in Sources */,
 				40E2E1401DD26B8200469B4D /* Discipline.swift in Sources */,
-				4022C7321E1D386D00363E17 /* ClassroomService.swift in Sources */,
+				4022C7321E1D386D00363E17 /* PlaygroupService.swift in Sources */,
 				40785D631E0D981C009B66E0 /* InboxService.swift in Sources */,
-				4072AD981E1619BD0067046D /* ClassmatesProfileCell.swift in Sources */,
+				4072AD981E1619BD0067046D /* PlaypeersProfileCell.swift in Sources */,
 				4064A2161DACBCDC00071383 /* Extensions.swift in Sources */,
 				40AB80031DB6FAA200492788 /* PictureModalController.swift in Sources */,
 				4072ADA21E1657D50067046D /* SuperlativeController.swift in Sources */,

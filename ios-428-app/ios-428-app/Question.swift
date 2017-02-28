@@ -19,7 +19,7 @@ class Question {
     fileprivate var _isVideo: Bool
     fileprivate var _userVote: QuestionVoteType
     
-    // Qids and timestamps compulsory, because they identify a question uniquely to a classroom
+    // Qids and timestamps compulsory, because they identify a question uniquely to a playgroup
     init(qid: String, timestamp: Double, imageName: String = "", shareImageName: String = "", question: String = "", answer: String = "", userVote: QuestionVoteType = .NEUTRAL) {
         _qid = qid
         _timestamp = timestamp

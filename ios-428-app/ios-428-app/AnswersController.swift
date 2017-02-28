@@ -18,7 +18,7 @@ class AnswersController: UITableViewController {
     fileprivate let VIDEOANSWERCELL_ID = "videoAnswerCell"
     
     fileprivate var questions = [Question]()
-    open var classroom: Classroom!
+    open var playgroup: Playgroup!
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -95,14 +95,14 @@ class AnswersController: UITableViewController {
     fileprivate func loadData() {
         globalActivityIndicator.startAnimating()
         // Load questions and answers
-        DataService.ds.getQuestionsAndAnswers(classroom: self.classroom) { (isSuccess, updatedClassroom) in
+        DataService.ds.getQuestionsAndAnswers(playgroup: self.playgroup) { (isSuccess, updatedPlaygroup) in
             self.globalActivityIndicator.stopAnimating()
             if !isSuccess {
                 showErrorAlert(vc: self, title: "Error", message: "We could not get the class' answers. Please try again later.")
                 return
             }
-            self.classroom = updatedClassroom
-            self.questions = self.classroom.questions
+            self.playgroup = updatedPlaygroup
+            self.questions = self.playgroup.questions
             
             // Do not show the most recent answer (the first answer, as it has already been sorted)
             self.questions = Array(self.questions.dropFirst(1))
@@ -122,7 +122,7 @@ class AnswersController: UITableViewController {
     
     func voteAnswer(notif: Notification) {
         if let userInfo = notif.userInfo as? [String: Any], let qid = userInfo["qid"] as? String, let userVoteInt = userInfo["userVote"] as? Int {
-            DataService.ds.voteForQuestionInClassroom(cid: self.classroom.cid, qid: qid, userVote: userVoteInt)
+            DataService.ds.voteForQuestionInPlaygroup(pid: self.playgroup.pid, qid: qid, userVote: userVoteInt)
         }
     }
     

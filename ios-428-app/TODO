@@ -2,31 +2,36 @@ TODO:
 
 
 IOS UPDATES:
++ IMPROVEMENT: Lobby - a new user can chat in a lobby before she gets her first playgroup
++ IMPROVEMENT: Tutorial at the start
 
-+ IMPROVEMENT: Remove in-app browser for visit website and privacy policy and redirect that to Safari for stability, also added a rate us feature to prep for linking to app store once our app is live
+
+
++ IMPROVEMENT: Clicking on playgroup title also brings up nav drawer
+
+
+
+
+
 
 V10:
 + FIXED BUG: New user does not get new user alert that tells her to edit profile first
 + IMPROVEMENT: Better FB permissions control: App partially allows some permissions to be unchecked and does not refuse to sync with Facebook
-
-
-
-
-+ IMPROVEMENT: Lobby - a new user can chat in a lobby before she gets her first classroom
-
-
++ IMPROVEMENT: Remove in-app browser for visit website and privacy policy and redirect that to Safari for stability, also added a rate us feature to prep for linking to app store once our app is live
++ FIXED BUG: Profile photo change fail safe: In case profile photo upload failed, can reupload and won't get stuck
++ IMPROVEMENT: Rebranding: No longer called Playgroups, but now called Play groups!
 
 
 
 
 V9:
-+ FIXED BUG: Server - Fixed next day 4:28pm function which wasn't calculating it exactly right for different timezones, causing people to get classrooms at the wrong times
++ FIXED BUG: Server - Fixed next day 4:28pm function which wasn't calculating it exactly right for different timezones, causing people to get playgroups at the wrong times
 + FIXED BUG: Allowing empty input on profile tagline (Thanks Jenny)
 + FIXED BUG: isLoggedIn setting is true without other settings (unable to replicate, and rarely happens, but made some changes and I think I fixed this. Not a big issue regardless.)
-+ FIXED BUG: Classmates list are now ordered alphabetically, so they appear in the same order each time (Thanks Jenny)
++ FIXED BUG: Playpeers list are now ordered alphabetically, so they appear in the same order each time (Thanks Jenny)
 + FIXED BUG: Fixed views for iPhone SE: Question banner too small, privacy policy message cut off at login (Thanks Taira)
 + FIXED BUG: On chat screen if you highlight a word then go to profile screen, the highlight continues to appear in the background (Thanks Tomas)
-+ IMPROVEMENT: Server - Randomized swap classroom algorithm that reduces your chances of being with the exact same people in the next classroom (not going to work very well now because there are only few classrooms and few users right now)
++ IMPROVEMENT: Server - Randomized swap playgroup algorithm that reduces your chances of being with the exact same people in the next playgroup (not going to work very well now because there are only few playgroups and few users right now)
 + IMPROVEMENT: Explain to users how to get Inbox messages - decided a bit of explanation helps. (Thanks Jenny)
 + IMPROVEMENT: Section divider for each question each day (Thanks Ernest)
 + IMPROVEMENT: Fun animation (and behavioral nudges) over many parts of the app (try clicking around)
@@ -35,10 +40,10 @@ V9:
 
 V8:
 + FIXED BUG: Emoji getting cut off for profile information
-+ FIXED BUG: Going from classmates page back to chat resigns the message input box but not the keyboard
++ FIXED BUG: Going from playpeers page back to chat resigns the message input box but not the keyboard
 + IMPROVEMENT: Improved look of login sliders
 + IMPROVEMENT: When entering private message screen, message box automatically pops up (Thanks Tomas)
-+ IMPROVEMENT: Differentiated gap between chat messages sent by you and others in Inbox and Classroom chat
++ IMPROVEMENT: Differentiated gap between chat messages sent by you and others in Inbox and Playgroup chat
 
 
 

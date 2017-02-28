@@ -58,6 +58,8 @@ class EditProfileController: UIViewController, UIScrollViewDelegate, UIGestureRe
         let taglineString = NSMutableAttributedString(string: profile.tagline.isEmpty ? "Ask me why I did not fill this in." : profile.tagline, attributes: [NSForegroundColorAttributeName: UIColor.gray, NSParagraphStyleAttributeName: paragraphStyle])
         taglineText.attributedText = taglineString
         
+        editPicButton.isEnabled = true // Enable pic edit although pic might still be loading as a fail-safe in case pic never loads
+        profileImageView.isUserInteractionEnabled = true
         editProfessionalInfoButton.isEnabled = true
         editTaglineButton.isEnabled = true
     }
@@ -67,10 +69,7 @@ class EditProfileController: UIViewController, UIScrollViewDelegate, UIGestureRe
         guard let profilePic = myProfilePhoto else {
             return
         }
-        
         profileImageView.image = profilePic
-        editPicButton.isEnabled = true
-        profileImageView.isUserInteractionEnabled = true
     }
     
     // MARK: Views 0 - Profile image, cover image
@@ -86,6 +85,7 @@ class EditProfileController: UIViewController, UIScrollViewDelegate, UIGestureRe
     
     fileprivate lazy var profileImageView: UIImageView = {
         let imageView = UIImageView()
+        imageView.image = #imageLiteral(resourceName: "placeholder-user")
         imageView.contentMode = .scaleAspectFill
         imageView.layer.cornerRadius = 90.0 // Actual image size is 180.0 so this is /2
         imageView.clipsToBounds = true
@@ -338,7 +338,7 @@ class EditProfileController: UIViewController, UIScrollViewDelegate, UIGestureRe
     }
     
     fileprivate lazy var taglineLbl: UILabel = {
-        return self.sectionLabelTemplate(labelText: "What I do at 4:28pm:")
+        return self.sectionLabelTemplate(labelText: "My childhood ambition is:")
     }()
     
     fileprivate lazy var taglineText: UILabel = {

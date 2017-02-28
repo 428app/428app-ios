@@ -15,18 +15,18 @@ import FBSDKCoreKit
 import FBSDKLoginKit
 
 // Extends DataService to house Remote notification, and some utility calls
-// Most of these calls are used by other services such as InboxService and ClassroomService
+// Most of these calls are used by other services such as InboxService and PlaygroupService
 extension DataService {
 
     // Adds message to Queue that will be picked up by push server
-    open func addToNotificationQueue(type: TokenType, posterUid: String, posterName: String, posterImage: String, recipientUid: String, pushToken: String, pushCount: Int, inApp: Bool, cid: String, title: String, body: String) {
+    open func addToNotificationQueue(type: TokenType, posterUid: String, posterName: String, posterImage: String, recipientUid: String, pushToken: String, pushCount: Int, inApp: Bool, pid: String, title: String, body: String) {
         // No need to async callback because notifications are not guaranteed anyway
-        let dict: [String: Any] = ["type": type.rawValue, "posterUid": posterUid, "posterName": posterName, "posterImage": posterImage, "recipientUid": recipientUid, "pushToken": pushToken, "pushCount": pushCount, "inApp": inApp, "cid": cid, "title": title, "body": body]
+        let dict: [String: Any] = ["type": type.rawValue, "posterUid": posterUid, "posterName": posterName, "posterImage": posterImage, "recipientUid": recipientUid, "pushToken": pushToken, "pushCount": pushCount, "inApp": inApp, "pid": pid, "title": title, "body": body]
         REF_QUEUE.childByAutoId().setValue(dict)
     }
     
     // Increments push count of user to display the right number for push notifications on the app's icon
-    // Used by other services such as InboxService and ClassroomService
+    // Used by other services such as InboxService and PlaygroupService
     open func adjustPushCount(isIncrement: Bool, uid: String, completed: @escaping (_ isSuccess: Bool) -> ()) {
         // Note: Transaction blocks only work when persistence is set to True
         self.REF_USERS.child("\(uid)/pushCount").runTransactionBlock({ (currentData) -> FIRTransactionResult in
@@ -72,7 +72,7 @@ extension DataService {
         })
     }
     
-    // Called in Classroom and Inbox chat's viewWillDisappear to update push count
+    // Called in Playgroup and Inbox chat's viewWillDisappear to update push count
     func updatePushCount(completed: @escaping (_ isSuccess: Bool, _ pushCount: Int) -> ()) {
         guard let uid = getStoredUid() else {
             completed(false, -1)
@@ -89,9 +89,9 @@ extension DataService {
                 return
             }
             
-            // Count all classrooms where hasUpdates is true
-            if let classroomsDict = userDict["classrooms"] as? [String: [String: Any]] {
-                for (_, v) in classroomsDict {
+            // Count all playgroups where hasUpdates is true
+            if let playgroupsDict = userDict["playgroups"] as? [String: [String: Any]] {
+                for (_, v) in playgroupsDict {
                     if let hasUpdates = v["hasUpdates"] as? Bool {
                         if hasUpdates {
                             pushCount += 1

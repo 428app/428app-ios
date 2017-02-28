@@ -1,5 +1,5 @@
 //
-//  ClassmatesProfileCell.swift
+//  PlaypeersProfileCell.swift
 //  ios-428-app
 //
 //  Created by Leonard Loo on 12/30/16.
@@ -9,7 +9,7 @@
 import Foundation
 import UIKit
 
-class ClassmatesProfileCell: BaseCollectionCell {
+class PlaypeersProfileCell: BaseCollectionCell {
     
     fileprivate var profile: Profile!
     

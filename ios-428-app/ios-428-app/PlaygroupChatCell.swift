@@ -1,5 +1,5 @@
 //
-//  ClassroomChatCell.swift
+//  PlaygroupChatCell.swift
 //  ios-428-app
 //
 //  Created by Leonard Loo on 10/19/16.
@@ -9,9 +9,9 @@
 import Foundation
 import UIKit
 
-class ClassroomChatCell: BaseCollectionCell {
+class PlaygroupChatCell: BaseCollectionCell {
     
-    fileprivate var message: ClassroomMessage!
+    fileprivate var message: PlaygroupMessage!
     open var shouldExpand = false
     fileprivate let TEXT_VIEW_FONT = UIFont.systemFont(ofSize: 16.0)
     
@@ -103,7 +103,7 @@ class ClassroomChatCell: BaseCollectionCell {
         })
     }
     
-    func configureCell(messageObj: ClassroomMessage, posterImageName: String, posterName: String, viewWidth: CGFloat, isLastInChain: Bool) {
+    func configureCell(messageObj: PlaygroupMessage, posterImageName: String, posterName: String, viewWidth: CGFloat, isLastInChain: Bool) {
         self.message = messageObj
 
         // Attributed text is crucial, normal text will screw up if emoji is sent
@@ -167,7 +167,7 @@ class ClassroomChatCell: BaseCollectionCell {
     
     func notifyControllerToExpand(tap: UITapGestureRecognizer) {
         self.shouldExpand = true
-        NotificationCenter.default.post(name: NOTIF_EXPANDCLASSROOMCHATCELL, object: nil)
+        NotificationCenter.default.post(name: NOTIF_EXPANDPLAYGROUPCHATCELL, object: nil)
     }
     
 }

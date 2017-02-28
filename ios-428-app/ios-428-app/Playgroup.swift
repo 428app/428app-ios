@@ -1,5 +1,5 @@
 //
-//  Classroom.swift
+//  Playgroup.swift
 //  ios-428-app
 //
 //  Created by Leonard Loo on 10/19/16.
@@ -8,34 +8,34 @@
 
 import Foundation
 
-class Classroom {
+class Playgroup {
     
-    // These are read in from the start when viewing all classrooms
-    fileprivate var _cid: String
+    // These are read in from the start when viewing all playgroups
+    fileprivate var _pid: String
     fileprivate var _title: String
-    fileprivate var _timeReplied: Double // Unix time in MILLISECONDS used to sort classrooms - divide by 1000 before using this to init TimeInterval
+    fileprivate var _timeReplied: Double // Unix time in MILLISECONDS used to sort playgroups - divide by 1000 before using this to init TimeInterval
     fileprivate var _hasUpdates: Bool // If true, there is a new message/question being posted that the user has not seen yet
     fileprivate var _questionNum: Int
     fileprivate var _questionText: String
     fileprivate var _imageName: String // Image name is the latest question's image url string
     fileprivate var _shareImageName: String // Latest question's share image url string (used for FB share on this question)
     
-    // These are read in on opening the classroom
+    // These are read in on opening the playgroup
     fileprivate var _members: [Profile] // Used to display members and their profiles
     fileprivate var _questions: [Question] // Get question number from this
-    fileprivate var _classroomMessages: [ClassroomMessage]
+    fileprivate var _playgroupMessages: [PlaygroupMessage]
     
     /** Superlatives **/
-    fileprivate var _hasSuperlatives: Bool // If true, enabled superlatives button from Classroom Chat
+    fileprivate var _hasSuperlatives: Bool // If true, enabled superlatives button from Playgroup Chat
     fileprivate var _isVotingOngoing: Bool // If true, there are only partial results and not everyone has voted yet
-    fileprivate var _superlatives: [Superlative] // Your superlatives of your classmates
-    fileprivate var _results: [Superlative] // The overall superlatives of all classmates downloaded from server
+    fileprivate var _superlatives: [Superlative] // Your superlatives of your playpeers
+    fileprivate var _results: [Superlative] // The overall superlatives of all playpeers downloaded from server
     fileprivate var _superlativeType: SuperlativeType
     fileprivate var _didYouKnowId: String
     
     
-    init(cid: String, title: String, timeReplied: Double, hasUpdates: Bool, questionNum: Int, questionText: String, imageName: String, shareImageName: String, members: [Profile] = [], questions: [Question] = [], classroomMessages: [ClassroomMessage] = [], superlatives: [Superlative] = [], results: [Superlative] = [], superlativeType: SuperlativeType = SuperlativeType.NOTVOTED, hasSuperlatives: Bool = false, isVotingOngoing: Bool = false, didYouKnowId: String = "") {
-        _cid = cid
+    init(pid: String, title: String, timeReplied: Double, hasUpdates: Bool, questionNum: Int, questionText: String, imageName: String, shareImageName: String, members: [Profile] = [], questions: [Question] = [], playgroupMessages: [PlaygroupMessage] = [], superlatives: [Superlative] = [], results: [Superlative] = [], superlativeType: SuperlativeType = SuperlativeType.NOTVOTED, hasSuperlatives: Bool = false, isVotingOngoing: Bool = false, didYouKnowId: String = "") {
+        _pid = pid
         _title = title
         _timeReplied = timeReplied
         _hasUpdates = hasUpdates
@@ -46,7 +46,7 @@ class Classroom {
         
         _members = members
         _questions = questions.sorted{$0.timestamp > $1.timestamp} // Most recent questions first
-        _classroomMessages = classroomMessages
+        _playgroupMessages = playgroupMessages
         _superlatives = superlatives
         _results = results
         _superlativeType = superlativeType
@@ -55,9 +55,9 @@ class Classroom {
         _isVotingOngoing = isVotingOngoing
     }
     
-    var cid: String {
+    var pid: String {
         get {
-            return _cid
+            return _pid
         }
     }
     
@@ -91,18 +91,18 @@ class Classroom {
         }
     }
     
-    var classroomMessages: [ClassroomMessage] {
+    var playgroupMessages: [PlaygroupMessage] {
         get {
-            return _classroomMessages
+            return _playgroupMessages
         }
     }
     
-    func addMessage(message: ClassroomMessage) {
-        _classroomMessages.append(message)
+    func addMessage(message: PlaygroupMessage) {
+        _playgroupMessages.append(message)
     }
     
     func clearMessages() {
-        _classroomMessages = []
+        _playgroupMessages = []
     }
     
     var hasSuperlatives: Bool {

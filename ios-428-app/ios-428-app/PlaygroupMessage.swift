@@ -1,5 +1,5 @@
 //
-//  ClassroomMessage.swift
+//  PlaygroupMessage.swift
 //  ios-428-app
 //
 //  Created by Leonard Loo on 10/19/16.
@@ -8,7 +8,7 @@
 
 import Foundation
 
-class ClassroomMessage {
+class PlaygroupMessage {
     
     fileprivate var _mid: String
     fileprivate var _parentCid: String
@@ -25,7 +25,7 @@ class ClassroomMessage {
         _text = text
         _date = date
         _isSentByYou = isSentByYou
-        _isSentBy428 = posterUid == "428" // Classroom messages sent by server has poster as 428
+        _isSentBy428 = posterUid == "428" // Playgroup messages sent by server has poster as 428
     }
     
     var mid: String {

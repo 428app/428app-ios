@@ -1,5 +1,5 @@
 //
-//  ClassmatesController.swift
+//  PlaypeersController.swift
 //  ios-428-app
 //
 //  Created by Leonard Loo on 12/30/16.
@@ -9,22 +9,22 @@
 import Foundation
 import UIKit
 
-class ClassmatesController: UICollectionViewController, UICollectionViewDelegateFlowLayout {
+class PlaypeersController: UICollectionViewController, UICollectionViewDelegateFlowLayout {
     
-    fileprivate let CELL_ID = "classmatesProfileCell"
+    fileprivate let CELL_ID = "playpeersProfileCell"
     
-    open var classmates: [Profile]!
+    open var playpeers: [Profile]!
     
     let interactor = Interactor() // Used for transitioning to and from ProfileController
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        self.navigationItem.title = "Classmates"
+        self.navigationItem.title = "Playpeers"
         self.view.backgroundColor = RED_UICOLOR
         self.extendedLayoutIncludesOpaqueBars = true
         self.setupViews()
-        // Sort classmates by name alphabetically
-        self.classmates = self.classmates.sorted{($0.name < $1.name)}
+        // Sort playpeers by name alphabetically
+        self.playpeers = self.playpeers.sorted{($0.name < $1.name)}
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -62,19 +62,19 @@ class ClassmatesController: UICollectionViewController, UICollectionViewDelegate
         collectionView?.bounces = true
         collectionView?.showsVerticalScrollIndicator = false
         collectionView?.showsHorizontalScrollIndicator = false
-        collectionView?.register(ClassmatesProfileCell.self, forCellWithReuseIdentifier: CELL_ID)
+        collectionView?.register(PlaypeersProfileCell.self, forCellWithReuseIdentifier: CELL_ID)
         collectionView?.contentInset.top = 20.0
     }
     // MARK: Collection view
     
     override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return self.classmates.count
+        return self.playpeers.count
     }
     
     override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: CELL_ID, for: indexPath) as! ClassmatesProfileCell
-        let classmate = self.classmates[indexPath.item]
-        cell.configureCell(profileObj: classmate)
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: CELL_ID, for: indexPath) as! PlaypeersProfileCell
+        let playpeer = self.playpeers[indexPath.item]
+        cell.configureCell(profileObj: playpeer)
         return cell
     }
     
@@ -84,13 +84,13 @@ class ClassmatesController: UICollectionViewController, UICollectionViewDelegate
     }
     
     override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        let cell = collectionView.cellForItem(at: indexPath) as! ClassmatesProfileCell
+        let cell = collectionView.cellForItem(at: indexPath) as! PlaypeersProfileCell
         cell.changeColor()
-        let classmate = self.classmates[indexPath.item]
+        let playpeer = self.playpeers[indexPath.item]
         let controller = ProfileController()
         controller.transitioningDelegate = self
         controller.interactor = interactor
-        controller.profile = classmate
+        controller.profile = playpeer
         controller.modalTransitionStyle = .coverVertical
         controller.modalPresentationStyle = .overFullScreen
         self.present(controller, animated: true, completion: nil)

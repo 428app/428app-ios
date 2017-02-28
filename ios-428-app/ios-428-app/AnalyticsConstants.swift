@@ -13,7 +13,7 @@ import Firebase
 let kEventViewPhotoOnMe = "view_photo_me"
 
 // Me + View profile page
-let kEventClickOnClassroomIcon = "click_classroom_icon"
+let kEventClickOnPlaygroupIcon = "click_playgroup_icon"
 
 // View profile page
 let kEventViewPhotoOnProfile = "view_photo_profile"
@@ -25,7 +25,7 @@ let kEventViewProfileFromNav = "view_profile_from_inbox_nav"
 let kEventViewProfileFromPlaceholder = "view_profile_from_placeholder"
 let kEventViewProfileFromThumbnail = "view_profile_from_thumbnail"
 
-// Classrooms page
+// Playgroups page
 let kEventViewQuestion = "view_question"
 let kEventMoreNavClicked = "click_more_nav"
 

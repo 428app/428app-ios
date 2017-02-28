@@ -16,7 +16,8 @@ import CoreLocation
 
 class LoginController: UIViewController, UIScrollViewDelegate, CLLocationManagerDelegate {
     
-    fileprivate let MINIMAL_FRIEND_COUNT = 50 // Minimal number of FB friends required to authenticate 'real' user
+    // TODO: Change this to 50 at launch
+    fileprivate let MINIMAL_FRIEND_COUNT = 0 // Minimal number of FB friends required to authenticate 'real' user
     
     override func viewDidLoad() {
         super.viewDidLoad()

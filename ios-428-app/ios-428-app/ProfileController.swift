@@ -189,14 +189,14 @@ class ProfileController: UIViewController, UIGestureRecognizerDelegate, UIScroll
         }
     }
     
-    // MARK: Views 2 - Horizontal collection views of classroom icons
+    // MARK: Views 2 - Horizontal collection views of playgroup icons
     
-    fileprivate let CLASSROOMS_CELL_ID = "classroomsCollectionCell"
-    fileprivate var classrooms = [String]() // Image names of participated classrooms
+    fileprivate let PLAYGROUPS_CELL_ID = "playgroupsCollectionCell"
+    fileprivate var playgroups = [String]() // Image names of participated playgroups
 
     open static let ICON_SIZE: CGFloat = 43.0
     
-    fileprivate lazy var classroomsCollectionView: UICollectionView = {
+    fileprivate lazy var playgroupsCollectionView: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
         let collectionView = UICollectionView(frame: UIScreen.main.bounds, collectionViewLayout: layout)
         collectionView.backgroundColor = UIColor.white
@@ -215,14 +215,14 @@ class ProfileController: UIViewController, UIGestureRecognizerDelegate, UIScroll
         return label
     }
     
-    fileprivate lazy var classroomsLbl: UILabel = {
-        return self.sectionLabelTemplate(labelText: "Classrooms")
+    fileprivate lazy var playgroupsLbl: UILabel = {
+        return self.sectionLabelTemplate(labelText: "Playgroups")
     }()
     
     fileprivate func setupCollectionView() {
-        self.classroomsCollectionView.delegate = self
-        self.classroomsCollectionView.dataSource = self
-        self.classroomsCollectionView.register(HorizontalScrollCell.self, forCellWithReuseIdentifier: CLASSROOMS_CELL_ID)
+        self.playgroupsCollectionView.delegate = self
+        self.playgroupsCollectionView.dataSource = self
+        self.playgroupsCollectionView.register(HorizontalScrollCell.self, forCellWithReuseIdentifier: PLAYGROUPS_CELL_ID)
     }
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
@@ -231,9 +231,9 @@ class ProfileController: UIViewController, UIGestureRecognizerDelegate, UIScroll
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        // Return classrooms collection view
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: CLASSROOMS_CELL_ID, for: indexPath) as! HorizontalScrollCell
-        cell.configureCell(icons: classrooms)
+        // Return playgroups collection view
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: PLAYGROUPS_CELL_ID, for: indexPath) as! HorizontalScrollCell
+        cell.configureCell(icons: playgroups)
         return cell
         
     }
@@ -250,9 +250,9 @@ class ProfileController: UIViewController, UIGestureRecognizerDelegate, UIScroll
     
     // Empty view
     
-    let noClassroomsLbl: UILabel = {
+    let noPlaygroupsLbl: UILabel = {
         let label = UILabel()
-        label.text = "No classrooms yet."
+        label.text = "No playgroups yet."
         label.font = FONT_MEDIUM_MID
         label.textColor = UIColor.gray
         label.textAlignment = .left
@@ -303,7 +303,7 @@ class ProfileController: UIViewController, UIGestureRecognizerDelegate, UIScroll
     // MARK: Views 4 - Tagline
     
     fileprivate lazy var taglineLbl: UILabel = {
-        return self.sectionLabelTemplate(labelText: "What I do at 4:28pm:")
+        return self.sectionLabelTemplate(labelText: "My childhood ambition is:")
     }()
     
     fileprivate lazy var taglineText: UILabel = {
@@ -328,7 +328,7 @@ class ProfileController: UIViewController, UIGestureRecognizerDelegate, UIScroll
         let containerView = views[1]
         scrollView.delegate = self // Delegate so as to disable top bounce only
         
-        // Assign delegate, data source and setup cells for classrooms collection view
+        // Assign delegate, data source and setup cells for playgroups collection view
         self.setupCollectionView()
         
         // Add close button on top of scroll view
@@ -355,8 +355,8 @@ class ProfileController: UIViewController, UIGestureRecognizerDelegate, UIScroll
         containerView.addSubview(coverImageView)
         containerView.addSubview(profileImageView)
         containerView.addSubview(messageBtn)
-        containerView.addSubview(classroomsLbl)
-        containerView.addSubview(classroomsCollectionView)
+        containerView.addSubview(playgroupsLbl)
+        containerView.addSubview(playgroupsCollectionView)
         containerView.addSubview(dividerLineForCollectionView)
         containerView.addSubview(locationLbl)
         containerView.addSubview(locationText)
@@ -373,11 +373,11 @@ class ProfileController: UIViewController, UIGestureRecognizerDelegate, UIScroll
         // Define main constraints
         
         containerView.addConstraintsWithFormat("H:|[v0]|", views: coverImageView)
-        containerView.addConstraintsWithFormat("V:|[v0(250)]-14-[v1]-8-[v2(50)]-8-[v3(20)]-8-[v4(\(ProfileController.ICON_SIZE))]-13-[v5(0.5)]-12-[v6(20)]-4-[v7(20)]-12-[v8(20)]-4-[v9(20)]-12-[v10(20)]-4-[v11(20)]-16-[v12(0.5)]-16-[v13(20)]-4-[v14]-\(bottomMargin)-|", views: coverImageView, disciplineNameAgeContainer, messageBtn, classroomsLbl, classroomsCollectionView, dividerLineForCollectionView, locationLbl, locationText, schoolLbl, schoolText, organizationLbl, organizationText, dividerLineForProfileInfo, taglineLbl, taglineText)
+        containerView.addConstraintsWithFormat("V:|[v0(250)]-14-[v1]-8-[v2(50)]-8-[v3(20)]-8-[v4(\(ProfileController.ICON_SIZE))]-13-[v5(0.5)]-12-[v6(20)]-4-[v7(20)]-12-[v8(20)]-4-[v9(20)]-12-[v10(20)]-4-[v11(20)]-16-[v12(0.5)]-16-[v13(20)]-4-[v14]-\(bottomMargin)-|", views: coverImageView, disciplineNameAgeContainer, messageBtn, playgroupsLbl, playgroupsCollectionView, dividerLineForCollectionView, locationLbl, locationText, schoolLbl, schoolText, organizationLbl, organizationText, dividerLineForProfileInfo, taglineLbl, taglineText)
         
         containerView.addConstraintsWithFormat("H:|-8-[v0]-8-|", views: messageBtn)
-        containerView.addConstraintsWithFormat("H:|-8-[v0]-8-|", views: classroomsLbl)
-        containerView.addConstraintsWithFormat("H:|[v0]|", views: classroomsCollectionView)
+        containerView.addConstraintsWithFormat("H:|-8-[v0]-8-|", views: playgroupsLbl)
+        containerView.addConstraintsWithFormat("H:|[v0]|", views: playgroupsCollectionView)
         containerView.addConstraintsWithFormat("H:|-8-[v0]-8-|", views: dividerLineForCollectionView)
         containerView.addConstraintsWithFormat("H:|-8-[v0]-8-|", views: locationLbl)
         containerView.addConstraintsWithFormat("H:|-8-[v0]-8-|", views: locationText)
@@ -397,15 +397,15 @@ class ProfileController: UIViewController, UIGestureRecognizerDelegate, UIScroll
         
         loadData()
         
-        // Add no classrooms lbl to collection views in case there are no classrooms
+        // Add no playgroups lbl to collection views in case there are no playgroups
         // Note that this has to be after data is loaded above
-        if classrooms.count == 0 {
-            self.noClassroomsLbl.isHidden = false
-            containerView.addSubview(noClassroomsLbl)
-            containerView.addConstraint(NSLayoutConstraint(item: noClassroomsLbl, attribute: .top, relatedBy: .equal, toItem: classroomsLbl, attribute: .bottom, multiplier: 1.0, constant: 8.0))
-            containerView.addConstraintsWithFormat("H:|-8-[v0]-8-|", views: noClassroomsLbl)
+        if playgroups.count == 0 {
+            self.noPlaygroupsLbl.isHidden = false
+            containerView.addSubview(noPlaygroupsLbl)
+            containerView.addConstraint(NSLayoutConstraint(item: noPlaygroupsLbl, attribute: .top, relatedBy: .equal, toItem: playgroupsLbl, attribute: .bottom, multiplier: 1.0, constant: 8.0))
+            containerView.addConstraintsWithFormat("H:|-8-[v0]-8-|", views: noPlaygroupsLbl)
         } else {
-            self.noClassroomsLbl.isHidden = true
+            self.noPlaygroupsLbl.isHidden = true
         }
     }
     
@@ -427,8 +427,8 @@ class ProfileController: UIViewController, UIGestureRecognizerDelegate, UIScroll
         let taglineString = NSMutableAttributedString(string: profile.tagline.isEmpty ? "Ask me why I did not fill this in." : profile.tagline, attributes: [NSForegroundColorAttributeName: UIColor.gray, NSParagraphStyleAttributeName: paragraphStyle])
         taglineText.attributedText = taglineString
         
-        self.classrooms = profile.classroomIcons
-        self.classroomsCollectionView.reloadData()
+        self.playgroups = profile.playgroupIcons
+        self.playgroupsCollectionView.reloadData()
     }
     
     // MARK: Close profile

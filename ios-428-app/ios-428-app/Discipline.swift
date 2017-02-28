@@ -80,7 +80,7 @@ let DISCIPLINE_DESCRIPTIONS = [
 "Learn about investing and how to manage your money",
 "Learn the form of lands, the features, the inhabitants, and the phenomena of Earth",
 "Learn the science and practice of the diagnosis, treatment, and prevention of disease",
-"The classroom where you examine and analyze a sequence of past events",
+"The playgroup where you examine and analyze a sequence of past events",
 "Learn language and its structure",
 "Learn how different countries regulate the actions of its members",
 "Learn the artistic or intellectual value of various written pieces",

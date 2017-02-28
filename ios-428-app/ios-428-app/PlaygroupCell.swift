@@ -1,5 +1,5 @@
 //
-//  ClassroomCell.swift
+//  PlaygroupCell.swift
 //  ios-428-app
 //
 //  Created by Leonard Loo on 10/19/16.
@@ -9,12 +9,12 @@
 import Foundation
 import UIKit
 
-class ClassroomCell: BaseCollectionCell {
+class PlaygroupCell: BaseCollectionCell {
     
     // MARK: Set up views
-    fileprivate var classroom: Classroom!
+    fileprivate var playgroup: Playgroup!
     
-    fileprivate let classroomImageView: UIImageView = {
+    fileprivate let playgroupImageView: UIImageView = {
        let imageView = UIImageView()
         imageView.contentMode = .scaleAspectFill
         imageView.clipsToBounds = true
@@ -73,17 +73,17 @@ class ClassroomCell: BaseCollectionCell {
         contentView.addConstraintsWithFormat("H:|-8-[v0]-8-|", views: containerView)
         contentView.addConstraintsWithFormat("V:|-8-[v0]-8-|", views: containerView)
         
-        containerView.addSubview(classroomImageView)
+        containerView.addSubview(playgroupImageView)
         containerView.addSubview(titleLbl)
         containerView.addSubview(updatedLbl)
         containerView.addSubview(questionNumLbl)
         
-        containerView.addConstraintsWithFormat("V:|[v0(175)][v1(35)]-8-[v2]-|", views: classroomImageView, questionNumLbl, titleLbl)
-        containerView.addConstraintsWithFormat("H:|[v0]|", views: classroomImageView)
+        containerView.addConstraintsWithFormat("V:|[v0(175)][v1(35)]-8-[v2]-|", views: playgroupImageView, questionNumLbl, titleLbl)
+        containerView.addConstraintsWithFormat("H:|[v0]|", views: playgroupImageView)
         containerView.addConstraintsWithFormat("H:|[v0]|", views: titleLbl)
         containerView.addConstraintsWithFormat("H:|[v0]|", views: questionNumLbl)
         
-        containerView.addConstraint(NSLayoutConstraint(item: updatedLbl, attribute: .bottom, relatedBy: .equal, toItem: classroomImageView, attribute: .bottom, multiplier: 1.0, constant: -8.0))
+        containerView.addConstraint(NSLayoutConstraint(item: updatedLbl, attribute: .bottom, relatedBy: .equal, toItem: playgroupImageView, attribute: .bottom, multiplier: 1.0, constant: -8.0))
         containerView.addConstraintsWithFormat("V:[v0(35)]", views: updatedLbl)
         containerView.addConstraintsWithFormat("H:[v0(80)]-8-|", views: updatedLbl)
 
@@ -92,14 +92,14 @@ class ClassroomCell: BaseCollectionCell {
     fileprivate func loadImage() {
         // Loads image asynchronously and efficiently
         
-        let imageUrlString = self.classroom.imageName
-        self.classroomImageView.af_cancelImageRequest()
+        let imageUrlString = self.playgroup.imageName
+        self.playgroupImageView.af_cancelImageRequest()
         guard let imageUrl = URL(string: imageUrlString) else {
-            self.classroomImageView.image = UIImage.init(color: UIColor.white)
+            self.playgroupImageView.image = UIImage.init(color: UIColor.white)
             return
         }
         
-        self.classroomImageView.af_setImage(withURL: imageUrl, placeholderImage: UIImage.init(color: UIColor.white), filter: nil, progress: nil, imageTransition: .crossDissolve(0.5), runImageTransitionIfCached: false, completion: { imageResponse in
+        self.playgroupImageView.af_setImage(withURL: imageUrl, placeholderImage: UIImage.init(color: UIColor.white), filter: nil, progress: nil, imageTransition: .crossDissolve(0.5), runImageTransitionIfCached: false, completion: { imageResponse in
             // Image finished downloading, so cache it - this is mostly for push notifications, as internally af_setImage already has its own cache
             if let imageData = imageResponse.data, let image = UIImage(data: imageData) {
                 imageCache.add(image, withIdentifier: imageUrl.absoluteString)
@@ -107,12 +107,12 @@ class ClassroomCell: BaseCollectionCell {
         })
     }
     
-    func configureCell(classroom: Classroom) {
-        self.classroom = classroom
-        self.updatedLbl.isHidden = !classroom.hasUpdates
+    func configureCell(playgroup: Playgroup) {
+        self.playgroup = playgroup
+        self.updatedLbl.isHidden = !playgroup.hasUpdates
         self.loadImage()
-        self.titleLbl.text = self.classroom.title
-        self.questionNumLbl.text = "Current Question: \(self.classroom.questionNum)"
+        self.titleLbl.text = self.playgroup.title
+        self.questionNumLbl.text = "Current Question: \(self.playgroup.questionNum)"
     }
     
     open func setSelectedColors(isSelected: Bool) {

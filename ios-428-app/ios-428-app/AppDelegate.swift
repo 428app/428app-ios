@@ -32,7 +32,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         FIRApp.configure()
         FIRDatabase.database().persistenceEnabled = true
         
-        setPromptForAnswerVote(hasPrompt: true) // For the future when answers from classroom shows up, show answer prompt once
+        setPromptForAnswerVote(hasPrompt: true) // For the future when answers from playgroup shows up, show answer prompt once
         
         // Reupload previous photo that might not have been uploaded due to nLogetwork issues or user quitting the app after changing profile photo
         reuploadPhoto()
@@ -165,10 +165,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     // Used to transition to the right page given valid userInfo dictionary from remote notification payload
     open func handleRemote(userInfo: [AnyHashable: Any], isForeground: Bool = false) {
         /**
-         type: "classroom" or "inbox" or "alert",
+         type: "playgroup" or "inbox" or "alert",
          image: "",
          uid: "",
-         cid: "",
+         pid: "",
          aps: {
             alert = {
                 body = ""; title = ""
@@ -181,7 +181,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             return
         }
         
-        guard let title = alert["title"], let body = alert["body"], let typeString = userInfo["type"] as? String, let type = TokenType(rawValue: typeString), let uid = userInfo["uid"] as? String, let cid = userInfo["cid"] as? String, let imageUrlString = userInfo["image"] as? String else {
+        guard let title = alert["title"], let body = alert["body"], let typeString = userInfo["type"] as? String, let type = TokenType(rawValue: typeString), let uid = userInfo["uid"] as? String, let pid = userInfo["pid"] as? String, let imageUrlString = userInfo["image"] as? String else {
             return
         }
         
@@ -196,11 +196,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             
             // Download image, then show popup after complete
             _ = downloadImage(imageUrlString: imageUrlString, completed: { (image) in
-                self.showPopup(title: title, subtitle: body, image: image, uid: uid, cid: cid, type: type)
+                self.showPopup(title: title, subtitle: body, image: image, uid: uid, pid: pid, type: type)
             })
         } else {
             // In background, set the right page to transition to based on type, and uid/tid
-            self.transitionToRightScreenBasedOnType(type: type, uid: uid, cid: cid)
+            self.transitionToRightScreenBasedOnType(type: type, uid: uid, pid: pid)
         }
     }
     
@@ -233,7 +233,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
     
     // Used to show popup in the right view controller
-    fileprivate func showPopup(title: String, subtitle: String, image: UIImage?, uid: String, cid: String, type: TokenType) {
+    fileprivate func showPopup(title: String, subtitle: String, image: UIImage?, uid: String, pid: String, type: TokenType) {
         // Note that image can be nil
         let announcement = Announcement(title: title, subtitle: subtitle, image: image, duration: 2.0, action: nil)
         guard let vc = self.getVisibleViewController(self.window?.rootViewController), let nvc = vc as? CustomNavigationController else { // Check for custom navigation controller is crucial, if not popup will show up even on LoginScreen
@@ -254,10 +254,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             return
         }
         
-        // If popup is for classroom chat that user is currently in, don't show popup
-        if type == .CLASSROOM {
-            if let classroomChatVC = nvc.visibleViewController as? ChatClassroomController {
-                if classroomChatVC.classroom.cid == cid {
+        // If popup is for playgroup chat that user is currently in, don't show popup
+        if type == .PLAYGROUP {
+            if let playgroupChatVC = nvc.visibleViewController as? ChatPlaygroupController {
+                if playgroupChatVC.playgroup.pid == pid {
                     return
                 }
             }
@@ -274,11 +274,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         show(shout: announcement, to: vc, completion: {
             // This callback is reached when user taps, so we transition to the right page based on type, and uid/tid
-            self.transitionToRightScreenBasedOnType(type: type, uid: uid, cid: cid)
+            self.transitionToRightScreenBasedOnType(type: type, uid: uid, pid: pid)
         })
     }
     
-    fileprivate func transitionToRightScreenBasedOnType(type: TokenType, uid: String, cid: String) {
+    fileprivate func transitionToRightScreenBasedOnType(type: TokenType, uid: String, pid: String) {
         guard let rootVC = self.window?.rootViewController as? LoginController else {
             return
         }
@@ -287,12 +287,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             return
         }
         
-        if type == .CLASSROOM {
-            self.findAndTransitionToClassroom(cid: cid, tabBarController: tabBarController)
+        if type == .PLAYGROUP {
+            self.findAndTransitionToPlaygroup(pid: pid, tabBarController: tabBarController)
         } else if type == .INBOX {
             self.findAndTransitionToInbox(uid: uid, tabBarController: tabBarController)
         } else if type == .ALERT {
-            self.transitionToClassroomPageForAlert(tabBarController: tabBarController)
+            self.transitionToPlaygroupPageForAlert(tabBarController: tabBarController)
         }
     }
     
@@ -322,41 +322,41 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         tabBarController.selectedIndex = 2
     }
     
-    // Open the correct classroom that matches cid
-    fileprivate func findAndTransitionToClassroom(cid: String, tabBarController: CustomTabBarController) {
+    // Open the correct playgroup that matches pid
+    fileprivate func findAndTransitionToPlaygroup(pid: String, tabBarController: CustomTabBarController) {
 
-        guard let vcs = tabBarController.viewControllers, let classroomsNVC = vcs[1] as? CustomNavigationController, let classroomsVC = classroomsNVC.viewControllers.first as? ClassroomsController else {
+        guard let vcs = tabBarController.viewControllers, let playgroupsNVC = vcs[1] as? CustomNavigationController, let playgroupsVC = playgroupsNVC.viewControllers.first as? PlaygroupsController else {
             return
         }
-        if classroomsNVC.viewControllers.count > 1 {
-            // Currently in a screen on top of the ClassroomsController stack, i.e. in a Chat, etc. - need to pop back to the ClassroomsController
-            classroomsNVC.popToRootViewController(animated: false)
+        if playgroupsNVC.viewControllers.count > 1 {
+            // Currently in a screen on top of the PlaygroupsController stack, i.e. in a Chat, etc. - need to pop back to the PlaygroupsController
+            playgroupsNVC.popToRootViewController(animated: false)
         }
         
-        // Look for the correct classroom in all classrooms
+        // Look for the correct playgroup in all playgroups
         
-        // Note: Because ClassroomVC is not loaded by default, the classrooms array might still be empty until the user clicks on the Classrooms tab. In that case, we just change the tab index instead of going into the individual classroom.
-        let correctClassroom = classroomsVC.classrooms.filter() {$0.cid == cid}
-        if correctClassroom.count != 1 {
+        // Note: Because PlaygroupVC is not loaded by default, the playgroups array might still be empty until the user clicks on the Playgroups tab. In that case, we just change the tab index instead of going into the individual playgroup.
+        let correctPlaygroup = playgroupsVC.playgroups.filter() {$0.pid == pid}
+        if correctPlaygroup.count != 1 {
             tabBarController.selectedIndex = 1
-            log.warning("Classrooms not loaded yet")
+            log.warning("Playgroups not loaded yet")
             return
         }
-        let classChatVC: ChatClassroomController = ChatClassroomController()
-        classChatVC.classroom = correctClassroom[0]
-        classroomsNVC.viewControllers[0].navigationItem.backBarButtonItem = UIBarButtonItem(title: " ", style: .plain, target: nil, action: nil)
-        classroomsNVC.pushViewController(classChatVC, animated: false)
+        let classChatVC: ChatPlaygroupController = ChatPlaygroupController()
+        classChatVC.playgroup = correctPlaygroup[0]
+        playgroupsNVC.viewControllers[0].navigationItem.backBarButtonItem = UIBarButtonItem(title: " ", style: .plain, target: nil, action: nil)
+        playgroupsNVC.pushViewController(classChatVC, animated: false)
         tabBarController.selectedIndex = 1
     }
     
-    // Transition to classroom tab upon receiving any alert
-    fileprivate func transitionToClassroomPageForAlert(tabBarController: CustomTabBarController) {
-        guard let vcs = tabBarController.viewControllers, let classroomsNVC = vcs[1] as? CustomNavigationController, let _ = classroomsNVC.viewControllers.first as? ClassroomsController else {
+    // Transition to playgroup tab upon receiving any alert
+    fileprivate func transitionToPlaygroupPageForAlert(tabBarController: CustomTabBarController) {
+        guard let vcs = tabBarController.viewControllers, let playgroupsNVC = vcs[1] as? CustomNavigationController, let _ = playgroupsNVC.viewControllers.first as? PlaygroupsController else {
             return
         }
-        if classroomsNVC.viewControllers.count > 1 {
-            // Currently in a screen on top of the ClassroomsController stack, i.e. in a Chat, etc. - need to pop back to the ClassroomsController
-            classroomsNVC.popToRootViewController(animated: false)
+        if playgroupsNVC.viewControllers.count > 1 {
+            // Currently in a screen on top of the PlaygroupsController stack, i.e. in a Chat, etc. - need to pop back to the PlaygroupsController
+            playgroupsNVC.popToRootViewController(animated: false)
         }
         tabBarController.selectedIndex = 1
     }

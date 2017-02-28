@@ -17,15 +17,15 @@ class Profile {
     fileprivate var _location: String // Country, City
     fileprivate var _school: String
     fileprivate var _org: String
-    fileprivate var _tagline: String // What I do at 4:28pm
-    fileprivate var _classrooms: [String]
+    fileprivate var _tagline: String // My childhood ambition is
+    fileprivate var _playgroups: [String]
     fileprivate var _age: Int?
     
     // Calculated variable
     fileprivate var _disciplineIcon: String
-    fileprivate var _classroomIcons: [String]
+    fileprivate var _playgroupIcons: [String]
     
-    init(uid: String, name: String, profileImageName: String, discipline: String, location: String, school: String, org: String, tagline: String, classrooms: [String], age: Int?) {
+    init(uid: String, name: String, profileImageName: String, discipline: String, location: String, school: String, org: String, tagline: String, playgroups: [String], age: Int?) {
         _uid = uid
         _name = name
         _profileImageName = profileImageName
@@ -34,12 +34,12 @@ class Profile {
         _school = school
         _org = org
         _tagline = tagline
-        _classrooms = classrooms
+        _playgroups = playgroups
         _age = age
         _disciplineIcon = getDisciplineIcon(discipline: _discipline)
-        _classroomIcons = [String]()
-        for c in classrooms {
-            _classroomIcons.append(getDisciplineIcon(discipline: c))
+        _playgroupIcons = [String]()
+        for c in playgroups {
+            _playgroupIcons.append(getDisciplineIcon(discipline: c))
         }
     }
     
@@ -116,9 +116,9 @@ class Profile {
         }
     }
     
-    var classroomIcons: [String] {
+    var playgroupIcons: [String] {
         get {
-            return _classroomIcons
+            return _playgroupIcons
         }
     }
 }

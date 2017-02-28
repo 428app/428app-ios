@@ -93,8 +93,8 @@ class MeController: UIViewController, UIGestureRecognizerDelegate, UIScrollViewD
         let ageString = profileData.age == nil ? "" : ", \(profileData.age!)"
         self.nameAndAgeLbl.text = "\(profileData.name)\(ageString)"
         self.disciplineImageView.image = UIImage(named: profileData.disciplineIcon)
-        self.classrooms = profileData.classroomIcons
-        self.classroomsCollectionView.reloadData()
+        self.playgroups = profileData.playgroupIcons
+        self.playgroupsCollectionView.reloadData()
     }
     
     fileprivate func registerObservers() {
@@ -136,13 +136,13 @@ class MeController: UIViewController, UIGestureRecognizerDelegate, UIScrollViewD
                 myProfile = profile!
                 self.setProfileData()
                 
-                if self.classrooms.count == 0 {
-                    self.noClassroomsLbl.isHidden = false
-                    self.containerView.addSubview(self.noClassroomsLbl)
-                    self.containerView.addConstraint(NSLayoutConstraint(item: self.noClassroomsLbl, attribute: .top, relatedBy: .equal, toItem: self.classroomsLbl, attribute: .bottom, multiplier: 1.0, constant: 8.0))
-                    self.containerView.addConstraintsWithFormat("H:|-8-[v0]-8-|", views: self.noClassroomsLbl)
+                if self.playgroups.count == 0 {
+                    self.noPlaygroupsLbl.isHidden = false
+                    self.containerView.addSubview(self.noPlaygroupsLbl)
+                    self.containerView.addConstraint(NSLayoutConstraint(item: self.noPlaygroupsLbl, attribute: .top, relatedBy: .equal, toItem: self.playgroupsLbl, attribute: .bottom, multiplier: 1.0, constant: 8.0))
+                    self.containerView.addConstraintsWithFormat("H:|-8-[v0]-8-|", views: self.noPlaygroupsLbl)
                 } else {
-                    self.noClassroomsLbl.isHidden = true
+                    self.noPlaygroupsLbl.isHidden = true
                 }
             }
         }
@@ -163,6 +163,7 @@ class MeController: UIViewController, UIGestureRecognizerDelegate, UIScrollViewD
     fileprivate lazy var profileImageView: UIImageView = {
         let imageView = UIImageView()
         imageView.contentMode = .scaleAspectFill
+        imageView.image = #imageLiteral(resourceName: "placeholder-user")
         imageView.layer.borderColor = RED_UICOLOR.cgColor
         imageView.layer.borderWidth = 4.0
         imageView.layer.cornerRadius = 90.0 // Actual image size is 180.0 so this is /2
@@ -219,14 +220,14 @@ class MeController: UIViewController, UIGestureRecognizerDelegate, UIScrollViewD
         disciplineImageView.layer.add(animation, forKey: "show")
     }
 
-    // MARK: Views 2 - Horizontal collection views of classroom icons
+    // MARK: Views 2 - Horizontal collection views of playgroup icons
     
-    fileprivate let CLASSROOMS_CELL_ID = "classroomsCollectionCell"
-    fileprivate var classrooms = [String]()
+    fileprivate let PLAYGROUPS_CELL_ID = "playgroupsCollectionCell"
+    fileprivate var playgroups = [String]()
     
     open static let ICON_SIZE: CGFloat = 33.0
 
-    fileprivate lazy var classroomsCollectionView: UICollectionView = {
+    fileprivate lazy var playgroupsCollectionView: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
         let collectionView = UICollectionView(frame: UIScreen.main.bounds, collectionViewLayout: layout)
         collectionView.backgroundColor = UIColor.white
@@ -245,14 +246,14 @@ class MeController: UIViewController, UIGestureRecognizerDelegate, UIScrollViewD
         return label
     }
     
-    fileprivate lazy var classroomsLbl: UILabel = {
-        return self.sectionLabelTemplate(labelText: "Classrooms")
+    fileprivate lazy var playgroupsLbl: UILabel = {
+        return self.sectionLabelTemplate(labelText: "Playgroups")
     }()
     
     fileprivate func setupCollectionView() {
-        self.classroomsCollectionView.delegate = self
-        self.classroomsCollectionView.dataSource = self
-        self.classroomsCollectionView.register(HorizontalScrollCell.self, forCellWithReuseIdentifier: CLASSROOMS_CELL_ID)
+        self.playgroupsCollectionView.delegate = self
+        self.playgroupsCollectionView.dataSource = self
+        self.playgroupsCollectionView.register(HorizontalScrollCell.self, forCellWithReuseIdentifier: PLAYGROUPS_CELL_ID)
     }
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
@@ -261,9 +262,9 @@ class MeController: UIViewController, UIGestureRecognizerDelegate, UIScrollViewD
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        // Return classrooms collection view
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: CLASSROOMS_CELL_ID, for: indexPath) as! HorizontalScrollCell
-        cell.configureCell(icons: classrooms)
+        // Return playgroups collection view
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: PLAYGROUPS_CELL_ID, for: indexPath) as! HorizontalScrollCell
+        cell.configureCell(icons: playgroups)
         return cell
         
     }
@@ -278,9 +279,9 @@ class MeController: UIViewController, UIGestureRecognizerDelegate, UIScrollViewD
         return view
     }()
     
-    let noClassroomsLbl: UILabel = {
+    let noPlaygroupsLbl: UILabel = {
         let label = UILabel()
-        label.text = "No classrooms yet."
+        label.text = "No playgroups yet."
         label.font = FONT_MEDIUM_MID
         label.textColor = UIColor.gray
         label.textAlignment = .left
@@ -345,7 +346,7 @@ class MeController: UIViewController, UIGestureRecognizerDelegate, UIScrollViewD
         containerView = views[1]
         scrollView.delegate = self // Delegate so as to disable top bounce only
         
-        // Assign delegate, data source and setup cells for and classrooms collection view
+        // Assign delegate, data source and setup cells for and playgroups collection view
         self.setupCollectionView()
         containerView.isUserInteractionEnabled = true
         // Centered discipline icon and name label
@@ -363,8 +364,8 @@ class MeController: UIViewController, UIGestureRecognizerDelegate, UIScrollViewD
         // Add to subviews
         containerView.addSubview(coverImageView)
         containerView.addSubview(profileImageView)
-        containerView.addSubview(classroomsLbl)
-        containerView.addSubview(classroomsCollectionView)
+        containerView.addSubview(playgroupsLbl)
+        containerView.addSubview(playgroupsCollectionView)
         containerView.addSubview(editProfileBtn)
         containerView.addSubview(settingsBtn)
         containerView.addSubview(dividerLineForCollectionView)
@@ -375,10 +376,10 @@ class MeController: UIViewController, UIGestureRecognizerDelegate, UIScrollViewD
         let navBarHeight: CGFloat = self.navigationController!.navigationBar.frame.height
         
         containerView.addConstraintsWithFormat("H:|[v0]|", views: coverImageView)
-        containerView.addConstraintsWithFormat("V:|-\(navBarHeight)-[v0(220)][v1]-8-[v2(20)]-8-[v3(\(ProfileController.ICON_SIZE))]-13-[v4(0.5)]-12-[v5(50)]-[v6(50)]-\(bottomMargin)-|", views: coverImageView, disciplineNameAgeContainer, classroomsLbl, classroomsCollectionView, dividerLineForCollectionView, editProfileBtn, settingsBtn)
+        containerView.addConstraintsWithFormat("V:|-\(navBarHeight)-[v0(220)][v1]-8-[v2(20)]-8-[v3(\(ProfileController.ICON_SIZE))]-13-[v4(0.5)]-12-[v5(50)]-[v6(50)]-\(bottomMargin)-|", views: coverImageView, disciplineNameAgeContainer, playgroupsLbl, playgroupsCollectionView, dividerLineForCollectionView, editProfileBtn, settingsBtn)
         
-        containerView.addConstraintsWithFormat("H:|-8-[v0]-8-|", views: classroomsLbl)
-        containerView.addConstraintsWithFormat("H:|[v0]|", views: classroomsCollectionView)
+        containerView.addConstraintsWithFormat("H:|-8-[v0]-8-|", views: playgroupsLbl)
+        containerView.addConstraintsWithFormat("H:|[v0]|", views: playgroupsCollectionView)
         containerView.addConstraintsWithFormat("H:|-8-[v0]-8-|", views: dividerLineForCollectionView)
         containerView.addConstraintsWithFormat("H:|-8-[v0]-8-|", views: editProfileBtn)
         containerView.addConstraintsWithFormat("H:|-8-[v0]-8-|", views: settingsBtn)
