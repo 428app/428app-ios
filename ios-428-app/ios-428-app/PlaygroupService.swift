@@ -84,8 +84,8 @@ extension DataService {
         let pid = playgroup.pid
         let ref: FIRDatabaseReference = REF_PLAYGROUPS.child(pid)
         
-        let handle = ref.observe(.value, with: { classSnap in
-            guard let classDict = classSnap.value as? [String: Any], let playpeerAndSuperlativeType = classDict["memberHasVoted"] as? [String: Int], let questionsDict = classDict["questions"] as? [String: Any] else {
+        let handle = ref.observe(.value, with: { playgroupSnap in
+            guard let classDict = playgroupSnap.value as? [String: Any], let playpeerAndSuperlativeType = classDict["memberHasVoted"] as? [String: Int], let questionsDict = classDict["questions"] as? [String: Any] else {
                 completed(false, playgroup)
                 return
             }
@@ -187,7 +187,7 @@ extension DataService {
     // MARK: Chat messages
 
     // Private helper function that takes in a snapshot of all private messages in a playgroup and returns a Playgroup model
-    fileprivate func processClassChatSnapshot(snapshot: FIRDataSnapshot, playgroup: Playgroup, uid: String) -> Playgroup? {
+    fileprivate func processPlaygroupChatSnapshot(snapshot: FIRDataSnapshot, playgroup: Playgroup, uid: String) -> Playgroup? {
         if !snapshot.exists() {
             return nil
         }
@@ -211,7 +211,7 @@ extension DataService {
     
     // Observes all chat messags of one playgroup, used in ChatPlaygroupController
     // Observes up till the limit, ordered by most recent timestamp
-    func reobserveClassChatMessages(limit: UInt, playgroup: Playgroup, completed: @escaping (_ isSuccess: Bool, _ playgroup: Playgroup?) -> ()) -> (FIRDatabaseQuery, FIRDatabaseHandle) {
+    func reobservePlaygroupChatMessages(limit: UInt, playgroup: Playgroup, completed: @escaping (_ isSuccess: Bool, _ playgroup: Playgroup?) -> ()) -> (FIRDatabaseQuery, FIRDatabaseHandle) {
         
         let uid = getStoredUid() == nil ? "" : getStoredUid()!
         let pid = playgroup.pid
@@ -221,7 +221,7 @@ extension DataService {
         let q: FIRDatabaseQuery = ref.queryOrdered(byChild: "timestamp").queryLimited(toLast: limit)
         q.keepSynced(true)
         let handle = q.observe(.value, with: { snapshot in
-            let updatedPlaygroup = self.processClassChatSnapshot(snapshot: snapshot, playgroup: playgroup, uid: uid)
+            let updatedPlaygroup = self.processPlaygroupChatSnapshot(snapshot: snapshot, playgroup: playgroup, uid: uid)
             completed(updatedPlaygroup != nil, updatedPlaygroup)
             return
         })
@@ -230,7 +230,7 @@ extension DataService {
     
     // Observes all chat messags of one playgroup, used when setting up ChatPlaygroupController
     // The only difference between this and reobserve is that this is a one time observer and does not return the handle
-    func observeClassChatMessagesOnce(limit: UInt, playgroup: Playgroup, completed: @escaping (_ isSuccess: Bool, _ playgroup: Playgroup?) -> ()) {
+    func observePlaygroupChatMessagesOnce(limit: UInt, playgroup: Playgroup, completed: @escaping (_ isSuccess: Bool, _ playgroup: Playgroup?) -> ()) {
         let uid = getStoredUid() == nil ? "" : getStoredUid()!
         let pid = playgroup.pid
         let ref: FIRDatabaseReference = REF_PLAYGROUPMESSAGES.child(pid)
@@ -238,14 +238,14 @@ extension DataService {
         let q: FIRDatabaseQuery = ref.queryOrdered(byChild: "timestamp").queryLimited(toLast: limit)
         q.observeSingleEvent(of: .value, with: { snapshot in
             q.removeAllObservers()
-            let updatedPlaygroup = self.processClassChatSnapshot(snapshot: snapshot, playgroup: playgroup, uid: uid)
+            let updatedPlaygroup = self.processPlaygroupChatSnapshot(snapshot: snapshot, playgroup: playgroup, uid: uid)
             completed(updatedPlaygroup != nil, updatedPlaygroup)
             return
         })
     }
     
     // Add a chat message to the playgroup
-    func addClassChatMessage(playgroup: Playgroup, text: String, completed: @escaping (_ isSuccess: Bool, _ playgroup: Playgroup?) -> ()) {
+    func addPlaygroupChatMessage(playgroup: Playgroup, text: String, completed: @escaping (_ isSuccess: Bool, _ playgroup: Playgroup?) -> ()) {
         guard let profile = myProfile else {
             completed(false, nil)
             return
@@ -499,5 +499,68 @@ extension DataService {
             completed(true, videoLink)
             return
         })
+    }
+    
+    // MARK: Lobby
+    
+    // Observe lobby used in LobbyController, a lobby is actually a playgroup model
+    func observeSingleLobby(lid: String, completed: @escaping (_ isSuccess: Bool, _ lobby: Playgroup?) -> ()) -> (FIRDatabaseReference, FIRDatabaseHandle) {
+        let ref: FIRDatabaseReference = REF_LOBBIES.child(lid)
+        let handle = ref.observe(.value, with: { lobbySnap in
+            guard let lobbyDict = lobbySnap.value as? [String: Any], let membersDict = lobbyDict["members"] as? [String: Bool] else {
+                completed(false, nil)
+                return
+            }
+            
+            var members: [Profile] = [Profile]()
+            let totalMemberIds = Array(membersDict.keys)
+            var memberIds = [String]()
+            
+            // Get members' profiles
+            for memberId in totalMemberIds {
+                self.getUserFields(uid: memberId, completed: { (isSuccess, userProfile) in
+                    if !isSuccess || userProfile == nil {
+                        // There was a problem getting a user's profile, so return false)
+                        log.error("[Error] Problem getting a user's profile in observing single lobby")
+                        completed(false, nil)
+                        return
+                    }
+                    members.append(userProfile!)
+                    memberIds.append(userProfile!.uid)
+                    if self.isIdenticalArrays(arr1: memberIds, arr2: totalMemberIds) { // All members read
+                        // Image name of lobby in assets
+                        let lobby = Playgroup(pid: lid, title: "Lobby", questionText: "What was your childhood ambition?", imageName: "lobby", members: members)
+                        completed(true, lobby)
+                        return
+                    }
+                })
+            }
+        })
+        return (ref, handle)
+    }
+    
+    // Add a chat message to the lobby
+    func addLobbyChatMessage(playgroup: Playgroup, text: String, completed: @escaping (_ isSuccess: Bool, _ playgroup: Playgroup?) -> ()) {
+        guard let profile = myProfile else {
+            completed(false, nil)
+            return
+        }
+        let posterUid = profile.uid
+        let lid = playgroup.pid
+        
+        let timestampInSeconds = Date().timeIntervalSince1970 // NOTE: This is in seconds, be careful with this one
+        let timestampInMilliseconds = timestampInSeconds * 1000 // All Firebase entries are in milliseconds
+        
+        // Add to playgroupMessages
+        let messageRef: FIRDatabaseReference = REF_PLAYGROUPMESSAGES.child(lid).childByAutoId()
+        let mid = messageRef.key
+        let newMessage: [String: Any] = ["message": text, "poster": posterUid, "timestamp": timestampInMilliseconds]
+        messageRef.setValue(newMessage) { (err, ref) in
+            // Message successfully added, append to playgroup
+            let msg: PlaygroupMessage = PlaygroupMessage(mid: mid, parentCid: lid, posterUid: posterUid, text: text, date: Date(timeIntervalSince1970: timestampInSeconds), isSentByYou: true)
+            playgroup.addMessage(message: msg)
+            completed(err == nil, playgroup)
+            // NOTE: We do not return here, but also note that there are no more completed calls below
+        }
     }
 }

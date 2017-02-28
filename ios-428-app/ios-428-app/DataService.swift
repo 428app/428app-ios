@@ -30,6 +30,7 @@ class DataService {
     fileprivate var _REF_INBOXMESSAGES = FIRDatabase.database().reference().child("\(DB_ROOT)/inboxMessages")
     fileprivate var _REF_INBOX = FIRDatabase.database().reference().child("\(DB_ROOT)/inbox")
     fileprivate var _REF_PLAYGROUPS = FIRDatabase.database().reference().child("\(DB_ROOT)/playgroups")
+    fileprivate var _REF_LOBBIES = FIRDatabase.database().reference().child("\(DB_ROOT)/lobbies")
     fileprivate var _REF_PLAYGROUPMESSAGES = FIRDatabase.database().reference().child("\(DB_ROOT)/playgroupMessages")
     fileprivate var _REF_QUESTIONS = FIRDatabase.database().reference().child("\(DB_ROOT)/questions")
     fileprivate var _REF_DIDYOUKNOWS = FIRDatabase.database().reference().child("\(DB_ROOT)/didyouknows")
@@ -71,6 +72,12 @@ class DataService {
         }
     }
     
+    var REF_LOBBIES: FIRDatabaseReference {
+        get {
+            return _REF_LOBBIES
+        }
+    }
+    
     var REF_PLAYGROUPMESSAGES: FIRDatabaseReference {
         get {
             return _REF_PLAYGROUPMESSAGES
@@ -103,6 +110,7 @@ class DataService {
         _REF_INBOXMESSAGES.removeAllObservers()
         _REF_INBOX.removeAllObservers()
         _REF_PLAYGROUPS.removeAllObservers()
+        _REF_LOBBIES.removeAllObservers()
         _REF_PLAYGROUPMESSAGES.removeAllObservers()
         _REF_QUESTIONS.removeAllObservers()
         _REF_DIDYOUKNOWS.removeAllObservers()

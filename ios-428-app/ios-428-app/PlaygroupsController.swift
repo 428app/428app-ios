@@ -17,7 +17,7 @@ class PlaygroupsController: UIViewController, UICollectionViewDelegate, UICollec
     
     // Firebase
     fileprivate var allClassFirebase: (FIRDatabaseReference, FIRDatabaseHandle)!
-    fileprivate var classesFirebase: [String: (FIRDatabaseReference, FIRDatabaseHandle)] = [:]
+    fileprivate var playgroupsFirebase: [String: (FIRDatabaseReference, FIRDatabaseHandle)] = [:]
     
     fileprivate let CELL_ID = "playgroupCell"
     
@@ -59,7 +59,7 @@ class PlaygroupsController: UIViewController, UICollectionViewDelegate, UICollec
     
     deinit {
         self.countdownTimer.invalidate()
-        for (ref, handle) in self.classesFirebase.values {
+        for (ref, handle) in self.playgroupsFirebase.values {
             ref.removeObserver(withHandle: handle)
         }
         if allClassFirebase != nil {
@@ -105,16 +105,16 @@ class PlaygroupsController: UIViewController, UICollectionViewDelegate, UICollec
             self.enableEmptyPlaceholder(enable: false)
             
             // Reset single playgroup observer
-            if self.classesFirebase[pid] != nil {
-                self.classesFirebase[pid]!.0.removeObserver(withHandle: self.classesFirebase[pid]!.1)
+            if self.playgroupsFirebase[pid] != nil {
+                self.playgroupsFirebase[pid]!.0.removeObserver(withHandle: self.playgroupsFirebase[pid]!.1)
             }
-            self.classesFirebase[pid] = DataService.ds.observePlaygroupUpdates(pid: pid, completed: { (isSuccess2, playgroup_) in
+            self.playgroupsFirebase[pid] = DataService.ds.observePlaygroupUpdates(pid: pid, completed: { (isSuccess2, playgroup_) in
                 self.activityIndicator.stopAnimating()
                 if !isSuccess2 || playgroup_ == nil {
                     return
                 }
                 let playgroup = playgroup_!
-                self.playgroups = self.playgroups.filter{$0.pid != playgroup.pid}  // If class already added, then remove it first
+                self.playgroups = self.playgroups.filter{$0.pid != playgroup.pid}  // If playgroup already added, then remove it first
                 self.playgroups.append(playgroup)
                 self.playgroups = self.playgroups.sorted{$0.timeReplied > $1.timeReplied}
                 self.collectionView.reloadDataAnimatedForSingleSection()

@@ -1,27 +1,26 @@
 //
-//  ChatPlaygroupController.swift
+//  LobbyController.swift
 //  ios-428-app
 //
-//  Created by Leonard Loo on 10/19/16.
-//  Copyright © 2016 428. All rights reserved.
+//  Created by Leonard Loo on 2/28/17.
+//  Copyright © 2017 428. All rights reserved.
 //
 
 import Foundation
 import UIKit
 import Firebase
 
-class ChatPlaygroupController: UIViewController, UIGestureRecognizerDelegate, UITextViewDelegate, UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
+class LobbyController: UIViewController, UIGestureRecognizerDelegate, UITextViewDelegate, UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
     
     /** FIREBASE **/
     fileprivate var chatQueryAndHandle: (FIRDatabaseQuery, FIRDatabaseHandle)!
-    fileprivate var playgroupRefAndHandle: (FIRDatabaseReference, FIRDatabaseHandle)!
+    fileprivate var lobbyRefAndHandle: (FIRDatabaseReference, FIRDatabaseHandle)!
     
     fileprivate var numMessages: UInt = 30 // Increases as user scrolls to top of collection view
     fileprivate let NUM_INCREMENT: UInt = 10 // Downloads 10 messages per scroll
     
     /** CONSTANTS **/
     fileprivate let CELL_CHAT_ID = "playgroupChatCell"
-    fileprivate let CELL_QUESTION_ID = "playgroupQuestionCell"
     fileprivate let CELL_HEADER_ID = "playgroupChatHeaderView"
     fileprivate let SECTION_HEADER_HEIGHT: CGFloat = 30.0
     
@@ -43,7 +42,7 @@ class ChatPlaygroupController: UIViewController, UIGestureRecognizerDelegate, UI
     
     let interactor = Interactor() // Used for transitioning to and from ProfileController
     
-    var playgroup: Playgroup!
+    var lobby: Playgroup!
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -58,7 +57,6 @@ class ChatPlaygroupController: UIViewController, UIGestureRecognizerDelegate, UI
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        DataService.ds.seePlaygroupMessages(playgroup: self.playgroup) { (isSuccess) in }
         self.tabBarController?.tabBar.isHidden = true
         self.navigationController?.navigationBar.barTintColor = RED_UICOLOR
         self.registerObservers()
@@ -67,7 +65,6 @@ class ChatPlaygroupController: UIViewController, UIGestureRecognizerDelegate, UI
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         self.view.endEditing(true)
-        DataService.ds.seePlaygroupMessages(playgroup: self.playgroup) { (isSuccess) in }
         self.tabBarController?.tabBar.isHidden = false
         self.unregisterObservers()
     }
@@ -82,8 +79,8 @@ class ChatPlaygroupController: UIViewController, UIGestureRecognizerDelegate, UI
         if self.chatQueryAndHandle != nil {
             self.chatQueryAndHandle.0.removeObserver(withHandle: self.chatQueryAndHandle.1)
         }
-        if self.playgroupRefAndHandle != nil {
-            self.playgroupRefAndHandle.0.removeObserver(withHandle: self.playgroupRefAndHandle.1)
+        if self.lobbyRefAndHandle != nil {
+            self.lobbyRefAndHandle.0.removeObserver(withHandle: self.lobbyRefAndHandle.1)
         }
     }
     
@@ -119,29 +116,21 @@ class ChatPlaygroupController: UIViewController, UIGestureRecognizerDelegate, UI
         }
     }
     
-    fileprivate func initPlaygroupObserver() {
+    fileprivate func initLobbyObserver() {
         self.loadingScreen(isLoading: true)
         
         // Playgroup could have already been initialized, so just init messages straight away
-        let playgroupHasBeenInit: Bool = self.playgroup.members.count > 0
-        if playgroupHasBeenInit {
+        let lobbyHasBeenInit: Bool = self.lobby.members.count > 0
+        if lobbyHasBeenInit {
             self.initMessages()
         }
-        
-        self.playgroupRefAndHandle = DataService.ds.observeSinglePlaygroup(playgroup: self.playgroup, completed: { (isSuccess, updatedPlaygroup) in
-            
-            // Update fields individually instead of replacing, as we don't want to replace messages
-            self.playgroup.members = updatedPlaygroup.members
-            self.playgroup.questions = updatedPlaygroup.questions
-            self.playgroup.superlativeType = updatedPlaygroup.superlativeType
-            self.playgroup.hasSuperlatives = updatedPlaygroup.hasSuperlatives
-            self.playgroup.didYouKnowId = updatedPlaygroup.didYouKnowId
-            
-            // Show superlative alert when there are superlatives and user has not voted
-            if self.playgroup.hasSuperlatives && self.playgroup.superlativeType == SuperlativeType.NOTVOTED {
-                self.showSuperlativeAlert()
+        self.lobbyRefAndHandle = DataService.ds.observeSingleLobby(lid: self.lobby.pid, completed: { (isSuccess, updatedLobby) in
+            if !isSuccess || updatedLobby == nil {
+                showErrorAlert(vc: self, title: "Error", message: "There was a problem loading your lobby. Please visit our website 428pm.com for status.")
+                return
             }
-            if self.messages.isEmpty && !playgroupHasBeenInit {
+            self.lobby.members = updatedLobby!.members
+            if self.messages.isEmpty && !lobbyHasBeenInit {
                 self.initMessages()
             }
         })
@@ -170,20 +159,25 @@ class ChatPlaygroupController: UIViewController, UIGestureRecognizerDelegate, UI
             return
         }
         
-        DataService.ds.observePlaygroupChatMessagesOnce(limit: self.numMessages, playgroup: self.playgroup) { (isSuccess, updatedPlaygroup) in
+        DataService.ds.observePlaygroupChatMessagesOnce(limit: self.numMessages, playgroup: self.lobby) { (isSuccess, updatedLobby) in
             self.loadingScreen(isLoading: false)
-            if (!isSuccess || updatedPlaygroup == nil) {
+            if (!isSuccess || updatedLobby == nil) {
+                // No messages yet, place placeholder in the middle
+                self.emptyPlaceholderView.isHidden = false
+                self.emptyPlaceholderView.isUserInteractionEnabled = true
                 log.info("No messages updated for playgroup")
                 self.reobserveMessages()
                 return
             }
             
-            // There are messages, so update private chat and messages
-            self.playgroup = updatedPlaygroup
-            self.messages = self.playgroup.playgroupMessages
+            // There are messages, hide and disable empty placeholder view
+            self.emptyPlaceholderView.isHidden = true
+            self.emptyPlaceholderView.isUserInteractionEnabled = false
+            
+            self.lobby = updatedLobby
+            self.messages = self.lobby.playgroupMessages
             
             self.organizeMessages()
-            
             
             // Simple hack to load the bottom of the collection view without visually showing it
             UIView.animate(withDuration: 0, animations: {
@@ -209,25 +203,30 @@ class ChatPlaygroupController: UIViewController, UIGestureRecognizerDelegate, UI
         self.refreshControl.beginRefreshing()
         self.pullToRefreshIndicator.startAnimating()
         
-        DataService.ds.observePlaygroupChatMessagesOnce(limit: self.numMessages, playgroup: self.playgroup) { (isSuccess, updatedPlaygroup) in
+        DataService.ds.observePlaygroupChatMessagesOnce(limit: self.numMessages, playgroup: self.lobby) { (isSuccess, updatedLobby) in
             self.refreshControl.endRefreshing()
             self.pullToRefreshIndicator.stopAnimating()
             
-            if (!isSuccess || updatedPlaygroup == nil) {
+            if (!isSuccess || updatedLobby == nil) {
                 // No messages yet
+                self.emptyPlaceholderView.isHidden = false
+                self.emptyPlaceholderView.isUserInteractionEnabled = true
                 log.info("No messages updated for playgroup")
                 self.reobserveMessages()
                 return
             }
             
-            // There are messages, update private chat and messages
-            self.playgroup = updatedPlaygroup
+            // There are messages, hide and disable empty placeholder view
+            self.emptyPlaceholderView.isHidden = true
+            self.emptyPlaceholderView.isUserInteractionEnabled = false
+            
+            self.lobby = updatedLobby
             
             // Logic to scroll to the right chat message upon loading more messages above
             if self.messagesInTimeBuckets.count > 0 && self.messagesInTimeBuckets[0].count > 0 {
                 // Find the first message in the old message so we scroll to this one
                 let firstMsg = self.messagesInTimeBuckets[0][0]
-                self.messages = updatedPlaygroup!.playgroupMessages
+                self.messages = updatedLobby!.playgroupMessages
                 self.organizeMessages()
                 // Find this first message in the new messages to find the new row and section to scroll to
                 var messageFound = false
@@ -266,7 +265,7 @@ class ChatPlaygroupController: UIViewController, UIGestureRecognizerDelegate, UI
                 
             else {
                 // Previous messages are empty - this should very rarely happen, possibly only due to network connectivity issues
-                self.messages = updatedPlaygroup!.playgroupMessages
+                self.messages = updatedLobby!.playgroupMessages
                 self.organizeMessages()
                 self.collectionView.reloadData()
             }
@@ -281,21 +280,28 @@ class ChatPlaygroupController: UIViewController, UIGestureRecognizerDelegate, UI
             chatQueryAndHandle.0.removeObserver(withHandle: chatQueryAndHandle.1)
         }
         
-        chatQueryAndHandle = DataService.ds.reobservePlaygroupChatMessages(limit: self.numMessages, playgroup: self.playgroup, completed: { (isSuccess, updatedPlaygroup) in
+        chatQueryAndHandle = DataService.ds.reobservePlaygroupChatMessages(limit: self.numMessages, playgroup: self.lobby, completed: { (isSuccess, updatedLobby) in
             
-            if (!isSuccess || updatedPlaygroup == nil) {
+            if (!isSuccess || updatedLobby == nil) {
                 // Rewind increment of numMessages
                 if self.numMessages > self.NUM_INCREMENT {
                     self.numMessages -= self.NUM_INCREMENT
                 }
+                // No messages yet, display placeholder view in the middle to prompt users to interact
+                self.emptyPlaceholderView.isHidden = false
+                self.emptyPlaceholderView.isUserInteractionEnabled = true
                 log.info("No messages updated for playgroup")
                 return
             }
             
+            // There are messages, hide and disable empty placeholder view
+            self.emptyPlaceholderView.isHidden = true
+            self.emptyPlaceholderView.isUserInteractionEnabled = false
+            
             // Check if messages are exactly the same, if yes, then no need to update
-            if self.messages.count == updatedPlaygroup!.playgroupMessages.count {
+            if self.messages.count == updatedLobby!.playgroupMessages.count {
                 var areTheSame = true
-                let updatedMessages = updatedPlaygroup!.playgroupMessages.sorted(by: { (m1, m2) -> Bool in
+                let updatedMessages = updatedLobby!.playgroupMessages.sorted(by: { (m1, m2) -> Bool in
                     return m1.date.compare(m2.date) == .orderedAscending
                 })
                 let oldMessages = self.messages.sorted(by: { (m1, m2) -> Bool in
@@ -313,8 +319,8 @@ class ChatPlaygroupController: UIViewController, UIGestureRecognizerDelegate, UI
             }
             
             // Update messages
-            self.playgroup = updatedPlaygroup
-            self.messages = self.playgroup.playgroupMessages
+            self.lobby = updatedLobby
+            self.messages = self.lobby.playgroupMessages
             self.organizeMessages()
             self.collectionView.reloadData()
             self.scrollToLastItemInCollectionView(animated: false)
@@ -343,6 +349,8 @@ class ChatPlaygroupController: UIViewController, UIGestureRecognizerDelegate, UI
     }()
     
     fileprivate func setupFirebase() {
+        // Setup empty placeholder view
+        self.setupEmptyPlaceholderView()
         
         // Setup activity indicator for initial load
         self.collectionView.addSubview(activityIndicator)
@@ -353,50 +361,13 @@ class ChatPlaygroupController: UIViewController, UIGestureRecognizerDelegate, UI
         self.pullToRefreshIndicator.center = CGPoint(x: self.view.center.x, y: self.refreshControl.center.y)
         collectionView.addSubview(self.refreshControl)
         
-        self.initPlaygroupObserver()
+        self.initLobbyObserver()
     }
     
     // MARK: Navigation
     
     fileprivate func setupNavigationBar() {
-        self.navigationItem.title = self.playgroup.title
-        let negativeSpace = UIBarButtonItem(barButtonSystemItem: .fixedSpace, target: nil, action: nil)
-        negativeSpace.width = -6.0
-        let moreButton = UIBarButtonItem(image: #imageLiteral(resourceName: "more-2x"), style: .plain, target: self, action: #selector(handleNavMore))
-        self.navigationItem.rightBarButtonItems = [negativeSpace, moreButton]
-    }
-    
-    func handleNavMore() {
-        logAnalyticsEvent(key: kEventMoreNavClicked)
-        // Bring up alert controller to view playpeers, answers or superlatives
-        let alertController = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
-        alertController.view.tintColor = GREEN_UICOLOR
-        let cancelAction = UIAlertAction(title: "Cancel", style: .cancel, handler: nil)
-        let playpeersAction = UIAlertAction(title: "Playpeers", style: .default) { (action) in
-            let controller = PlaypeersController(collectionViewLayout: UICollectionViewFlowLayout())
-            self.navigationItem.backBarButtonItem = UIBarButtonItem(title: " ", style: .plain, target: nil, action: nil)
-            controller.playpeers = self.playgroup.members
-            self.navigationController?.pushViewController(controller, animated: true)
-        }
-        let answersAction = UIAlertAction(title: "Answers", style: .default) { (action) in
-            let controller = AnswersController()
-            self.navigationItem.backBarButtonItem = UIBarButtonItem(title: " ", style: .plain, target: nil, action: nil)
-            controller.playgroup = self.playgroup
-            self.navigationController?.pushViewController(controller, animated: true)
-        }
-        let superlativesAction = UIAlertAction(title: "Superlatives", style: .default) { (action) in
-            self.launchSuperlativeController()
-        }
-        
-        answersAction.isEnabled = self.playgroup.questions.count > 1 // Only enable seeing answers if there is more than 1 answer (current answer)
-        superlativesAction.isEnabled = playgroup.hasSuperlatives
-        alertController.addAction(playpeersAction)
-        alertController.addAction(answersAction)
-        alertController.addAction(superlativesAction)
-        alertController.addAction(cancelAction)
-        self.present(alertController, animated: true, completion: {
-            alertController.view.tintColor = GREEN_UICOLOR
-        })
+        self.navigationItem.title = self.lobby.title
     }
     
     // MARK: Question banner on top
@@ -416,7 +387,7 @@ class ChatPlaygroupController: UIViewController, UIGestureRecognizerDelegate, UI
         tapGestureRecognizer.delegate = self
         label.isUserInteractionEnabled = true
         label.addGestureRecognizer(tapGestureRecognizer)
-        label.text = "Read Question \(self.playgroup.questionNum) here"
+        label.text = "Read Question here"
         return label
     }()
     
@@ -435,7 +406,7 @@ class ChatPlaygroupController: UIViewController, UIGestureRecognizerDelegate, UI
     func openQuestion() {
         logAnalyticsEvent(key: kEventViewQuestion)
         let modalController = ModalQuestionController()
-        modalController.playgroup = self.playgroup
+        modalController.playgroup = self.lobby
         modalController.modalPresentationStyle = .overFullScreen
         modalController.modalTransitionStyle = .flipHorizontal
         self.present(modalController, animated: true, completion: nil)
@@ -452,23 +423,41 @@ class ChatPlaygroupController: UIViewController, UIGestureRecognizerDelegate, UI
         view.addConstraintsWithFormat("V:[v0(50)]", views: questionBanner)
     }
     
-    // MARK: Superlatives
+    // MARK: No messages view
     
-    fileprivate func showSuperlativeAlert() {
-        let alertController = SuperlativeAlertController()
-        alertController.playgroup = self.playgroup
-        alertController.modalPresentationStyle = .overFullScreen
-        alertController.modalTransitionStyle = .crossDissolve
-        self.present(alertController, animated: true, completion: {
-            alertController.view.tintColor = GREEN_UICOLOR
-        })
-    }
+    fileprivate let emptyPlaceholderView: UIView = {
+        let view = UIView(frame: CGRect(x: 0, y: 0, width: UIScreen.main.bounds.width * 0.9, height: UIScreen.main.bounds.height * 0.4))
+        view.isHidden = true
+        return view
+    }()
     
-    func launchSuperlativeController() {
-        let controller = SuperlativeController()
-        controller.playgroup = self.playgroup
-        self.navigationItem.backBarButtonItem = UIBarButtonItem(title: " ", style: .plain, target: nil, action: nil)
-        self.navigationController?.pushViewController(controller, animated: true)
+    fileprivate let minionImage: UIImageView = {
+        let image = #imageLiteral(resourceName: "minion")
+        let imageView = UIImageView(image: image)
+        imageView.contentMode = .scaleAspectFit
+        return imageView
+    }()
+    
+    fileprivate let noMessagesLbl: UIView = {
+        let label = UILabel()
+        label.font = FONT_HEAVY_MID
+        label.textColor = UIColor.darkGray
+        label.textAlignment = .center
+        label.text = "Don't be shy. Speak."
+        return label
+    }()
+    
+    fileprivate func setupEmptyPlaceholderView() {
+        
+        self.collectionView.addSubview(self.emptyPlaceholderView)
+        self.emptyPlaceholderView.center = CGPoint(x: self.view.center.x, y: self.view.center.y - 0.05 * self.view.frame.height)
+        self.emptyPlaceholderView.addSubview(minionImage)
+        self.emptyPlaceholderView.addSubview(noMessagesLbl)
+        self.emptyPlaceholderView.addConstraintsWithFormat("H:[v0(60)]", views: minionImage)
+        self.emptyPlaceholderView.addConstraint(NSLayoutConstraint(item: minionImage, attribute: .centerX, relatedBy: .equal, toItem: self.emptyPlaceholderView, attribute: .centerX, multiplier: 1.0, constant: 0.0))
+        self.emptyPlaceholderView.addConstraintsWithFormat("H:|-8-[v0]-8-|", views: noMessagesLbl)
+        
+        self.emptyPlaceholderView.addConstraintsWithFormat("V:|-8-[v0(60)]-5-[v1]", views: minionImage, noMessagesLbl)
     }
     
     // MARK: Chat
@@ -665,9 +654,8 @@ class ChatPlaygroupController: UIViewController, UIGestureRecognizerDelegate, UI
     func handleSend() {
         if let text = inputTextView.text {
             self.resetInputContainer()
-            DataService.ds.addPlaygroupChatMessage(playgroup: self.playgroup, text: text.trim(), completed: { (isSuccess, updatedPlaygroup) in
-                if !isSuccess || updatedPlaygroup == nil {
-                    
+            DataService.ds.addLobbyChatMessage(playgroup: self.lobby, text: text.trim(), completed: { (isSuccess, updatedLobby) in
+                if !isSuccess || updatedLobby == nil {
                     log.error("[Error] Message failed to be posted")
                     showErrorAlert(vc: self, title: "Error", message: "Could not send message. Please try again.")
                     return
@@ -681,7 +669,6 @@ class ChatPlaygroupController: UIViewController, UIGestureRecognizerDelegate, UI
         NotificationCenter.default.addObserver(self, selector: #selector(handleKeyboardNotification), name: NSNotification.Name.UIKeyboardWillChangeFrame, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(expandCell), name: NOTIF_EXPANDPLAYGROUPCHATCELL, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(openProfile), name: NOTIF_OPENPROFILE, object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(launchSuperlativeController), name: NOTIF_LAUNCHVOTING, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(sendMessageFromProfile), name: NOTIF_SENDMESSAGE, object: nil)
     }
     
@@ -690,7 +677,6 @@ class ChatPlaygroupController: UIViewController, UIGestureRecognizerDelegate, UI
         NotificationCenter.default.removeObserver(self, name: NSNotification.Name.UIKeyboardWillChangeFrame, object: nil)
         NotificationCenter.default.removeObserver(self, name: NOTIF_EXPANDPLAYGROUPCHATCELL, object: nil)
         NotificationCenter.default.removeObserver(self, name: NOTIF_OPENPROFILE, object: nil)
-        NotificationCenter.default.removeObserver(self, name: NOTIF_LAUNCHVOTING, object: nil)
         NotificationCenter.default.removeObserver(self, name: NOTIF_SENDMESSAGE, object: nil)
     }
     
@@ -704,7 +690,7 @@ class ChatPlaygroupController: UIViewController, UIGestureRecognizerDelegate, UI
     
     func openProfile(notif: Notification) {
         if let userInfo = notif.userInfo as? [String: String], let uid = userInfo["uid"] {
-            let profilesToOpen = playgroup.members.filter{$0.uid == uid}
+            let profilesToOpen = lobby.members.filter{$0.uid == uid}
             if profilesToOpen.count != 1 {
                 return
             }
@@ -808,7 +794,6 @@ class ChatPlaygroupController: UIViewController, UIGestureRecognizerDelegate, UI
         self.collectionView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: 0.8*SECTION_HEADER_HEIGHT, right: 0) // Fix top and bottom padding since automaticallyAdjustScrollViewInsets set to false
         
         self.collectionView.register(PlaygroupChatCell.self, forCellWithReuseIdentifier: CELL_CHAT_ID)
-        self.collectionView.register(PlaygroupQuestionCell.self, forCellWithReuseIdentifier: CELL_QUESTION_ID)
         self.collectionView.register(ChatHeaderView.self, forSupplementaryViewOfKind: UICollectionElementKindSectionHeader, withReuseIdentifier: CELL_HEADER_ID)
         
         self.view.insertSubview(collectionView, at: 0)
@@ -817,6 +802,8 @@ class ChatPlaygroupController: UIViewController, UIGestureRecognizerDelegate, UI
         self.view.addConstraintsWithFormat("V:[v0]", views: collectionView)
         self.topConstraintForCollectionView = NSLayoutConstraint(item: self.collectionView, attribute: .top, relatedBy: .equal, toItem: self.view, attribute: .top, multiplier: 1.0, constant: self.TOP_GAP)
         self.view.addConstraint(self.topConstraintForCollectionView)
+        
+        self.setupEmptyPlaceholderView()
         
         // Panning on collection view keeps keyboard
         let panToKeepKeyboardRecognizer = UIPanGestureRecognizer(target: self, action: #selector(keepKeyboard))
@@ -870,20 +857,12 @@ class ChatPlaygroupController: UIViewController, UIGestureRecognizerDelegate, UI
         
         let message = self.messagesInTimeBuckets[indexPath.section][indexPath.row]
         
-        if message.isSentBy428 {
-            // Question cell
-            if let cell = collectionView.dequeueReusableCell(withReuseIdentifier: CELL_QUESTION_ID, for: indexPath) as? PlaygroupQuestionCell {
-                cell.configureCell(messageObj: message)
-                return cell
-            }
-        }
-        
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: CELL_CHAT_ID, for: indexPath) as! PlaygroupChatCell
         let isLastInChain = self.messageIsLastInChain[indexPath.section][indexPath.row]
         
         // Get poster image name and poster name
         let posterUid = message.posterUid
-        let potentialPoster = playgroup.members.filter({$0.uid == posterUid})
+        let potentialPoster = lobby.members.filter({$0.uid == posterUid})
         if potentialPoster.count != 1 { // NOTE: This case will happen on first opening chat because profiles are not loaded yet
             return cell
         }
@@ -904,10 +883,6 @@ class ChatPlaygroupController: UIViewController, UIGestureRecognizerDelegate, UI
         let options = NSStringDrawingOptions.usesFontLeading.union(.usesLineFragmentOrigin)
         let estimatedFrame = NSString(string: messageText).boundingRect(with: size, options: options, attributes: [NSFontAttributeName: UIFont.systemFont(ofSize: 16.0)], context: nil)
         var cellHeight = message.isSentByYou ? estimatedFrame.height + 11 : estimatedFrame.height + 11 + 19
-        
-        if message.isSentBy428 {
-            return CGSize(width: UIScreen.main.bounds.width, height: cellHeight)
-        }
         
         let isLastInChain = self.messageIsLastInChain[indexPath.section][indexPath.row]
         let LAST_IN_CHAIN_GAP: CGFloat = 10.0

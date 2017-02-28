@@ -34,7 +34,7 @@ class Playgroup {
     fileprivate var _didYouKnowId: String
     
     
-    init(pid: String, title: String, timeReplied: Double, hasUpdates: Bool, questionNum: Int, questionText: String, imageName: String, shareImageName: String, members: [Profile] = [], questions: [Question] = [], playgroupMessages: [PlaygroupMessage] = [], superlatives: [Superlative] = [], results: [Superlative] = [], superlativeType: SuperlativeType = SuperlativeType.NOTVOTED, hasSuperlatives: Bool = false, isVotingOngoing: Bool = false, didYouKnowId: String = "") {
+    init(pid: String, title: String = "", timeReplied: Double = 0, hasUpdates: Bool = true, questionNum: Int = 1, questionText: String = "", imageName: String = "", shareImageName: String = "", members: [Profile] = [], questions: [Question] = [], playgroupMessages: [PlaygroupMessage] = [], superlatives: [Superlative] = [], results: [Superlative] = [], superlativeType: SuperlativeType = SuperlativeType.NOTVOTED, hasSuperlatives: Bool = false, isVotingOngoing: Bool = false, didYouKnowId: String = "") {
         _pid = pid
         _title = title
         _timeReplied = timeReplied

@@ -31,6 +31,7 @@
 		4037A6251E5808540079B203 /* NewUserAlertController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4037A6241E5808540079B203 /* NewUserAlertController.swift */; };
 		4037A6261E580B7B0079B203 /* AdSupport.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 40944BEE1E57BC1700B0C722 /* AdSupport.framework */; };
 		4038F45D1E62A34D004E4C1D /* VoteAnswerPromptAlertController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4038F45C1E62A34D004E4C1D /* VoteAnswerPromptAlertController.swift */; };
+		403D8C001E65412E00D435D5 /* LobbyController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 403D8BFF1E65412E00D435D5 /* LobbyController.swift */; };
 		404C22FA1DBDB86D0054FE19 /* UserDefaults.swift in Sources */ = {isa = PBXBuildFile; fileRef = 404C22F91DBDB86D0054FE19 /* UserDefaults.swift */; };
 		404ED6D71E6226370092F90B /* PlaygroupQuestionCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 404ED6D61E6226370092F90B /* PlaygroupQuestionCell.swift */; };
 		4064A1B61DAC381300071383 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4064A1B51DAC381300071383 /* AppDelegate.swift */; };
@@ -119,7 +120,7 @@
 		4020CE1C1DBCA84C00461181 /* FBSDKLoginKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = FBSDKLoginKit.framework; sourceTree = "<group>"; };
 		4020CE1D1DBCA84C00461181 /* FBSDKShareKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = FBSDKShareKit.framework; sourceTree = "<group>"; };
 		4020CE221DBCADFD00461181 /* ios-428-app.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "ios-428-app.entitlements"; sourceTree = "<group>"; };
-		4022C7311E1D386D00363E17 /* PlaygroupService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PlaygroupService.swift; sourceTree = "<group>"; };
+		4022C7311E1D386D00363E17 /* PlaygroupService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = PlaygroupService.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		4024F2201DB7E2E9007819F7 /* PlaygroupsController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PlaygroupsController.swift; sourceTree = "<group>"; };
 		4024F2221DB7F664007819F7 /* Playgroup.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Playgroup.swift; sourceTree = "<group>"; };
 		4024F2241DB7F83F007819F7 /* PlaygroupMessage.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PlaygroupMessage.swift; sourceTree = "<group>"; };
@@ -135,6 +136,7 @@
 		4037A6221E57E8AC0079B203 /* AnalyticsConstants.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AnalyticsConstants.swift; sourceTree = "<group>"; };
 		4037A6241E5808540079B203 /* NewUserAlertController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NewUserAlertController.swift; sourceTree = "<group>"; };
 		4038F45C1E62A34D004E4C1D /* VoteAnswerPromptAlertController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VoteAnswerPromptAlertController.swift; sourceTree = "<group>"; };
+		403D8BFF1E65412E00D435D5 /* LobbyController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LobbyController.swift; sourceTree = "<group>"; };
 		404C22F91DBDB86D0054FE19 /* UserDefaults.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserDefaults.swift; sourceTree = "<group>"; };
 		404ED6D61E6226370092F90B /* PlaygroupQuestionCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PlaygroupQuestionCell.swift; sourceTree = "<group>"; };
 		4064A1B21DAC381300071383 /* ios-428-app.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "ios-428-app.app"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -233,6 +235,7 @@
 		4024F21F1DB7E2DB007819F7 /* Playgroup */ = {
 			isa = PBXGroup;
 			children = (
+				403D8BFF1E65412E00D435D5 /* LobbyController.swift */,
 				4024F2201DB7E2E9007819F7 /* PlaygroupsController.swift */,
 				4024F2281DB853F9007819F7 /* ChatPlaygroupController.swift */,
 				40BC2E921E4EF2B300017253 /* NewPlaygroupAlertController.swift */,
@@ -729,6 +732,7 @@
 				4024F2311DB88262007819F7 /* ModalQuestionController.swift in Sources */,
 				4064A21A1DACC20E00071383 /* InboxCell.swift in Sources */,
 				4072AD9A1E1633E30067046D /* AnswersController.swift in Sources */,
+				403D8C001E65412E00D435D5 /* LobbyController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

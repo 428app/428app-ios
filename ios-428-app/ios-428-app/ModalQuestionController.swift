@@ -19,9 +19,17 @@ class ModalQuestionController: UIViewController {
     var playgroup: Playgroup! {
         didSet {
             // Set modal info
-            _ = downloadImage(imageUrlString: playgroup.imageName, completed: { image in
-                self.questionImageView.image = image
-            })
+            if playgroup.title == "Lobby" {
+                self.questionImageView.image = UIImage(named: self.playgroup.imageName)
+                self.fbButton.isEnabled = false
+                self.tweetButton.isEnabled = false
+            } else {
+                _ = downloadImage(imageUrlString: playgroup.imageName, completed: { image in
+                    self.questionImageView.image = image
+                })
+                self.fbButton.isEnabled = true
+                self.tweetButton.isEnabled = true
+            }
             self.questionText.text = playgroup.questionText
         }
     }
