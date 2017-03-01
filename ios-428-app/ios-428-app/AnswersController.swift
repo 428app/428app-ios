@@ -215,7 +215,7 @@ class VideoAnswerCell: BaseTableViewCell, UIWebViewDelegate {
     
     fileprivate lazy var placeHolderVideo: UIView = {
         let view = UIView()
-        view.backgroundColor = GRAY_UICOLOR
+        view.backgroundColor = UIColor.black
         return view
     }()
     

@@ -63,6 +63,14 @@ class PlaygroupsController: UIViewController, UICollectionViewDelegate, UICollec
         }
     }
     
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+        // This code has to be here and not in viewDidAppear, etc.
+        if notCheckedOutTutorial {
+            self.showIntroTutorialAlert()
+        }
+    }
+    
     deinit {
         self.countdownTimer.invalidate()
         for (ref, handle) in self.playgroupsFirebase.values {
@@ -86,6 +94,13 @@ class PlaygroupsController: UIViewController, UICollectionViewDelegate, UICollec
         controller.modalPresentationStyle = .overFullScreen
         controller.modalTransitionStyle = .coverVertical
         self.present(controller, animated: true, completion: nil)
+    }
+    
+    fileprivate func showIntroTutorialAlert() {
+        let alertController = TutorialAlertController()
+        alertController.modalPresentationStyle = .overFullScreen
+        alertController.modalTransitionStyle = .crossDissolve
+        self.present(alertController, animated: true, completion: nil)
     }
     
     // MARK: Firebase
@@ -238,14 +253,11 @@ class PlaygroupsController: UIViewController, UICollectionViewDelegate, UICollec
     fileprivate lazy var visitLobbyBtn: UIButton = {
        let btn = UIButton()
         btn.setTitle("Visit Lobby first", for: .normal)
-        btn.setTitleColor(RED_UICOLOR, for: .normal)
-        btn.setTitleColor(UIColor.white, for: .highlighted)
+        btn.setTitleColor(UIColor.white, for: .normal)
         btn.titleLabel?.font = FONT_HEAVY_LARGE
-        btn.setBackgroundColor(color: UIColor.white, forState: .normal)
+        btn.setBackgroundColor(color: GREEN_UICOLOR, forState: .normal)
         btn.setBackgroundColor(color: RED_UICOLOR, forState: .highlighted)
         btn.layer.cornerRadius = 4.0
-        btn.layer.borderColor = RED_UICOLOR.cgColor
-        btn.layer.borderWidth = 0.8
         btn.clipsToBounds = true
         btn.addTarget(self, action: #selector(visitLobby), for: .touchUpInside)
         return btn

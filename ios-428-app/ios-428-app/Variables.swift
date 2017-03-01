@@ -14,6 +14,9 @@ import Foundation
 var justFinishedIntro = false
 var isFirstTimeUser = false
 
+// Used to display tutorial alert on Playgroups tab
+var notCheckedOutTutorial = false
+
 // Side effect to see if InboxController should immediately bring up a private chat with this inbox upon loading
 // The private chat comes from clicking Send Message from viewing another user's profile
 var inboxToOpen: Inbox?

@@ -13,21 +13,22 @@ import UIKit
 class IntroController: UIViewController, UITextFieldDelegate, UIPickerViewDelegate, UIPickerViewDataSource, UIGestureRecognizerDelegate {
     
     override func viewDidLoad() {
-        self.view.backgroundColor = GRAY_UICOLOR
+        self.view.backgroundColor = GREEN_UICOLOR
         let tapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(keepKeyboard))
         self.view.addGestureRecognizer(tapGestureRecognizer)
         self.setupViews()
         isFirstTimeUser = true // If you're in IntroController, means you're a first time user
+        notCheckedOutTutorial = true // If you're in IntroController, means haven't seen the tutorial
         DataService.ds.createOrJoinLobby()
     }
     
     // MARK: Views
     
-    fileprivate let confessProfessionLbl: UILabel = {
+    fileprivate let whatYourLifeAboutLbl: UILabel = {
        let label = UILabel()
         label.text = "What your life is about:"
         label.font = FONT_MEDIUM_XLARGE
-        label.textColor = UIColor.black
+        label.textColor = UIColor.white
         label.textAlignment = .center
         label.adjustsFontSizeToFitWidth = true
         label.minimumScaleFactor = 0.6
@@ -77,8 +78,8 @@ class IntroController: UIViewController, UITextFieldDelegate, UIPickerViewDelega
         button.setTitle("Change my life", for: .normal)
         button.titleLabel?.font = FONT_HEAVY_XLARGE
         button.setTitleColor(UIColor.white, for: .normal)
-        button.setBackgroundColor(color: GREEN_UICOLOR, forState: .normal)
-        button.setBackgroundColor(color: GREEN_UICOLOR.withAlphaComponent(0.6), forState: .highlighted)
+        button.setBackgroundColor(color: RED_UICOLOR, forState: .normal)
+        button.setBackgroundColor(color: RED_UICOLOR.withAlphaComponent(0.6), forState: .highlighted)
         button.layer.cornerRadius = 4.0
         button.clipsToBounds = true
         button.addTarget(self, action: #selector(goIntoApp), for: .touchUpInside)
@@ -88,7 +89,7 @@ class IntroController: UIViewController, UITextFieldDelegate, UIPickerViewDelega
     
     fileprivate func setupViews() {
         let containerView = UIView()
-        containerView.addSubview(confessProfessionLbl)
+        containerView.addSubview(whatYourLifeAboutLbl)
         containerView.addSubview(disciplineTextField)
         containerView.addSubview(goButton)
         
@@ -96,10 +97,10 @@ class IntroController: UIViewController, UITextFieldDelegate, UIPickerViewDelega
         self.view.addConstraint(NSLayoutConstraint(item: containerView, attribute: .centerY, relatedBy: .equal, toItem: self.view, attribute: .centerY, multiplier: 1.0, constant: 0.0))
         self.view.addConstraintsWithFormat("H:|-8-[v0]-8-|", views: containerView)
         
-        containerView.addConstraintsWithFormat("H:|-8-[v0]-8-|", views: confessProfessionLbl)
+        containerView.addConstraintsWithFormat("H:|-8-[v0]-8-|", views: whatYourLifeAboutLbl)
         containerView.addConstraintsWithFormat("H:|-8-[v0]-8-|", views: disciplineTextField)
         containerView.addConstraintsWithFormat("H:|-8-[v0]-8-|", views: goButton)
-        containerView.addConstraintsWithFormat("V:|-8-[v0(40)]-2-[v1(45)]-10-[v2(55)]-|", views: confessProfessionLbl, disciplineTextField, goButton)
+        containerView.addConstraintsWithFormat("V:|-8-[v0(40)]-2-[v1(45)]-10-[v2(55)]-|", views: whatYourLifeAboutLbl, disciplineTextField, goButton)
     }
     
     // MARK: Picker view

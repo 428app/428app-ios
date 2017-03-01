@@ -3,13 +3,12 @@ TODO:
 
 IOS UPDATES:
 
-
-+ IMPROVEMENT: Make play group buttons in horizontal cell beat when loaded to let users know it is a clickable button
 + IMPROVEMENT: Write manual code to scan the whole database for users who still do not have classrooms, and see why
+
+V11 (Final):
 
 
 V10:
-+ FIXED BUG: New user does not get new user alert that tells her to edit profile first
 + IMPROVEMENT: Better FB permissions control: App partially allows some permissions to be unchecked and does not refuse to sync with Facebook
 + IMPROVEMENT: Remove in-app browser for visit website and privacy policy and redirect that to Safari for stability, also added a rate us feature to prep for linking to app store once our app is live
 + FIXED BUG: Profile photo change fail safe: In case profile photo upload failed, can reupload and won't get stuck

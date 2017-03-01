@@ -66,6 +66,11 @@ class HorizontalScrollCell: UICollectionViewCell, UICollectionViewDataSource, UI
         return CGSize(width: ProfileController.ICON_SIZE, height: frame.height)
     }
     
+    func collectionView(_ collectionView: UICollectionView, didHighlightItemAt indexPath: IndexPath) {
+        let cell = collectionView.cellForItem(at: indexPath) as! IconImageCell
+        cell.spinImage()
+    }
+    
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         let iconImageName = iconImageNames[indexPath.row]
         logAnalyticsEvent(key: kEventClickOnPlaygroupIcon)
@@ -103,6 +108,14 @@ class IconImageCell: UICollectionViewCell {
     
     func assignImage(imageName: String) {
         iconImageView.image = UIImage(named: imageName)
+    }
+    
+    func spinImage() {
+        let animation = CAKeyframeAnimation(keyPath: "transform.rotation.z")
+        animation.isAdditive = true
+        animation.duration = 0.6
+        animation.values = [0, M_PI, 2*M_PI]
+        iconImageView.layer.add(animation, forKey: "show")
     }
     
 }
