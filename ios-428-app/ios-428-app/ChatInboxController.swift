@@ -860,7 +860,8 @@ class ChatInboxController: UIViewController, UICollectionViewDelegateFlowLayout,
         let messageText = message.text
         let messageDate = message.date
         
-        let size = CGSize(width: 250, height: 1000)
+        let MESSAGE_WIDTH = UIScreen.main.bounds.width * 0.7
+        let size = CGSize(width: MESSAGE_WIDTH, height: 1000)
         let options = NSStringDrawingOptions.usesFontLeading.union(.usesLineFragmentOrigin)
         let estimatedFrame = NSString(string: messageText).boundingRect(with: size, options: options, attributes: [NSFontAttributeName: UIFont.systemFont(ofSize: 16.0)], context: nil)
         

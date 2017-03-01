@@ -593,7 +593,7 @@ extension DataService {
                     memberIds.append(userProfile!.uid)
                     if self.isIdenticalArrays(arr1: memberIds, arr2: totalMemberIds) { // All members read
                         // Image name of lobby in assets
-                        let lobby = Playgroup(pid: lid, title: "Lobby", questionText: "Remember the time when Dad did science experiments with you? Or the other time you attended art class and fell in love with painting? Share with us: What was your childhood ambition?", imageName: "lobby", members: members)
+                        let lobby = Playgroup(pid: lid, title: "Lobby", questionText: "What was your childhood ambition? I'm Leonard from 428. I wanted to be a doctor when I was little, and the closest I could get to being a doctor was having a doctor's handwriting.", imageName: "lobby", members: members)
                         completed(true, lobby)
                         return
                     }

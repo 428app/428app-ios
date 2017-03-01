@@ -119,7 +119,7 @@ class EditProfileController: UIViewController, UIScrollViewDelegate, UIGestureRe
             // Take a new photo
             if UIImagePickerController.availableCaptureModes(for: .rear) == nil {
                 // No camera
-                showErrorAlert(vc: self, title: "No camera", message: "Your device does not have a camera")
+                showErrorAlert(vc: self, title: "No camera", message: "Your device does not seem to have a working camera. Try uploading a photo from your photo library.")
             } else {
                 self.profilePhotoPicker.sourceType = .camera
                 self.present(self.profilePhotoPicker, animated: true, completion: nil)

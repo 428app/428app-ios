@@ -115,7 +115,8 @@ class PlaygroupChatCell: BaseCollectionCell {
         // Download poster profile image
         loadPosterImage(imageUrlString: posterImageName)
         
-        let size = CGSize(width: 250, height: CGFloat.greatestFiniteMagnitude)
+        let MESSAGE_WIDTH = UIScreen.main.bounds.width * 0.7
+        let size = CGSize(width: MESSAGE_WIDTH, height: CGFloat.greatestFiniteMagnitude)
         let options = NSStringDrawingOptions.usesFontLeading.union(.usesLineFragmentOrigin)
         
         var estimatedFrame = NSString(string: self.message.text).boundingRect(with: size, options: options, attributes: [NSFontAttributeName: TEXT_VIEW_FONT], context: nil)

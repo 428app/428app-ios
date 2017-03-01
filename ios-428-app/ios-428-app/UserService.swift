@@ -421,12 +421,13 @@ extension DataService {
             completed(nil)
             return
         }
-        REF_USERS.child("\(uid)/lobbyId").observe(.value, with: { snap in
+        REF_USERS.child("\(uid)/lobbyId").observeSingleEvent(of: .value, with: { snap in
             if let lid = snap.value as? String {
                 completed(lid)
                 return
             }
             completed(nil)
+            return
         })
     }
 }

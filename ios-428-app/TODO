@@ -1,17 +1,17 @@
 TODO:
-
-
 IOS UPDATES:
 
 + IMPROVEMENT: Write manual code to scan the whole database for users who still do not have classrooms, and see why
++ Tidy up github repo
 
-V11 (Final):
+V11:
++ IMPROVEMENT: Minor design tweaks, some small bugs
 
 
 V10:
++ FIXED BUG: Profile photo change fail safe: In case profile photo upload failed, can reupload and won't get stuck
 + IMPROVEMENT: Better FB permissions control: App partially allows some permissions to be unchecked and does not refuse to sync with Facebook
 + IMPROVEMENT: Remove in-app browser for visit website and privacy policy and redirect that to Safari for stability, also added a rate us feature to prep for linking to app store once our app is live
-+ FIXED BUG: Profile photo change fail safe: In case profile photo upload failed, can reupload and won't get stuck
 + IMPROVEMENT: Rebranding: No longer called Playgroups, but now called Play groups!
 + IMPROVEMENT: Lobby - a new user can chat in a lobby before she gets her first playgroup
 + IMPROVEMENT: General UX/view improvements

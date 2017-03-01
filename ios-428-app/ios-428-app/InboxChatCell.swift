@@ -96,7 +96,8 @@ class InboxChatCell: BaseCollectionCell {
             self.populateCellWithImage(image: image)
         })
         
-        let size = CGSize(width: 250.0, height: CGFloat.greatestFiniteMagnitude)
+        let MESSAGE_WIDTH = UIScreen.main.bounds.width * 0.7
+        let size = CGSize(width: MESSAGE_WIDTH, height: CGFloat.greatestFiniteMagnitude)
         let options = NSStringDrawingOptions.usesFontLeading.union(.usesLineFragmentOrigin)
         let estimatedFrame: CGRect = NSString(string: messageText).boundingRect(with: size, options: options, attributes: [NSFontAttributeName: TEXT_VIEW_FONT], context: nil)
         
