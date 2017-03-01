@@ -32,6 +32,7 @@
 		4037A6261E580B7B0079B203 /* AdSupport.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 40944BEE1E57BC1700B0C722 /* AdSupport.framework */; };
 		4038F45D1E62A34D004E4C1D /* VoteAnswerPromptAlertController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4038F45C1E62A34D004E4C1D /* VoteAnswerPromptAlertController.swift */; };
 		403D8C001E65412E00D435D5 /* LobbyController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 403D8BFF1E65412E00D435D5 /* LobbyController.swift */; };
+		403D8C041E666A9600D435D5 /* TutorialController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 403D8C031E666A9600D435D5 /* TutorialController.swift */; };
 		404C22FA1DBDB86D0054FE19 /* UserDefaults.swift in Sources */ = {isa = PBXBuildFile; fileRef = 404C22F91DBDB86D0054FE19 /* UserDefaults.swift */; };
 		404ED6D71E6226370092F90B /* PlaygroupQuestionCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 404ED6D61E6226370092F90B /* PlaygroupQuestionCell.swift */; };
 		4064A1B61DAC381300071383 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4064A1B51DAC381300071383 /* AppDelegate.swift */; };
@@ -137,6 +138,7 @@
 		4037A6241E5808540079B203 /* NewUserAlertController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NewUserAlertController.swift; sourceTree = "<group>"; };
 		4038F45C1E62A34D004E4C1D /* VoteAnswerPromptAlertController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VoteAnswerPromptAlertController.swift; sourceTree = "<group>"; };
 		403D8BFF1E65412E00D435D5 /* LobbyController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LobbyController.swift; sourceTree = "<group>"; };
+		403D8C031E666A9600D435D5 /* TutorialController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TutorialController.swift; sourceTree = "<group>"; };
 		404C22F91DBDB86D0054FE19 /* UserDefaults.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserDefaults.swift; sourceTree = "<group>"; };
 		404ED6D61E6226370092F90B /* PlaygroupQuestionCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PlaygroupQuestionCell.swift; sourceTree = "<group>"; };
 		4064A1B21DAC381300071383 /* ios-428-app.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "ios-428-app.app"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -301,6 +303,7 @@
 				4064A1E81DAC80E400071383 /* Resources */,
 				4064A1E71DAC80DF00071383 /* Util */,
 				4064A2121DACBB2000071383 /* Controller */,
+				403D8C031E666A9600D435D5 /* TutorialController.swift */,
 				4064A1E51DAC7DA600071383 /* CustomTabBarController.swift */,
 				4064A2041DAC868E00071383 /* CustomNavigationController.swift */,
 				4064A2531DB34E4D00071383 /* ProfileController.swift */,
@@ -733,6 +736,7 @@
 				4064A21A1DACC20E00071383 /* InboxCell.swift in Sources */,
 				4072AD9A1E1633E30067046D /* AnswersController.swift in Sources */,
 				403D8C001E65412E00D435D5 /* LobbyController.swift in Sources */,
+				403D8C041E666A9600D435D5 /* TutorialController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -99,6 +99,7 @@ class ChatPlaygroupController: UIViewController, UIGestureRecognizerDelegate, UI
                     btn.isEnabled = false
                 }
             }
+            self.navigationItem.titleView?.isUserInteractionEnabled = false
             // Small hack to make it not show up when the load time is less than 2 seconds
             self.activityIndicator.isHidden = true
             UIView.animate(withDuration: 2.0, animations: {}, completion: { (isSuccess) in
@@ -111,6 +112,7 @@ class ChatPlaygroupController: UIViewController, UIGestureRecognizerDelegate, UI
             self.animateQuestionBanner()
             self.collectionView.isScrollEnabled = true
             self.questionBanner.isUserInteractionEnabled = true
+            self.navigationItem.titleView?.isUserInteractionEnabled = true
             if let btns = self.navigationItem.rightBarButtonItems {
                 for btn in btns {
                     btn.isEnabled = true
@@ -359,11 +361,16 @@ class ChatPlaygroupController: UIViewController, UIGestureRecognizerDelegate, UI
     // MARK: Navigation
     
     fileprivate func setupNavigationBar() {
-        self.navigationItem.title = self.playgroup.title
         let negativeSpace = UIBarButtonItem(barButtonSystemItem: .fixedSpace, target: nil, action: nil)
         negativeSpace.width = -6.0
         let moreButton = UIBarButtonItem(image: #imageLiteral(resourceName: "more-2x"), style: .plain, target: self, action: #selector(handleNavMore))
         self.navigationItem.rightBarButtonItems = [negativeSpace, moreButton]
+        let button =  UIButton(type: .custom)
+        button.frame = CGRect(x: 0, y: 0, width: UIScreen.main.bounds.width * 0.5, height: 40)
+        button.titleLabel?.font = FONT_HEAVY_XLARGE
+        button.setTitle(self.playgroup.title, for: .normal)
+        button.addTarget(self, action: #selector(handleNavMore), for: .touchUpInside)
+        self.navigationItem.titleView = button
     }
     
     func handleNavMore() {

@@ -117,7 +117,7 @@ class SuperlativeController: UIViewController, UICollectionViewDelegate, UIColle
     
     fileprivate let didYouKnowLbl: UILabel = {
         let lbl = UILabel()
-        lbl.font = FONT_HEAVY_LARGE
+        lbl.font = FONT_HEAVY_XLARGE
         lbl.textColor = GREEN_UICOLOR
         lbl.textAlignment = .center
         lbl.text = "Did you know?"
@@ -137,7 +137,7 @@ class SuperlativeController: UIViewController, UICollectionViewDelegate, UIColle
     
     fileprivate lazy var placeHolderVideo: UIView = {
         let view = UIView()
-        view.backgroundColor = GRAY_UICOLOR
+        view.backgroundColor = UIColor.black
         return view
     }()
     
@@ -195,13 +195,14 @@ class SuperlativeController: UIViewController, UICollectionViewDelegate, UIColle
         label.font = FONT_MEDIUM_SMALL
         label.textColor = UIColor.darkGray
         label.textAlignment = .center
-        label.text = "Share to unlock superlatives!"
+        label.text = "Share to unlock results!"
         return label
     }()
     
     fileprivate var shareLink = ""
     
     func shareOnFb() {
+        log.info("SHARE ON FB")
         if(SLComposeViewController.isAvailable(forServiceType: SLServiceTypeFacebook)) {
             if let socialController = SLComposeViewController(forServiceType: SLServiceTypeFacebook) {
                 let url = URL(string: shareLink)
@@ -232,9 +233,9 @@ class SuperlativeController: UIViewController, UICollectionViewDelegate, UIColle
     }
     
     fileprivate lazy var shareContainer: UIView = {
-        let view = UIView(frame: CGRect(x: 0, y: 0, width: UIScreen.main.bounds.width, height: UIScreen.main.bounds.height))
-        view.isUserInteractionEnabled = true
-        return view
+        let shareView = UIView(frame: CGRect(x: 0, y: UIScreen.main.bounds.height * 0.2, width: UIScreen.main.bounds.width, height: UIScreen.main.bounds.height * 0.65))
+        shareView.isUserInteractionEnabled = true
+        return shareView
     }()
     
     fileprivate func setupShareViews() {
@@ -242,7 +243,6 @@ class SuperlativeController: UIViewController, UICollectionViewDelegate, UIColle
         let didYouKnowContainer = UIView()
         didYouKnowContainer.addSubview(didYouKnowLbl)
         didYouKnowContainer.addSubview(didYouKnowVideo)
-        didYouKnowContainer.backgroundColor = UIColor.white
         didYouKnowContainer.addConstraintsWithFormat("V:|-8-[v0(25)]-8-[v1(250)]-8-|", views: didYouKnowLbl, didYouKnowVideo)
         didYouKnowContainer.addConstraintsWithFormat("H:|-8-[v0]-8-|", views: didYouKnowLbl)
         didYouKnowContainer.addConstraintsWithFormat("H:|-8-[v0]-8-|", views: didYouKnowVideo)
@@ -273,7 +273,7 @@ class SuperlativeController: UIViewController, UICollectionViewDelegate, UIColle
         shareContainer.addSubview(instructionsContainer)
         
         shareContainer.addConstraintsWithFormat("H:|-12-[v0]-12-|", views: didYouKnowContainer)
-        shareContainer.addConstraintsWithFormat("H:|-12-[v0]-12-|", views: fbButton)
+        shareContainer.addConstraintsWithFormat("H:|-18-[v0]-18-|", views: fbButton)
         shareContainer.addConstraintsWithFormat("V:|-12-[v0]-12-[v1(40)]-8-[v2(40)]", views: didYouKnowContainer, fbButton, instructionsContainer)
         
         view.addSubview(shareContainer)
@@ -309,8 +309,10 @@ class SuperlativeController: UIViewController, UICollectionViewDelegate, UIColle
             hideLoader()
             if isSuccess {
                 self.toggleViews(superlativeType: SuperlativeType.VOTED)
-                // Hack: Increase share frame
-                self.shareContainer.frame = CGRect(x: 0, y: self.navigationController!.navigationBar.frame.size.height + 15.0, width: UIScreen.main.bounds.width, height: UIScreen.main.bounds.height)
+                
+                // TODO: Tweak share frame
+//                // Hack: Increase share frame
+//                self.shareContainer.frame = CGRect(x: 0, y: self.navigationController!.navigationBar.frame.size.height + 15.0, width: UIScreen.main.bounds.width, height: UIScreen.main.bounds.height)
             } else {
                 showErrorAlert(vc: self, title: "Error", message: "There was a problem submitting your votes.\nPlease try again.")
             }
@@ -336,9 +338,10 @@ class SuperlativeController: UIViewController, UICollectionViewDelegate, UIColle
         if superlativeType == .VOTED {
             // Rated but not shared, hide collection view and show share
             self.navigationItem.title = "Superlatives"
+            self.extendedLayoutIncludesOpaqueBars = true
             shareContainer.isHidden = false
             collectionView.isHidden = true
-            self.view.backgroundColor = UIColor.white
+            self.view.backgroundColor = GRAY_UICOLOR
             self.navigationItem.rightBarButtonItem = nil
             NotificationCenter.default.removeObserver(self, name: NOTIF_VOTESELECTED, object: nil)
             

@@ -3,11 +3,9 @@ TODO:
 
 IOS UPDATES:
 
-+ IMPROVEMENT: Interactive tutorial at the start
 
-
-+ IMPROVEMENT: Clicking on playgroup title also brings up nav drawer
-
++ IMPROVEMENT: Make play group buttons in horizontal cell beat when loaded to let users know it is a clickable button
++ IMPROVEMENT: Write manual code to scan the whole database for users who still do not have classrooms, and see why
 
 
 V10:
@@ -17,7 +15,8 @@ V10:
 + FIXED BUG: Profile photo change fail safe: In case profile photo upload failed, can reupload and won't get stuck
 + IMPROVEMENT: Rebranding: No longer called Playgroups, but now called Play groups!
 + IMPROVEMENT: Lobby - a new user can chat in a lobby before she gets her first playgroup
-
++ IMPROVEMENT: General UX/view improvements
++ IMPROVEMENT: Tutorial for the app
 
 
 V9:

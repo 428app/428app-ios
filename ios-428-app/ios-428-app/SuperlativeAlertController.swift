@@ -42,14 +42,11 @@ class SuperlativeAlertController: UIViewController {
     fileprivate func btnTemplate() -> UIButton {
         let btn = UIButton()
         btn.titleLabel?.font = FONT_HEAVY_LARGE
-        btn.setTitleColor(GREEN_UICOLOR, for: .normal)
-        btn.setTitleColor(UIColor.white, for: .highlighted)
-        btn.setBackgroundColor(color: UIColor.white, forState: .normal)
-        btn.setBackgroundColor(color: GREEN_UICOLOR, forState: .highlighted)
+        btn.setTitleColor(UIColor.white, for: .normal)
+        btn.setBackgroundColor(color: GREEN_UICOLOR, forState: .normal)
+        btn.setBackgroundColor(color: RED_UICOLOR, forState: .highlighted)
         btn.layer.cornerRadius = 4.0
-        btn.layer.borderWidth = 1.5
-        btn.layer.borderColor = GREEN_UICOLOR.cgColor
-        btn.tintColor = UIColor.white
+        btn.clipsToBounds = true
         return btn
     }
     

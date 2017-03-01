@@ -25,7 +25,7 @@ class IntroController: UIViewController, UITextFieldDelegate, UIPickerViewDelega
     
     fileprivate let confessProfessionLbl: UILabel = {
        let label = UILabel()
-        label.text = "Confess your profession:"
+        label.text = "What your life is about:"
         label.font = FONT_MEDIUM_XLARGE
         label.textColor = UIColor.black
         label.textAlignment = .center

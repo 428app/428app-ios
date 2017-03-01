@@ -41,7 +41,7 @@ class PlaygroupsController: UIViewController, UICollectionViewDelegate, UICollec
     override func viewDidLoad() {
         super.viewDidLoad() 
         self.view.backgroundColor = GRAY_UICOLOR
-        self.navigationItem.title = "Playgroups"
+        self.setupNavigationBar()
         self.automaticallyAdjustsScrollViewInsets = true
         self.extendedLayoutIncludesOpaqueBars = true
         self.setupViews()
@@ -71,6 +71,21 @@ class PlaygroupsController: UIViewController, UICollectionViewDelegate, UICollec
         if allClassFirebase != nil {
             self.allClassFirebase.0.removeObserver(withHandle: allClassFirebase.1)
         }
+    }
+    
+    fileprivate func setupNavigationBar() {
+        self.navigationItem.title = "Playgroups"
+        let infoButton = UIButton(type: .infoLight)
+        infoButton.addTarget(self, action: #selector(infoButtonTapped), for: .touchUpInside)
+        let barButton = UIBarButtonItem(customView: infoButton)
+        self.navigationItem.rightBarButtonItem = barButton
+    }
+    
+    func infoButtonTapped() {
+        let controller = TutorialController()
+        controller.modalPresentationStyle = .overFullScreen
+        controller.modalTransitionStyle = .coverVertical
+        self.present(controller, animated: true, completion: nil)
     }
     
     // MARK: Firebase
@@ -222,8 +237,6 @@ class PlaygroupsController: UIViewController, UICollectionViewDelegate, UICollec
     
     fileprivate lazy var visitLobbyBtn: UIButton = {
        let btn = UIButton()
-        btn.titleLabel?.text = "Visit Lobby first"
-        btn.backgroundColor = RED_UICOLOR
         btn.setTitle("Visit Lobby first", for: .normal)
         btn.setTitleColor(RED_UICOLOR, for: .normal)
         btn.setTitleColor(UIColor.white, for: .highlighted)
@@ -234,7 +247,6 @@ class PlaygroupsController: UIViewController, UICollectionViewDelegate, UICollec
         btn.layer.borderColor = RED_UICOLOR.cgColor
         btn.layer.borderWidth = 0.8
         btn.clipsToBounds = true
-        
         btn.addTarget(self, action: #selector(visitLobby), for: .touchUpInside)
         return btn
     }()
