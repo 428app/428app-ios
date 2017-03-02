@@ -1,8 +1,15 @@
 TODO:
 IOS UPDATES:
 
++ Me page very slow load - can we cache this as it hardly changes
++ Make top navigation bar not translucent
+
+
+SERVER ANALYTICS CODE TO SEE WHAT'S GOING ON
 + IMPROVEMENT: Write manual code to scan the whole database for users who still do not have classrooms, and see why
-+ Tidy up github repo
+
+
+
 
 V11:
 + IMPROVEMENT: Minor design tweaks, some small bugs

@@ -528,10 +528,10 @@ extension DataService {
             
             let MAX_LOBBY_SIZE = 12
             
-            // Find lobbies from the past 48 hours
+            // Find lobbies from the past 24 hours
             let timestampInMilliseconds = Date().timeIntervalSince1970 * 1000
             
-            let q: FIRDatabaseQuery = self.REF_LOBBIES.queryOrdered(byChild: "timeCreated").queryStarting(atValue: timestampInMilliseconds - (48 * 60 * 60 * 1000))
+            let q: FIRDatabaseQuery = self.REF_LOBBIES.queryOrdered(byChild: "timeCreated").queryStarting(atValue: timestampInMilliseconds - (24 * 60 * 60 * 1000))
             q.observeSingleEvent(of: .value, with: { snapshot in
                 
                 if let lobbiesSnap = snapshot.children.allObjects as? [FIRDataSnapshot] {
