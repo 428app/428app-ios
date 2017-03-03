@@ -58,7 +58,7 @@ class SoundSmartAlertController: UIViewController {
         containerView.addSubview(soundSmartIcon)
         containerView.addSubview(soundSmartLbl)
         
-        containerView.addConstraintsWithFormat("V:|-12-[v0(50)]-6-[v1(150)]-12-|", views: soundSmartIcon, soundSmartLbl)
+        containerView.addConstraintsWithFormat("V:|-12-[v0(50)]-6-[v1(170)]-15-|", views: soundSmartIcon, soundSmartLbl)
         containerView.addConstraintsWithFormat("H:[v0(50)]", views: soundSmartIcon)
         containerView.addConstraint(NSLayoutConstraint(item: soundSmartIcon, attribute: .centerX, relatedBy: .equal, toItem: containerView, attribute: .centerX, multiplier: 1.0, constant: 0.0))
         containerView.addConstraintsWithFormat("H:|-12-[v0]-12-|", views: soundSmartLbl)

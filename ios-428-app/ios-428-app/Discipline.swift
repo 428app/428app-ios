@@ -191,7 +191,7 @@ var soundSmarts = [
     "Anybody has any idea what superlatives mean?",
     "$, just curious. What do you do these days?",
     "Hey $! You look familiar 🤔",
-    "How many of you guys here actually already know each another?",
+    "How many of you guys here actually already know each other?",
     "n jdfngkjnkjg nkjdngkjfngjk ndfkjng kjnf kjf",
     "Sorry for not posting yet. I'll get back with an answer to this question soon k",
     "Gonna take a nap guys, brb 😴",

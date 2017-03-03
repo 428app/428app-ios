@@ -1,13 +1,16 @@
 TODO:
 IOS UPDATES:
 
++ Share to unlock superlatives: Change message to prompt user to consider saying you're using 428
++ Set up alert message for a user who does not get a playgroup
 
-+ Make swap a rebalance function, not just swap
-+ Do not let new user join group if its 12, unless the time of next 428 is coming real soon then no choice
+
 
 
 SERVER ANALYTICS CODE TO SEE WHAT'S GOING ON
 + IMPROVEMENT: Write manual code to scan the whole database for users who still do not have classrooms, and see why
+
+V12:
 
 
 V11:
