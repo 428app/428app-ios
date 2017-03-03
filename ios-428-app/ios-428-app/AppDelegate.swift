@@ -32,6 +32,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         setPromptForAnswerVote(hasPrompt: true) // For the future when answers from playgroup shows up, show answer prompt once
         
+        DataService.ds.populateSoundSmarts() // Make sure this is placed here as this should only be called once when the app is launched to populate sound smarts
+        
         // Reupload previous photo that might not have been uploaded due to nLogetwork issues or user quitting the app after changing profile photo
         reuploadPhoto()
  

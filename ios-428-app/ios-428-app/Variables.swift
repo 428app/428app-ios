@@ -17,6 +17,9 @@ var isFirstTimeUser = false
 // Used to display tutorial alert on Playgroups tab
 var notCheckedOutTutorial = false
 
+// Used to sound smart once per app launch
+var hasSoundSmartAlert = true
+
 // Side effect to see if InboxController should immediately bring up a private chat with this inbox upon loading
 // The private chat comes from clicking Send Message from viewing another user's profile
 var inboxToOpen: Inbox?

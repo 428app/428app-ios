@@ -17,6 +17,7 @@ class CustomNavigationController: UINavigationController {
         self.navigationBar.tintColor = UIColor.white
         self.navigationBar.backgroundColor = GREEN_UICOLOR
         self.navigationBar.barTintColor = GREEN_UICOLOR
+//        self.navigationBar.isTranslucent = false
         UIBarButtonItem.appearance().setTitleTextAttributes([NSFontAttributeName: FONT_MEDIUM_LARGE], for: .normal)
     }
 }

@@ -105,6 +105,7 @@
 		40ADEEE31DDD82E300CE529A /* Enums.swift in Sources */ = {isa = PBXBuildFile; fileRef = 40ADEEE21DDD82E300CE529A /* Enums.swift */; };
 		40B90DA31E54ECFF00ABB3ED /* Debug.swift in Sources */ = {isa = PBXBuildFile; fileRef = 40B90DA21E54ECFF00ABB3ED /* Debug.swift */; };
 		40BC2E931E4EF2B300017253 /* NewPlaygroupAlertController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 40BC2E921E4EF2B300017253 /* NewPlaygroupAlertController.swift */; };
+		40DF7CDA1E68D32B00678692 /* SoundSmartAlertController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 40DF7CD91E68D32B00678692 /* SoundSmartAlertController.swift */; };
 		40E2E1401DD26B8200469B4D /* Discipline.swift in Sources */ = {isa = PBXBuildFile; fileRef = 40E2E13F1DD26B8200469B4D /* Discipline.swift */; };
 		40E2E1421DD3788300469B4D /* CustomActivityIndicatorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 40E2E1411DD3788300469B4D /* CustomActivityIndicatorView.swift */; };
 		FED3D2F8E9831031BBFFDBEB /* Pods_ios_428_app.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1B0A78A64649B55915C0C572 /* Pods_ios_428_app.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
@@ -215,6 +216,7 @@
 		40ADEEE21DDD82E300CE529A /* Enums.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Enums.swift; sourceTree = "<group>"; };
 		40B90DA21E54ECFF00ABB3ED /* Debug.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Debug.swift; sourceTree = "<group>"; };
 		40BC2E921E4EF2B300017253 /* NewPlaygroupAlertController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NewPlaygroupAlertController.swift; sourceTree = "<group>"; };
+		40DF7CD91E68D32B00678692 /* SoundSmartAlertController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SoundSmartAlertController.swift; sourceTree = "<group>"; };
 		40E2E13F1DD26B8200469B4D /* Discipline.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Discipline.swift; sourceTree = "<group>"; };
 		40E2E1411DD3788300469B4D /* CustomActivityIndicatorView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CustomActivityIndicatorView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -243,6 +245,7 @@
 				4024F2201DB7E2E9007819F7 /* PlaygroupsController.swift */,
 				4024F2281DB853F9007819F7 /* ChatPlaygroupController.swift */,
 				40BC2E921E4EF2B300017253 /* NewPlaygroupAlertController.swift */,
+				40DF7CD91E68D32B00678692 /* SoundSmartAlertController.swift */,
 				40790C861E1B659700A779A6 /* SuperlativeAlertController.swift */,
 				4024F2301DB88262007819F7 /* ModalQuestionController.swift */,
 				4072AD951E15FD0E0067046D /* PlaypeersController.swift */,
@@ -700,6 +703,7 @@
 				4072ADA81E1663EB0067046D /* SuperlativeCell.swift in Sources */,
 				409F05F21DD81E1D001B673F /* Upload.swift in Sources */,
 				4064A1B81DAC381300071383 /* InboxController.swift in Sources */,
+				40DF7CDA1E68D32B00678692 /* SoundSmartAlertController.swift in Sources */,
 				40ADEEDD1DDD12D000CE529A /* ShoutFactory.swift in Sources */,
 				40AB80001DB5FDB100492788 /* EditProfileController.swift in Sources */,
 				4038F45D1E62A34D004E4C1D /* VoteAnswerPromptAlertController.swift in Sources */,

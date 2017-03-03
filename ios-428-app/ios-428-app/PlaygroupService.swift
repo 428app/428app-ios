@@ -78,6 +78,21 @@ extension DataService {
         return set1 == set2
     }
     
+    // This is run on app launch to populate sound smarts with more sound smarts from the server
+    func populateSoundSmarts() {
+        self.REF_SOUNDSMARTS.observeSingleEvent(of: .value, with: { snapshot in
+            // Extract all messages and populate the sound smarts dict locally
+            guard let snaps = snapshot.children.allObjects as? [FIRDataSnapshot] else {
+                return
+            }
+            for snap in snaps {
+                if let messageDict = snap.value as? [String: Any], let message = messageDict["message"] as? String {
+                    soundSmarts.append(message)
+                }
+            }
+        })
+    }
+    
     // Observe single playgroup used in ChatPlaygroupController
     func observeSinglePlaygroup(playgroup: Playgroup, completed: @escaping (_ isSuccess: Bool, _ playgroup: Playgroup) -> ()) -> (FIRDatabaseReference, FIRDatabaseHandle) {
         let uid = getStoredUid() == nil ? "" : getStoredUid()!
@@ -243,8 +258,16 @@ extension DataService {
         })
     }
     
+    fileprivate func soundSmart(discipline: String, members: [Profile], ownUid: String) -> String {
+        // Choose a random member's name that's not your own
+        let members_ = members.filter{$0.uid != ownUid}
+        let i = Int(arc4random_uniform(UInt32(members_.count)))
+        let chosenName = members_[i].name
+        return generateSoundSmart(name: chosenName, discipline: discipline)
+    }
+    
     // Add a chat message to the playgroup
-    func addPlaygroupChatMessage(playgroup: Playgroup, text: String, completed: @escaping (_ isSuccess: Bool, _ playgroup: Playgroup?) -> ()) {
+    func addPlaygroupChatMessage(playgroup: Playgroup, text_: String, completed: @escaping (_ isSuccess: Bool, _ playgroup: Playgroup?) -> ()) {
         guard let profile = myProfile else {
             completed(false, nil)
             return
@@ -257,6 +280,11 @@ extension DataService {
         let playgroupTitle = playgroup.title
         let timestampInSeconds = Date().timeIntervalSince1970 // NOTE: This is in seconds, be careful with this one
         let timestampInMilliseconds = timestampInSeconds * 1000 // All Firebase entries are in milliseconds
+        
+        var text = text_
+        if text.trim().isEmpty {
+            text = soundSmart(discipline: playgroupTitle, members: playgroup.members, ownUid: profile.uid)
+        }
         
         // Add to playgroupMessages
         let messageRef: FIRDatabaseReference = REF_PLAYGROUPMESSAGES.child(pid).childByAutoId()

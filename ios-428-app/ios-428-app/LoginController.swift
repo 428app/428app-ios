@@ -104,7 +104,6 @@ class LoginController: UIViewController, UIScrollViewDelegate, CLLocationManager
     // Triggered on clicking Facebook Login button
     func fbLogin() {
         let facebookLogin = FBSDKLoginManager()
-        // TODO: Submit app review to facebook to get permission for user_birthday
         facebookLogin.logIn(withReadPermissions: ["public_profile", "user_friends", "user_birthday"], from: self) { (facebookResult, facebookError) in
             
             if facebookError != nil || facebookResult == nil {

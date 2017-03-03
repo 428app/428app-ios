@@ -56,18 +56,19 @@ class PlaygroupsController: UIViewController, UICollectionViewDelegate, UICollec
         super.viewWillAppear(animated)
         self.navigationController?.navigationBar.barTintColor = GREEN_UICOLOR
         self.tabBarController?.tabBar.isHidden = false
-        DataService.ds.getUserHasNewPlaygroup { (playgroupTitle) in
-            if playgroupTitle != nil {
-                self.showNewPlaygroupAlert(playgroupTitle: playgroupTitle!)
-            }
-        }
     }
     
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         // This code has to be here and not in viewDidAppear, etc.
-        if notCheckedOutTutorial {
+        if notCheckedOutTutorial { // Note that this alert has a low chance of stacking with the new playgroup alert, but if it does stack the new playgroup alert will appear instead as it runs in the completion block of this intro tutorial alert
             self.showIntroTutorialAlert()
+        } else {
+            DataService.ds.getUserHasNewPlaygroup { (playgroupTitle) in
+                if playgroupTitle != nil {
+                    self.showNewPlaygroupAlert(playgroupTitle: playgroupTitle!)
+                }
+            }
         }
     }
     
@@ -100,7 +101,13 @@ class PlaygroupsController: UIViewController, UICollectionViewDelegate, UICollec
         let alertController = TutorialAlertController()
         alertController.modalPresentationStyle = .overFullScreen
         alertController.modalTransitionStyle = .crossDissolve
-        self.present(alertController, animated: true, completion: nil)
+        self.present(alertController, animated: true, completion: {
+            DataService.ds.getUserHasNewPlaygroup { (playgroupTitle) in
+                if playgroupTitle != nil {
+                    self.showNewPlaygroupAlert(playgroupTitle: playgroupTitle!)
+                }
+            }
+        })
     }
     
     // MARK: Firebase

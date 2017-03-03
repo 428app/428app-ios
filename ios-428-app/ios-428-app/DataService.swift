@@ -17,8 +17,8 @@ import FBSDKLoginKit
 // Houses all the Firebase refs for the various extensions (Services) to call
 
 // Root of DB: Either real_db or test_db
-let DB_ROOT = "real_db"
-//let DB_ROOT = "test_db"
+//let DB_ROOT = "real_db"
+let DB_ROOT = "test_db"
 
 class DataService {
 
@@ -34,6 +34,7 @@ class DataService {
     fileprivate var _REF_PLAYGROUPMESSAGES = FIRDatabase.database().reference().child("\(DB_ROOT)/playgroupMessages")
     fileprivate var _REF_QUESTIONS = FIRDatabase.database().reference().child("\(DB_ROOT)/questions")
     fileprivate var _REF_DIDYOUKNOWS = FIRDatabase.database().reference().child("\(DB_ROOT)/didyouknows")
+    fileprivate var _REF_SOUNDSMARTS = FIRDatabase.database().reference().child("\(DB_ROOT)/soundsmarts")
     fileprivate var _REF_QUEUE = FIRDatabase.database().reference().child("\(DB_ROOT)/queue/tasks") // Queue for notifications to be sent out
     
     var REF_BASE: FIRDatabaseReference {
@@ -96,6 +97,12 @@ class DataService {
         }
     }
     
+    var REF_SOUNDSMARTS: FIRDatabaseReference {
+        get {
+            return _REF_SOUNDSMARTS
+        }
+    }
+    
     var REF_QUEUE: FIRDatabaseReference {
         get {
             return _REF_QUEUE
@@ -114,6 +121,7 @@ class DataService {
         _REF_PLAYGROUPMESSAGES.removeAllObservers()
         _REF_QUESTIONS.removeAllObservers()
         _REF_DIDYOUKNOWS.removeAllObservers()
+        _REF_SOUNDSMARTS.removeAllObservers()
         _REF_QUEUE.removeAllObservers()
     }
 }

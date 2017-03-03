@@ -309,10 +309,6 @@ class SuperlativeController: UIViewController, UICollectionViewDelegate, UIColle
             hideLoader()
             if isSuccess {
                 self.toggleViews(superlativeType: SuperlativeType.VOTED)
-                
-                // TODO: Tweak share frame
-//                // Hack: Increase share frame
-//                self.shareContainer.frame = CGRect(x: 0, y: self.navigationController!.navigationBar.frame.size.height + 15.0, width: UIScreen.main.bounds.width, height: UIScreen.main.bounds.height)
             } else {
                 showErrorAlert(vc: self, title: "Error", message: "There was a problem submitting your votes.\nPlease try again.")
             }

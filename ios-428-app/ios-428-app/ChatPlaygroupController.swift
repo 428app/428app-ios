@@ -44,9 +44,11 @@ class ChatPlaygroupController: UIViewController, UIGestureRecognizerDelegate, UI
     let interactor = Interactor() // Used for transitioning to and from ProfileController
     
     var playgroup: Playgroup!
+    var hasSoundSmart = false
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        self.initSoundSmart()
         self.extendedLayoutIncludesOpaqueBars = true
         self.setupNavigationBar() // This must come before setupFirebase
         self.setupFirebase()
@@ -99,6 +101,7 @@ class ChatPlaygroupController: UIViewController, UIGestureRecognizerDelegate, UI
                     btn.isEnabled = false
                 }
             }
+            self.sendButton.isEnabled = false
             self.navigationItem.titleView?.isUserInteractionEnabled = false
             // Small hack to make it not show up when the load time is less than 2 seconds
             self.activityIndicator.isHidden = true
@@ -112,6 +115,7 @@ class ChatPlaygroupController: UIViewController, UIGestureRecognizerDelegate, UI
             self.animateQuestionBanner()
             self.collectionView.isScrollEnabled = true
             self.questionBanner.isUserInteractionEnabled = true
+            self.enableSendButton(yes: !self.inputTextView.text.trim().isEmpty)
             self.navigationItem.titleView?.isUserInteractionEnabled = true
             if let btns = self.navigationItem.rightBarButtonItems {
                 for btn in btns {
@@ -555,14 +559,53 @@ class ChatPlaygroupController: UIViewController, UIGestureRecognizerDelegate, UI
         self.textViewHeight = 0.0
         self.inputContainerHeightConstraint.constant = 45.0
         self.topConstraintForCollectionView.constant = TOP_GAP
-        self.sendButton.isEnabled = false
         inputTextView.text = nil
         self.placeholderLabel.isHidden = false
+        enableSendButton(yes: false)
+    }
+    
+    fileprivate func initSoundSmart() {
+        // Certain chance to activate soundSmart
+        let diceRoll = Int(arc4random_uniform(6) + 1)
+        hasSoundSmart = diceRoll > 3 // 50% chance of sound smart being activated
+        
+        // Do not show sound smart when there are other alerts present
+        if self.playgroup.hasSuperlatives && self.playgroup.superlativeType == SuperlativeType.NOTVOTED {
+            hasSoundSmart = false
+        }
+        
+        if hasSoundSmart && hasSoundSmartAlert { // This alert is only shown once on app launch
+            showSoundSmartAlert()
+        }
+    }
+    
+    fileprivate func enableSendButton(yes: Bool) {
+        if yes {
+            self.sendButton.setTitle("Send", for: .normal)
+            self.sendButton.isEnabled = true
+        } else {
+            if self.hasSoundSmart {
+                self.sendButton.setTitle("😈", for: .normal)
+                self.sendButton.isEnabled = true
+            } else {
+                self.sendButton.setTitle("Send", for: .normal)
+                self.sendButton.isEnabled = false
+            }
+        }
+    }
+    
+    fileprivate func showSoundSmartAlert() {
+        let alertController = SoundSmartAlertController()
+        alertController.modalPresentationStyle = .overFullScreen
+        alertController.modalTransitionStyle = .crossDissolve
+        self.present(alertController, animated: true, completion: {
+            hasSoundSmartAlert = false
+        })
     }
     
     func textViewDidChange(_ textView: UITextView) {
         // Disable send and show placeholder when there is no text
-        self.sendButton.isEnabled = !textView.text.trim().isEmpty // Disallow send when only newlines and spaces
+        self.enableSendButton(yes: !textView.text.trim().isEmpty) // Disallow send when only newlines and spaces
         self.placeholderLabel.isHidden = !textView.text.isEmpty
         
         // Expansion of text view upon newline
@@ -613,12 +656,18 @@ class ChatPlaygroupController: UIViewController, UIGestureRecognizerDelegate, UI
     
     fileprivate lazy var sendButton: UIButton = {
         let button = UIButton(type: .system)
-        button.setTitle("Send", for: .normal)
+        if self.hasSoundSmart {
+            button.setTitle("😈", for: .normal)
+            button.isEnabled = true
+        } else {
+            button.setTitle("Send", for: .normal)
+            button.isEnabled = false
+        }
         button.setTitleColor(GREEN_UICOLOR, for: .normal)
         button.setTitleColor(GRAY_UICOLOR, for: .disabled)
-        button.titleLabel?.font = FONT_HEAVY_LARGE
+        button.titleLabel?.font = UIFont.boldSystemFont(ofSize: 17.0)
         button.addTarget(self, action: #selector(handleSend), for: .touchUpInside)
-        button.isEnabled = false
+
         return button
     }()
     
@@ -655,7 +704,7 @@ class ChatPlaygroupController: UIViewController, UIGestureRecognizerDelegate, UI
         
         messageInputContainerView.addConstraintsWithFormat("H:|-5-[v0][v1(60)]-5-|", views: inputTextView, sendButton)
         messageInputContainerView.addConstraintsWithFormat("V:|-5-[v0]|", views: inputTextView)
-        messageInputContainerView.addConstraintsWithFormat("V:[v0]-7-|", views: sendButton)
+        messageInputContainerView.addConstraintsWithFormat("V:[v0]-6-|", views: sendButton)
         messageInputContainerView.addConstraintsWithFormat("H:|[v0]|", views: topBorderView)
         messageInputContainerView.addConstraintsWithFormat("V:|[v0(0.5)]", views: topBorderView)
         
@@ -671,10 +720,13 @@ class ChatPlaygroupController: UIViewController, UIGestureRecognizerDelegate, UI
     
     func handleSend() {
         if let text = inputTextView.text {
+            if text.trim().isEmpty && self.hasSoundSmart { // Sound smart used
+                // Flip the sound smart, and disable sound smart once a sound smart has been sent
+                self.hasSoundSmart = false
+            }
             self.resetInputContainer()
-            DataService.ds.addPlaygroupChatMessage(playgroup: self.playgroup, text: text.trim(), completed: { (isSuccess, updatedPlaygroup) in
+            DataService.ds.addPlaygroupChatMessage(playgroup: self.playgroup, text_: text.trim(), completed: { (isSuccess, updatedPlaygroup) in
                 if !isSuccess || updatedPlaygroup == nil {
-                    
                     log.error("[Error] Message failed to be posted")
                     showErrorAlert(vc: self, title: "Error", message: "Could not send message. Please try again.")
                     return
