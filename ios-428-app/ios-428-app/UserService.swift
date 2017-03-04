@@ -244,6 +244,7 @@ extension DataService {
         }
         
         let ref = self.REF_USERS.child(uid_)
+        ref.keepSynced(true) // This keep synced is very important
         
         ref.observeSingleEvent(of: .value, with: { snapshot in
             if snapshot.exists() {

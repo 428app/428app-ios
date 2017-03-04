@@ -34,7 +34,8 @@ class SuperlativeAlertController: UIViewController {
         label.text = "It's time to vote for superlatives!"
         label.font = FONT_MEDIUM_LARGE
         label.textAlignment = .center
-        label.minimumScaleFactor = 0.6
+        label.adjustsFontSizeToFitWidth = true
+        label.minimumScaleFactor = 0.8
         label.numberOfLines = 1
         return label
     }()

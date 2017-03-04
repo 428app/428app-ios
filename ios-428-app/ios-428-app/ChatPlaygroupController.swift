@@ -111,6 +111,11 @@ class ChatPlaygroupController: UIViewController, UIGestureRecognizerDelegate, UI
                 }
             })
         } else {
+            // Show superlative alert when there are superlatives and user has not voted
+            if self.playgroup.hasSuperlatives && self.playgroup.superlativeType == SuperlativeType.NOTVOTED {
+                self.showSuperlativeAlert()
+            }
+            
             self.activityIndicator.stopAnimating()
             self.animateQuestionBanner()
             self.collectionView.isScrollEnabled = true
@@ -143,10 +148,6 @@ class ChatPlaygroupController: UIViewController, UIGestureRecognizerDelegate, UI
             self.playgroup.hasSuperlatives = updatedPlaygroup.hasSuperlatives
             self.playgroup.didYouKnowId = updatedPlaygroup.didYouKnowId
             
-            // Show superlative alert when there are superlatives and user has not voted
-            if self.playgroup.hasSuperlatives && self.playgroup.superlativeType == SuperlativeType.NOTVOTED {
-                self.showSuperlativeAlert()
-            }
             if self.messages.isEmpty && !playgroupHasBeenInit {
                 self.initMessages()
             }
@@ -843,7 +844,7 @@ class ChatPlaygroupController: UIViewController, UIGestureRecognizerDelegate, UI
     
     // MARK: Collection view
     
-    fileprivate let collectionView: UICollectionView = {
+    open let collectionView: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
         let collectionView = UICollectionView(frame: UIScreen.main.bounds, collectionViewLayout: layout)
         collectionView.backgroundColor = UIColor.white

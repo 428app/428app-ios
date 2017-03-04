@@ -151,6 +151,8 @@ class VoteCell: BaseTableViewCell {
         label.font = FONT_HEAVY_LARGE
         label.textColor = UIColor.darkGray
         label.textAlignment = .left
+        label.adjustsFontSizeToFitWidth = true
+        label.minimumScaleFactor = 0.8
         return label
     }()
     
@@ -167,7 +169,7 @@ class VoteCell: BaseTableViewCell {
         addSubview(nameLbl)
         addSubview(dividerView)
         
-        addConstraintsWithFormat("H:|-8-[v0(60)]-8-[v1]", views: profileImageView, nameLbl)
+        addConstraintsWithFormat("H:|-8-[v0(60)]-8-[v1]|", views: profileImageView, nameLbl)
         addConstraintsWithFormat("V:|-8-[v0(60)]-8-[v1(0.5)]|", views: profileImageView, dividerView)
         addConstraintsWithFormat("H:|-8-[v0]-8-|", views: dividerView)
         addConstraintsWithFormat("V:[v0(30)]", views: nameLbl)

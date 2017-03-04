@@ -19,13 +19,13 @@ class MeController: UIViewController, UIGestureRecognizerDelegate, UIScrollViewD
         self.navigationItem.title = "Me"
         self.setupViews()
         self.loadShareFirst()
-        self.loadData()
     }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         tabBarController?.tabBar.isHidden = false
         self.registerObservers()
+        self.loadData() // Load data has to be here
     }
     
     override func viewDidLayoutSubviews() {

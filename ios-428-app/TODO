@@ -1,11 +1,6 @@
 TODO:
 IOS UPDATES:
 
-+ Share to unlock superlatives: Change message to prompt user to consider saying you're using 428
-+ Set up alert message for a user who does not get a playgroup
-
-
-
 
 SERVER ANALYTICS CODE TO SEE WHAT'S GOING ON
 + IMPROVEMENT: Write manual code to scan the whole database for users who still do not have classrooms, and see why

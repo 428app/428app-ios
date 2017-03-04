@@ -17,6 +17,8 @@ class SuperlativeCell: BaseCollectionCell {
         let label = UILabel()
         label.font = FONT_HEAVY_XLARGE
         label.textColor = GREEN_UICOLOR
+        label.adjustsFontSizeToFitWidth = true
+        label.minimumScaleFactor = 0.8
         label.textAlignment = .center
         return label
     }()
@@ -33,6 +35,8 @@ class SuperlativeCell: BaseCollectionCell {
         let label = UILabel()
         label.font = FONT_HEAVY_LARGE
         label.textColor = UIColor.darkGray
+        label.adjustsFontSizeToFitWidth = true
+        label.minimumScaleFactor = 0.8
         label.textAlignment = .left
         return label
     }()
@@ -64,7 +68,7 @@ class SuperlativeCell: BaseCollectionCell {
         profileContainer.translatesAutoresizingMaskIntoConstraints = false
         containerView.addSubview(profileContainer)
         containerView.addConstraint(NSLayoutConstraint(item: profileContainer, attribute: .centerX, relatedBy: .equal, toItem: containerView, attribute: .centerX, multiplier: 1.0, constant: 0))
-        profileContainer.addConstraintsWithFormat("H:|[v0(80)]-5-[v1]|", views: profileImageView, nameLbl)
+        profileContainer.addConstraintsWithFormat("H:|[v0(80)]-5-[v1(100)]|", views: profileImageView, nameLbl)
         profileContainer.addConstraintsWithFormat("V:|[v0(80)]|", views: profileImageView)
         profileContainer.addConstraintsWithFormat("V:|-30-[v0(30)]", views: nameLbl)
         

@@ -120,7 +120,7 @@ class SuperlativeController: UIViewController, UICollectionViewDelegate, UIColle
         lbl.font = FONT_HEAVY_XLARGE
         lbl.textColor = GREEN_UICOLOR
         lbl.textAlignment = .center
-        lbl.text = "Did you know?"
+        lbl.text = "Here's a cool video:"
         return lbl
     }()
     
@@ -192,10 +192,25 @@ class SuperlativeController: UIViewController, UICollectionViewDelegate, UIColle
     
     fileprivate let instructionsLbl: UILabel = {
         let label = UILabel()
-        label.font = FONT_MEDIUM_SMALL
+        label.font = FONT_MEDIUM_MID
         label.textColor = UIColor.darkGray
         label.textAlignment = .center
-        label.text = "Share to unlock results!"
+        label.text = "Share this video to view results"
+        label.adjustsFontSizeToFitWidth = true
+        label.minimumScaleFactor = 0.8
+        label.numberOfLines = 1
+        return label
+    }()
+    
+    fileprivate let helpUsLbl: UILabel = {
+        let label = UILabel()
+        label.font = FONT_MEDIUM_MID
+        let paragraphStyle = NSMutableParagraphStyle()
+        paragraphStyle.lineSpacing = 6
+        paragraphStyle.alignment = .center
+        let str = NSMutableAttributedString(string: "If you like the video, tag us @428 in your share! We deeply appreciate that.", attributes: [NSForegroundColorAttributeName: GREEN_UICOLOR, NSParagraphStyleAttributeName: paragraphStyle])
+        label.attributedText = str
+        label.numberOfLines = 0
         return label
     }()
     
@@ -233,7 +248,7 @@ class SuperlativeController: UIViewController, UICollectionViewDelegate, UIColle
     }
     
     fileprivate lazy var shareContainer: UIView = {
-        let shareView = UIView(frame: CGRect(x: 0, y: UIScreen.main.bounds.height * 0.2, width: UIScreen.main.bounds.width, height: UIScreen.main.bounds.height * 0.65))
+        let shareView = UIView(frame: CGRect(x: 0, y: UIScreen.main.bounds.height * 0.1, width: UIScreen.main.bounds.width, height: UIScreen.main.bounds.height * 0.65))
         shareView.isUserInteractionEnabled = true
         return shareView
     }()
@@ -262,19 +277,21 @@ class SuperlativeController: UIViewController, UICollectionViewDelegate, UIColle
         instructionsContainer.addSubview(instructionsIcon)
         instructionsContainer.addSubview(instructionsLbl)
         instructionsContainer.translatesAutoresizingMaskIntoConstraints = false
-        instructionsContainer.addConstraintsWithFormat("H:|[v0(14)]-4-[v1]|", views: instructionsIcon, instructionsLbl)
-        instructionsContainer.addConstraintsWithFormat("V:|[v0(14)]", views: instructionsIcon)
-        instructionsContainer.addConstraintsWithFormat("V:|-1-[v0(14)]|", views: instructionsLbl)
+        instructionsContainer.addConstraintsWithFormat("H:|[v0(18)]-4-[v1]|", views: instructionsIcon, instructionsLbl)
+        instructionsContainer.addConstraintsWithFormat("V:|[v0(18)]", views: instructionsIcon)
+        instructionsContainer.addConstraintsWithFormat("V:|-1-[v0(18)]|", views: instructionsLbl)
         shareContainer.addSubview(instructionsContainer)
         shareContainer.addConstraint(NSLayoutConstraint(item: instructionsContainer, attribute: .centerX, relatedBy: .equal, toItem: shareContainer, attribute: .centerX, multiplier: 1.0, constant: 0.0))
         
         shareContainer.addSubview(didYouKnowContainer)
         shareContainer.addSubview(fbButton)
         shareContainer.addSubview(instructionsContainer)
+        shareContainer.addSubview(helpUsLbl)
         
         shareContainer.addConstraintsWithFormat("H:|-12-[v0]-12-|", views: didYouKnowContainer)
         shareContainer.addConstraintsWithFormat("H:|-18-[v0]-18-|", views: fbButton)
-        shareContainer.addConstraintsWithFormat("V:|-12-[v0]-12-[v1(40)]-8-[v2(40)]", views: didYouKnowContainer, fbButton, instructionsContainer)
+        shareContainer.addConstraintsWithFormat("V:|-12-[v0]-12-[v1(40)]-8-[v2(20)]-12-[v3(60)]", views: didYouKnowContainer, fbButton, instructionsContainer, helpUsLbl)
+        shareContainer.addConstraintsWithFormat("H:|-18-[v0]-18-|", views: helpUsLbl)
         
         view.addSubview(shareContainer)
     }
