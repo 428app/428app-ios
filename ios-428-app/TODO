@@ -1,17 +1,4 @@
 TODO:
-IOS UPDATES:
-
-+ Contact form from Settings
-
-+ Setup demo app state in real_db
-    - FB test user account
-    - User in all playgroups with 3 other test users (those test users will have a last seen of a long time ago)
-    - All playgroups will have superlatives enabled too
-+ Take video of how the app works through demo user
-
-+ Design screenshots
-+ Take preview video
-
 
 
 SERVER ANALYTICS CODE TO SEE WHAT'S GOING ON
