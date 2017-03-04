@@ -8,8 +8,9 @@
 
 import Foundation
 import UIKit
+import MessageUI
 
-class SettingsController: UIViewController, UITableViewDelegate, UITableViewDataSource {
+class SettingsController: UIViewController, UITableViewDelegate, UITableViewDataSource, MFMailComposeViewControllerDelegate {
     
     fileprivate let CELL_ID = "settingCell"
     fileprivate lazy var tableView: UITableView = {
@@ -121,7 +122,7 @@ class SettingsController: UIViewController, UITableViewDelegate, UITableViewData
     
     fileprivate var settings: [[Setting]] = [
         [Setting(text: "Daily alert", type: .toggle, isOn: true),  Setting(text: "Private messages", type: .toggle, isOn: true), Setting(text: "Playgroup messages", type: .toggle, isOn: true), Setting(text: "In-app notifications", type: .toggle, isLastCell: true, isOn: true)],
-        [Setting(text: "428 Website", type: .link), Setting(text: "428 Facebook", type: .link), Setting(text: "Rate us", type: .link, isLastCell: true)],
+        [Setting(text: "Contact us", type: .link), Setting(text: "428 Website", type: .link), Setting(text: "428 Facebook", type: .link), Setting(text: "Rate us", type: .link, isLastCell: true)],
         [Setting(text: "Privacy Policy", type: .link, isLastCell: true)],
         [Setting(text: "Log out", type: .center, isLastCell: true)],
         [Setting(text: "Version 1.0.0", type: .nobg, isLastCell: true)]]
@@ -155,6 +156,8 @@ class SettingsController: UIViewController, UITableViewDelegate, UITableViewData
         let setting = settings[indexPath.section][indexPath.row]
         if setting.text == "Log out" {
             self.logout()
+        } else if setting.text == "Contact us" {
+            self.sendEmail()
         } else if setting.text == "428 Website" {
             logAnalyticsEvent(key: kEventVisitWebsite)
             // NOTE: Do not open web view controller for this, because sometimes if our website flips to non-https it is not secure
@@ -223,5 +226,40 @@ class SettingsController: UIViewController, UITableViewDelegate, UITableViewData
         let setting = settings[indexPath.section][indexPath.row]
         cell.configureCell(settingObj: setting)
         return cell
+    }
+    
+    // MARK: Send email
+    
+    func sendEmail() {
+        if MFMailComposeViewController.canSendMail() {
+            let mail = MFMailComposeViewController()
+            mail.mailComposeDelegate = self
+            mail.setToRecipients(["428app@gmail.com"])
+            // Generate 2 random digits to make uid not so obvious
+            let random1 = Int(arc4random_uniform(8) + 1)
+            let random2 = Int(arc4random_uniform(8) + 1)
+            if myProfile != nil {
+                mail.setSubject("Email sent from \(myProfile!.uid)\(random1)\(random2)")
+            }
+            mail.setMessageBody("Hey 428,\n", isHTML: false)
+            present(mail, animated: true)
+        } else {
+            showErrorAlert(vc: self, title: "Error", message: "It seems your phone is not configured to send mail. No problem! To contact us directly, drop us an email at 428app@gmail.com.")
+        }
+    }
+    
+    func mailComposeController(_ controller: MFMailComposeViewController, didFinishWith result: MFMailComposeResult, error: Error?) {
+        controller.dismiss(animated: true, completion: {
+            switch result {
+            case .cancelled:
+                break
+            case .saved:
+                break
+            case .sent:
+                showErrorAlert(vc: self, title: "Thank you.", message: "We will get back to you as soon as possible, we promise. If you have further enquiries, please leave a message on our Facebook page.")
+            case .failed:
+                showErrorAlert(vc: self, title: "Error", message: "It seems your phone is not configured to send mail. No problem! To contact us directly, drop us an email at 428app@gmail.com.")
+            }
+        })
     }
 }

@@ -59,7 +59,7 @@ class ProfileController: UIViewController, UIGestureRecognizerDelegate, UIScroll
         return true
     }
     
-    // MARK: Views 0 - Close button, Profile image, cover image
+    // MARK: Views 0 - Close button, Profile image, cover image, flag button
     
     fileprivate lazy var coverImageView: UIImageView = {
         let imageView = UIImageView()
@@ -394,7 +394,7 @@ class ProfileController: UIViewController, UIGestureRecognizerDelegate, UIScroll
         containerView.addConstraint(NSLayoutConstraint(item: profileImageView, attribute: .centerX, relatedBy: .equal, toItem: containerView, attribute: .centerX, multiplier: 1.0, constant: 0))
 
         containerView.addConstraintsWithFormat("V:|-35-[v0(180)]", views: profileImageView)
-        
+
         loadData()
         
         // Add no playgroups lbl to collection views in case there are no playgroups
