@@ -48,11 +48,20 @@ extension DataService {
         }
     }
     
+    func setNewUserCreatedTime() {
+        let uid_ = getStoredUid()
+        if (uid_ == nil) {
+            return
+        }
+        let timestampInMilliseconds = Date().timeIntervalSince1970 * 1000
+        REF_USERS.child("\(uid_!)/timeCreated").setValue(timestampInMilliseconds)
+    }
+    
     // Called in LoginController to create new user or log existing user in
     // Note: Only mostly updates Facebook details, other details such as pushToken and location are being updated by other calls
     func loginFirebaseUser(fbid: String, name: String, pictureUrl: String, timezone: Double, birthday: String?, completed: @escaping (_ isSuccess: Bool, _ isFirstTimeUser: Bool) -> ()) {
         let uid_ = getStoredUid()
-        if (uid_ == nil) {
+        if uid_ == nil {
             // This is an error, before calling loginFirebase should already have uid saved
             completed(false, true)
             return

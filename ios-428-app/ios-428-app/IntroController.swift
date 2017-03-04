@@ -155,6 +155,7 @@ class IntroController: UIViewController, UITextFieldDelegate, UIPickerViewDelega
                 showErrorAlert(vc: self, title: "Unable to proceed", message: "We apologize. We seem to be unable to log you in at this time. Please try again later.")
             } else {
                 log.info("Going into the app")
+                DataService.ds.setNewUserCreatedTime()
                 justFinishedIntro = true
                 setHasToFillInfo(hasToFill: false)
                 self.dismiss(animated: true, completion: nil)
