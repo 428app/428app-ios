@@ -19,6 +19,7 @@ class MeController: UIViewController, UIGestureRecognizerDelegate, UIScrollViewD
         self.navigationItem.title = "Me"
         self.setupViews()
         self.loadShareFirst()
+        self.setupTabBarIcons() // As this is the landing page for an app launch, tab bar notifications will be nested here
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -39,6 +40,26 @@ class MeController: UIViewController, UIGestureRecognizerDelegate, UIScrollViewD
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillAppear(animated)
         self.unregisterObservers()
+    }
+    
+    fileprivate func setupTabBarIcons() {
+        DataService.ds.observeNewInboxForTabBar { (count) in
+            if #available(iOS 10.0, *) {
+                self.tabBarController?.tabBar.items?.last?.badgeColor = RED_UICOLOR
+            }
+            self.tabBarController?.tabBar.items?.last?.badgeValue = count > 0 ? "\(count)" : nil
+        }
+        
+        DataService.ds.observeNewPlaygroupForTabBar { (shouldShowIcon) in
+            if let tabController = self.tabBarController as? CustomTabBarController, let tabItems = tabController.tabBar.items {
+                if tabItems.count > 2 { // Must have at least 3 tabs, although we are accessing the second tab
+                    if #available(iOS 10.0, *) {
+                        tabItems[1].badgeColor = RED_UICOLOR
+                    }
+                    tabItems[1].badgeValue = shouldShowIcon ? "!!" : nil
+                }
+            }
+        }
     }
     
     // This is loaded first upon view appearing so there would be no wait time when user clicks Share on FB on other parts of the app

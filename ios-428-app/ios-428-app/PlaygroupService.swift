@@ -655,4 +655,30 @@ extension DataService {
             // NOTE: We do not return here, but also note that there are no more completed calls below
         }
     }
+    
+    // MARK: Global observers
+    
+    func observeNewPlaygroupForTabBar(completed: @escaping (_ shouldShowIcon: Bool) -> ()) {
+        guard let uid = getStoredUid() else {
+            completed(false)
+            return
+        }
+        // Set up individual observers for each inbox
+        REF_USERS.child("\(uid)/playgroups").observe(.value, with: { snapshot in
+            guard let snaps = snapshot.children.allObjects as? [FIRDataSnapshot] else {
+                completed(false)
+                return
+            }
+            for snap in snaps {
+                if let snapDict = snap.value as? [String: Any], let hasUpdates = snapDict["hasUpdates"] as? Bool {
+                    if hasUpdates {
+                        completed(true)
+                        return
+                    }
+                }
+            }
+            completed(false)
+            return
+        })
+    }
 }

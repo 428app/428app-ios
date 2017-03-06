@@ -282,4 +282,44 @@ extension DataService {
         }
     }
     
+    // MARK: Global observers
+    
+    // This is being called in AppDelegate to observe changes in updates globally
+    func observeNewInboxForTabBar(completed: @escaping (_ count: Int) -> ()) {
+        guard let uid = getStoredUid() else {
+            completed(0)
+            return
+        }
+        // Set up individual observers for each inbox
+        REF_USERS.child("\(uid)/inbox").observeSingleEvent(of: .value, with: { inboxSnaps in
+            guard let snaps = inboxSnaps.children.allObjects as? [FIRDataSnapshot] else {
+                completed(0)
+                return
+            }
+            
+            var inboxIdToShouldShow = [String: Bool]()
+            for snap in snaps {
+                let uid2 = snap.key
+                // Set up observer for this inbox
+                let inboxId = self.getInboxId(uid1: uid, uid2: uid2)
+                
+                self.REF_INBOX.child("\(inboxId)/hasNew:\(uid)").observe(.value, with: { hasNewSnap in
+                    guard let hasNew = hasNewSnap.value as? Bool else {
+                        return
+                    }
+                    inboxIdToShouldShow[inboxId] = hasNew
+                    var count = 0
+                    // Check all inbox ids to see if should show
+                    for (_, shouldShow) in inboxIdToShouldShow {
+                        if shouldShow == true {
+                            count += 1
+                        }
+                    }
+                    completed(count)
+                    return
+                })
+            }
+        })
+    }
+    
 }

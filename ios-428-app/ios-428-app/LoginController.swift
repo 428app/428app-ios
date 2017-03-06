@@ -16,9 +16,6 @@ import CoreLocation
 
 class LoginController: UIViewController, UIScrollViewDelegate, CLLocationManagerDelegate {
     
-    // TODO: Change this to 50 at launch
-    fileprivate let MINIMAL_FRIEND_COUNT = 0 // Minimal number of FB friends required to authenticate 'real' user
-    
     override func viewDidLoad() {
         super.viewDidLoad()
         self.view.backgroundColor = GRAY_UICOLOR
@@ -104,7 +101,7 @@ class LoginController: UIViewController, UIScrollViewDelegate, CLLocationManager
     // Triggered on clicking Facebook Login button
     func fbLogin() {
         let facebookLogin = FBSDKLoginManager()
-        facebookLogin.logIn(withReadPermissions: ["public_profile", "user_friends", "user_birthday"], from: self) { (facebookResult, facebookError) in
+        facebookLogin.logIn(withReadPermissions: ["public_profile", "user_birthday"], from: self) { (facebookResult, facebookError) in
             
             if facebookError != nil || facebookResult == nil {
                 log.error("[Error] Facebook login failed. Error \(facebookError)")
@@ -133,16 +130,6 @@ class LoginController: UIViewController, UIScrollViewDelegate, CLLocationManager
                             hideLoader()
                             showErrorAlert(vc: self, title: "Could not sign in", message: "There was a problem syncing with Facebook. Please check back again later.")
                             return
-                        }
-                        
-                        // Check if user provides friend count so we can check if she has minimum number of friends; if not we let users bypass
-                        if let friendCount = (result as NSDictionary).value(forKeyPath: "friends.summary.total_count") as? Int {
-                            if friendCount < self.MINIMAL_FRIEND_COUNT {
-                                hideLoader()
-                                log.info("[Info] User does not have enough FB friends")
-                                showErrorAlert(vc: self, title: "Oops", message: "Hmm... we suspect you're not using your genuine Facebook account. Kindly login using your real account. If you feel that that's a problem, contact us at 428app@gmail.com.")
-                                return
-                            }
                         }
                         
                         // Get birthday if it is allowed

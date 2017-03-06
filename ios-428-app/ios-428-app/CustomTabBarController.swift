@@ -43,3 +43,14 @@ class CustomTabBarController: UITabBarController {
         viewControllers = [meNavController, playgroupsNavController, inboxNavController]
     }
 }
+
+func setInboxBadge(vc: UIViewController, hasNew: Bool) {
+    if #available(iOS 10.0, *) {
+        vc.tabBarController?.tabBar.items?.last?.badgeColor = RED_UICOLOR
+    }
+    if hasNew {
+        vc.tabBarController?.tabBar.items?.last?.badgeValue = "!"
+    } else {
+        vc.tabBarController?.tabBar.items?.last?.badgeValue = nil
+    }
+}

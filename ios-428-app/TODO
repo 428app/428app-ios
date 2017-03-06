@@ -1,11 +1,13 @@
 TODO:
 
 
-SERVER ANALYTICS CODE TO SEE WHAT'S GOING ON
-+ IMPROVEMENT: Write manual code to scan the whole database for users who still do not have classrooms, and see why
+V13:
++ Time created for user signup
++ Notification red dot on inbox/classroom
++ Removed user friends from FB login permissions
 
 V12:
-
++ App store review
 
 V11:
 + SoundSmart button that sometimes appear in playgroups
