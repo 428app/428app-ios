@@ -193,6 +193,14 @@ class VideoAnswerCell: BaseTableViewCell, UIWebViewDelegate {
         return label
     }()
     
+    fileprivate let questionImg: UIImageView = {
+       let imageView = UIImageView()
+        imageView.contentMode = .scaleAspectFill
+        imageView.clipsToBounds = true
+        imageView.autoresizesSubviews = true
+        return imageView
+    }()
+    
     fileprivate let answerLbl: UILabel = {
         let label = UILabel()
         label.text = "Answer"
@@ -332,6 +340,7 @@ class VideoAnswerCell: BaseTableViewCell, UIWebViewDelegate {
         containerView.layer.shadowOffset = CGSize(width: 0.0, height: 2.0)
         
         containerView.addSubview(questionLbl)
+        containerView.addSubview(questionImg)
         containerView.addSubview(questionText)
         containerView.addSubview(answerLbl)
         containerView.addSubview(answerVideo)
@@ -346,8 +355,9 @@ class VideoAnswerCell: BaseTableViewCell, UIWebViewDelegate {
         voteContainer.addConstraintsWithFormat("V:|[v0]|", views: likeBtn)
         containerView.addSubview(voteContainer)
         
-        containerView.addConstraintsWithFormat("V:|-8-[v0(20)]-8-[v1]-8-[v2(20)]-8-[v3(250)]-8-[v4(40)]-8-[v5(40)]-8-|", views: questionLbl, questionText,  answerLbl, answerVideo, fbButton, voteContainer)
+        containerView.addConstraintsWithFormat("V:|-8-[v0(20)]-8-[v1(200)]-8-[v2]-8-[v3(20)]-8-[v4(250)]-8-[v5(40)]-8-[v6(40)]-8-|", views: questionLbl, questionImg, questionText, answerLbl, answerVideo, fbButton, voteContainer)
         containerView.addConstraintsWithFormat("H:|-8-[v0]-8-|", views: questionLbl)
+        containerView.addConstraintsWithFormat("H:|-8-[v0]-8-|", views: questionImg)
         containerView.addConstraintsWithFormat("H:|-8-[v0]-8-|", views: questionText)
         containerView.addConstraintsWithFormat("H:|-8-[v0]-8-|", views: answerLbl)
         containerView.addConstraintsWithFormat("H:|-8-[v0]-8-|", views: answerVideo)
@@ -370,9 +380,30 @@ class VideoAnswerCell: BaseTableViewCell, UIWebViewDelegate {
         addConstraintsWithFormat("V:|-8-[v0]-8-|", views: containerView)
     }
     
+    fileprivate func loadImage() {
+        let imageUrlString = self.question.imageName
+        self.questionImg.af_cancelImageRequest()
+        guard let imageUrl = URL(string: imageUrlString) else {
+            self.questionImg.image = #imageLiteral(resourceName: "placeholder-image")
+            return
+        }
+        
+        self.questionImg.af_setImage(withURL: imageUrl, placeholderImage: #imageLiteral(resourceName: "placeholder-image"), filter: nil, progress: nil, imageTransition: .crossDissolve(0.5), runImageTransitionIfCached: false, completion: { imageResponse in
+            // Image finished downloading, so cache it - this is mostly for push notifications, as internally af_setImage already has its own cache
+            if let imageData = imageResponse.data, let image = UIImage(data: imageData) {
+                imageCache.add(image, withIdentifier: imageUrl.absoluteString)
+            }
+        })
+    }
+    
     func configureCell(questionObj: Question) {
         self.question = questionObj
         questionText.text = question.question
+        
+        // Download question image
+        self.loadImage()
+        
+        // Load answer
         let answerLink: String = question.answer.trim() + "?&playsinline=1"
         self.answerVideo.stopLoading()
         let videoWidth = UIScreen.main.bounds.width - 8.0 * 4 // Double margin from outside cell and within cell
@@ -404,6 +435,14 @@ class AnswerCell: BaseTableViewCell {
         label.textColor = GREEN_UICOLOR
         label.textAlignment = .left
         return label
+    }()
+    
+    fileprivate let questionImg: UIImageView = {
+        let imageView = UIImageView()
+        imageView.contentMode = .scaleAspectFill
+        imageView.clipsToBounds = true
+        imageView.autoresizesSubviews = true
+        return imageView
     }()
     
     fileprivate let questionText: UILabel = {
@@ -498,6 +537,7 @@ class AnswerCell: BaseTableViewCell {
         containerView.layer.shadowOffset = CGSize(width: 0.0, height: 2.0)
         
         containerView.addSubview(questionLbl)
+        containerView.addSubview(questionImg)
         containerView.addSubview(questionText)
         containerView.addSubview(answerLbl)
         containerView.addSubview(answerText)
@@ -511,8 +551,9 @@ class AnswerCell: BaseTableViewCell {
         voteContainer.addConstraintsWithFormat("V:|[v0]|", views: likeBtn)
         containerView.addSubview(voteContainer)
         
-        containerView.addConstraintsWithFormat("V:|-8-[v0(20)]-8-[v1]-8-[v2(20)]-8-[v3]-8-[v4(40)]-8-|", views: questionLbl, questionText,  answerLbl, answerText, voteContainer)
+        containerView.addConstraintsWithFormat("V:|-8-[v0(20)]-8-[v1(200)]-8-[v2]-8-[v3(20)]-8-[v4]-8-[v5(40)]-8-|", views: questionLbl, questionImg, questionText,  answerLbl, answerText, voteContainer)
         containerView.addConstraintsWithFormat("H:|-8-[v0]-8-|", views: questionLbl)
+        containerView.addConstraintsWithFormat("H:|-8-[v0]-8-|", views: questionImg)
         containerView.addConstraintsWithFormat("H:|-8-[v0]-8-|", views: questionText)
         containerView.addConstraintsWithFormat("H:|-8-[v0]-8-|", views: answerLbl)
         containerView.addConstraintsWithFormat("H:|-8-[v0]-8-|", views: answerText)
@@ -523,8 +564,25 @@ class AnswerCell: BaseTableViewCell {
         addConstraintsWithFormat("V:|-8-[v0]-8-|", views: containerView)
     }
     
+    fileprivate func loadImage() {
+        let imageUrlString = self.question.imageName
+        self.questionImg.af_cancelImageRequest()
+        guard let imageUrl = URL(string: imageUrlString) else {
+            self.questionImg.image = #imageLiteral(resourceName: "placeholder-image")
+            return
+        }
+        
+        self.questionImg.af_setImage(withURL: imageUrl, placeholderImage: #imageLiteral(resourceName: "placeholder-image"), filter: nil, progress: nil, imageTransition: .crossDissolve(0.5), runImageTransitionIfCached: false, completion: { imageResponse in
+            // Image finished downloading, so cache it - this is mostly for push notifications, as internally af_setImage already has its own cache
+            if let imageData = imageResponse.data, let image = UIImage(data: imageData) {
+                imageCache.add(image, withIdentifier: imageUrl.absoluteString)
+            }
+        })
+    }
+    
     func configureCell(questionObj: Question) {
         self.question = questionObj
+        self.loadImage()
         questionText.text = question.question
         answerText.text = question.answer
         switch question.userVote {

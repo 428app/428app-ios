@@ -1,11 +1,17 @@
 TODO:
 
+V16:
++ Added question's picture to Answers
+
+V15:
++ Fixed SoundSmart bug
+
 V14:
 + Custom tone for push notification
 
 V13:
 + Time created for user signup
-+ Notification red dot on inbox/classroom
++ Notification red dot on inbox/playgroup
 + Removed user friends from FB login permissions
 
 V12:
