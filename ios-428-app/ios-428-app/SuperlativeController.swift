@@ -217,7 +217,6 @@ class SuperlativeController: UIViewController, UICollectionViewDelegate, UIColle
     fileprivate var shareLink = ""
     
     func shareOnFb() {
-        log.info("SHARE ON FB")
         if(SLComposeViewController.isAvailable(forServiceType: SLServiceTypeFacebook)) {
             if let socialController = SLComposeViewController(forServiceType: SLServiceTypeFacebook) {
                 let url = URL(string: shareLink)
@@ -226,8 +225,7 @@ class SuperlativeController: UIViewController, UICollectionViewDelegate, UIColle
                 self.present(socialController, animated: true, completion: {})
                 socialController.completionHandler = { (result:SLComposeViewControllerResult) in
                     if result == SLComposeViewControllerResult.cancelled {
-                        // Nothing happen
-                        log.info("Sharing got cancelled")
+                        // Nothing happen, sharing got cancelled
                     } else if result == SLComposeViewControllerResult.done {
                         showLoader(message: "Retrieving superlative results")
                         DataService.ds.shareSuperlative(playgroup: self.playgroup, completed: { (isSuccess) in
