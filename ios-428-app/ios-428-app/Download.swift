@@ -19,6 +19,9 @@ let imageCache = AutoPurgingImageCache(
 )
 
 func downloadImage(imageUrlString: String, completed: @escaping (_ image: UIImage?) -> ()) -> Request? {
+    // First cut off everything after ? in url string as there is no need to add such a long identifier
+//    let imageUrlStr = imageUrlString.components(separatedBy: "?")[0]
+    
     // Image exists in cache, so return image without starting an Alamofire request
     if let image = imageCache.image(withIdentifier: imageUrlString) {
         completed(image)

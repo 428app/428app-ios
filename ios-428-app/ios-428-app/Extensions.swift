@@ -14,8 +14,6 @@ extension UICollectionView {
         // WARNING: This will only work if your collection view has one section
         let range = NSMakeRange(0, self.numberOfSections)
         let sections = NSIndexSet(indexesIn: range)
-//        self.reloadSections(sections as IndexSet)
-        
         self.reloadSections(sections as IndexSet)
     }
 }

@@ -36,6 +36,7 @@
 		403D8C061E66C1A500D435D5 /* TutorialAlertController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 403D8C051E66C1A500D435D5 /* TutorialAlertController.swift */; };
 		404C22FA1DBDB86D0054FE19 /* UserDefaults.swift in Sources */ = {isa = PBXBuildFile; fileRef = 404C22F91DBDB86D0054FE19 /* UserDefaults.swift */; };
 		404ED6D71E6226370092F90B /* PlaygroupQuestionCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 404ED6D61E6226370092F90B /* PlaygroupQuestionCell.swift */; };
+		4063FD821E6D0A3F00C609C0 /* sound.aif in Resources */ = {isa = PBXBuildFile; fileRef = 4063FD811E6D0A3F00C609C0 /* sound.aif */; };
 		4064A1B61DAC381300071383 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4064A1B51DAC381300071383 /* AppDelegate.swift */; };
 		4064A1B81DAC381300071383 /* InboxController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4064A1B71DAC381300071383 /* InboxController.swift */; };
 		4064A1C01DAC381300071383 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 4064A1BF1DAC381300071383 /* Assets.xcassets */; };
@@ -144,6 +145,7 @@
 		403D8C051E66C1A500D435D5 /* TutorialAlertController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TutorialAlertController.swift; sourceTree = "<group>"; };
 		404C22F91DBDB86D0054FE19 /* UserDefaults.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserDefaults.swift; sourceTree = "<group>"; };
 		404ED6D61E6226370092F90B /* PlaygroupQuestionCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PlaygroupQuestionCell.swift; sourceTree = "<group>"; };
+		4063FD811E6D0A3F00C609C0 /* sound.aif */ = {isa = PBXFileReference; lastKnownFileType = file; path = sound.aif; sourceTree = "<group>"; };
 		4064A1B21DAC381300071383 /* ios-428-app.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "ios-428-app.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		4064A1B51DAC381300071383 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		4064A1B71DAC381300071383 /* InboxController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InboxController.swift; sourceTree = "<group>"; };
@@ -285,6 +287,7 @@
 		4064A1A91DAC381300071383 = {
 			isa = PBXGroup;
 			children = (
+				4063FD811E6D0A3F00C609C0 /* sound.aif */,
 				4064A20E1DACB62500071383 /* TODO */,
 				4064A1B41DAC381300071383 /* ios-428-app */,
 				4064A1B31DAC381300071383 /* Products */,
@@ -579,6 +582,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				4064A1C31DAC381300071383 /* LaunchScreen.storyboard in Resources */,
+				4063FD821E6D0A3F00C609C0 /* sound.aif in Resources */,
 				4064A1FB1DAC811F00071383 /* AvenirLTStd-BookOblique.otf in Resources */,
 				4064A1FA1DAC811F00071383 /* AvenirLTStd-Book.otf in Resources */,
 				4064A2021DAC811F00071383 /* AvenirLTStd-Oblique.otf in Resources */,

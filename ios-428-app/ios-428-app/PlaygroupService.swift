@@ -261,7 +261,13 @@ extension DataService {
     fileprivate func soundSmart(discipline: String, members: [Profile], ownUid: String) -> String {
         // Choose a random member's name that's not your own
         let members_ = members.filter{$0.uid != ownUid}
+        if members_.count == 0 {
+            return ""
+        }
         let i = Int(arc4random_uniform(UInt32(members_.count)))
+        if i >= members_.count || i < 0 {
+            return ""
+        }
         let chosenName = members_[i].name
         return generateSoundSmart(name: chosenName, discipline: discipline)
     }
@@ -284,6 +290,12 @@ extension DataService {
         var text = text_
         if text.trim().isEmpty {
             text = soundSmart(discipline: playgroupTitle, members: playgroup.members, ownUid: profile.uid)
+        }
+        
+        // If text is still empty, it's likely user click sound smart too early, just return success but do not update playgroup
+        if text.trim().isEmpty {
+            completed(true, playgroup)
+            return
         }
         
         // Add to playgroupMessages

@@ -175,7 +175,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                 body = ""; title = ""
             },
             badge = 1;
-            sound = default;
+            sound = "sound.aif";
          }
          **/
         guard let aps = userInfo["aps"] as? [String: Any], let alert = aps["alert"] as? [String: String], let _ = aps["badge"] as? Int else {
