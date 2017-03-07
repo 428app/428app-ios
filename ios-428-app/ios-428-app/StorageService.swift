@@ -38,7 +38,11 @@ class StorageService {
         // If it is not profile pic, it is cover pic
         let filePath = "profile_photo"
         let metadata = FIRStorageMetadata()
+        
         metadata.contentType = "image/jpeg"
+        // This is the important part that caches
+        metadata.cacheControl = "public,max-age=2592000"
+        
         REF_USER.child("\(uid)/\(filePath)").put(data, metadata: metadata) { (metadata, error) in
             if error != nil || metadata == nil {
                 log.error("[Error] Fail to store image in cloud storage")

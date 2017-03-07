@@ -1,5 +1,26 @@
 TODO:
 
++ Change all questions links - to public links (then see if we still have to set Cache Control)
+
+===LIVE===
+V1.0.1:
++ Add one more screen to tutorial at the start:
+    + Make new friends
+    + Random playgroups
+
+
+V1.1
++ Gif keyboard
+
+
++ Promo code: Get two playgroups on the first day
+
+
+===BETA===
+
+V17:
++ Added metadata for cache control on image uploads
+
 V16:
 + Added question's picture to Answers
 
@@ -52,17 +73,3 @@ V8:
 + IMPROVEMENT: Improved look of login sliders
 + IMPROVEMENT: When entering private message screen, message box automatically pops up (Thanks Tomas)
 + IMPROVEMENT: Differentiated gap between chat messages sent by you and others in Inbox and Playgroup chat
-
-
-
-
-DO LATER:
-+ Fill in app store details - Design screenshots (green/red background with screenshot), write description
-
-YIHANG:
-+ Website question banner on website: To download in app store
-+ Do image + text for remaining questions
-+ Start learning Javascript section
-+ Finish up questions
-
-QUESTIONS:
