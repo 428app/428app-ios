@@ -31,7 +31,7 @@ class SuperlativeAlertController: UIViewController {
     
     fileprivate let superlativeLbl: UILabel = {
         let label = UILabel()
-        label.text = "It's time to vote for superlatives!"
+        label.text = "It's time to vote anonymously!"
         label.font = FONT_MEDIUM_LARGE
         label.textAlignment = .center
         label.adjustsFontSizeToFitWidth = true

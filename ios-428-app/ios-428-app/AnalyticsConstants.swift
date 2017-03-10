@@ -42,6 +42,7 @@ let kEventOpenTweetQuestion = "openTweetQuestion"
 let kEventSuccessTweetQuestion = "successTweetQuestion"
 let kEventOpenShareAnswer = "openShareAnswer"
 let kEventSuccessShareAnswer = "successShareAnswer"
+let kEventSuccessShareDidYouKnow = "successShareDidYouKnow"
 
 func logAnalyticsEvent(key: String, params: [String: NSObject] = [:]) { // We're not passing over any params, just logging the event
     FIRAnalytics.logEvent(withName: key, parameters: params)

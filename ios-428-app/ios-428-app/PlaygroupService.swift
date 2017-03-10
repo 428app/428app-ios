@@ -623,6 +623,7 @@ extension DataService {
             // Get members' profiles
             for memberId in totalMemberIds {
                 self.getUserFields(uid: memberId, completed: { (isSuccess, userProfile) in
+                    
                     if !isSuccess || userProfile == nil {
                         // There was a problem getting a user's profile, so return false)
                         log.error("[Error] Problem getting a user's profile in observing single lobby")

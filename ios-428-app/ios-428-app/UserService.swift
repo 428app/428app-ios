@@ -258,11 +258,21 @@ extension DataService {
         ref.observeSingleEvent(of: .value, with: { snapshot in
             if snapshot.exists() {
                 
-                // Name, birthday, discipline, profile photo are compulsory fields
-                guard let userDict = snapshot.value as? [String: Any], let name = userDict["name"] as? String, let discipline = userDict["discipline"] as? String, let profilePhotoUrl = userDict["profilePhoto"] as? String else {
+                // Name, birthday, profile photo are compulsory fields
+                guard let userDict = snapshot.value as? [String: Any], let name = userDict["name"] as? String, let profilePhotoUrl = userDict["profilePhoto"] as? String else {
                     completed(false, nil)
                     return
                 }
+                
+                // If user has no discipline field, assign a default discipline
+                var discipline = "History"
+                if let d = userDict["discipline"] as? String {
+                    discipline = d
+                } else {
+                    // Assign this user the default discipine for now
+                    ref.child("discipline").setValue("History")
+                }
+                
                 var age: Int? = nil
                 if let b = userDict["birthday"] as? String {
                     age = convertBirthdayToAge(birthday: b)

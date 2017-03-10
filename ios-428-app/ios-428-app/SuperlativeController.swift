@@ -183,24 +183,33 @@ class SuperlativeController: UIViewController, UICollectionViewDelegate, UIColle
         return btn
     }()
     
-    fileprivate let instructionsIcon: UIImageView = {
-        let imageView = UIImageView()
-        imageView.contentMode = .scaleAspectFit
-        imageView.image = #imageLiteral(resourceName: "info")
-        return imageView
+    fileprivate lazy var viewResultsBtn: UIButton = {
+        let btn = UIButton()
+        btn.setTitleColor(UIColor.white, for: .normal)
+        btn.setBackgroundColor(color: GREEN_UICOLOR, forState: .normal)
+        btn.titleLabel?.font = FONT_HEAVY_LARGE
+        btn.setTitle("View results", for: .normal)
+        btn.addTarget(self, action: #selector(viewResults), for: .touchUpInside)
+        btn.layer.cornerRadius = 5.0
+        btn.clipsToBounds = true
+        return btn
     }()
     
-    fileprivate let instructionsLbl: UILabel = {
-        let label = UILabel()
-        label.font = FONT_MEDIUM_MID
-        label.textColor = UIColor.darkGray
-        label.textAlignment = .center
-        label.text = "Share this video to view results"
-        label.adjustsFontSizeToFitWidth = true
-        label.minimumScaleFactor = 0.8
-        label.numberOfLines = 1
-        return label
-    }()
+    func viewResults() {
+        showLoader(message: "Retrieving superlative results")
+        DataService.ds.shareSuperlative(playgroup: self.playgroup, completed: { (isSuccess) in
+            hideLoader()
+            if isSuccess {
+                self.toggleViews(superlativeType: SuperlativeType.SHARED)
+                self.navigationItem.title = self.playgroup.isVotingOngoing ? "Running Results" : "Final Results"
+                // Hack: Adjust the screen
+                self.view.frame = CGRect(x: 0, y: 0, width: UIScreen.main.bounds.width, height: UIScreen.main.bounds.height)
+            } else {
+                showErrorAlert(vc: self, title: "Error", message: "There was a problem sharing.\nPlease try again.")
+            }
+        })
+    }
+
     
     fileprivate let helpUsLbl: UILabel = {
         let label = UILabel()
@@ -208,7 +217,7 @@ class SuperlativeController: UIViewController, UICollectionViewDelegate, UIColle
         let paragraphStyle = NSMutableParagraphStyle()
         paragraphStyle.lineSpacing = 6
         paragraphStyle.alignment = .center
-        let str = NSMutableAttributedString(string: "If you like the video, tag us @428 in your share! We deeply appreciate that.", attributes: [NSForegroundColorAttributeName: GREEN_UICOLOR, NSParagraphStyleAttributeName: paragraphStyle])
+        let str = NSMutableAttributedString(string: "If you like the video, tag us @428 in your share! We deeply appreciate that.", attributes: [NSForegroundColorAttributeName: FB_BLUE_UICOLOR, NSParagraphStyleAttributeName: paragraphStyle])
         label.attributedText = str
         label.numberOfLines = 0
         return label
@@ -227,18 +236,7 @@ class SuperlativeController: UIViewController, UICollectionViewDelegate, UIColle
                     if result == SLComposeViewControllerResult.cancelled {
                         // Nothing happen, sharing got cancelled
                     } else if result == SLComposeViewControllerResult.done {
-                        showLoader(message: "Retrieving superlative results")
-                        DataService.ds.shareSuperlative(playgroup: self.playgroup, completed: { (isSuccess) in
-                            hideLoader()
-                            if isSuccess {
-                                self.toggleViews(superlativeType: SuperlativeType.SHARED)
-                                self.navigationItem.title = self.playgroup.isVotingOngoing ? "Running Results" : "Final Results"
-                                // Hack: Adjust the screen
-                                self.view.frame = CGRect(x: 0, y: 0, width: UIScreen.main.bounds.width, height: UIScreen.main.bounds.height)
-                            } else {
-                                showErrorAlert(vc: self, title: "Error", message: "There was a problem sharing.\nPlease try again.")
-                            }
-                        })
+                        logAnalyticsEvent(key: kEventSuccessShareDidYouKnow)
                     }
                 }
             }
@@ -271,24 +269,15 @@ class SuperlativeController: UIViewController, UICollectionViewDelegate, UIColle
         let leftMargin = (UIScreen.main.bounds.width - 8.0*4)/2.0 - activityIndicator.frame.width/2.0 - 8.0
         didYouKnowVideo.addConstraintsWithFormat("H:|-\(leftMargin)-[v0]", views: activityIndicator)
         
-        let instructionsContainer = UIView()
-        instructionsContainer.addSubview(instructionsIcon)
-        instructionsContainer.addSubview(instructionsLbl)
-        instructionsContainer.translatesAutoresizingMaskIntoConstraints = false
-        instructionsContainer.addConstraintsWithFormat("H:|[v0(18)]-4-[v1]|", views: instructionsIcon, instructionsLbl)
-        instructionsContainer.addConstraintsWithFormat("V:|[v0(18)]", views: instructionsIcon)
-        instructionsContainer.addConstraintsWithFormat("V:|-1-[v0(18)]|", views: instructionsLbl)
-        shareContainer.addSubview(instructionsContainer)
-        shareContainer.addConstraint(NSLayoutConstraint(item: instructionsContainer, attribute: .centerX, relatedBy: .equal, toItem: shareContainer, attribute: .centerX, multiplier: 1.0, constant: 0.0))
-        
         shareContainer.addSubview(didYouKnowContainer)
+        shareContainer.addSubview(viewResultsBtn)
         shareContainer.addSubview(fbButton)
-        shareContainer.addSubview(instructionsContainer)
         shareContainer.addSubview(helpUsLbl)
         
         shareContainer.addConstraintsWithFormat("H:|-12-[v0]-12-|", views: didYouKnowContainer)
+        shareContainer.addConstraintsWithFormat("H:|-18-[v0]-18-|", views: viewResultsBtn)
         shareContainer.addConstraintsWithFormat("H:|-18-[v0]-18-|", views: fbButton)
-        shareContainer.addConstraintsWithFormat("V:|-12-[v0]-12-[v1(40)]-8-[v2(20)]-12-[v3(60)]", views: didYouKnowContainer, fbButton, instructionsContainer, helpUsLbl)
+        shareContainer.addConstraintsWithFormat("V:|-12-[v0]-12-[v1(40)]-8-[v2(40)]-8-[v3(60)]", views: didYouKnowContainer, viewResultsBtn, fbButton, helpUsLbl)
         shareContainer.addConstraintsWithFormat("H:|-18-[v0]-18-|", views: helpUsLbl)
         
         view.addSubview(shareContainer)
