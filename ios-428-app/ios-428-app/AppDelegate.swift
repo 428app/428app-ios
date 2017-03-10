@@ -31,6 +31,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         FIRApp.configure()
         FIRDatabase.database().persistenceEnabled = true
         
+        DataService.ds.updateUserTimezone()
+        
         setPromptForAnswerVote(hasPrompt: true) // For the future when answers from playgroup shows up, show answer prompt once
         
         DataService.ds.populateSoundSmarts() // Make sure this is placed here as this should only be called once when the app is launched to populate sound smarts

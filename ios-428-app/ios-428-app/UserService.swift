@@ -184,6 +184,23 @@ extension DataService {
         })
     }
     
+    // Updates user time zone at each app launch
+    func updateUserTimezone() {
+        guard let uid = getStoredUid() else {
+            return
+        }
+        let secondsFromGMT: Double = Double(NSTimeZone.local.secondsFromGMT())
+        let timezone: Double = secondsFromGMT*1.0 / (60.0*60.0)
+        self.REF_USERS.child(uid).observeSingleEvent(of: .value, with: { snapshot in
+            if snapshot.exists() && snapshot.value != nil {
+                self.REF_USERS.child(uid).updateChildValues(["timezone": timezone])
+            } else {
+                // User does not exist. Error
+                return
+            }
+        })
+    }
+    
     // Updates own profile textual data. Called in IntroController and Edit Profile Controllers
     func updateUserFields(discipline: String? = nil, school: String? = nil, organization: String? = nil, tagline: String? = nil, completed: @escaping (_ isSuccess: Bool) -> ()) {
         guard let uid = getStoredUid() else {
