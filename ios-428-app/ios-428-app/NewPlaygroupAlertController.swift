@@ -37,7 +37,7 @@ class NewPlaygroupAlertController: UIViewController {
         let label = UILabel()
         if self.discipline == "Sorry" {
             label.font = UIFont.systemFont(ofSize: 16.0)
-            label.text = "We were not able to get you a playgroup because there were too few users in your area. We apologize. But this also presents you an opportunity - you could work with us as an ambassador to spread curiosity in your area."
+            label.text = "We were not able to get you a playgroup because there were too few users in your area. We apologize. All you have to do right now is get 3 friends on the app, and you will get your playgroup the next day!"
         } else {
             label.font = FONT_HEAVY_LARGE
             label.text = self.discipline
