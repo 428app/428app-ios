@@ -173,7 +173,7 @@ class SettingsController: UIViewController, UITableViewDelegate, UITableViewData
         } else if setting.text == "Rate us" {
             logAnalyticsEvent(key: kEventRateUs)
             let appId = "1206012038" // Get app id from itunes connect
-            if let url = URL(string : "itms-apps://itunes.apple.com/app/\(appId)") {
+            if let url = URL(string : "itms-apps://itunes.apple.com/app/id\(appId)") { // TODO: See why this is not working
                 UIApplication.shared.openURL(url)
             }
         } else if setting.text == "Privacy Policy" {

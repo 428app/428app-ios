@@ -191,12 +191,34 @@ extension DataService {
         }
         let secondsFromGMT: Double = Double(NSTimeZone.local.secondsFromGMT())
         let timezone: Double = secondsFromGMT*1.0 / (60.0*60.0)
+        
+        
         self.REF_USERS.child(uid).observeSingleEvent(of: .value, with: { snapshot in
-            if snapshot.exists() && snapshot.value != nil {
-                self.REF_USERS.child(uid).updateChildValues(["timezone": timezone])
-            } else {
-                // User does not exist. Error
+            if !snapshot.exists() {
                 return
+            }
+            
+            guard let userDict = snapshot.value as? [String: Any], let oldTimezone = userDict["timezone"] as? Double else {
+                return
+            }
+            
+            if oldTimezone != timezone {
+                self.REF_USERS.child(uid).updateChildValues(["timezone": timezone])
+                if userDict["nextPlaygroup"] != nil && userDict["playgroups"] == nil  { // No previous playgroups, just delete timeOfNextPlaygroup
+                    self.REF_USERS.child("\(uid)/nextPlaygroup").setValue(nil)
+                    self.REF_USERS.child("\(uid)/nextPlaygroupDiscipline").setValue(nil)
+                    self.REF_USERS.child("\(uid)/timeOfNextPlaygroup").setValue(nil)
+                    self.REF_USERS.child("\(uid)/randomDaysForNextPlaygroup").setValue(nil)
+                } else if userDict["nextPlaygroup"] != nil { // There is a previous playgroup, have to subtract timeOfNextPlaygroup to previous playgroup
+                    if let time_ = userDict["timeOfNextPlaygroup"] as? Double, let randomDays = userDict["randomDaysForNextPlaygroup"] as? Int {
+                        let daysAgo: Double = Double(randomDays) * 1000 * 60 * 60 * 24
+                        let timeOfOldPlaygroup: Double = time_ - daysAgo
+                        self.REF_USERS.child("\(uid)/nextPlaygroup").setValue(nil)
+                        self.REF_USERS.child("\(uid)/nextPlaygroupDiscipline").setValue(nil)
+                        self.REF_USERS.child("\(uid)/timeOfNextPlaygroup").setValue(timeOfOldPlaygroup)
+                        self.REF_USERS.child("\(uid)/randomDaysForNextPlaygroup").setValue(nil)
+                    }
+                }
             }
         })
     }

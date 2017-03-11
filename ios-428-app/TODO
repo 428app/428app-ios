@@ -4,9 +4,11 @@ V1.0.1:
 + Rare bug fix: User having no discipline
 + Voting for Superlatives: Tell users that they are optional
 + Superlative Share: Option to view results without sharing
++ Link of Rate Us should redirect to app
 + Set timezone each time user logs in
 
 V1.0.2
+
 + Add one more screen to tutorial at the start:
     + Make new friends
     + Random playgroups
