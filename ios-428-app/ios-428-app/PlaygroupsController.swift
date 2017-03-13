@@ -82,7 +82,7 @@ class PlaygroupsController: UIViewController, UICollectionViewDelegate, UICollec
     }
     
     fileprivate func setupNavigationBar() {
-        self.navigationItem.title = "Playgroups"
+        self.navigationItem.title = "Groups"
         let infoButton = UIButton(type: .infoLight)
         infoButton.addTarget(self, action: #selector(infoButtonTapped), for: .touchUpInside)
         let barButton = UIBarButtonItem(customView: infoButton)

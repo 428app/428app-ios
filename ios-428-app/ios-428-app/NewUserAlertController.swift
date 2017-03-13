@@ -31,7 +31,7 @@ class NewUserAlertController: UIViewController {
         let paragraphStyle = NSMutableParagraphStyle()
         paragraphStyle.lineSpacing = 6
         paragraphStyle.alignment = .center
-        let str = NSMutableAttributedString(string: "Your playgroup is on the way. \nWhy not edit your profile first?", attributes: [NSForegroundColorAttributeName: GREEN_UICOLOR, NSParagraphStyleAttributeName: paragraphStyle])
+        let str = NSMutableAttributedString(string: "Your group is on the way. \nWhy not edit your profile first?", attributes: [NSForegroundColorAttributeName: GREEN_UICOLOR, NSParagraphStyleAttributeName: paragraphStyle])
         label.attributedText = str
         label.numberOfLines = 0
         return label

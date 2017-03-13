@@ -384,26 +384,26 @@ class ChatPlaygroupController: UIViewController, UIGestureRecognizerDelegate, UI
         let alertController = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
         alertController.view.tintColor = GREEN_UICOLOR
         let cancelAction = UIAlertAction(title: "Cancel", style: .cancel, handler: nil)
-        let playpeersAction = UIAlertAction(title: "Playpeers", style: .default) { (action) in
-            let controller = PlaypeersController(collectionViewLayout: UICollectionViewFlowLayout())
-            self.navigationItem.backBarButtonItem = UIBarButtonItem(title: " ", style: .plain, target: nil, action: nil)
-            controller.playpeers = self.playgroup.members
-            self.navigationController?.pushViewController(controller, animated: true)
-        }
         let answersAction = UIAlertAction(title: "Answers", style: .default) { (action) in
             let controller = AnswersController()
             self.navigationItem.backBarButtonItem = UIBarButtonItem(title: " ", style: .plain, target: nil, action: nil)
             controller.playgroup = self.playgroup
             self.navigationController?.pushViewController(controller, animated: true)
         }
-        let superlativesAction = UIAlertAction(title: "Superlatives", style: .default) { (action) in
+        let playpeersAction = UIAlertAction(title: "Peers", style: .default) { (action) in
+            let controller = PlaypeersController(collectionViewLayout: UICollectionViewFlowLayout())
+            self.navigationItem.backBarButtonItem = UIBarButtonItem(title: " ", style: .plain, target: nil, action: nil)
+            controller.playpeers = self.playgroup.members
+            self.navigationController?.pushViewController(controller, animated: true)
+        }
+        let superlativesAction = UIAlertAction(title: "Vote", style: .default) { (action) in
             self.launchSuperlativeController()
         }
         
         answersAction.isEnabled = self.playgroup.questions.count > 1 // Only enable seeing answers if there is more than 1 answer (current answer)
         superlativesAction.isEnabled = playgroup.hasSuperlatives
-        alertController.addAction(playpeersAction)
         alertController.addAction(answersAction)
+        alertController.addAction(playpeersAction)
         alertController.addAction(superlativesAction)
         alertController.addAction(cancelAction)
         self.present(alertController, animated: true, completion: {
@@ -729,7 +729,7 @@ class ChatPlaygroupController: UIViewController, UIGestureRecognizerDelegate, UI
             DataService.ds.addPlaygroupChatMessage(playgroup: self.playgroup, text_: text.trim(), completed: { (isSuccess, updatedPlaygroup) in
                 if !isSuccess || updatedPlaygroup == nil {
                     log.error("[Error] Message failed to be posted")
-                    showErrorAlert(vc: self, title: "Error", message: "Could not send message. Please try again.")
+                    showErrorAlert(vc: self, title: "Error", message: "Could not send message. Could it be your Internet connection?.")
                     return
                 }
             })

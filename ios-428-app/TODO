@@ -1,15 +1,27 @@
 TODO:
 ===LIVE===
 V1.1:
+
+Build 1
 + Rare bug fix: User having no discipline
 + Voting for Superlatives: Tell users that they are optional
 + Superlative Share: Option to view results without sharing
 + Link of Rate Us should redirect to app
 + Set timezone each time user logs in
 
-V1.2
+Build 2
 + Change sorry message
 
+Build 3
++ Change playgroup to group
++ Change superlatives to vote
++ Show progress of questions: i.e. Question 1/21
++ Cleaned up alert and loader messages
++ New tutorial screens
++ New login screens
+
+
+V1.3
 
 
 V2

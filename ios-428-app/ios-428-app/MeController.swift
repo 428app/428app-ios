@@ -268,7 +268,7 @@ class MeController: UIViewController, UIGestureRecognizerDelegate, UIScrollViewD
     }
     
     fileprivate lazy var playgroupsLbl: UILabel = {
-        return self.sectionLabelTemplate(labelText: "Playgroups")
+        return self.sectionLabelTemplate(labelText: "Groups")
     }()
     
     fileprivate func setupCollectionView() {

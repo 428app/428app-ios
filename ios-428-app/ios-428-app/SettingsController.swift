@@ -34,7 +34,7 @@ class SettingsController: UIViewController, UITableViewDelegate, UITableViewData
             self.settings[0][0].isOn = isOn
         case "Private messages":
             self.settings[0][1].isOn = isOn
-        case "Playgroup messages":
+        case "Group messages":
             self.settings[0][2].isOn = isOn
         case "In-app notifications":
             self.settings[0][3].isOn = isOn
@@ -80,7 +80,7 @@ class SettingsController: UIViewController, UITableViewDelegate, UITableViewData
             
             // Update all user settings with each change
             
-            DataService.ds.updateUserSettings(dailyAlert: settingsChosen["Daily alert"]!, inboxMessages: settingsChosen["Private messages"]!, playgroupMessages: settingsChosen["Playgroup messages"]!, inAppNotifications: settingsChosen["In-app notifications"]!, completed: { (isSuccess) in
+            DataService.ds.updateUserSettings(dailyAlert: settingsChosen["Daily alert"]!, inboxMessages: settingsChosen["Private messages"]!, playgroupMessages: settingsChosen["Group messages"]!, inAppNotifications: settingsChosen["In-app notifications"]!, completed: { (isSuccess) in
                 if !isSuccess {
                     log.error("[Error] Error updating user settings")
                     // Revert settings chosen
@@ -96,7 +96,7 @@ class SettingsController: UIViewController, UITableViewDelegate, UITableViewData
     
     fileprivate func getUserSettings() {
         // Load default settings first - All enabled
-        self.settingsChosen = ["Daily alert": true, "Private messages": true, "Playgroup messages": true, "In-app notifications": true]
+        self.settingsChosen = ["Daily alert": true, "Private messages": true, "Group messages": true, "In-app notifications": true]
         
         DataService.ds.getUserSettings(completed: { (settings) in
             if settings != nil {
@@ -121,11 +121,11 @@ class SettingsController: UIViewController, UITableViewDelegate, UITableViewData
     fileprivate var settingHeaders: [String] = ["Notifications", "Find us", "Legal", "", ""]
     
     fileprivate var settings: [[Setting]] = [
-        [Setting(text: "Daily alert", type: .toggle, isOn: true),  Setting(text: "Private messages", type: .toggle, isOn: true), Setting(text: "Playgroup messages", type: .toggle, isOn: true), Setting(text: "In-app notifications", type: .toggle, isLastCell: true, isOn: true)],
+        [Setting(text: "Daily alert", type: .toggle, isOn: true),  Setting(text: "Private messages", type: .toggle, isOn: true), Setting(text: "Group messages", type: .toggle, isOn: true), Setting(text: "In-app notifications", type: .toggle, isLastCell: true, isOn: true)],
         [Setting(text: "Contact us", type: .link), Setting(text: "428 Website", type: .link), Setting(text: "428 Facebook", type: .link), Setting(text: "Rate us", type: .link, isLastCell: true)],
         [Setting(text: "Privacy Policy", type: .link, isLastCell: true)],
         [Setting(text: "Log out", type: .center, isLastCell: true)],
-        [Setting(text: "Version 1.0.0", type: .nobg, isLastCell: true)]]
+        [Setting(text: "Version 1.1", type: .nobg, isLastCell: true)]]
     
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
         let view = UIView()

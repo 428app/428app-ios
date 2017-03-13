@@ -19,7 +19,7 @@ class PlaypeersController: UICollectionViewController, UICollectionViewDelegateF
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        self.navigationItem.title = "Playpeers"
+        self.navigationItem.title = "Peers"
         self.view.backgroundColor = RED_UICOLOR
         self.extendedLayoutIncludesOpaqueBars = true
         self.setupViews()

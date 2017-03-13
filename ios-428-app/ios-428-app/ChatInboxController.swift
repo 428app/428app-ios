@@ -682,7 +682,7 @@ class ChatInboxController: UIViewController, UICollectionViewDelegateFlowLayout,
             DataService.ds.addInboxChatMessage(inbox: inbox, text: text.trim(), completed: { (isSuccess) in
                 if !isSuccess {
                     log.error("[Error] Message failed to be posted")
-                    showErrorAlert(vc: self, title: "Error", message: "Could not send message. Please try again.")
+                    showErrorAlert(vc: self, title: "Error", message: "Could not send message. Could it be your Internet connection?")
                     return
                 }
             })

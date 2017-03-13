@@ -647,7 +647,7 @@ class LobbyController: UIViewController, UIGestureRecognizerDelegate, UITextView
             DataService.ds.addLobbyChatMessage(playgroup: self.lobby, text: text.trim(), completed: { (isSuccess, updatedLobby) in
                 if !isSuccess || updatedLobby == nil {
                     log.error("[Error] Message failed to be posted")
-                    showErrorAlert(vc: self, title: "Error", message: "Could not send message. Please try again.")
+                    showErrorAlert(vc: self, title: "Error", message: "Could not send message. Could it be your Internet connection?")
                     return
                 }
             })

@@ -443,7 +443,7 @@ extension DataService {
             }
             // These are settings are values mapped directly to the keys that will be displayed on the frontend
             // Note: The keys must be named exactly as you want them to appear on the frontend
-            let settings = ["Daily alert": dailyAlert, "Private messages": inboxMessages, "Playgroup messages": playgroupMessages, "In-app notifications": inAppNotifications]
+            let settings = ["Daily alert": dailyAlert, "Private messages": inboxMessages, "Group messages": playgroupMessages, "In-app notifications": inAppNotifications]
             completed(settings)
             return
         })

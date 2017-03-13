@@ -112,7 +112,7 @@ class PlaygroupCell: BaseCollectionCell {
         self.updatedLbl.isHidden = !playgroup.hasUpdates
         self.loadImage()
         self.titleLbl.text = self.playgroup.title
-        self.questionNumLbl.text = "Current Question: \(self.playgroup.questionNum)"
+        self.questionNumLbl.text = "Question: \(self.playgroup.questionNum)/21"
     }
     
     open func setSelectedColors(isSelected: Bool) {

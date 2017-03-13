@@ -28,7 +28,7 @@ class CustomTabBarController: UITabBarController {
         
         let playgroupsController = PlaygroupsController()
         let playgroupsNavController = CustomNavigationController(rootViewController: playgroupsController)
-        playgroupsNavController.tabBarItem.title = "Playgroups"
+        playgroupsNavController.tabBarItem.title = "Groups"
         playgroupsNavController.tabBarItem.image = #imageLiteral(resourceName: "playgroups-U-2x")
         playgroupsNavController.tabBarItem.selectedImage = #imageLiteral(resourceName: "playgroups-F-2x")
         

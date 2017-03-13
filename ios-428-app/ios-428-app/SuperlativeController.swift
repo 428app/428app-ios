@@ -196,7 +196,7 @@ class SuperlativeController: UIViewController, UICollectionViewDelegate, UIColle
     }()
     
     func viewResults() {
-        showLoader(message: "Retrieving superlative results")
+        showLoader(message: "Retrieving results...")
         DataService.ds.shareSuperlative(playgroup: self.playgroup, completed: { (isSuccess) in
             hideLoader()
             if isSuccess {
@@ -337,7 +337,7 @@ class SuperlativeController: UIViewController, UICollectionViewDelegate, UIColle
         
         if superlativeType == .VOTED {
             // Rated but not shared, hide collection view and show share
-            self.navigationItem.title = "Superlatives"
+            self.navigationItem.title = "Vote"
             self.extendedLayoutIncludesOpaqueBars = true
             shareContainer.isHidden = false
             collectionView.isHidden = true
@@ -353,7 +353,7 @@ class SuperlativeController: UIViewController, UICollectionViewDelegate, UIColle
             
             if superlativeType == .NOTVOTED {
                 // Allow user to rate
-                self.navigationItem.title = "Superlatives"
+                self.navigationItem.title = "Vote"
                 collectionView.backgroundColor = GREEN_UICOLOR
                 self.navigationController?.navigationBar.setBackgroundImage(UIImage.init(color: GREEN_UICOLOR), for: .default)
                 self.navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Submit", style: .done, target: self, action: #selector(submitSuperlatives))
@@ -388,7 +388,7 @@ class SuperlativeController: UIViewController, UICollectionViewDelegate, UIColle
         // Load did you know
         DataService.ds.getDidYouKnow(discipline: playgroup.title, did: playgroup.didYouKnowId) { (didSuccess, videoLink_) in
             if !didSuccess {
-                showErrorAlert(vc: self, title: "Error", message: "There's an error loading the video. Please try again later.")
+                showErrorAlert(vc: self, title: "Error", message: "There was an error loading the video. Don't worry, you can still continue to view results.")
                 return
             }
             self.shareLink = videoLink_.trim() + "?&playsinline=1"

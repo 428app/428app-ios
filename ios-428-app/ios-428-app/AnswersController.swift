@@ -98,7 +98,7 @@ class AnswersController: UITableViewController {
         DataService.ds.getQuestionsAndAnswers(playgroup: self.playgroup) { (isSuccess, updatedPlaygroup) in
             self.globalActivityIndicator.stopAnimating()
             if !isSuccess {
-                showErrorAlert(vc: self, title: "Error", message: "We could not get the class' answers. Please try again later.")
+                showErrorAlert(vc: self, title: "Error", message: "The group answers does not seem to be loading. Please check out our website 428pm.com for our status.")
                 return
             }
             self.playgroup = updatedPlaygroup

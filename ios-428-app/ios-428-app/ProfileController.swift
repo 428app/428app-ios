@@ -216,7 +216,7 @@ class ProfileController: UIViewController, UIGestureRecognizerDelegate, UIScroll
     }
     
     fileprivate lazy var playgroupsLbl: UILabel = {
-        return self.sectionLabelTemplate(labelText: "Playgroups")
+        return self.sectionLabelTemplate(labelText: "Groups")
     }()
     
     fileprivate func setupCollectionView() {
