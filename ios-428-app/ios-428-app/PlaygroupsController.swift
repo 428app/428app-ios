@@ -252,7 +252,7 @@ class PlaygroupsController: UIViewController, UICollectionViewDelegate, UICollec
         label.font = FONT_MEDIUM_MID
         label.textColor = UIColor.darkGray
         label.textAlignment = .center
-        label.text = "Your playgroup is on the way..."
+        label.text = "Your group is on the way..."
         return label
     }()
     
